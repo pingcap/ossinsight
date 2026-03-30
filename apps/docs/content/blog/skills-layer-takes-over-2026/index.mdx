@@ -1,0 +1,128 @@
+---
+title: "From Runtimes to Recipes: Why Skill Repositories Are Outgrowing Agent Frameworks"
+date: 2026-03-30
+authors: [OSSInsight]
+tags: [insight, ai, github, open-source]
+image: /blog-assets/skills-layer-takes-over-2026/cover.png
+description: "In early 2026, skill-pack repositories on GitHub are attracting stars 1.5× faster than agent runtimes in the same launch window. We analyzed 8 fast-growing repositories to understand why the value layer is moving from execution engines to distribution and workflows."
+keywords: [AI agents, GitHub trends 2026, agent skills, claude code skills, openclaw skills, OSSInsight]
+---
+
+In early 2026, a subtle inversion is happening in the AI agent ecosystem:
+
+**the repositories shipping _skills, workflows, and setup conventions_ are now growing faster than the repositories shipping _agent runtimes_.**
+
+We analyzed 8 fast-growing repositories created in Jan–Feb 2026, split into two groups:
+
+- **Skill Layer** (distribution/workflow packs):
+  - [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code)
+  - [VoltAgent/awesome-openclaw-skills](https://ossinsight.io/analyze/VoltAgent/awesome-openclaw-skills)
+  - [sickn33/antigravity-awesome-skills](https://ossinsight.io/analyze/sickn33/antigravity-awesome-skills)
+  - [kepano/obsidian-skills](https://ossinsight.io/analyze/kepano/obsidian-skills)
+- **Runtime Layer** (execution engines/frameworks):
+  - [HKUDS/nanobot](https://ossinsight.io/analyze/HKUDS/nanobot)
+  - [sipeed/picoclaw](https://ossinsight.io/analyze/sipeed/picoclaw)
+  - [qwibitai/nanoclaw](https://ossinsight.io/analyze/qwibitai/nanoclaw)
+  - [vercel-labs/agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser)
+
+> **Core finding:** the Skill Layer group is averaging **730 stars/day**, while Runtime Layer averages **488 stars/day** — a **1.50× speed advantage** in the same time window.
+
+## Snapshot Table (Verified via GitHub API)
+
+| Repository | Category | Stars | Forks | Contributors | Open Issues | Created | Stars/Day | Fork Ratio | Issue Ratio |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|
+| [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code) | Skill Layer | 116,655 | 15,174 | 137 | 103 | 2026-01-18 | 1,643.0 | 0.130 | 0.001 |
+| [VoltAgent/awesome-openclaw-skills](https://ossinsight.io/analyze/VoltAgent/awesome-openclaw-skills) | Skill Layer | 42,958 | 4,098 | 76 | 14 | 2026-01-25 | 681.9 | 0.095 | 0.000 |
+| [sickn33/antigravity-awesome-skills](https://ossinsight.io/analyze/sickn33/antigravity-awesome-skills) | Skill Layer | 28,518 | 4,785 | 153 | 2 | 2026-01-14 | 385.4 | 0.168 | 0.000 |
+| [kepano/obsidian-skills](https://ossinsight.io/analyze/kepano/obsidian-skills) | Skill Layer | 18,157 | 1,059 | 11 | 21 | 2026-01-02 | 211.1 | 0.058 | 0.001 |
+| [HKUDS/nanobot](https://ossinsight.io/analyze/HKUDS/nanobot) | Runtime Layer | 36,913 | 6,350 | 203 | 895 | 2026-02-01 | 659.2 | 0.172 | 0.024 |
+| [sipeed/picoclaw](https://ossinsight.io/analyze/sipeed/picoclaw) | Runtime Layer | 26,701 | 3,734 | 194 | 318 | 2026-02-04 | 503.8 | 0.140 | 0.012 |
+| [qwibitai/nanoclaw](https://ossinsight.io/analyze/qwibitai/nanoclaw) | Runtime Layer | 25,902 | 9,616 | 63 | 573 | 2026-01-31 | 454.4 | 0.371 | 0.022 |
+| [vercel-labs/agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser) | Runtime Layer | 25,640 | 1,557 | 96 | 336 | 2026-01-11 | 333.0 | 0.061 | 0.013 |
+
+*Data snapshot time: 2026-03-30 UTC. Stars/day = current stars / days since repo creation. Contributors counted from paginated GitHub contributors API (`anon=1`).*
+
+## Chart 1 — Star Velocity Is Moving Up the Stack
+
+![Stars per day comparison across skill-layer and runtime-layer repositories](/blog-assets/skills-layer-takes-over-2026/stars-per-day.png)
+
+The top repo is a skill-pack distribution project, not a runtime engine:
+
+- **everything-claude-code:** 1,643 stars/day
+- **best runtime in this cohort (nanobot):** 659 stars/day
+
+That is not a small gap; it is a **product-layer shift**.
+
+## Chart 2 — Issue Pressure: 35× Difference
+
+![Fork ratio vs issue ratio scatter plot for skill and runtime repositories](/blog-assets/skills-layer-takes-over-2026/fork-vs-issue.png)
+
+Average issue ratio:
+
+- **Skill Layer:** 0.0005
+- **Runtime Layer:** 0.0178
+
+Runtime repos carry roughly **35× higher issue pressure**.
+
+This matters because stars are easy to acquire, but issue queues are where maintenance cost lives. Skill repositories are behaving more like **distribution/media products**; runtime repositories are behaving like **infrastructure products**.
+
+## Chart 3 — Contributor Economics
+
+![Contributors vs stars bubble chart](/blog-assets/skills-layer-takes-over-2026/contributors-vs-stars.png)
+
+Median stars per contributor:
+
+- **Skill Layer:** 708.4
+- **Runtime Layer:** 224.5
+
+Skill repositories are extracting significantly more star attention per maintainer.
+
+## What the Code Says (Not Just README Narratives)
+
+To understand why this pattern exists, we looked at source-level implementation details from one skill-layer project and one runtime-layer project.
+
+### 1) Skill Layer is becoming an installer + policy system
+
+In [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code), the architecture is not a monolithic runtime. It is a **distribution control plane**:
+
+- `.mcp.json` wires multiple MCP servers (`github`, `context7`, `memory`, `playwright`, `sequential-thinking`) through `npx` or remote endpoints.
+- `install.sh` bootstraps dependencies and delegates to `scripts/install-apply.js`.
+- `docs/SKILL-PLACEMENT-POLICY.md` explicitly separates **curated** vs **learned/imported/evolved** skills, with provenance requirements and “not shipped” boundaries.
+
+That is effectively a package/distribution strategy for agent capabilities, not just a prompt collection.
+
+### 2) Runtime Layer is optimizing execution core complexity
+
+In [HKUDS/nanobot](https://ossinsight.io/analyze/HKUDS/nanobot), the codebase includes an explicit core-line accounting script (`core_agent_lines.sh`) that computes line counts while excluding channels/providers/skills.
+
+The script’s central message is architectural prioritization: keep the **execution brain** small and auditable, and treat integrations as peripheral modules.
+
+This is a fundamentally different optimization target from skill-layer repos. Runtime projects optimize correctness, performance, and stability under execution load. Skill-layer projects optimize adoption, transferability, and composition speed.
+
+## The Pattern: “Distribution Layer Inversion”
+
+We can name the pattern like this:
+
+> **Distribution Layer Inversion** = in early category formation, growth moves from execution engines to packaged workflows once runtime capability becomes “good enough.”
+
+Boundary conditions (where this pattern should hold):
+
+1. Multiple compatible runtimes already exist.
+2. Users face workflow/setup friction more than core model/runtime limitations.
+3. Repo value can be copied/applied immediately without deep architectural decisions.
+
+When these three are true, stars flow to repositories that reduce “time-to-first-useful-result,” not necessarily to those that improve engine internals.
+
+## So What?
+
+If you are building in this space:
+
+- **Runtime maintainers** should expect heavier support burden and slower star velocity relative to distribution projects.
+- **Skill/distribution maintainers** have a growth tailwind, but must invest in provenance, safety, and version compatibility across runtimes.
+- **Investors and ecosystem analysts** should stop using stars alone and track at least three ratios together: **stars/day, issue ratio, and stars-per-contributor**.
+
+Because in 2026, the winning layer is increasingly not “who executes tokens fastest,” but “who packages usable intelligence fastest.”
+
+---
+
+*Methodology note: All quantitative metrics in this article were collected from public GitHub REST API endpoints on 2026-03-30 UTC (`/repos/{owner}/{repo}`, `/contributors` paginated). OSSInsight links are provided for each repository for independent exploration.*
