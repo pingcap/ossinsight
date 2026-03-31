@@ -37,7 +37,7 @@ export function CollectionSidebar({
   return (
     <aside
       className="sticky top-[60px] hidden h-[calc(100vh-60px)] shrink-0 overflow-hidden border-r border-[#30313a] bg-transparent transition-all lg:block"
-      style={{ width: collapsed ? 30 : 300 }}
+      style={{ width: collapsed ? 30 : 380 }}
     >
       {collapsed ? (
         <button
