@@ -16,14 +16,14 @@ The numbers are hard to ignore:
 
 | Repo | Stars | Days Old | Stars/Day | Fork Ratio |
 |------|-------|----------|-----------|------------|
-| [CLI-Anything](https://ossinsight.io/analyze/HKUDS/CLI-Anything) | 25,212 | 23 | **1,096** | 8.96% |
-| [agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser) | 25,808 | 79 | 331 | 6.06% |
-| [Google Workspace CLI](https://ossinsight.io/analyze/googleworkspace/cli) | 23,219 | 28 | **829** | 4.90% |
-| [jackwener/opencli](https://ossinsight.io/analyze/jackwener/opencli) | 9,231 | 16 | **576** | 8.35% |
-| [Agent-Reach](https://ossinsight.io/analyze/Panniantong/Agent-Reach) | 13,881 | 34 | 408 | 7.90% |
-| [larksuite/cli](https://ossinsight.io/analyze/larksuite/cli) | 4,722 | 5 | **944** | 4.62% |
+| [CLI-Anything](https://ossinsight.io/analyze/HKUDS/CLI-Anything) | 25,219 | 23 | **1,096** | 8.96% |
+| [agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser) | 25,812 | 79 | 327 | 6.06% |
+| [Google Workspace CLI](https://ossinsight.io/analyze/googleworkspace/cli) | 23,219 | 29 | **801** | 4.90% |
+| [jackwener/opencli](https://ossinsight.io/analyze/jackwener/opencli) | 9,236 | 17 | **543** | 8.37% |
+| [Agent-Reach](https://ossinsight.io/analyze/Panniantong/Agent-Reach) | 13,886 | 35 | 397 | 7.90% |
+| [larksuite/cli](https://ossinsight.io/analyze/larksuite/cli) | 4,728 | 6 | **788** | 4.63% |
 
-*Data from GitHub API, March 31, 2026*
+*Data from GitHub REST API, March 31, 2026*
 
 All six of these launched in 2026. All six crossed 4,000+ stars within days of launch. And they're solving the same problem from different angles.
 
@@ -47,7 +47,7 @@ As of March 31, 30 applications are in their [CLI-Hub registry](https://hkuds.gi
 
 **[agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser)** (Rust, Vercel Labs): Browser automation CLI for AI agents — the idea that the browser itself becomes a structured CLI command surface rather than a DOM soup.
 
-**[Agent-Reach](https://ossinsight.io/analyze/Panniantong/Agent-Reach)**: "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees."
+**[Agent-Reach](https://ossinsight.io/analyze/Panniantong/Agent-Reach)** (Python, 13.9k stars): A unified read-access CLI for social and content platforms — Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — without requiring API keys. Where the other repos wrap *software* for agents, Agent-Reach wraps the *web itself*. It uses headless browser sessions and platform-specific extractors to normalize content into structured JSON. The 7.9% fork ratio suggests developers are actively extending it with new platform adapters, and the project's growth (397 stars/day over 35 days) indicates real demand for a "read the internet" primitive that agents can call.
 
 The unifying thesis: **everything software does should be expressible as a CLI command with structured output**.
 
@@ -77,7 +77,7 @@ These agent-native CLI repos are running 5–9%:
 
 ![Fork ratio vs Stars](/blog-assets/agent-native-cli-wave-2026/fork-ratio.png)
 
-CLI-Anything's **8.96%** fork ratio — 2,260 forks on 25,212 stars — is telling. People aren't just starring it because it looks cool. They're forking it because they want to **run it, modify it, and build their own harnesses**. That's signal that the repo has crossed from "interesting idea" to "actually useful infrastructure."
+CLI-Anything's **8.96%** fork ratio — 2,260 forks on 25,219 stars — is telling. People aren't just starring it because it looks cool. They're forking it because they want to **run it, modify it, and build their own harnesses**. That's signal that the repo has crossed from "interesting idea" to "actually useful infrastructure."
 
 Compare that to a typical viral GitHub repo: even something like a popular UI component library might sit at 3–4%. The fork-to-star ratio here suggests genuine production adoption, not just hype.
 
@@ -85,31 +85,11 @@ The opencli (8.35%) and CLI-Anything (8.96%) fork ratios stand out in particular
 
 ## Inside CLI-Anything: The Architecture Is the Insight
 
-I cloned CLI-Anything to see what the actual implementation philosophy is. The HARNESS.md file (their methodology guide) reveals a design decision most coverage misses:
+The key design decision most coverage misses: CLI-Anything harnesses don't reinvent the software — they **expose existing backends**. Blender's harness calls `blender --background` with Python scripts. LibreOffice uses `libreoffice --headless`. Kdenlive calls `melt` (the MLT framework). As their HARNESS.md puts it:
 
-The harnesses don't reinvent the software — they **expose the existing backend**:
+> *"Most GUI apps separate presentation from logic. Find the core library/framework. Map GUI actions to API calls — every button click corresponds to a function call."*
 
-> *"Most GUI apps separate presentation from logic. Find the core library/framework (e.g., MLT for Shotcut, ImageMagick for GIMP). Map GUI actions to API calls — every button click corresponds to a function call."*
-
-For Blender: the harness calls `blender --background` with Python scripts. For LibreOffice: it calls `libreoffice --headless`. For Kdenlive: it calls `melt` (the MLT framework CLI). The CLI isn't an emulation layer — it's a thin wrapper around the backends that already exist.
-
-This is architecturally significant. It means the harnesses are **stable** (they inherit the stability of the underlying backends) and **composable** (standard Python Click CLIs that behave consistently).
-
-Every generated CLI ships with three things:
-1. A `--json` output flag for machine-readable results
-2. A REPL mode for stateful multi-step operations  
-3. A `SKILL.md` autodiscovery file so AI agents can learn the interface
-
-The skill file is the clever part. It's not documentation for humans — it's a structured capability declaration for agents:
-
-```yaml
-# From CLI-Anything's openclaw-skill/SKILL.md
-name: cli-anything
-description: Use when the user wants OpenClaw to build, refine, test, 
-  or validate a CLI-Anything harness for a GUI application.
-```
-
-By standardizing this format, CLI-Anything created an **interface registry** — not just for its own CLIs, but as a template for the entire ecosystem.
+This means harnesses are **stable** (inheriting backend reliability) and **composable** (standard Python Click CLIs). Each ships with `--json` output, a REPL mode, and a `SKILL.md` autodiscovery file — not human documentation, but a structured capability declaration for agents. By standardizing this format, CLI-Anything created an **interface registry** as a template for the entire ecosystem.
 
 ## The Launch Timeline
 
