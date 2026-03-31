@@ -13,7 +13,6 @@ const COLLECTION_SEO_MAP: Record<string, string> = {
   'Artificial Intelligence': 'Top AI and machine learning repositories on GitHub. Rankings of artificial intelligence projects by stars, PRs, issues, and contributors.',
   'Model Context Protocol (MCP) Client': 'Best MCP client implementations on GitHub. Compare Model Context Protocol projects by stars, activity, and community engagement.',
   'AI Gateways': 'Top AI gateway and routing projects on GitHub. Compare LLM proxy and gateway solutions ranked by stars, PRs, and developer activity.',
-  'ai-gateways': 'Top AI gateway and routing projects on GitHub. Compare LLM proxy and gateway solutions ranked by stars, PRs, and developer activity.',
   'AI Training Observability': 'Best AI training observability and monitoring tools on GitHub. Track model training, experiments, and ML pipelines. Ranked by activity.',
   'MLOps Tools': 'Top MLOps tools and platforms on GitHub. Compare ML pipeline, model serving, and experiment tracking projects by stars and activity.',
   'ML in Rust': 'Best machine learning libraries written in Rust on GitHub. Performance-focused ML frameworks ranked by stars, PRs, and contributors.',
