@@ -247,7 +247,7 @@ function RankingTableSkeleton({ isMonthView }: { isMonthView: boolean }) {
       <LoadingSkeleton className="mx-auto h-4 w-52" />
 
       <div className="mt-4 overflow-x-auto">
-        <Table className="min-w-[860px] border-collapse">
+        <Table className="w-full min-w-[860px] border-collapse">
           <TableHeader className="[&_tr]:border-b-[#222]">
             <TableRow className="border-b border-[#222] hover:bg-transparent">
               <TableHead className="h-12 px-4"><LoadingSkeleton className="h-6 w-28" /></TableHead>
@@ -415,7 +415,7 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
           </div>
 
           <div className="mt-4 overflow-x-auto">
-            <Table className="min-w-[860px] border-collapse">
+            <Table className="w-full min-w-[860px] border-collapse">
               <TableHeader className="[&_tr]:border-b-[#222]">
                 <TableRow className="border-b border-[#222] hover:bg-transparent">
                   <TableHead className="h-12 px-4 text-[20px] font-bold text-white">
