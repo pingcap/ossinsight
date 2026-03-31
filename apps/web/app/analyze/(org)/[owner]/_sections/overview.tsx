@@ -1,84 +1,69 @@
 'use client';
-import SectionTemplate from '@/components/Analyze/Section';
 import ChartTemplate from '@/components/Analyze/Section/Chart';
-import { getWidgetSize } from '@/utils/format';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 
 export default function OverviewContent () {
   return (
-    <SectionTemplate
-      id="overview"
-      title="Organization Overview"
-      level={2}
-      className="pt-8"
-    >
-      <div className="grid grid-cols-12 gap-4">
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-overview-stars"
-          visualizer={() => import('@/charts/compose/org/overview-stars/visualization')}
-          className="col-span-12 lg:col-span-6"
-          height={getWidgetSize().widgetWidth(2)}
-          innerSectionId="star-growth"
-        />
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-active-contributors"
-          visualizer={() => import('@/charts/compose/org/active-contributors/visualization')}
-          searchParams={{
-            activity: 'active',
-          }}
-          className="col-span-6 lg:col-span-3"
-          height={getWidgetSize().widgetWidth(2)}
-          innerSectionId="engagement"
-        />
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-activity-active-ranking"
-          visualizer={() => import('@/charts/compose/org/activity-active-ranking/visualization')}
-          searchParams={{
-            activity: 'repos',
-          }}
-          className="col-span-6 lg:col-span-3 row-span-2"
-          height={getWidgetSize().widgetWidth(4)}
-        />
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-overview-stats"
-          visualizer={() => import('@/charts/compose/org/overview-stats/visualization')}
-          searchParams={{
-            activity: 'pull-requests',
-          }}
-          className="col-span-4 lg:col-span-2"
-          height={getWidgetSize().widgetWidth(2)}
-          innerSectionId="pull-request-efficiency"
-        />
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-overview-stats"
-          visualizer={() => import('@/charts/compose/org/overview-stats/visualization')}
-          searchParams={{
-            activity: 'reviews',
-          }}
-          className="col-span-4 lg:col-span-2"
-          height={getWidgetSize().widgetWidth(2)}
-          innerSectionId="code-review-efficiency"
-        />
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-overview-stats"
-          visualizer={() => import('@/charts/compose/org/overview-stats/visualization')}
-          searchParams={{
-            activity: 'issues',
-          }}
-          className="col-span-4 lg:col-span-2"
-          height={getWidgetSize().widgetWidth(2)}
-          innerSectionId="issue"
-        />
-        <ChartTemplate
-          name="@ossinsight/widget-compose-org-active-contributors"
-          visualizer={() => import('@/charts/compose/org/active-contributors/visualization')}
-          searchParams={{
-            activity: 'new',
-          }}
-          className="col-span-6 lg:col-span-3"
-          height={getWidgetSize().widgetWidth(2)}
-          innerSectionId="engagement"
-        />
+    <ScrollspySectionWrapper anchor="overview" className="pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
+        Organization Overview
+      </h2>
+      <h3 className="text-[18px] font-semibold text-[#e9eaee]">Last 28 days Stats</h3>
+      <div className="mt-3 grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="rounded-[6px] bg-[#242526] px-3 py-3">
+          <ChartTemplate
+            name="@ossinsight/widget-analyze-org-recent-stats"
+            visualizer={() => import('@/charts/analyze/org/recent-stats/visualization')}
+            searchParams={{ activity: 'stars' }}
+            title="Stars"
+            height={120}
+          />
+        </div>
+        <div className="rounded-[6px] bg-[#242526] px-3 py-3">
+          <ChartTemplate
+            name="@ossinsight/widget-analyze-org-recent-stats"
+            visualizer={() => import('@/charts/analyze/org/recent-stats/visualization')}
+            searchParams={{ activity: 'participants' }}
+            title="Participants"
+            height={120}
+          />
+        </div>
+        <div className="rounded-[6px] bg-[#242526] px-3 py-3">
+          <ChartTemplate
+            name="@ossinsight/widget-analyze-org-recent-stats"
+            visualizer={() => import('@/charts/analyze/org/recent-stats/visualization')}
+            searchParams={{ activity: 'pull-requests' }}
+            title="Pull Requests"
+            height={120}
+          />
+        </div>
+        <div className="rounded-[6px] bg-[#242526] px-3 py-3">
+          <ChartTemplate
+            name="@ossinsight/widget-analyze-org-recent-pr-review-stats"
+            visualizer={() => import('@/charts/analyze/org/recent-pr-review-stats/visualization')}
+            title="Reviews"
+            height={120}
+          />
+        </div>
+        <div className="rounded-[6px] bg-[#242526] px-3 py-3">
+          <ChartTemplate
+            name="@ossinsight/widget-analyze-org-recent-stats"
+            visualizer={() => import('@/charts/analyze/org/recent-stats/visualization')}
+            searchParams={{ activity: 'issues' }}
+            title="Issues"
+            height={120}
+          />
+        </div>
+        <div className="rounded-[6px] bg-[#242526] px-3 py-3">
+          <ChartTemplate
+            name="@ossinsight/widget-analyze-org-recent-stats"
+            visualizer={() => import('@/charts/analyze/org/recent-stats/visualization')}
+            searchParams={{ activity: 'commits' }}
+            title="Commits"
+            height={120}
+          />
+        </div>
       </div>
-    </SectionTemplate>
+    </ScrollspySectionWrapper>
   );
 }

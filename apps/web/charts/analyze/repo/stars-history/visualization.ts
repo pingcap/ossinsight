@@ -39,7 +39,7 @@ export default function (input: Input, ctx: WidgetVisualizerContext<Params>): EC
       type: 'time',
       axisLine: { show: false },
       axisTick: { show: false },
-      splitLine: { show: false },
+      splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
       axisLabel: {
         color: 'rgba(255,255,255,0.35)',
         fontSize: 11,
@@ -56,8 +56,9 @@ export default function (input: Input, ctx: WidgetVisualizerContext<Params>): EC
         formatter: format,
       },
       splitLine: {
+        show: true,
         lineStyle: {
-          color: 'rgba(255,255,255,0.06)',
+          color: '#2a2a2c',
           type: 'dashed',
         },
       },

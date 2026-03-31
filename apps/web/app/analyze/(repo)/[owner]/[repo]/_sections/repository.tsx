@@ -3,6 +3,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Analyze from '@/components/Analyze/Analyze';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 
 const RepoChart = dynamic(
@@ -73,16 +74,16 @@ export function RepositorySection() {
   const { repoId, repoName } = useAnalyzeContext();
 
   return (
-    <section id="repository" className="pt-8 pb-8">
-      <h2 className="text-2xl font-semibold text-white pb-3" style={{ scrollMarginTop: '140px' }}>
+    <ScrollspySectionWrapper anchor="repository" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
         Repository Statistics - Last 28 Days
       </h2>
 
       {/* 2x2 chart grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <Card>
-          <div className="font-bold mb-1">Stars</div>
           <RepoChart
+            title="Stars"
             name="@ossinsight/widget-analyze-repo-recent-stars"
             visualizer={() => import('@/charts/analyze/repo/recent-stars/visualization')}
             repoId={repoId!}
@@ -92,8 +93,8 @@ export function RepositorySection() {
         </Card>
 
         <Card>
-          <div className="font-bold mb-1">Issues</div>
           <RepoChart
+            title="Issues"
             name="@ossinsight/widget-analyze-repo-recent-issues"
             visualizer={() => import('@/charts/analyze/repo/recent-issues/visualization')}
             repoId={repoId!}
@@ -103,8 +104,8 @@ export function RepositorySection() {
         </Card>
 
         <Card>
-          <div className="font-bold mb-1">Pull Requests</div>
           <RepoChart
+            title="Pull Requests"
             name="@ossinsight/widget-analyze-repo-recent-pull-requests"
             visualizer={() => import('@/charts/analyze/repo/recent-pull-requests/visualization')}
             repoId={repoId!}
@@ -114,8 +115,8 @@ export function RepositorySection() {
         </Card>
 
         <Card>
-          <div className="font-bold mb-1">Commits</div>
           <RepoChart
+            title="Commits"
             name="@ossinsight/widget-analyze-repo-recent-commits"
             visualizer={() => import('@/charts/analyze/repo/recent-commits/visualization')}
             repoId={repoId!}
@@ -139,6 +140,6 @@ export function RepositorySection() {
           </Card>
         </Analyze>
       </div>
-    </section>
+    </ScrollspySectionWrapper>
   );
 }

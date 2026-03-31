@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useAnalyzeContext } from '@/components/Analyze/context';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { useRemoteData } from '@/utils/useRemoteData';
 import { HLSelect, type SelectParamOption } from '@/components/ui/components/Selector/Select';
+import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 
 // --- Types ---
 
@@ -65,10 +67,13 @@ export function ContributorsSection() {
   const maxEvents = list.length > 0 ? list[0].last_month_events : 1;
 
   return (
-    <section id="contributors" className="pt-8 pb-8">
-      <h2 className="text-2xl font-semibold text-white pb-3" style={{ scrollMarginTop: '140px' }}>
-        Contributor Rankings - {lastMonth}
-      </h2>
+    <ScrollspySectionWrapper anchor="contributors" className="pt-8 pb-8">
+      <div className="flex items-center justify-between gap-4 pb-3">
+        <h2 className="text-[22px] font-semibold text-[#e9eaee]" style={{ scrollMarginTop: '140px' }}>
+          Contributor Rankings - {lastMonth}
+        </h2>
+        {data?.sql && <ShowSQLInline sql={data.sql} queryName={descriptor.key} />}
+      </div>
       <p className="text-sm text-gray-500 pb-4">
         Check the activity of contributors in the repository last month, including push and commit
         events, issue open/close/comment events, code review comments/PRs/submits.
@@ -176,6 +181,6 @@ export function ContributorsSection() {
           )}
         </div>
       </div>
-    </section>
+    </ScrollspySectionWrapper>
   );
 }

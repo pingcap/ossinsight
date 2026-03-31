@@ -1,6 +1,6 @@
 'use client';
 
-import SectionTemplate from '@/components/Analyze/Section';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
@@ -20,11 +20,11 @@ export default function ActivitiesSection () {
   const { id: userId } = React.useContext(AnalyzeOwnerContext);
 
   return (
-    <SectionTemplate id="activities" title="Contribution Activities" level={2} className="pt-8"
-      description="All personal activities happened on all public repositories in GitHub since 2011. You can check each specific activity type by type with a timeline."
-    >
+    <ScrollspySectionWrapper anchor="activities" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Contribution Activities</h2>
+      <p className="text-sm text-[#8c8c8c] mb-4">All personal activities happened on all public repositories in GitHub since 2011. You can check each specific activity type by type with a timeline.</p>
       <ActivityChart userId={userId} />
-    </SectionTemplate>
+    </ScrollspySectionWrapper>
   );
 }
 
@@ -32,7 +32,7 @@ function ActivityChart ({ userId }: { userId: number }) {
   const [type, setType] = useState<ContributionActivityType>('all');
   const [period, setPeriod] = useState<ContributionActivityRange>('last_28_days');
 
-  const { data, loading } = usePersonalContributionActivities(userId, type, period);
+  const { data, sql, queryName, loading } = usePersonalContributionActivities(userId, type, period);
   const repoNames = useDimension(data ?? [], 'repo_name');
 
   const [min, max] = useRange(period);
@@ -50,8 +50,8 @@ function ActivityChart ({ userId }: { userId: number }) {
   const chartData = useMemo(() => (data ?? []).map(r => [r.event_period, r.repo_name, r.cnt]), [data]);
 
   const option = useMemo(() => ({
-    legend: { type: 'scroll' as const, orient: 'horizontal' as const, top: 32, textStyle: { color: '#aaa' } },
-    grid: { top: 64, left: 8, right: 8, bottom: 8, containLabel: true },
+    legend: { type: 'scroll' as const, orient: 'horizontal' as const, top: 8, textStyle: { color: '#aaa' } },
+    grid: { top: 40, left: 8, right: 8, bottom: 8, containLabel: true },
     tooltip: { trigger: 'item' as const },
     dataZoom: undefined as any,
     xAxis: { type: 'time' as const, min, max },
@@ -65,25 +65,44 @@ function ActivityChart ({ userId }: { userId: number }) {
     }],
   }), [chartData, repoNames, min, max, tooltipFormatter]);
 
+  const queryParams = useMemo(() => ({ userId }), [userId]);
   const chartHeight = 240 + 30 * repoNames.length;
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3 mb-4">
-        <label className="flex flex-col gap-1 text-xs text-[#8c8c8c]">
-          Contribution type
-          <select value={type} onChange={e => setType(e.target.value as ContributionActivityType)} className="rounded border border-[#363638] bg-[#2e2e2f] px-2 py-1 text-sm text-[#e0e0e0] outline-none focus:border-[#fbe593]">
-            {contributionActivityTypes.map(({ key, label }) => <option key={key} value={key}>{label}</option>)}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs text-[#8c8c8c]">
-          Period
-          <select value={period} onChange={e => setPeriod(e.target.value as ContributionActivityRange)} className="rounded border border-[#363638] bg-[#2e2e2f] px-2 py-1 text-sm text-[#e0e0e0] outline-none focus:border-[#fbe593]">
-            {contributionActivityRanges.map(({ key, label }) => <option key={key} value={key}>{label}</option>)}
-          </select>
-        </label>
+      <div className="flex flex-wrap gap-6 mb-4">
+        <div className="flex gap-1 border-b border-[#3a3a3a]">
+          {contributionActivityTypes.map(({ key, label }) => (
+            <button
+              key={key}
+              className={`px-3 py-2 text-sm transition-colors ${
+                type === key
+                  ? 'border-b-2 border-[var(--color-primary)] text-white'
+                  : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
+              }`}
+              onClick={() => setType(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-1 border-b border-[#3a3a3a]">
+          {contributionActivityRanges.map(({ key, label }) => (
+            <button
+              key={key}
+              className={`px-3 py-2 text-sm transition-colors ${
+                period === key
+                  ? 'border-b-2 border-[var(--color-primary)] text-white'
+                  : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
+              }`}
+              onClick={() => setPeriod(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
-      <PersonalChart title={title} option={option} height={chartHeight} loading={loading} noData={!loading && (!data || data.length === 0)} />
+      <PersonalChart title={title} option={option} height={chartHeight} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />
     </div>
   );
 }

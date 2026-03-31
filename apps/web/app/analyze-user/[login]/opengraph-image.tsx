@@ -1,8 +1,9 @@
+import { OG_IMAGE_SIZE, OG_GRADIENT_STYLE } from '@/lib/og-image';
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const alt = 'Developer Analytics';
-export const size = { width: 800, height: 418 };
+export const size = OG_IMAGE_SIZE;
 export const dynamic = 'force-dynamic';
 export const contentType = 'image/png';
 
@@ -21,7 +22,7 @@ export default async function Image({ params }: { params: Promise<{ login: strin
         fontFamily: 'Poppins', position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 6, backgroundColor: '#FA1EFF' }} />
-        <div style={{ position: 'absolute', left: -200, top: -200, width: 800, height: 800, backgroundImage: 'radial-gradient(circle, rgba(255,99,174,0.12) 0%, transparent 70%)', borderRadius: 9999 }} />
+        <div style={OG_GRADIENT_STYLE} />
         <div style={{ position: 'absolute', right: -100, top: -100, width: 600, height: 600, backgroundImage: 'radial-gradient(circle, rgba(189,8,252,0.15) 0%, transparent 70%)', borderRadius: 9999 }} />
 
         <img

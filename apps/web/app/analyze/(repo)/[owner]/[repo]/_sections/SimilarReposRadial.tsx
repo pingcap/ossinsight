@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { useAnalyzeContext } from '@/components/Analyze/context';
 
@@ -42,21 +42,12 @@ interface LayoutNode extends SimilarRepo {
   size: number;
 }
 
-function drawCircularImage(ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, y: number, r: number) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.clip();
-  ctx.drawImage(img, x - r, y - r, r * 2, r * 2);
-  ctx.restore();
-}
+const W = 800;
+const H = 500;
 
 export default function SimilarReposRadial() {
   const { repoId, repoName } = useAnalyzeContext();
-  const router = useRouter();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const hoveredRef = useRef<LayoutNode | null>(null);
-  const avatarCacheRef = useRef<Record<string, HTMLImageElement | null>>({});
+  const [hovered, setHovered] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['analyze-repo-similar', repoId],
@@ -70,49 +61,18 @@ export default function SimilarReposRadial() {
     staleTime: 24 * 60 * 60 * 1000,
   });
 
-  const loadAvatar = useCallback((owner: string) => {
-    const cache = avatarCacheRef.current;
-    if (cache[owner] !== undefined) return;
-    cache[owner] = null;
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = `https://avatars.githubusercontent.com/${owner}?s=64`;
-    img.onload = () => {
-      cache[owner] = img;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!data || data.length === 0 || !canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const W = canvas.clientWidth;
-    const H = 500;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.height = `${H}px`;
-    ctx.scale(dpr, dpr);
+  const { nodes, centerOwner } = useMemo(() => {
+    if (!data || data.length === 0) return { nodes: [], centerOwner: '' };
 
     const cx = W / 2;
     const cy = H / 2;
-
-    // Load avatars
-    const centerOwner = repoName.split('/')[0];
-    loadAvatar(centerOwner);
-    data.forEach((r) => loadAvatar(r.repo_name.split('/')[0]));
-
-    // Layout
     const sorted = [...data].sort((a, b) => b.shared_topics - a.shared_topics);
     const maxShared = sorted[0]?.shared_topics || 1;
     const minShared = sorted[sorted.length - 1]?.shared_topics || 1;
     const minR = 110;
     const maxR = Math.min(cx, cy) - 70;
 
-    const nodes: LayoutNode[] = sorted.map((r, i) => {
+    const layoutNodes: LayoutNode[] = sorted.map((r, i) => {
       const similarity = maxShared === minShared ? 0.5 : (r.shared_topics - minShared) / (maxShared - minShared);
       const dist = maxR - similarity * (maxR - minR);
       const angle = (2 * Math.PI * i) / sorted.length - Math.PI / 2;
@@ -124,174 +84,19 @@ export default function SimilarReposRadial() {
       };
     });
 
-    let animId: number;
-
-    function draw() {
-      ctx!.clearRect(0, 0, W, H);
-      const hovered = hoveredRef.current;
-      const cache = avatarCacheRef.current;
-
-      // Center glow
-      const grd = ctx!.createRadialGradient(cx, cy, 0, cx, cy, 55);
-      grd.addColorStop(0, '#00ADD825');
-      grd.addColorStop(0.6, '#00ADD810');
-      grd.addColorStop(1, 'transparent');
-      ctx!.fillStyle = grd;
-      ctx!.beginPath();
-      ctx!.arc(cx, cy, 55, 0, Math.PI * 2);
-      ctx!.fill();
-
-      // Connections
-      nodes.forEach((n) => {
-        const isHov = hovered?.repo_name === n.repo_name;
-        const color = LANG_COLORS[n.language || ''] || '#888';
-        ctx!.beginPath();
-        ctx!.moveTo(cx, cy);
-        const mx = (cx + n.x) / 2 + (n.y - cy) * 0.08;
-        const my = (cy + n.y) / 2 - (n.x - cx) * 0.08;
-        ctx!.quadraticCurveTo(mx, my, n.x, n.y);
-        ctx!.strokeStyle = isHov ? color + '50' : 'rgba(255,255,255,0.04)';
-        ctx!.lineWidth = isHov ? 2 : Math.max(0.5, n.shared_topics * 0.3);
-        ctx!.stroke();
-
-        if (isHov) {
-          const lx = (cx + n.x) / 2;
-          const ly = (cy + n.y) / 2;
-          ctx!.fillStyle = 'rgba(255,255,255,0.5)';
-          ctx!.font = '9px system-ui, sans-serif';
-          ctx!.textAlign = 'center';
-          ctx!.fillText(`${n.shared_topics} topics`, lx, ly - 5);
-        }
-      });
-
-      // Center node
-      const centerAvatar = cache[centerOwner];
-      if (centerAvatar) {
-        drawCircularImage(ctx!, centerAvatar, cx, cy, 30);
-      } else {
-        ctx!.beginPath();
-        ctx!.arc(cx, cy, 30, 0, Math.PI * 2);
-        ctx!.fillStyle = '#00ADD8';
-        ctx!.fill();
-      }
-      ctx!.fillStyle = '#fff';
-      ctx!.font = 'bold 13px system-ui, sans-serif';
-      ctx!.textAlign = 'center';
-      ctx!.fillText(repoName.split('/')[1] || repoName, cx, cy + 46);
-      ctx!.fillStyle = '#FAC858';
-      ctx!.font = '10px system-ui, sans-serif';
-
-      // Nodes
-      nodes.forEach((n) => {
-        const color = LANG_COLORS[n.language || ''] || '#888';
-        const isHov = hovered?.repo_name === n.repo_name;
-        const owner = n.repo_name.split('/')[0];
-        const avatar = cache[owner];
-
-        if (isHov) {
-          const g2 = ctx!.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.size + 12);
-          g2.addColorStop(0, color + '40');
-          g2.addColorStop(1, 'transparent');
-          ctx!.fillStyle = g2;
-          ctx!.beginPath();
-          ctx!.arc(n.x, n.y, n.size + 12, 0, Math.PI * 2);
-          ctx!.fill();
-        }
-
-        if (avatar) {
-          drawCircularImage(ctx!, avatar, n.x, n.y, n.size);
-        } else {
-          ctx!.beginPath();
-          ctx!.arc(n.x, n.y, n.size, 0, Math.PI * 2);
-          ctx!.fillStyle = color;
-          ctx!.fill();
-        }
-
-        const shortName = n.repo_name.split('/')[1] || n.repo_name;
-        ctx!.fillStyle = isHov ? '#fff' : '#888';
-        ctx!.font = `${isHov ? 'bold 11px' : '10px'} system-ui, sans-serif`;
-        ctx!.textAlign = 'center';
-        ctx!.fillText(shortName, n.x, n.y + n.size + 14);
-        ctx!.fillStyle = '#555';
-        ctx!.font = '9px system-ui, sans-serif';
-        ctx!.fillText(`★ ${n.stars.toLocaleString()}`, n.x, n.y + n.size + 25);
-      });
-
-      // Tooltip
-      if (hovered) {
-        const tw = 185, th = 70;
-        const tx = Math.min(Math.max(hovered.x + 20, 5), W - tw - 5);
-        const ty = Math.max(hovered.y - th - 10, 5);
-        ctx!.fillStyle = 'rgba(15,15,15,0.95)';
-        ctx!.strokeStyle = '#333';
-        ctx!.lineWidth = 1;
-        ctx!.beginPath();
-        ctx!.roundRect(tx, ty, tw, th, 8);
-        ctx!.fill();
-        ctx!.stroke();
-        ctx!.fillStyle = '#eee';
-        ctx!.font = 'bold 12px system-ui, sans-serif';
-        ctx!.textAlign = 'left';
-        ctx!.fillText(hovered.repo_name, tx + 10, ty + 20);
-        ctx!.fillStyle = '#FAC858';
-        ctx!.font = '11px system-ui, sans-serif';
-        ctx!.fillText(`★ ${hovered.stars.toLocaleString()}`, tx + 10, ty + 38);
-        const lc = LANG_COLORS[hovered.language || ''] || '#888';
-        ctx!.fillStyle = lc;
-        ctx!.fillText(`● ${hovered.language || 'Unknown'}`, tx + 95, ty + 38);
-        ctx!.fillStyle = '#7c7c7c';
-        ctx!.fillText(`${hovered.shared_topics} shared topics`, tx + 10, ty + 56);
-      }
-
-      // Legend
-      ctx!.fillStyle = 'rgba(255,255,255,0.2)';
-      ctx!.font = '11px system-ui, sans-serif';
-      ctx!.textAlign = 'left';
-      ctx!.fillText('Closer = more similar  ·  Node size = stars  ·  Click to analyze', 10, H - 15);
-
-      animId = requestAnimationFrame(draw);
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const mx = (e.clientX - rect.left) * (W / rect.width);
-      const my = (e.clientY - rect.top) * (H / rect.height);
-      hoveredRef.current = null;
-      for (const n of nodes) {
-        if (Math.hypot(mx - n.x, my - n.y) < n.size + 5) {
-          hoveredRef.current = n;
-          canvas.style.cursor = 'pointer';
-          return;
-        }
-      }
-      canvas.style.cursor = 'default';
-    };
-
-    const handleClick = () => {
-      const h = hoveredRef.current;
-      if (h) {
-        router.push(`/analyze/${h.repo_name}`);
-      }
-    };
-
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('click', handleClick);
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('click', handleClick);
-    };
-  }, [data, repoName, loadAvatar, router]);
+    return { nodes: layoutNodes, centerOwner: repoName.split('/')[0] };
+  }, [data, repoName]);
 
   if (isLoading || !data || data.length === 0) return null;
+
+  const cx = W / 2;
+  const cy = H / 2;
 
   return (
     <div className="mt-8">
       <h3
         id="similar-repos"
-        className="pb-2 text-[24px] font-semibold text-[#e9eaee]"
+        className="pb-2 text-[18px] font-semibold text-[#e9eaee]"
         style={{ scrollMarginTop: '140px' }}
       >
         Similar Repositories
@@ -299,10 +104,190 @@ export default function SimilarReposRadial() {
       <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
         Repositories sharing the most topics in common. Click a node to analyze it.
       </p>
-      <canvas
-        ref={canvasRef}
-        style={{ width: '100%', height: 500, borderRadius: 8 }}
-      />
+      <div style={{ position: 'relative', width: '100%', borderRadius: 8, overflow: 'hidden' }}>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            {/* Center avatar clip */}
+            <clipPath id="clip-center">
+              <circle cx={cx} cy={cy} r={30} />
+            </clipPath>
+            {/* Node avatar clips */}
+            {nodes.map((n) => (
+              <clipPath key={`clip-${n.repo_name}`} id={`clip-${n.repo_name.replace(/[^a-zA-Z0-9]/g, '-')}`}>
+                <circle cx={n.x} cy={n.y} r={n.size} />
+              </clipPath>
+            ))}
+            {/* Center glow gradient */}
+            <radialGradient id="center-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#00ADD8" stopOpacity="0.15" />
+              <stop offset="60%" stopColor="#00ADD8" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#00ADD8" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          {/* Center glow */}
+          <circle cx={cx} cy={cy} r={55} fill="url(#center-glow)" />
+
+          {/* Connection lines */}
+          {nodes.map((n) => {
+            const isHov = hovered === n.repo_name;
+            const color = LANG_COLORS[n.language || ''] || '#888';
+            const mx = (cx + n.x) / 2 + (n.y - cy) * 0.08;
+            const my = (cy + n.y) / 2 - (n.x - cx) * 0.08;
+            return (
+              <g key={`conn-${n.repo_name}`}>
+                <path
+                  d={`M ${cx} ${cy} Q ${mx} ${my} ${n.x} ${n.y}`}
+                  fill="none"
+                  stroke={isHov ? color + '50' : 'rgba(255,255,255,0.04)'}
+                  strokeWidth={isHov ? 2 : Math.max(0.5, n.shared_topics * 0.3)}
+                />
+                {isHov && (
+                  <text
+                    x={(cx + n.x) / 2}
+                    y={(cy + n.y) / 2 - 5}
+                    fill="rgba(255,255,255,0.5)"
+                    fontSize="9"
+                    fontFamily="system-ui, sans-serif"
+                    textAnchor="middle"
+                  >
+                    {n.shared_topics} topics
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Center node avatar */}
+          <image
+            href={`https://github.com/${centerOwner}.png?s=64`}
+            x={cx - 30}
+            y={cy - 30}
+            width={60}
+            height={60}
+            clipPath="url(#clip-center)"
+          />
+          {/* Center node fallback circle (behind image, visible if image fails) */}
+
+          {/* Center label */}
+          <text
+            x={cx}
+            y={cy + 46}
+            fill="#fff"
+            fontSize="13"
+            fontWeight="bold"
+            fontFamily="system-ui, sans-serif"
+            textAnchor="middle"
+          >
+            {repoName.split('/')[1] || repoName}
+          </text>
+
+          {/* Repo nodes */}
+          {nodes.map((n) => {
+            const color = LANG_COLORS[n.language || ''] || '#888';
+            const isHov = hovered === n.repo_name;
+            const owner = n.repo_name.split('/')[0];
+            const shortName = n.repo_name.split('/')[1] || n.repo_name;
+            const clipId = `clip-${n.repo_name.replace(/[^a-zA-Z0-9]/g, '-')}`;
+
+            return (
+              <g key={`node-${n.repo_name}`}>
+                {/* Hover glow */}
+                {isHov && (
+                  <circle
+                    cx={n.x}
+                    cy={n.y}
+                    r={n.size + 12}
+                    fill={color + '40'}
+                    style={{ filter: 'blur(4px)' }}
+                  />
+                )}
+
+                {/* Clickable avatar area */}
+                <Link href={`/analyze/${n.repo_name}`}>
+                  {/* Fallback circle */}
+                  <circle cx={n.x} cy={n.y} r={n.size} fill={color} />
+                  {/* Avatar image */}
+                  <image
+                    href={`https://github.com/${owner}.png?s=64`}
+                    x={n.x - n.size}
+                    y={n.y - n.size}
+                    width={n.size * 2}
+                    height={n.size * 2}
+                    clipPath={`url(#${clipId})`}
+                    style={{ cursor: 'pointer' }}
+                    onMouseEnter={() => setHovered(n.repo_name)}
+                    onMouseLeave={() => setHovered(null)}
+                  />
+                </Link>
+
+                {/* Repo name */}
+                <text
+                  x={n.x}
+                  y={n.y + n.size + 14}
+                  fill={isHov ? '#fff' : '#888'}
+                  fontSize={isHov ? '11' : '10'}
+                  fontWeight={isHov ? 'bold' : 'normal'}
+                  fontFamily="system-ui, sans-serif"
+                  textAnchor="middle"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  {shortName}
+                </text>
+
+                {/* Star count */}
+                <text
+                  x={n.x}
+                  y={n.y + n.size + 25}
+                  fill="#555"
+                  fontSize="9"
+                  fontFamily="system-ui, sans-serif"
+                  textAnchor="middle"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  ★ {n.stars.toLocaleString()}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Tooltip */}
+          {hovered && (() => {
+            const h = nodes.find((n) => n.repo_name === hovered);
+            if (!h) return null;
+            const tw = 185, th = 70;
+            const tx = Math.min(Math.max(h.x + 20, 5), W - tw - 5);
+            const ty = Math.max(h.y - th - 10, 5);
+            const lc = LANG_COLORS[h.language || ''] || '#888';
+            return (
+              <g style={{ pointerEvents: 'none' }}>
+                <rect x={tx} y={ty} width={tw} height={th} rx={8} fill="rgba(15,15,15,0.95)" stroke="#333" strokeWidth={1} />
+                <text x={tx + 10} y={ty + 20} fill="#eee" fontSize="12" fontWeight="bold" fontFamily="system-ui, sans-serif">
+                  {h.repo_name}
+                </text>
+                <text x={tx + 10} y={ty + 38} fill="#FAC858" fontSize="11" fontFamily="system-ui, sans-serif">
+                  ★ {h.stars.toLocaleString()}
+                </text>
+                <text x={tx + 95} y={ty + 38} fill={lc} fontSize="11" fontFamily="system-ui, sans-serif">
+                  ● {h.language || 'Unknown'}
+                </text>
+                <text x={tx + 10} y={ty + 56} fill="#7c7c7c" fontSize="11" fontFamily="system-ui, sans-serif">
+                  {h.shared_topics} shared topics
+                </text>
+              </g>
+            );
+          })()}
+
+          {/* Legend */}
+          <text x={10} y={H - 15} fill="rgba(255,255,255,0.2)" fontSize="11" fontFamily="system-ui, sans-serif">
+            Closer = more similar · Node size = stars · Click to analyze
+          </text>
+        </svg>
+      </div>
     </div>
   );
 }

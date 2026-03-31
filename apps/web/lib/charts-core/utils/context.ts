@@ -1,5 +1,5 @@
 import { LinkedDataContext, VisualizationContext, WidgetBaseContext } from '@/lib/charts-types';
-import { generateZoneOptions, PERIOD_OPTIONS } from '@/lib/charts-utils/ui';
+import { generateZoneOptions, PERIOD_OPTIONS } from '@/utils/options/time';
 import * as colors from 'tailwindcss/colors';
 import { LinkedData } from '../parameters/resolver';
 import { darkColorPalette, lightColorPalette } from '../renderer/echarts-theme';

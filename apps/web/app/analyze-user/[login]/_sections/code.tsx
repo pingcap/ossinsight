@@ -1,6 +1,6 @@
 'use client';
 
-import SectionTemplate from '@/components/Analyze/Section';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -21,19 +21,22 @@ export default function CodeSection () {
   const { id: userId } = React.useContext(AnalyzeOwnerContext);
 
   return (
-    <SectionTemplate id="code" title="Code" level={2} className="pt-8"
-      description="All contributions measured with code related events since 2011."
-    >
-      <CodeSubmitHistory userId={userId} />
-      <PullRequestHistory userId={userId} />
+    <ScrollspySectionWrapper anchor="code" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Code</h2>
+      <div id="pushes-and-commits">
+        <CodeSubmitHistory userId={userId} />
+      </div>
+      <div id="pull-requests">
+        <PullRequestHistory userId={userId} />
+      </div>
       <PullRequestSize userId={userId} />
       <LineOfCodes userId={userId} />
-    </SectionTemplate>
+    </ScrollspySectionWrapper>
   );
 }
 
 function CodeSubmitHistory ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-pushes-and-commits', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-pushes-and-commits', userId);
   const option = useMemo(() => ({
     xAxis: { type: 'time' as const, min: '2011-01-01' },
     yAxis: { type: 'value' as const },
@@ -43,11 +46,13 @@ function CodeSubmitHistory ({ userId }: { userId: number }) {
     ],
   }), [data]);
 
-  return <PersonalChart title="Code Submit History" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Code Submit History" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }
 
 function PullRequestHistory ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-pull-request-action-history', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-pull-request-action-history', userId);
   const sorted = useMemo(() => [...(data ?? [])].sort((a, b) => String(a.event_month).localeCompare(String(b.event_month))), [data]);
   const option = useMemo(() => ({
     xAxis: { type: 'time' as const, min: '2011-01-01' },
@@ -58,11 +63,13 @@ function PullRequestHistory ({ userId }: { userId: number }) {
     ],
   }), [sorted]);
 
-  return <PersonalChart title="Pull Request History" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Pull Request History" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }
 
 function PullRequestSize ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-pull-request-size-history', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-pull-request-size-history', userId);
   const option = useMemo(() => ({
     xAxis: { type: 'time' as const, min: '2011-01-01' },
     yAxis: { type: 'value' as const },
@@ -75,11 +82,13 @@ function PullRequestSize ({ userId }: { userId: number }) {
     })),
   }), [data]);
 
-  return <PersonalChart title="Pull Request Size" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Pull Request Size" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }
 
 function LineOfCodes ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-pull-request-code-changes-history', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-pull-request-code-changes-history', userId);
   const option = useMemo(() => ({
     xAxis: { type: 'time' as const, min: '2011-01-01' },
     yAxis: { type: 'value' as const },
@@ -89,5 +98,7 @@ function LineOfCodes ({ userId }: { userId: number }) {
     ],
   }), [data]);
 
-  return <PersonalChart title="Lines of changes in PRs" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Lines of changes in PRs" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }

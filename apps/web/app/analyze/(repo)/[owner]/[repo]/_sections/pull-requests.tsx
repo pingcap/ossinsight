@@ -9,6 +9,7 @@ import {
   PersonIcon,
 } from '@primer/octicons-react';
 import Analyze from '@/components/Analyze/Analyze';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 
 const RepoChart = dynamic(
@@ -58,11 +59,11 @@ function PrSummaryTable() {
                 <span>{item.label}</span>
               </span>
             </td>
-            <td className="py-3 text-right text-[28px] font-semibold leading-none text-[#e9eaee] tabular-nums">
+            <td className="py-3 text-right text-[15px] font-medium leading-none text-[#e9eaee] tabular-nums">
               {loading ? <span className="inline-block h-6 w-16 animate-pulse rounded bg-[#343436]" /> : (item.value?.toLocaleString() ?? '-')}
             </td>
             {hasVs && (
-              <td className="py-3 pl-4 text-right text-[28px] font-semibold leading-none text-[#e9eaee] tabular-nums">
+              <td className="py-3 pl-4 text-right text-[15px] font-medium leading-none text-[#e9eaee] tabular-nums">
                 {loading ? <span className="inline-block h-6 w-16 animate-pulse rounded bg-[#343436]" /> : (item.vsValue?.toLocaleString() ?? '-')}
               </td>
             )}
@@ -80,8 +81,8 @@ export function PullRequestsSection() {
   const hasVs = comparingRepoId != null;
 
   return (
-    <section id="pull-requests" className="pt-8 pb-8">
-      <h2 className="text-2xl font-semibold text-white pb-3" style={{ scrollMarginTop: '140px' }}>
+    <ScrollspySectionWrapper anchor="pull-requests" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
         Pull Requests
       </h2>
 
@@ -91,13 +92,6 @@ export function PullRequestsSection() {
         </Analyze>
       </div>
 
-      <h3
-        id="pr-history"
-        className="mt-6 pb-2 text-[24px] font-semibold text-[#e9eaee]"
-        style={{ scrollMarginTop: '140px' }}
-      >
-        Pull Request History
-      </h3>
       <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
         We divide the size of Pull Request into six intervals, from xs to xxl (based on the changes of code lines).
         Learn more about{' '}
@@ -111,6 +105,7 @@ export function PullRequestsSection() {
         </a>.
       </p>
       <RepoChart
+        title="Pull Request History"
         name="@ossinsight/widget-analyze-repo-pull-requests-size"
         visualizer={() => import('@/charts/analyze/repo/pull-requests-size/visualization')}
         repoId={repoId!}
@@ -120,13 +115,6 @@ export function PullRequestsSection() {
         style={{ height: 400 }}
       />
 
-      <h3
-        id="pr-time-cost"
-        className="mt-6 pb-2 text-[24px] font-semibold text-[#e9eaee]"
-        style={{ scrollMarginTop: '140px' }}
-      >
-        Pull Request Time Cost
-      </h3>
       <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
         The time of a Pull Request from submitting to merging.
         <br />
@@ -135,6 +123,7 @@ export function PullRequestsSection() {
         e.g. p25: 1h means 25% Pull Requests are merged within 1 hour.
       </p>
       <RepoChart
+        title="Pull Request Time Cost"
         name="@ossinsight/widget-analyze-repo-pull-request-open-to-merged"
         visualizer={() => import('@/charts/analyze/repo/pull-request-open-to-merged/visualization')}
         repoId={repoId!}
@@ -143,6 +132,6 @@ export function PullRequestsSection() {
         vsRepoName={comparingRepoName}
         style={{ height: 400 }}
       />
-    </section>
+    </ScrollspySectionWrapper>
   );
 }

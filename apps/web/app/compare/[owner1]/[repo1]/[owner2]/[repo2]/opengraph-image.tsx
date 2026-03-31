@@ -1,10 +1,11 @@
+import { OG_IMAGE_SIZE, OG_GRADIENT_STYLE } from '@/lib/og-image';
 import { getRepoByName } from '@/lib/server/internal-api';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const alt = 'Repository Comparison';
-export const size = { width: 800, height: 418 };
+export const size = OG_IMAGE_SIZE;
 export const dynamic = 'force-dynamic';
 export const contentType = 'image/png';
 
@@ -45,7 +46,7 @@ export default async function Image({ params }: { params: Promise<{ owner1: stri
 
         {/* Background gradient circles */}
         <div style={{ display: 'flex', position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}>
-          <div style={{ position: 'absolute', left: -200, top: -200, width: 800, height: 800, backgroundImage: 'radial-gradient(circle, rgba(255,99,174,0.12) 0%, transparent 70%)', borderRadius: 9999 }} />
+          <div style={OG_GRADIENT_STYLE} />
           <div style={{ position: 'absolute', right: -100, top: -100, width: 600, height: 600, backgroundImage: 'radial-gradient(circle, rgba(189,8,252,0.15) 0%, transparent 70%)', borderRadius: 9999 }} />
         </div>
 

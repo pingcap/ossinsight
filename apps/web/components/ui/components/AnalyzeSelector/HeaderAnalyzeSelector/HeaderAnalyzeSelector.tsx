@@ -207,7 +207,7 @@ export function HeaderAnalyzeSelector(props: HeaderAnalyzeSelectorProps) {
       <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeModal(); }}>
         <DialogContent
           showCloseButton={false}
-          className='top-[10vh] max-h-[80vh] w-[min(68rem,calc(100vw-2rem))] max-w-none translate-y-0 overflow-y-auto rounded-[1.75rem] border border-white/10 bg-[#1a1a1b] p-0 text-[#e9eaee] shadow-[0_40px_120px_-60px_rgba(0,0,0,0.98)] ring-1 ring-black/20 supports-backdrop-filter:bg-[#1a1a1b]/98 supports-backdrop-filter:backdrop-blur-2xl sm:w-[min(68rem,calc(100vw-2.5rem))] sm:max-w-none'
+          className='top-[10vh] max-h-[80vh] w-[min(40rem,calc(100vw-2rem))] max-w-none translate-y-0 overflow-y-auto rounded-xl border border-white/10 bg-[#1a1a1b] p-0 text-[#e9eaee] shadow-[0_40px_120px_-60px_rgba(0,0,0,0.98)] ring-1 ring-black/20 supports-backdrop-filter:bg-[#1a1a1b]/98 supports-backdrop-filter:backdrop-blur-2xl sm:w-[min(40rem,calc(100vw-2.5rem))] sm:max-w-none'
         >
           <DialogTitle className='sr-only'>Search</DialogTitle>
           <DialogDescription className='sr-only'>

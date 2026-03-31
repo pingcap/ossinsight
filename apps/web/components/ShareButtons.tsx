@@ -23,14 +23,14 @@ function formatShareText(title: string, { stars, forks }: Pick<ShareButtonsProps
 export default function ShareButtons({ url, title, className, stars, forks, language, hashtags }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
-
-  const fullUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}${url}`
-    : `https://ossinsight.io${url}`;
+  const [origin, setOrigin] = useState('https://ossinsight.io');
 
   useEffect(() => {
-    setCanNativeShare(typeof navigator !== 'undefined' && !!navigator.share);
+    setOrigin(window.location.origin);
+    setCanNativeShare(!!navigator.share);
   }, []);
+
+  const fullUrl = `${origin}${url}`;
 
   const richText = formatShareText(title, { stars, forks });
   const allHashtags = [
@@ -73,7 +73,7 @@ export default function ShareButtons({ url, title, className, stars, forks, lang
   const buttonClass = 'inline-flex items-center justify-center w-8 h-8 rounded-md text-[#7c7c7c] hover:text-white hover:bg-white/10 transition-colors';
 
   return (
-    <div className={`flex items-center gap-0.5 ${className ?? ''}`}>
+    <div className={`fixed right-3 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-1 rounded-lg bg-[#1a1a1b]/80 backdrop-blur p-1.5 shadow-lg ${className ?? ''}`}>
       {/* Native share (mobile) */}
       {canNativeShare && (
         <button

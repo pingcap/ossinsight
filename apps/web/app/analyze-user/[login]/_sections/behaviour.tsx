@@ -1,6 +1,6 @@
 'use client';
 
-import SectionTemplate from '@/components/Analyze/Section';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useMemo, useState } from 'react';
@@ -22,17 +22,17 @@ export default function BehaviourSection () {
   const { id: userId } = React.useContext(AnalyzeOwnerContext);
 
   return (
-    <SectionTemplate id="behaviour" title="Behaviour" level={2} className="pt-8"
-      description="You can see the total contributions in different repositories since 2011, as well as check the status of different contribution categories type by type."
-    >
+    <ScrollspySectionWrapper anchor="behaviour" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Behaviour</h2>
+      <p className="text-sm text-[#8c8c8c] mb-4">You can see the total contributions in different repositories since 2011, as well as check the status of different contribution categories type by type.</p>
       <AllContributions userId={userId} />
       <ContributionTime userId={userId} />
-    </SectionTemplate>
+    </ScrollspySectionWrapper>
   );
 }
 
 function AllContributions ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-contributions-for-repos', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-contributions-for-repos', userId);
 
   const { repos, seriesList } = useMemo(() => {
     if (!data || data.length === 0) return { repos: [], seriesList: [] };
@@ -79,7 +79,9 @@ function AllContributions ({ userId }: { userId: number }) {
     series: seriesList,
   };
 
-  return <PersonalChart title="Type of total contributions" option={option} loading={loading} noData={repos.length === 0} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Type of total contributions" option={option} loading={loading} noData={repos.length === 0} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }
 
 function ContributionTime ({ userId }: { userId: number }) {
@@ -93,7 +95,7 @@ function ContributionTime ({ userId }: { userId: number }) {
 
   return (
     <div className="mb-4">
-      <h3 className="text-sm font-medium text-[#dadada] mb-3">{title}</h3>
+      <h3 className="text-[18px] font-semibold text-[#e9eaee] mb-3">{title}</h3>
       <div className="flex flex-wrap gap-3 mb-4">
         <Select label="Period" value={period} onChange={setPeriod} options={periods.map(p => ({ value: p, label: toCamel(p) }))} />
         <Select label="Contribution Type" value={type} onChange={setType} options={eventTypes.map(e => ({ value: e, label: toCamel(e) }))} />

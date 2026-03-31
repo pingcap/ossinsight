@@ -5,10 +5,12 @@ import dynamic from 'next/dynamic';
 import {
   GitMergeIcon,
   IssueOpenedIcon,
+  PeopleIcon,
   PersonIcon,
   StarIcon,
 } from '@primer/octicons-react';
 import Analyze from '@/components/Analyze/Analyze';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 import { alpha2ToTitle } from '@/utils/geo';
 
@@ -43,142 +45,72 @@ type CompanyData = {
   proportion: string;
 };
 
-function CompareListHeader({
-  left,
-  right,
-}: {
-  left: string;
-  right?: string;
-}) {
-  return (
-    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-      <div className="truncate px-2 text-[14px] text-[#c8c8c8]">
-        <span className="mr-1 inline-block h-[10px] w-[10px] rounded-full bg-[#dd6b66]" />
-        {left}
-      </div>
-      {right ? (
-        <div className="truncate px-2 text-[14px] text-[#c8c8c8]">
-          <span className="mr-1 inline-block h-[10px] w-[10px] rounded-full bg-[#759aa0]" />
-          {right}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function DataListItem({
-  name,
-  percent,
-  compact,
-}: {
-  name?: string;
-  percent?: string;
-  compact?: boolean;
-}) {
-  return (
-    <div className="rounded-lg bg-[#1c1c1c]">
-      <div className={`flex items-center justify-between ${compact ? 'px-2 py-2' : 'px-4 py-3'}`}>
-        <div className="truncate pr-3 text-[12px] leading-4 text-[#e9eaee]">{name ?? '--'}</div>
-        <div className="shrink-0 text-[12px] leading-4 text-[#8c8c8c]">{percent ?? ''}</div>
-      </div>
-    </div>
-  );
-}
-
-function CompareDataList<T>({
-  title,
-  mainItems,
-  vsItems,
-  mainName,
-  vsName,
+function RankTable<T>({
+  headerLabel,
+  headerValue,
+  items,
   getName,
-  getPercent,
+  getValue,
   n = 10,
 }: {
-  title: string;
-  mainItems: T[];
-  vsItems: T[];
-  mainName: string;
-  vsName?: string;
+  headerLabel: string;
+  headerValue: string;
+  items: T[];
   getName: (item: T) => string;
-  getPercent: (item: T) => string | undefined;
+  getValue: (item: T) => string | undefined;
   n?: number;
 }) {
-  const hasVs = Boolean(vsName);
-  const rows = Array.from({ length: n });
-
   return (
-    <div className="my-2 space-y-2">
-      <div className="rounded-lg bg-[#2c2c2c] px-4 py-3">
-        <div className="text-[14px] leading-4 text-[#c4c4c4]">Top {n} {title}</div>
-      </div>
-      {hasVs ? <CompareListHeader left={mainName} right={vsName} /> : null}
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-        <div className="space-y-2">
-          {rows.map((_, index) => {
-            const item = mainItems[index];
-            return (
-              <DataListItem
-                key={`main-${title}-${index}`}
-                name={item ? getName(item) : undefined}
-                percent={item ? getPercent(item) : undefined}
-                compact={hasVs}
-              />
-            );
-          })}
-        </div>
-        {hasVs ? (
-          <div className="space-y-2">
-            {rows.map((_, index) => {
-              const item = vsItems[index];
-              return (
-                <DataListItem
-                  key={`vs-${title}-${index}`}
-                  name={item ? getName(item) : undefined}
-                  percent={item ? getPercent(item) : undefined}
-                  compact
-                />
-              );
-            })}
-          </div>
-        ) : null}
-      </div>
-    </div>
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="border-b border-[#323234]">
+          <th className="pb-2 text-left text-[13px] font-medium text-[#d8d8d8] w-8">No.</th>
+          <th className="pb-2 text-left text-[13px] font-medium text-[#d8d8d8]">{headerLabel}</th>
+          <th className="pb-2 text-right text-[13px] font-medium text-[#d8d8d8]">{headerValue}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array.from({ length: n }).map((_, index) => {
+          const item = items[index];
+          return (
+            <tr key={index} className="border-b border-[#2a2a2c] last:border-0">
+              <td className="py-2.5 text-[14px] text-[#8c8c8c] tabular-nums">{index + 1}</td>
+              <td className="py-2.5 text-[14px] text-[#d8d8d8]">{item ? getName(item) : '--'}</td>
+              <td className="py-2.5 text-right text-[15px] font-medium text-[#e9eaee] tabular-nums">{item ? getValue(item) : ''}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
 
 function GeoList({ n = 10 }: { n?: number }) {
-  const { repoName, comparingRepoName } = useAnalyzeContext();
-  const { data, compareData } = useAnalyzeChartContext<LocationData>();
+  const { data } = useAnalyzeChartContext<LocationData>();
 
   return (
-    <CompareDataList
-      title="Geo-Locations"
+    <RankTable
+      headerLabel="Location"
+      headerValue="Share"
       n={n}
-      mainItems={(data.data?.data ?? []).slice(0, n)}
-      vsItems={(compareData.data?.data ?? []).slice(0, n)}
-      mainName={repoName}
-      vsName={comparingRepoName}
+      items={(data.data?.data ?? []).slice(0, n)}
       getName={(item) => alpha2ToTitle(item.country_or_area)}
-      getPercent={(item) => formatPercent(item.percentage)}
+      getValue={(item) => formatPercent(item.percentage)}
     />
   );
 }
 
 function CompanyList({ n = 10 }: { n?: number }) {
-  const { repoName, comparingRepoName } = useAnalyzeContext();
-  const { data, compareData } = useAnalyzeChartContext<CompanyData>();
+  const { data } = useAnalyzeChartContext<CompanyData>();
 
   return (
-    <CompareDataList
-      title="Companies"
+    <RankTable
+      headerLabel="Company"
+      headerValue="Share"
       n={n}
-      mainItems={(data.data?.data ?? []).slice(0, n)}
-      vsItems={(compareData.data?.data ?? []).slice(0, n)}
-      mainName={repoName}
-      vsName={comparingRepoName}
+      items={(data.data?.data ?? []).slice(0, n)}
       getName={(item) => item.company_name}
-      getPercent={(item) => formatPercent(item.proportion)}
+      getValue={(item) => formatPercent(item.proportion)}
     />
   );
 }
@@ -208,138 +140,132 @@ export function PeopleSection() {
   const currentCompanyTab = COMPANY_TABS[companyTab];
 
   return (
-    <section id="people" className="pt-8 pb-8">
-      <h2 className="text-2xl font-semibold text-white pb-3" style={{ scrollMarginTop: '140px' }}>
+    <ScrollspySectionWrapper anchor="people" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
         People
       </h2>
 
       {/* Geographical Distribution */}
-      <h3
-        id="geo-distribution"
-        className="mt-6 pb-2 text-[24px] font-semibold text-[#e9eaee]"
-        style={{ scrollMarginTop: '140px' }}
-      >
-        Geographical Distribution
-      </h3>
-      <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
-        Stargazers, Issue creators, and Pull Request creators&apos; geographical distribution around
-        the world (analyzed with the public GitHub information).
-      </p>
-      <div className="mb-4 flex gap-1 border-b border-[#3a3a3a]">
-        {MAP_TABS.map((tab, i) => (
-          <button
-            key={`map-${tab.key}`}
-            className={`inline-flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
-              i === mapTab
-                ? 'border-b-2 border-[var(--color-primary)] text-white'
-                : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
-            }`}
-            onClick={() => setMapTab(i)}
-          >
-            {tab.key === 'stars' ? <StarIcon size={18} /> : null}
-            {tab.key === 'issue-creators' ? (
-              <span className="relative inline-flex">
-                <PersonIcon size={18} />
-                <IssueOpenedIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
-              </span>
-            ) : null}
-            {tab.key === 'pull-request-creators' ? (
-              <span className="relative inline-flex">
-                <PersonIcon size={18} />
-                <GitMergeIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
-              </span>
-            ) : null}
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <div key={`map-${currentMapTab.key}`} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-        <div className={vs != null ? 'md:col-span-8' : 'md:col-span-9'}>
-          <RepoChart
-            name="@ossinsight/widget-analyze-repo-stars-map"
-            visualizer={() => import('@/charts/analyze/repo/stars-map/visualization')}
-            repoId={repoId!}
-            repoName={repoName}
-            vsRepoId={vs}
-            vsRepoName={comparingRepoName}
-            params={{ activity: currentMapTab.key, ...currentMapTab.extraParams }}
-            style={{ height: 500 }}
-          />
+      <div id="geo-distribution">
+        <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
+          Stargazers, Issue creators, and Pull Request creators&apos; geographical distribution around
+          the world (analyzed with the public GitHub information).
+        </p>
+        <div className="mb-4 flex gap-1 border-b border-[#3a3a3a]">
+          {MAP_TABS.map((tab, i) => (
+            <button
+              key={`map-${tab.key}`}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
+                i === mapTab
+                  ? 'border-b-2 border-[var(--color-primary)] text-white'
+                  : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
+              }`}
+              onClick={() => setMapTab(i)}
+            >
+              {tab.key === 'stars' ? <StarIcon size={18} /> : null}
+              {tab.key === 'issue-creators' ? (
+                <span className="relative inline-flex">
+                  <PersonIcon size={18} />
+                  <IssueOpenedIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
+                </span>
+              ) : null}
+              {tab.key === 'pull-request-creators' ? (
+                <span className="relative inline-flex">
+                  <PersonIcon size={18} />
+                  <GitMergeIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
+                </span>
+              ) : null}
+              {tab.label}
+            </button>
+          ))}
         </div>
-        <div className={vs != null ? 'md:col-span-4' : 'md:col-span-3'}>
-          <Analyze
-            query={`analyze-${currentMapTab.key}-map`}
-            params={currentMapTab.extraParams as any}
-            key={`geo-list-${currentMapTab.key}`}
-          >
-            <GeoList n={10} />
-          </Analyze>
+        <div key={`map-${currentMapTab.key}`} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+          <div className={vs != null ? 'md:col-span-8' : 'md:col-span-9'}>
+            <RepoChart
+              title="Geographical Distribution"
+              name="@ossinsight/widget-analyze-repo-stars-map"
+              visualizer={() => import('@/charts/analyze/repo/stars-map/visualization')}
+              repoId={repoId!}
+              repoName={repoName}
+              vsRepoId={vs}
+              vsRepoName={comparingRepoName}
+              params={{ activity: currentMapTab.key, ...currentMapTab.extraParams }}
+              style={{ height: 500 }}
+            />
+          </div>
+          <div className={vs != null ? 'md:col-span-4' : 'md:col-span-3'}>
+            <Analyze
+              query={`analyze-${currentMapTab.key}-map`}
+              params={currentMapTab.extraParams as any}
+              key={`geo-list-${currentMapTab.key}`}
+              title="Top 10 Geo-Locations"
+            >
+              <GeoList n={10} />
+            </Analyze>
+          </div>
         </div>
       </div>
 
       {/* Companies */}
-      <h3
-        id="companies"
-        className="mt-6 pb-2 text-[24px] font-semibold text-[#e9eaee]"
-        style={{ scrollMarginTop: '140px' }}
-      >
-        Companies
-      </h3>
-      <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
-        Company information about Stargazers, Issue creators, and Pull Request creators (analyzed
-        with the public GitHub information).
-      </p>
-      <div className="mb-4 flex gap-1 border-b border-[#3a3a3a]">
-        {COMPANY_TABS.map((tab, i) => (
-          <button
-            key={`company-${tab.key}`}
-            className={`inline-flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
-              i === companyTab
-                ? 'border-b-2 border-[var(--color-primary)] text-white'
-                : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
-            }`}
-            onClick={() => setCompanyTab(i)}
-          >
-            {tab.key === 'stars' ? <StarIcon size={18} /> : null}
-            {tab.key === 'issue-creators' ? (
-              <span className="relative inline-flex">
-                <PersonIcon size={18} />
-                <IssueOpenedIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
-              </span>
-            ) : null}
-            {tab.key === 'pull-request-creators' ? (
-              <span className="relative inline-flex">
-                <PersonIcon size={18} />
-                <GitMergeIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
-              </span>
-            ) : null}
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <div key={`company-${currentCompanyTab.key}`} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-        <div className={vs != null ? 'md:col-span-8' : 'md:col-span-9'}>
-          <RepoChart
-            name="@ossinsight/widget-analyze-repo-company"
-            visualizer={() => import('@/charts/analyze/repo/company/visualization')}
-            repoId={repoId!}
-            repoName={repoName}
-            vsRepoId={vs}
-            vsRepoName={comparingRepoName}
-            params={{ activity: currentCompanyTab.key, limit: comparingRepoName ? 25 : 50 }}
-            style={{ height: 500 }}
-          />
+      <div id="companies">
+        <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
+          Company information about Stargazers, Issue creators, and Pull Request creators (analyzed
+          with the public GitHub information).
+        </p>
+        <div className="mb-4 flex gap-1 border-b border-[#3a3a3a]">
+          {COMPANY_TABS.map((tab, i) => (
+            <button
+              key={`company-${tab.key}`}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
+                i === companyTab
+                  ? 'border-b-2 border-[var(--color-primary)] text-white'
+                  : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
+              }`}
+              onClick={() => setCompanyTab(i)}
+            >
+              {tab.key === 'stars' ? <StarIcon size={18} /> : null}
+              {tab.key === 'issue-creators' ? (
+                <span className="relative inline-flex">
+                  <PersonIcon size={18} />
+                  <IssueOpenedIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
+                </span>
+              ) : null}
+              {tab.key === 'pull-request-creators' ? (
+                <span className="relative inline-flex">
+                  <PersonIcon size={18} />
+                  <GitMergeIcon size={8} className="absolute -bottom-0.5 -right-0.5" />
+                </span>
+              ) : null}
+              {tab.label}
+            </button>
+          ))}
         </div>
-        <div className={vs != null ? 'md:col-span-4' : 'md:col-span-3'}>
-          <Analyze
-            query={currentCompanyTab.queryKey}
-            params={{ limit: comparingRepoName ? 25 : 50 }}
-            key={`company-list-${currentCompanyTab.key}`}
-          >
-            <CompanyList n={10} />
-          </Analyze>
+        <div key={`company-${currentCompanyTab.key}`} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+          <div className={vs != null ? 'md:col-span-8' : 'md:col-span-9'}>
+            <RepoChart
+              title="Companies"
+              name="@ossinsight/widget-analyze-repo-company"
+              visualizer={() => import('@/charts/analyze/repo/company/visualization')}
+              repoId={repoId!}
+              repoName={repoName}
+              vsRepoId={vs}
+              vsRepoName={comparingRepoName}
+              params={{ activity: currentCompanyTab.key, limit: comparingRepoName ? 25 : 50 }}
+              style={{ height: 500 }}
+            />
+          </div>
+          <div className={vs != null ? 'md:col-span-4' : 'md:col-span-3'}>
+            <Analyze
+              query={currentCompanyTab.queryKey}
+              params={{ limit: comparingRepoName ? 25 : 50 }}
+              key={`company-list-${currentCompanyTab.key}`}
+              title="Top 10 Companies"
+            >
+              <CompanyList n={10} />
+            </Analyze>
+          </div>
         </div>
       </div>
-    </section>
+    </ScrollspySectionWrapper>
   );
 }

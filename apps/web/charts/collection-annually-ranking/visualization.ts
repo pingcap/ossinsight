@@ -1,5 +1,5 @@
 import type { EChartsVisualizationConfig, WidgetVisualizerContext } from '@/lib/charts-types';
-import { activityDisplayName } from '@/lib/charts-utils/ui';
+import { activityDisplayName } from '@/utils/options/activity';
 
 type Params = { activity: string, collection_id: string }
 type Input = { event_year: number, rank: number, repo_id: number, repo_name: string, total: number }[]

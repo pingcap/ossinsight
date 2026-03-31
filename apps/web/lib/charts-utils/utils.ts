@@ -97,6 +97,22 @@ export function getWidgetSize(
   };
 }
 
+const monthFormatter = new Intl.DateTimeFormat(['en-US'], {
+  month: 'short',
+  year: 'numeric',
+});
+
+export function formatMonth(value: string | undefined): string {
+  if (!value) {
+    return '';
+  }
+  try {
+    return monthFormatter.format(new Date(value));
+  } catch {
+    return '--';
+  }
+}
+
 // example: 0.1234 => 12.34%
 export function number2percent(
   num: number,

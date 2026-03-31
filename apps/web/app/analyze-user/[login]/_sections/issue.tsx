@@ -1,6 +1,6 @@
 'use client';
 
-import SectionTemplate from '@/components/Analyze/Section';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -12,16 +12,16 @@ export default function IssueSection () {
   const { id: userId } = React.useContext(AnalyzeOwnerContext);
 
   return (
-    <SectionTemplate id="issue" title="Issue" level={2} className="pt-8"
-      description="The history about the total number of issues and issue comments since 2011."
-    >
+    <ScrollspySectionWrapper anchor="issue" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Issue</h2>
+      <p className="text-sm text-[#8c8c8c] mb-4">The history about the total number of issues and issue comments since 2011.</p>
       <IssueHistory userId={userId} />
-    </SectionTemplate>
+    </ScrollspySectionWrapper>
   );
 }
 
 function IssueHistory ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-issues-history', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-issues-history', userId);
   const option = useMemo(() => ({
     xAxis: { type: 'time' as const, min: '2011-01-01' },
     yAxis: { type: 'value' as const },
@@ -31,5 +31,7 @@ function IssueHistory ({ userId }: { userId: number }) {
     ],
   }), [data]);
 
-  return <PersonalChart title="Issue History" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Issue History" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }

@@ -15,7 +15,7 @@ import {
 } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as Tooltip from '@/components/ui/components/Tooltip';
 import { twMerge } from 'tailwind-merge';
-import { formatNumber } from '@/utils/format';
+import { formatNumber } from '@/lib/charts-utils/utils';
 
 import { useOrgOverview } from '@/components/Analyze/hooks';
 import OrgAnalyzePageHeaderAction from '@/components/Analyze/Header/OrgHeaderAction';
@@ -58,21 +58,7 @@ export default function OrgAnalyzePageHeader() {
           count={data?.stars || 0}
           icon={<StarIcon />}
         />
-        {(loading || data?.last_event_at) && (
-          <div className='ml-auto inline-flex gap-2 items-center'>
-            <span className='flex h-3 w-3 relative'>
-              <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-[#fbe593] opacity-35'></span>
-              <span className='relative inline-flex rounded-full h-3 w-3 bg-[#fbe593]'></span>
-            </span>
-            <span className='text-[#8c8c8c]'>Last active at</span>
-            {loading && <TextSkeleton characters={4} className='text-title' />}
-            {!loading && data?.last_event_at && (
-              <span className='text-title'>{`${beautifySeconds(
-                calcDateDiff(new Date(data.last_event_at))
-              )} ago`}</span>
-            )}
-          </div>
-        )}
+
       </div>
 
       {/* -- divider -- */}
@@ -99,7 +85,6 @@ const getWrapper = (type: string) => {
 
 export function OrgTitleIconEle(props: {
   wrapperClassName?: string;
-  labelClassName?: string;
   iconClassName?: string;
   iconSize?: number;
   wrapper?: 'div' | 'h1';
@@ -109,7 +94,6 @@ export function OrgTitleIconEle(props: {
 }) {
   const {
     wrapperClassName,
-    labelClassName,
     iconClassName,
     wrapper = 'div',
     iconSize = 40,
@@ -124,27 +108,18 @@ export function OrgTitleIconEle(props: {
     <NextLink target='_blank' rel='noopener noreferrer' href={`https://github.com/${login}`}>
       <WrapperMemo
         className={twMerge(
-          'font-semibold text-3xl text-title inline-flex items-center cursor-pointer',
+          'font-semibold text-[28px] text-title inline-flex items-center cursor-pointer',
           wrapperClassName
         )}
       >
         <NextImage
           src={`https://avatars.githubusercontent.com/u/${id}`}
           alt={`${name} logo`}
-          className={twMerge('inline mr-[10px]', iconClassName)}
+          className={twMerge('inline mr-[10px] rounded-full', iconClassName)}
           width={iconSize}
           height={iconSize}
         />
         {name}
-        <span
-          className={twMerge(
-            'bg-[#2e2e2f] text-[#fbe593] text-xs font-medium border border-solid border-[#5a5642] ml-4 px-2.5 py-1.5 rounded-full inline-flex items-center gap-2',
-            labelClassName
-          )}
-        >
-          <OrganizationIcon size={8} />
-          Organization
-        </span>
       </WrapperMemo>
     </NextLink>
   );
@@ -192,24 +167,3 @@ const LabelItemWithCount = ({
   );
 };
 
-const calcDateDiff = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  return diff / 1000;
-};
-
-const beautifySeconds = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) {
-    return `${days.toFixed(0)} days`;
-  } else if (hours > 0) {
-    return `${hours.toFixed(0)} hours`;
-  } else if (minutes > 0) {
-    return `${minutes.toFixed(0)} minutes`;
-  } else {
-    return `${seconds.toFixed(0)} seconds`;
-  }
-};

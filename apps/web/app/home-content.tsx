@@ -1018,7 +1018,12 @@ function TrendingReposSection() {
   return (
     <section className="px-6 pt-16 pb-8 max-w-[1536px] mx-auto">
       <a id="trending-repos" />
-      <h2 className="text-2xl font-bold mb-2">&#x1F525; Trending Repos</h2>
+      <div className="flex items-center justify-between gap-4 mb-2">
+        <h2 className="text-2xl font-bold">&#x1F525; Trending Repos</h2>
+        {data?.sql ? (
+          <ShowSQLInline sql={data.sql} queryName="trending-repos" queryParams={params} />
+        ) : null}
+      </div>
       <p className="text-gray-400 text-sm mb-4">
         We ranked all repositories with score. <b>Total Score = Stars score + Forks score + Base score</b>.
       </p>
@@ -1061,12 +1066,6 @@ function TrendingReposSection() {
           </Select>
         </div>
 
-        {/* SHOW SQL (same row, pushed to right) */}
-        {data?.sql ? (
-          <ShowSQLInline sql={data.sql} queryName="trending-repos" queryParams={params} />
-        ) : loading ? (
-          <LoadingSkeleton className="ml-auto h-8 w-24 rounded-xl" />
-        ) : null}
       </div>
 
       {loading ? (

@@ -42,31 +42,32 @@ const NavList = (props: {
 
   return (
     <ul
-      className={clsx('flex w-full md:w-[160px] md:flex-col', {
-        'sticky overflow-x-auto md:h-full md:pt-6': depth === 0,
+      className={clsx('flex w-full md:flex-col', {
+        'overflow-x-auto md:h-full px-2 pt-4 pb-3': depth === 0,
+        'mt-1 space-y-0.5 pl-4': depth > 0,
       })}
     >
       {items.map((item) => {
         if (item.isDivider) {
           return (
-            <li key={item.id} className="hidden items-center gap-1.5 px-4 pb-1 pt-5 md:flex">
-              {item.Icon && <item.Icon width={16} height={16} className="text-[#8c8c8c]" />}
-              <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#8c8c8c]">{item.title}</span>
+            <li key={item.id} className="hidden items-center gap-1.5 px-3 pb-1 pt-5 first:pt-0 md:flex">
+              {item.Icon && <item.Icon width={14} height={14} className="text-[#7c7c7c]" />}
+              <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#7c7c7c]">{item.title}</span>
             </li>
           );
         }
+        const isSelected = selectedId === item.id;
+        const isHighlighted = highlightId.includes(item.id);
         return (
           <React.Fragment key={item.id}>
             <li
               className={clsx(
-                'flex items-center justify-start md:flex-col md:justify-center lg:justify-start',
-                highlightId.includes(item.id)
-                  ? 'text-[var(--color-primary)]'
-                  : 'text-[#c2c2c2]',
-                {
-                  'border-b-2 border-[var(--color-primary)] md:border-r-2 md:border-b-0':
-                    selectedId === item.id,
-                },
+                'transition',
+                isSelected
+                  ? 'text-white font-medium border-l-2 border-white'
+                  : isHighlighted
+                    ? 'text-white'
+                    : 'text-[#c6c6d0] hover:text-white',
               )}
             >
               <NavigationItem item={item} />

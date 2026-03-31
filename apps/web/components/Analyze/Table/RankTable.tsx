@@ -25,40 +25,46 @@ const Table = forwardRef(function Table (props: {
 
   return (
     <>
-      <table className={twMerge('min-w-full divide-y divide-gray-700')} ref={forwardedRef}>
+      <table className={twMerge('w-full border-collapse')} ref={forwardedRef}>
         <thead>
-          <tr>
-            <th
-              scope='col'
-              className='py-1.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0'
-            >
+          <tr className="border-b border-[#323234]">
+            <th className='pb-2 text-left text-[13px] font-medium text-[#d8d8d8] w-8'>
               {header?.[0]}
             </th>
-            {header?.slice(1).map((h) => (
+            {header?.slice(1, -1).map((h) => (
               <th
                 key={h?.toString()}
-                scope='col'
-                className='px-3 py-1.5 text-left text-sm font-semibold text-white'
+                className='pb-2 text-left text-[13px] font-medium text-[#d8d8d8]'
               >
                 {h}
               </th>
             ))}
+            {header && header.length > 1 && (
+              <th className='pb-2 text-right text-[13px] font-medium text-[#d8d8d8]'>
+                {header[header.length - 1]}
+              </th>
+            )}
           </tr>
         </thead>
-        <tbody className='divide-y divide-gray-800'>
+        <tbody>
           {rows?.map((row) => (
-            <tr key={row[0]}>
-              <td className='whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-white sm:pl-0'>
+            <tr key={row[0]} className="border-b border-[#2a2a2c] last:border-0">
+              <td className='py-2.5 text-[14px] text-[#8c8c8c] tabular-nums'>
                 {row[0]}
               </td>
-              {row?.slice(1).map((r) => (
+              {row?.slice(1, -1).map((r, i) => (
                 <td
-                  key={r?.toString()}
-                  className='whitespace-normal px-3 py-1 text-sm text-gray-300'
+                  key={i}
+                  className='py-2.5 text-[14px] text-[#d8d8d8]'
                 >
                   {r}
                 </td>
               ))}
+              {row.length > 1 && (
+                <td className='py-2.5 text-right text-[15px] font-medium text-[#e9eaee] tabular-nums'>
+                  {row[row.length - 1]}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -151,35 +157,25 @@ export function GeoRankTable(props: {
   return (
     <div
       className={twMerge(
-        'px-1 items-center justify-around flex flex-col',
+        'flex flex-col',
         className
       )}
     >
-      <div className='px-1 text-base font-semibold leading-6 text-white mx-auto w-fit'>
+      <h4 className='text-[14px] font-medium text-[#e9eaee] pb-2 flex items-center gap-1.5'>
         Top locations
-      </div>
-      {handleExcludeSeenBefore && (
-        <RankTableCheckbox
-          id={`location-rank-table-${type}`}
-          checked={excludeSeenBefore}
-          onChange={handleExcludeSeenBefore}
-          label='New companies only'
+        <CompletionRateTooltipIcon
+          id={id}
+          type={type}
+          role={role}
+          target='locations'
         />
-      )}
+      </h4>
       <div className='grow overflow-y-auto styled-scrollbar'>
         <GeoRankTableContent
           id={id}
           type={type}
           role={role}
           excludeSeenBefore={excludeSeenBefore}
-        />
-      </div>
-      <div className='w-full pt-2'>
-        <CompletionRateContent
-          id={id}
-          type={type}
-          role={role}
-          target='locations'
         />
       </div>
     </div>
@@ -229,7 +225,7 @@ export function CompanyRankTableContent (props: {
   );
 }
 
-export function CompletionRateContent(props: {
+export function CompletionRateTooltipIcon(props: {
   id: number;
   type: 'stars' | 'participants';
   target: 'organizations' | 'locations';
@@ -270,80 +266,50 @@ export function CompletionRateContent(props: {
   const tooltipContent = useMemo(() => {
     if (type === 'stars') {
       if (target === 'organizations') {
-        return [
-          `Completion Rate (%) = (Stargazers with Company Info / Total
-          Stargazers) * 100%`,
-          `*This analysis is derived from user-provided profile company
-          data and is intended for reference.`,
-        ];
+        return `Completion Rate (%) = (Stargazers with Company Info / Total Stargazers) * 100%. *This analysis is derived from user-provided profile company data and is intended for reference.`;
       }
       if (target === 'locations') {
-        return [
-          `Completion Rate (%) = (Stargazers with Location Info / Total
-          Stargazers) * 100%`,
-          `*This analysis is derived from user-provided profile location
-          data and is intended for reference.`,
-        ];
+        return `Completion Rate (%) = (Stargazers with Location Info / Total Stargazers) * 100%. *This analysis is derived from user-provided profile location data and is intended for reference.`;
       }
     }
     if (type === 'participants') {
       if (target === 'organizations') {
-        return [
-          `Completion Rate (%) = (Contributors with Company Info / Total
-          Contributors) * 100%`,
-          `*This analysis is derived from user-provided profile company
-          data and is intended for reference.`,
-        ];
+        return `Completion Rate (%) = (Contributors with Company Info / Total Contributors) * 100%. *This analysis is derived from user-provided profile company data and is intended for reference.`;
       }
       if (target === 'locations') {
-        return [
-          `Completion Rate (%) = (Contributors with Location Info / Total
-          Contributors) * 100%`,
-          `*This analysis is derived from user-provided profile location
-          data and is intended for reference.`,
-        ];
+        return `Completion Rate (%) = (Contributors with Location Info / Total Contributors) * 100%. *This analysis is derived from user-provided profile location data and is intended for reference.`;
       }
     }
     return undefined;
   }, [type, target]);
 
+  if (loading) {
+    return <span ref={ref} />;
+  }
+
+  const summaryText = `${labelMemo} Info Completion: ${percentageMemo ?? '—'}%`;
+
   return (
-    <>
-      {loading ? (
-        <div ref={ref} />
-      ) : (
-        <Scale>
-          {/* <FilledRatio ref={ref} data={percentageMemo} /> */}
-          <div ref={ref} className='text-[#7c7c7c] text-xs'>
-              {labelMemo} Info Completion:
-            <span className='text-[#aaa] font-bold inline-flex gap-2 pl-1'>
-              {percentageMemo}%
-              {tooltipContent && (
-                <Tooltip.InfoTooltip
-                  iconProps={{
-                    className: 'w-3 h-3',
-                  }}
-                  contentProps={{
-                    className:
-                      'text-[12px] leading-[16px] max-w-[400px] bg-[var(--background-color-tooltip)] text-[var(--text-color-tooltip)]',
-                  }}
-                  arrowProps={{
-                    className: 'fill-[var(--background-color-tooltip)]',
-                  }}
-                >
-                  <p className='font-bold'>
-                    <span className='relative inline-flex rounded-full h-2 w-2 bg-[#56AEFF] mr-2' />
-                    {tooltipContent[0]}
-                  </p>
-                  <hr className='my-2' />
-                  <p className=''>{tooltipContent[1]}</p>
-                </Tooltip.InfoTooltip>
-              )}
-            </span>
-          </div>
-        </Scale>
+    <Tooltip.InfoTooltip
+      iconProps={{
+        className: 'w-3.5 h-3.5 text-[#7c7c7c] hover:text-[#aaa] transition-colors cursor-help',
+      }}
+      contentProps={{
+        className:
+          'text-[12px] leading-[16px] max-w-[320px] bg-[var(--background-color-tooltip)] text-[var(--text-color-tooltip)]',
+      }}
+      arrowProps={{
+        className: 'fill-[var(--background-color-tooltip)]',
+      }}
+    >
+      <p className='font-bold'>{summaryText}</p>
+      {tooltipContent && (
+        <>
+          <hr className='my-2' />
+          <p className='text-[11px] text-[#aaa]'>{tooltipContent}</p>
+        </>
       )}
-    </>
+    </Tooltip.InfoTooltip>
   );
 }
 
@@ -372,35 +338,25 @@ export function CompanyRankTable(props: {
   return (
     <div
       className={twMerge(
-        'px-1 items-center justify-around flex flex-col',
+        'flex flex-col',
         className
       )}
     >
-      <div className='px-1 text-base font-semibold leading-6 text-white mx-auto w-fit'>
+      <h4 className='text-[14px] font-medium text-[#e9eaee] pb-2 flex items-center gap-1.5'>
         Top companies
-      </div>
-      {handleExcludeSeenBefore && (
-        <RankTableCheckbox
-          id={`company-rank-table-${type}`}
-          checked={excludeSeenBefore}
-          onChange={handleExcludeSeenBefore}
-          label='New companies only'
+        <CompletionRateTooltipIcon
+          id={id}
+          type={type}
+          role={role}
+          target='organizations'
         />
-      )}
+      </h4>
       <div className='grow overflow-y-auto styled-scrollbar'>
         <CompanyRankTableContent
           id={id}
           type={type}
           role={role}
           excludeSeenBefore={excludeSeenBefore}
-        />
-      </div>
-      <div className='w-full pt-2'>
-        <CompletionRateContent
-          id={id}
-          type={type}
-          role={role}
-          target='organizations'
         />
       </div>
     </div>

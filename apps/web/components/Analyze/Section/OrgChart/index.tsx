@@ -17,9 +17,10 @@ interface OrgChartProps {
   className?: string;
   orgId?: number;
   orgLogin?: string;
+  onSQLReady?: (sql: string, queryName?: string) => void;
 }
 
-export default function OrgChart({ name, visualizer, params, className, orgId, orgLogin }: OrgChartProps) {
+export default function OrgChart({ name, visualizer, params, className, orgId, orgLogin, onSQLReady }: OrgChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [vizModule, setVizModule] = useState<any>(null);
@@ -40,8 +41,15 @@ export default function OrgChart({ name, visualizer, params, className, orgId, o
     queryFn: ({ signal }) => fetchChartData(name, params, signal),
     placeholderData: keepPreviousData,
   });
-  const data = dataQuery.data ?? null;
+  const fetchResult = dataQuery.data ?? null;
+  const data = fetchResult?.data ?? null;
   const loading = dataQuery.isPending && !dataQuery.data;
+
+  useEffect(() => {
+    if (fetchResult?.sql && onSQLReady) {
+      onSQLReady(fetchResult.sql, fetchResult.queryName);
+    }
+  }, [fetchResult?.sql, fetchResult?.queryName, onSQLReady]);
 
   const visualizerRef = useRef(visualizer);
   useEffect(() => {
@@ -92,11 +100,7 @@ function OrgChartContent({ vizModule, data, ctx, linkedData }: {
   if (type === 'react') {
     const Component = vizModule.default;
     return (
-      <div style={{
-        width: '100%', height: '100%', borderRadius: 18, overflow: 'hidden',
-        background: 'rgb(36, 35, 49)', boxShadow: '0px 4px 4px 0px rgba(36, 39, 56, 0.25)',
-        display: 'flex', flexDirection: 'column',
-      }}>
+      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Component data={data} ctx={ctx} linkedData={linkedData} />
       </div>
     );
@@ -140,8 +144,7 @@ function ReactSvgRenderer({ vizModule, data, ctx }: {
     return <AsyncSvgTopLevel vizModule={vizModule} data={data} ctx={ctx} />;
   }
 
-  const input = data.length === 1 ? data[0] : data;
-  const el = vizModule.default(input, ctx);
+  const el = vizModule.default(data, ctx);
   return <>{el}</>;
 }
 
@@ -154,8 +157,7 @@ function AsyncSvgTopLevel({ vizModule, data, ctx }: {
 
   useEffect(() => {
     const controller = new AbortController();
-    const input = data.length === 1 ? data[0] : data;
-    Promise.resolve(vizModule.default(input, ctx, controller.signal))
+    Promise.resolve(vizModule.default(data, ctx, controller.signal))
       .then((result: any) => {
         if (!controller.signal.aborted) setEl(result);
       })

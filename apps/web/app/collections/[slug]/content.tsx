@@ -31,6 +31,7 @@ const Pencil = PencilIcon as React.ComponentType<any>;
 const Star = StarIcon as React.ComponentType<any>;
 const UserRound = UserRoundIcon as React.ComponentType<any>;
 import type { EChartsOption } from 'echarts';
+import { formatMonth } from '@/lib/charts-utils/utils';
 import ShareButtons from '@/components/ShareButtons';
 import { CollectionFAQ } from './collection-faq';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
@@ -63,10 +64,6 @@ import { cn } from '@/lib/utils';
 import type { Collection } from '@/utils/api';
 
 const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper').then((mod) => mod as any), { ssr: false }) as React.ComponentType<any>;
-const monthFormatter = new Intl.DateTimeFormat(['en-US'], {
-  month: 'short',
-  year: 'numeric',
-});
 
 type RankingRow = {
   repo_id: number;
@@ -106,18 +103,6 @@ const RANK_COLORS = [
   '#72c5f0',
   '#d4d98a',
 ];
-
-function formatMonth(value: string | undefined) {
-  if (!value) {
-    return '';
-  }
-
-  try {
-    return monthFormatter.format(new Date(value));
-  } catch {
-    return '--';
-  }
-}
 
 function formatDiffNumber(value: number) {
   return Math.abs(value).toFixed(1).replace(/[.,]0$/, '');
@@ -186,25 +171,31 @@ function CollectionPageHeader({
 
   return (
     <header>
-      <a
-        href={COLLECTION_CONFIGS_REPO_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="site-link inline-flex items-center gap-1.5 text-sm"
-      >
-        <Pencil className="h-4 w-4" />
-        Edit This Collection
-      </a>
-      <div className="mt-4 flex flex-wrap items-center gap-4">
-        <h1 className="text-[2.3rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.7rem]">
-          {title}
-        </h1>
-        <ShareButtons
-          url={`/collections/${slug}`}
-          title={`Check out the ${collectionName} collection on OSSInsight — top open source projects ranked by stars, PRs, and issues`}
-          hashtags={['opensource', 'github']}
+      <div className="flex items-center justify-between">
+        <Breadcrumb
+          items={[
+            { name: 'Collections', href: '/collections' },
+            { name: collectionName },
+          ]}
         />
+        <a
+          href={COLLECTION_CONFIGS_REPO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[12px] text-[#7c7c7c] hover:text-white transition-colors"
+        >
+          <Pencil className="h-3 w-3" />
+          Edit
+        </a>
       </div>
+      <ShareButtons
+        url={`/collections/${slug}`}
+        title={`Check out the ${collectionName} collection on OSSInsight — top open source projects ranked by stars, PRs, and issues`}
+        hashtags={['opensource', 'github']}
+      />
+      <h1 className="text-[28px] font-semibold text-[#e9eaee]">
+        {title}
+      </h1>
       <p className="mt-4 max-w-4xl text-[16px] leading-7 text-[#7c7c7c]">{description}</p>
     </header>
   );
@@ -348,9 +339,12 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
 
   return (
     <section>
-      <h2 className="text-[2rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.15rem]">
-        Last 28 Days / Month-to-Month Ranking
-      </h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-[22px] font-semibold text-[#e9eaee]">
+          Last 28 Days / Month-to-Month Ranking
+        </h2>
+        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : null}
+      </div>
       <p className="mt-4 max-w-4xl text-[15px] leading-8 text-[#c6c6d0]">
         The following table ranks repositories using three metrics: stars, pull requests, and issues. The table compares last 28 days or the most recent two months of data and indicates whether repositories are moving up or down the rankings.
       </p>
@@ -358,7 +352,7 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
       <div className="mt-6 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
         <CollectionMetricTabs value={metric} options={collectionRankingDimensions} onChange={setMetric} />
 
-        <div className="inline-flex w-fit overflow-hidden rounded-md border border-[#8c7340] bg-[#121212]/70 p-0.5">
+        <div className="inline-flex w-fit overflow-hidden rounded-md border border-white/10 bg-[#121212]/70 p-0.5">
           {([
             ['last-28-days', 'Last 28 Days'],
             ['month', 'Month-to-Month'],
@@ -369,17 +363,13 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
               onClick={() => setRange(value)}
               className={cn(
                 'px-4 py-1.5 text-[13px] font-medium transition',
-                range === value ? 'bg-[#f7df83] text-[#151515]' : 'text-[#f7df83] hover:bg-[#f7df83]/10',
+                range === value ? 'bg-white/10 text-white' : 'text-[#8a8fa1] hover:bg-white/5',
               )}
             >
               {label}
             </button>
           ))}
         </div>
-      </div>
-
-      <div className="mt-4 flex justify-end">
-        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : loading ? <LoadingSkeleton className="h-8 w-24 rounded-xl" /> : null}
       </div>
 
       {loading && <RankingTableSkeleton isMonthView={isMonthView} />}
@@ -548,7 +538,7 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
             },
           },
           axisTick: { show: false },
-          splitLine: { show: false },
+          splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
         },
         yAxis: {
           type: 'value',
@@ -558,7 +548,7 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
           axisLabel: { show: false },
           axisLine: { show: false },
           axisTick: { show: false },
-          splitLine: { show: false },
+          splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
         },
         tooltip: {
           show: true,
@@ -642,19 +632,18 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
 
   return (
     <section className="mt-14 sm:mt-16">
-      <h2 className="text-[2rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.15rem]">
-        Year-to-year Ranking
-      </h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-[22px] font-semibold text-[#e9eaee]">
+          Year-to-year Ranking
+        </h2>
+        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : null}
+      </div>
       <p className="mt-4 max-w-4xl text-[15px] leading-8 text-[#c6c6d0]">
         The following pipeline chart shows how repo rankings have changed year to year since 2011. Repos are ranked by stars, pull requests, pull request creators, and issues.
       </p>
 
       <div className="mt-6">
         <CollectionMetricTabs value={metric} options={collectionHistoryDimensions} onChange={setMetric} />
-      </div>
-
-      <div className="mt-4 flex justify-end">
-        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : loading ? <LoadingSkeleton className="h-8 w-24 rounded-xl" /> : null}
       </div>
 
       {loading && <ChartSkeleton height={520} />}
@@ -696,14 +685,7 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
 
 export function CollectionDetail({ collection, initialRankingData, faqItems }: { collection: Collection; initialRankingData?: CollectionQueryResponse<RankingRow> | null; faqItems?: { question: string; answer: string }[] }) {
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-8 sm:px-8 lg:px-12">
-      <Breadcrumb
-        items={[
-          { name: 'Collections', href: '/collections' },
-          { name: collection.name },
-        ]}
-        className="mb-4"
-      />
+    <div>
       <CollectionPageHeader
         title={`${collection.name} - Ranking`}
         description="Last 28 days / Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity."
@@ -719,15 +701,15 @@ export function CollectionDetail({ collection, initialRankingData, faqItems }: {
 
       <aside aria-label="Related pages" className="mt-12 border-t border-[#2a2a2a] pt-6">
         <nav className="flex flex-wrap items-center gap-4 text-sm text-[#7c7c7c]">
-          <Link href="/trending" className="transition-colors hover:text-[#f7df83]">
+          <Link href="/trending" className="transition-colors hover:text-white">
             Trending Repos →
           </Link>
           <span className="text-[#333]">·</span>
-          <Link href="/languages" className="transition-colors hover:text-[#f7df83]">
+          <Link href="/languages" className="transition-colors hover:text-white">
             Browse by Language →
           </Link>
           <span className="text-[#333]">·</span>
-          <Link href="/collections" className="transition-colors hover:text-[#f7df83]">
+          <Link href="/collections" className="transition-colors hover:text-white">
             All Collections →
           </Link>
         </nav>

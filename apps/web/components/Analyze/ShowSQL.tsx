@@ -339,9 +339,9 @@ export function ShowSQLButton({
     <>
       <button
         onClick={() => setOpen(true)}
-        className="absolute top-1 right-1 z-10 px-2 py-0.5 text-[10px] text-gray-400 hover:text-white bg-gray-800/60 hover:bg-gray-700/80 rounded transition-colors flex items-center gap-1"
+        className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors ml-auto mb-1"
       >
-        <SQLIcon size={12} />
+        <SQLIcon size={14} />
         SHOW SQL
       </button>
       <SQLDialog

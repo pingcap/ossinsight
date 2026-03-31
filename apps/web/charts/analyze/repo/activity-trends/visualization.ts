@@ -47,10 +47,10 @@ export default function (
       type: 'time',
       splitNumber: 4,
       axisLine: {
-        show: false,
+        show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' },
       },
       axisTick: {
-        show: false,
+        show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' },
       },
       axisLabel: {
         fontSize: 10,

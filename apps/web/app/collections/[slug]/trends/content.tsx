@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Gauge as GaugeIcon, Pencil as PencilIcon } from 'lucide-react';
+import { Breadcrumb } from '@/components/Breadcrumb';
 
 // Cast to avoid JSX type errors from @types/react version mismatch
 const Gauge = GaugeIcon as React.ComponentType<any>;
@@ -21,13 +22,10 @@ import {
 } from '@/lib/collections';
 import { type CollectionQueryResponse, useCollectionApi } from '@/lib/collections-client';
 import type { Collection } from '@/utils/api';
+import { formatMonth } from '@/lib/charts-utils/utils';
 
 // @ts-expect-error - dynamic import type mismatch with Next.js types
 const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false }) as React.ComponentType<any>;
-const monthFormatter = new Intl.DateTimeFormat(['en-US'], {
-  month: 'short',
-  year: 'numeric',
-});
 
 type HistoryRow = {
   repo_id: number;
@@ -60,17 +58,6 @@ function formatCompactNumber(value: number | undefined) {
   }).format(value);
 }
 
-function formatMonth(value: string | undefined) {
-  if (!value) {
-    return '';
-  }
-
-  try {
-    return monthFormatter.format(new Date(value));
-  } catch {
-    return '--';
-  }
-}
 
 function MetricTabs({
   metric,
@@ -95,22 +82,32 @@ function MetricTabs({
 function CollectionPageHeader({
   title,
   description,
+  collectionName,
 }: {
   title: string;
   description: string;
+  collectionName: string;
 }) {
   return (
     <header>
-      <a
-        href={COLLECTION_CONFIGS_REPO_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="site-link inline-flex items-center gap-1.5 text-sm"
-      >
-        <Pencil className="h-4 w-4" />
-        Edit This Collection
-      </a>
-      <h1 className="mt-4 text-[2.3rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.7rem]">
+      <div className="flex items-center justify-between">
+        <Breadcrumb
+          items={[
+            { name: 'Collections', href: '/collections' },
+            { name: collectionName },
+          ]}
+        />
+        <a
+          href={COLLECTION_CONFIGS_REPO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[12px] text-[#7c7c7c] hover:text-white transition-colors"
+        >
+          <Pencil className="h-3 w-3" />
+          Edit
+        </a>
+      </div>
+      <h1 className="text-[28px] font-semibold text-[#e9eaee]">
         {title}
       </h1>
       <p className="mt-4 max-w-4xl text-[16px] leading-7 text-[#7c7c7c]">{description}</p>
@@ -233,7 +230,7 @@ function BarChartRaceSection({ collectionId, collectionName }: { collectionId: n
       xAxis: {
         type: 'value',
         axisLabel: { color: '#98a1b3', formatter: (value: number) => formatCompactNumber(value) },
-        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } },
+        splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
       },
       yAxis: {
         type: 'category',
@@ -269,19 +266,18 @@ function BarChartRaceSection({ collectionId, collectionName }: { collectionId: n
 
   return (
     <section>
-      <h2 className="text-[2rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.15rem]">
-        Bar Chart Race
-      </h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-[22px] font-semibold text-[#e9eaee]">
+          Bar Chart Race
+        </h2>
+        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : null}
+      </div>
       <p className="mt-4 max-w-4xl text-[15px] leading-8 text-[#c6c6d0]">
         The animated bar chart shows how repository popularity changes over time for the selected metric.
       </p>
 
       <div className="mt-6">
         <MetricTabs metric={metric} onChange={setMetric} />
-      </div>
-
-      <div className="mt-4 flex justify-end">
-        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : loading ? <LoadingSkeleton className="h-8 w-24 rounded-xl" /> : null}
       </div>
 
       {loading && <TrendChartSkeleton height={460} showControls />}
@@ -316,7 +312,7 @@ function BarChartRaceSection({ collectionId, collectionName }: { collectionId: n
                 setPlaying(false);
                 setCurrentIndex(Number(event.target.value));
               }}
-              className="flex-1 accent-[#f7df83]"
+              className="flex-1 accent-white"
             />
           </div>
         </div>
@@ -371,7 +367,7 @@ function HistoricalTrendSection({ collectionId, collectionName }: { collectionId
       yAxis: {
         type: 'value',
         axisLabel: { color: '#98a1b3', formatter: (value: number) => formatCompactNumber(value) },
-        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } },
+        splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
       },
       legend: {
         type: 'scroll',
@@ -408,19 +404,18 @@ function HistoricalTrendSection({ collectionId, collectionName }: { collectionId
 
   return (
     <section>
-      <h2 className="text-[2rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.15rem]">
-        Historical Trending of Top 10
-      </h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-[22px] font-semibold text-[#e9eaee]">
+          Historical Trending of Top 10
+        </h2>
+        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : null}
+      </div>
       <p className="mt-4 max-w-4xl text-[15px] leading-8 text-[#c6c6d0]">
         The line chart compares the historical popularity of the current top repositories under the selected metric.
       </p>
 
       <div className="mt-6">
         <MetricTabs metric={metric} onChange={setMetric} />
-      </div>
-
-      <div className="mt-4 flex justify-end">
-        {data?.sql ? <ShowSQLInline sql={data.sql} explainUrl={explainPath} /> : loading ? <LoadingSkeleton className="h-8 w-24 rounded-xl" /> : null}
       </div>
 
       {loading && <TrendChartSkeleton height={500} />}
@@ -482,10 +477,11 @@ function useMetricFromUrl(paramName: string): [CollectionMetric, (m: CollectionM
 
 export function CollectionTrends({ collection }: { collection: Collection }) {
   return (
-    <div className="mx-auto max-w-[1100px] px-6 py-8 sm:px-8">
+    <div>
       <CollectionPageHeader
         title={`${collection.name} - Popularity Trends`}
         description="The following dynamic charts show the popularity trends of GitHub repositories in this collection. You can display the popularity of repositories based on the number of stars, pull requests, pull request creators, and issues."
+        collectionName={collection.name}
       />
 
       <div className="mt-6">

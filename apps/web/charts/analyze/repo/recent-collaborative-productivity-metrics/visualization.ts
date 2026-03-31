@@ -62,7 +62,7 @@ export default function (
           },
         },
         axisTick: { show: false },
-        splitLine: { show: false },
+        splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
         axisLabel: { show: false },
         title: {
           show: false,

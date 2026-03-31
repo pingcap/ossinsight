@@ -1,6 +1,7 @@
 'use client';
 
 import Navigation, { NavItemType } from '@/components/Analyze/Navigation/Navigation';
+import { CollapsibleSidebar } from '@/components/CollapsibleSidebar';
 import { ScrollspyContextProvider } from '@/components/Scrollspy';
 import { IssueOpenedIcon, PeopleIcon, StarIcon, TelescopeIcon, ToolsIcon } from '@primer/octicons-react';
 
@@ -9,13 +10,11 @@ export default function UserOrgAnalyzeLayout ({ children }: { children: React.Re
     <ScrollspyContextProvider>
       <div className="flex">
         <div className="flex w-full flex-col md:flex-row">
-          <aside className="hidden border-r border-[#2f3032] bg-[#242526] md:block md:w-[160px] md:flex-none md:min-h-[calc(100vh-var(--site-header-height))]">
-            <div className="sticky top-[var(--site-header-height)] h-full max-h-[calc(100vh-var(--site-header-height))] overflow-y-auto styled-scrollbar">
-              <Navigation items={navItems} />
-            </div>
-          </aside>
-          <main className="flex-1 block">
-            <div className="max-w-[1280px] px-6 pt-16 pb-0 md:px-8">{children}</div>
+          <CollapsibleSidebar>
+            <Navigation items={navItems} />
+          </CollapsibleSidebar>
+          <main className="flex-1 block min-w-0 overflow-x-hidden">
+            <div className="px-6 py-4 pr-[10%] md:px-8 md:py-4 md:pr-[10%]">{children}</div>
           </main>
         </div>
       </div>

@@ -23,7 +23,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
     >
       <Link
         href="/"
-        className="flex items-center gap-1 hover:text-[#ffe895] transition-colors"
+        className="flex items-center gap-1 hover:text-white transition-colors"
         aria-label="Home"
       >
         <Home className="h-3.5 w-3.5 flex-shrink-0" />
@@ -34,7 +34,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
           {item.href ? (
             <Link
               href={item.href}
-              className="hover:text-[#ffe895] transition-colors truncate max-w-[200px]"
+              className="hover:text-white transition-colors truncate max-w-[200px]"
             >
               {item.name}
             </Link>

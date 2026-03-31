@@ -5,12 +5,18 @@ import { createVisualizationContext, createWidgetContext } from '@/lib/charts-co
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { fetchRepoChartData, type FetchResult } from './endpoints';
-import { ShowSQLButton } from '@/components/Analyze/ShowSQL';
+import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 import { ChartSkeleton } from '@/components/ui/skeletons';
 
 const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false });
 
 const dpr = typeof devicePixelRatio === 'number' ? devicePixelRatio : 2;
+
+const TITLE_STYLES = {
+  h2: 'text-[22px] font-semibold text-[#e9eaee]',
+  h3: 'text-[18px] font-semibold text-[#e9eaee]',
+  h4: 'text-[14px] font-medium text-[#e9eaee]',
+} as const;
 
 interface RepoChartProps {
   /** Widget name, e.g. '@ossinsight/widget-analyze-repo-stars-history' */
@@ -31,11 +37,20 @@ interface RepoChartProps {
   /** Use aspectRatio instead of filling parent height */
   aspectRatio?: number;
   style?: React.CSSProperties;
+  /** Chart title — renders a title row with ShowSQL on the right */
+  title?: string;
+  /** Heading level for title. Default: h4 */
+  titleLevel?: 'h2' | 'h3' | 'h4';
+  /** Show inline SHOW SQL button (only used when no title). Default: false */
+  showSQL?: boolean;
+  /** Callback when SQL becomes available (for rendering in parent title row) */
+  onSQLReady?: (sql: string, queryName?: string) => void;
 }
 
 export default function RepoChart({
   name, repoId, repoName, vsRepoId, vsRepoName,
   visualizer, params = {}, className, aspectRatio, style,
+  title, titleLevel = 'h4', showSQL = false, onSQLReady,
 }: RepoChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -107,14 +122,34 @@ export default function RepoChart({
   // SQL info for SHOW SQL button
   const queryParams = useMemo(() => ({ repoId }), [repoId]);
 
+  // Notify parent when SQL is available
+  useEffect(() => {
+    if (fetchResult?.sql && onSQLReady) {
+      onSQLReady(fetchResult.sql, fetchResult.queryName);
+    }
+  }, [fetchResult?.sql, fetchResult?.queryName, onSQLReady]);
+
+  const sqlButton = fetchResult?.sql
+    ? <ShowSQLInline sql={fetchResult.sql} queryName={fetchResult.queryName} queryParams={queryParams} />
+    : null;
+
   return (
-    <div ref={containerRef} className={className} style={containerStyle}>
-      <ShowSQLButton sql={fetchResult?.sql} queryName={fetchResult?.queryName} queryParams={queryParams} />
-      {ready ? (
-        <RepoChartContent vizModule={vizModule} data={fetchResult} ctx={ctx} />
-      ) : loading ? (
-        <ChartSkeleton />
+    <div>
+      {title ? (
+        <div className="flex items-center justify-between gap-4 mb-3">
+          {React.createElement(titleLevel, { className: TITLE_STYLES[titleLevel] }, title)}
+          {sqlButton}
+        </div>
+      ) : showSQL ? (
+        <div className="flex justify-end mb-1">{sqlButton}</div>
       ) : null}
+      <div ref={containerRef} className={className} style={containerStyle}>
+        {ready ? (
+          <RepoChartContent vizModule={vizModule} data={fetchResult} ctx={ctx} />
+        ) : loading ? (
+          <ChartSkeleton />
+        ) : null}
+      </div>
     </div>
   );
 }

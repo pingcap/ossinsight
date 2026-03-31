@@ -81,12 +81,12 @@ export default function (
     ],
     xAxis: {
       name: 'engagements',
-      splitLine: { show: false },
+      splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
       max: engagementsMax,
     },
     yAxis: {
       name: 'repos',
-      splitLine: { show: false },
+      splitLine: { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' } },
       max: repoMax,
     },
     grid: {

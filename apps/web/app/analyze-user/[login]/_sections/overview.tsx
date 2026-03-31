@@ -1,9 +1,9 @@
 'use client';
 
-import SectionTemplate from '@/components/Analyze/Section';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import { TextSkeleton } from '@/components/ui/components/Skeleton';
-import { formatNumber } from '@/utils/format';
+import { formatNumber } from '@/lib/charts-utils/utils';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import {
@@ -25,10 +25,10 @@ export default function OverviewSection () {
   const { data: overview, loading } = usePersonalOverview(userId);
 
   return (
-    <>
+    <ScrollspySectionWrapper anchor="overview">
       {/* -- header -- */}
       <NextLink target="_blank" rel="noopener noreferrer" href={`https://github.com/${login}`}>
-        <h1 className="font-semibold text-3xl text-title inline-flex items-center cursor-pointer">
+        <h1 className="font-semibold text-[28px] text-title inline-flex items-center cursor-pointer">
           <NextImage
             src={`https://avatars.githubusercontent.com/u/${userId}`}
             alt={`${login} avatar`}
@@ -37,10 +37,6 @@ export default function OverviewSection () {
             height={40}
           />
           {login}
-          <span className="bg-[#2e2e2f] text-[#fbe593] text-xs font-medium border border-solid border-[#5a5642] ml-4 px-2.5 py-1.5 rounded-full inline-flex items-center gap-2">
-            <PersonIcon size={8} />
-            Developer
-          </span>
         </h1>
       </NextLink>
       {bio && <p className="my-4 text-[#8c8c8c]">{bio}</p>}
@@ -59,22 +55,18 @@ export default function OverviewSection () {
       <hr className="my-1 h-[1px] border-t-0 bg-[#363638]" />
 
       {/* -- Overview section -- */}
-      <SectionTemplate id="overview" title="Overview" level={2}>
-        <div className="text-sm text-[#8c8c8c] mb-4">
-          All results are calculated only by developer&apos;s <b>public activities</b> showed on GitHub.
-          See details in <a href="https://gharchive.org" target="_blank" rel="noopener noreferrer" className="text-[#fbe593] hover:underline">gharchive</a>!
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Overview</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-6 items-start">
+        <div>
+          <h4 className="text-[14px] font-medium text-[#e9eaee] pb-2">Metrics</h4>
+          <OverviewTable overview={overview} loading={loading} />
+          <Languages userId={userId} />
         </div>
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
-          <div className="flex-1 min-w-0">
-            <OverviewTable overview={overview} loading={loading} />
-            <Languages userId={userId} />
-          </div>
-          <div className="flex-1 w-full min-w-0">
-            <ContributionTrends userId={userId} />
-          </div>
+        <div>
+          <ContributionTrends userId={userId} />
         </div>
-      </SectionTemplate>
-    </>
+      </div>
+    </ScrollspySectionWrapper>
   );
 }
 
@@ -89,20 +81,53 @@ function LabelItem ({ icon, label, count, loading }: { icon: React.ReactNode; la
 }
 
 function OverviewTable ({ overview, loading }: { overview: ReturnType<typeof usePersonalOverview>['data']; loading: boolean }) {
-  const Val = ({ value }: { value?: number | string }) =>
-    loading ? <TextSkeleton characters={3} className="text-title" /> : <b className="text-title">{value ?? 0}</b>;
+  const items = [
+    { icon: <StarIcon fill="#FAC858" size={16} />, label: 'Starred Repos', value: overview?.star_repos },
+    { icon: <StarIcon fill="#FAC858" size={16} />, label: 'Stars Earned', value: overview?.star_earned },
+    { icon: <RepoIcon fill="#6940D0" size={16} />, label: 'Contributed to', value: overview?.contribute_repos },
+    { icon: <IssueOpenedIcon fill="#FDE494" size={16} />, label: 'Issues', value: overview?.issues },
+    { icon: <GitPullRequestIcon fill="#D34764" size={16} />, label: 'Pull Requests', value: overview?.pull_requests },
+    { icon: <CodeReviewIcon fill="#2F92FF" size={16} />, label: 'Code Reviews', value: overview?.code_reviews },
+  ];
 
   return (
-    <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="border-b border-[#323234]">
+          <th className="pb-2 text-left text-[13px] font-medium text-[#d8d8d8]" />
+          <th className="pb-2 text-right text-[13px] font-medium text-[#d8d8d8]" />
+        </tr>
+      </thead>
       <tbody>
-        <tr><td className="py-1.5 text-[#C4C4C4]"><span className="text-[#FF9D36] mr-1">&#9733;</span> Starred Repos</td><td className="py-1.5"><Val value={overview?.star_repos} /></td><td className="py-1.5 text-[#C4C4C4]"><span className="text-[#FF9D36] mr-1">&#9733;</span> Star Earned</td><td className="py-1.5"><Val value={overview?.star_earned} /></td></tr>
-        <tr><td className="py-1.5 text-[#C4C4C4]"><span className="text-[#6940D0] mr-1">&#9632;</span> Contributed to</td><td className="py-1.5"><Val value={overview?.contribute_repos} /></td><td className="py-1.5 text-[#C4C4C4]"><span className="text-[#FDE494] mr-1">&#9679;</span> Issues</td><td className="py-1.5"><Val value={overview?.issues} /></td></tr>
-        <tr><td className="py-1.5 text-[#C4C4C4]"><span className="text-[#D34764] mr-1">&#10227;</span> Pull Requests</td><td className="py-1.5"><Val value={overview?.pull_requests} /></td><td className="py-1.5 text-[#C4C4C4]"><span className="text-[#2F92FF] mr-1">&#128269;</span> Code Reviews</td><td className="py-1.5"><Val value={overview?.code_reviews} /></td></tr>
-        <tr>
-          <td className="py-1.5 text-[#C4C4C4]"><span className="text-[#D34764] mr-1">&#10227;</span> PR Code Changes</td>
-          <td className="py-1.5" colSpan={3}>
-            {loading ? <TextSkeleton characters={6} className="text-title" /> : (
-              <b className="text-title"><span className="text-[#57ab5a]">+{formatNumber(overview?.code_additions ?? 0)}</span>{' / '}<span className="text-[#e5534b]">-{formatNumber(overview?.code_deletions ?? 0)}</span></b>
+        {items.map((item) => (
+          <tr key={item.label} className="border-b border-[#2a2a2c] last:border-0">
+            <td className="py-3 pr-4 text-[14px] text-[#d8d8d8]">
+              <span className="inline-flex items-center gap-2">
+                <span className="inline-flex h-4 w-4 items-center justify-center">{item.icon}</span>
+                <span>{item.label}</span>
+              </span>
+            </td>
+            <td className="py-3 text-right text-[15px] font-medium leading-none text-[#e9eaee] tabular-nums">
+              {loading ? (
+                <span className="inline-block h-5 w-12 animate-pulse rounded bg-[#343436]" />
+              ) : (
+                formatNumber(item.value ?? 0)
+              )}
+            </td>
+          </tr>
+        ))}
+        <tr className="border-b border-[#2a2a2c] last:border-0">
+          <td className="py-3 pr-4 text-[14px] text-[#d8d8d8]">
+            <span className="inline-flex items-center gap-2">
+              <span className="inline-flex h-4 w-4 items-center justify-center"><GitPullRequestIcon fill="#D34764" size={16} /></span>
+              <span>PR Code Changes</span>
+            </span>
+          </td>
+          <td className="py-3 text-right text-[15px] font-medium leading-none tabular-nums">
+            {loading ? (
+              <span className="inline-block h-5 w-20 animate-pulse rounded bg-[#343436]" />
+            ) : (
+              <><span className="text-[#57ab5a]">+{formatNumber(overview?.code_additions ?? 0)}</span>{' / '}<span className="text-[#e5534b]">-{formatNumber(overview?.code_deletions ?? 0)}</span></>
             )}
           </td>
         </tr>
@@ -119,7 +144,7 @@ function Languages ({ userId }: { userId: number }) {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-title mb-2">Most Used Languages</h3>
+      <h3 className="text-[18px] font-semibold text-[#e9eaee] mb-2">Most Used Languages</h3>
       <div className="flex h-1.5 rounded-full overflow-hidden bg-[#3c3c3c]">
         {top4.map((lang, i) => <div key={lang.language} style={{ width: `${lang.percentage * 100}%`, backgroundColor: languageColors[i % languageColors.length] }} />)}
       </div>
@@ -144,7 +169,7 @@ function Languages ({ userId }: { userId: number }) {
 }
 
 function ContributionTrends ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-contribution-trends', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-contribution-trends', userId);
 
   const option = useMemo(() => {
     if (!data || data.length === 0) return {};
@@ -170,5 +195,7 @@ function ContributionTrends ({ userId }: { userId: number }) {
     };
   }, [data]);
 
-  return <PersonalChart title="Contribution Trends" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Contribution Trends" option={option} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }

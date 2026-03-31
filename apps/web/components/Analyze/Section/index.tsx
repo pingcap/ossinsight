@@ -43,7 +43,7 @@ function TitleWrapper ({
     case 1:
       return (
         <h1
-          className={clsx('text-title font-semibold pb-3 text-3xl', className)}
+          className={clsx('text-title font-semibold pb-3 text-[28px]', className)}
           style={{
             scrollMarginTop: '140px',
           }}
@@ -55,7 +55,7 @@ function TitleWrapper ({
     case 2:
       return (
         <h2
-          className={clsx('text-title font-semibold pb-3 text-2xl', className)}
+          className={clsx('text-[22px] font-semibold pb-3 text-[#e9eaee]', className)}
           style={{
             scrollMarginTop: '140px',
           }}
@@ -68,7 +68,7 @@ function TitleWrapper ({
     default:
       return (
         <h3
-          className={clsx('text-title font-semibold pb-3 text-xl', className)}
+          className={clsx('text-[18px] font-semibold pb-3 text-[#e9eaee]', className)}
           style={{
             scrollMarginTop: '140px',
           }}

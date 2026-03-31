@@ -45,6 +45,8 @@ export function usePersonalData<K extends keyof RequestMap> (key: K, userId: num
 
   return {
     data: data?.data as RequestMap[K][] | undefined,
+    sql: data?.sql as string | undefined,
+    queryName: data?.query as string | undefined,
     loading: isLoading,
     error,
   };
@@ -101,6 +103,8 @@ export function usePersonalContributionActivities (userId: number | undefined, t
 
   return {
     data: data?.data as ContributionActivity[] | undefined,
+    sql: data?.sql as string | undefined,
+    queryName: data?.query as string | undefined,
     loading: isLoading,
     error,
   };

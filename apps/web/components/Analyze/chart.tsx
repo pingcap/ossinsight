@@ -92,12 +92,13 @@ export function withChart<T = unknown, P = void>(
     const queryParams = useMemo(() => ({ repoId: context.repoId }), [context.repoId]);
 
     return (
-      <div
-        ref={containerRef}
-        className={className}
-        style={{ position: 'relative', width: '100%', ...style }}
-      >
+      <div>
         <ShowSQLButton sql={sql} queryName={queryName} queryParams={queryParams} />
+        <div
+          ref={containerRef}
+          className={className}
+          style={{ position: 'relative', width: '100%', ...style }}
+        >
         <LazyECharts
           option={option}
           style={{ width: '100%', ...(style?.height ? { height: style.height } : { aspectRatio: String(aspectRatio) }) }}
@@ -111,6 +112,7 @@ export function withChart<T = unknown, P = void>(
           }}
           theme="dark"
         />
+        </div>
       </div>
     );
   };

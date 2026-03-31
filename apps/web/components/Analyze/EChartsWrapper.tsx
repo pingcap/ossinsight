@@ -11,6 +11,9 @@ import {
   ScatterChart as EScatterChart,
   EffectScatterChart as EEffectScatterChart,
   MapChart as EMapChart,
+  RadarChart as ERadarChart,
+  PieChart as EPieChart,
+  TreemapChart as ETreemapChart,
 } from 'echarts/charts';
 import {
   TitleComponent,
@@ -36,6 +39,9 @@ echarts.use([
   EScatterChart,
   EEffectScatterChart,
   EMapChart,
+  ERadarChart,
+  EPieChart,
+  ETreemapChart,
   TitleComponent,
   TooltipComponent,
   GridComponent,
@@ -63,12 +69,16 @@ export default function EChartsWrapper({ style, ...props }: any) {
   const exportChart = (type: 'png' | 'svg') => {
     const instance = chartRef.current?.getEchartsInstance();
     if (!instance) return;
-    const url = instance.getDataURL({
-      type,
-      pixelRatio: type === 'png' ? 2 : 1,
-      backgroundColor: '#0d1117',
-    });
-    triggerDownload(url, `chart.${type}`);
+    try {
+      const url = instance.getDataURL({
+        type,
+        pixelRatio: type === 'png' ? 2 : 1,
+        backgroundColor: '#0d1117',
+      });
+      triggerDownload(url, `chart.${type}`);
+    } catch {
+      // Canvas may be tainted by cross-origin images (e.g. GitHub avatars)
+    }
   };
 
   return (

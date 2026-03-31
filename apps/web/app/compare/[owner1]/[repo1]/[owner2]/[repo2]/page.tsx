@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { getRepoByName } from '@/lib/server/internal-api';
 import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd } from '@/components/json-ld';
-import ShareButtons from '@/components/ShareButtons';
 import RepoAnalyzePage from '@/app/analyze/(repo)/[owner]/[repo]/content';
 
 interface PageProps {
@@ -59,14 +58,6 @@ export default async function ComparePage({ params }: PageProps) {
           name: owner2,
           url: `https://github.com/${owner2}`,
         }}
-      />
-      <ShareButtons
-        url={`/compare/${owner1}/${repo1}/${owner2}/${repo2}`}
-        title={`${owner1}/${repo1} vs ${owner2}/${repo2} — compare on OSSInsight`}
-        className="fixed right-4 top-1/2 -translate-y-1/2 flex-col z-50 bg-gray-900/80 backdrop-blur rounded-lg p-1.5 shadow-lg"
-        stars={(repoInfo.stars ?? 0) + (vsRepoInfo.stars ?? 0)}
-        forks={(repoInfo.forks ?? 0) + (vsRepoInfo.forks ?? 0)}
-        hashtags={['opensource', 'github', 'comparison']}
       />
       <div className="sr-only">
         <h1>{repoInfo.full_name} vs {vsRepoInfo.full_name} — GitHub Repository Comparison</h1>

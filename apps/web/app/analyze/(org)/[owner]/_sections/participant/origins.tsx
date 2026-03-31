@@ -1,155 +1,102 @@
 'use client';
-import SectionTemplate from '@/components/Analyze/Section';
 import ChartTemplate from '@/components/Analyze/Section/Chart';
-import { MainSideGridTemplate } from '@/components/Analyze/Section/gridTemplates/MainSideGridTemplate';
 import { CompanyRankTable, GeoRankTable } from '@/components/Analyze/Table/RankTable';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
-import { useSimpleSelect } from '@/components/ui/components/Selector/Select';
-import { upperFirst } from '@/utils/format';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 
+const ROLE_TABS = [
+  { key: 'pr_creators', label: 'PR Creators' },
+  { key: 'pr_reviewers', label: 'PR Reviewers' },
+  { key: 'pr_commenters', label: 'PR Commenters' },
+  { key: 'issue_creators', label: 'Issue Creators' },
+  { key: 'issue_commenters', label: 'Issue Commenters' },
+  { key: 'commit_authors', label: 'Commit Authors' },
+] as const;
+
 export default function OriginsContent () {
   const { id: orgId } = React.useContext(AnalyzeOwnerContext);
-
-  return (
-    <SectionTemplate
-      id="origins"
-      title="Origins"
-      level={3}
-      className="pt-8 flex flex-col gap-4"
-    >
-      <OrgActivityCompany orgId={orgId} />
-      <OrgActivityMap orgId={orgId} />
-    </SectionTemplate>
-  );
-}
-
-function RoleInput ({
-  id,
-  onValueChange,
-  value = 'pr_creators',
-}: {
-  id: string;
-  value?: string;
-  onValueChange: (newValue: string | undefined) => void;
-}) {
-  const options = [
-    'pr_creators',
-    'pr_reviewers',
-    'pr_commenters',
-    'issue_creators',
-    'issue_commenters',
-    'commit_authors',
-  ].map((r) => ({
-    key: r,
-    title: r.startsWith('pr_') ? `Pull Request ${upperFirst(r.replace('pr_', '').split('_').join(' '))}` : upperFirst(r.split('_').join(' ')),
-  }));
-
-  const { select: roleSelect, value: role } = useSimpleSelect(
-    options,
-    options.find((i) => i.key === value) || options[0],
-    id,
-  );
-
-  React.useEffect(() => {
-    onValueChange && onValueChange(role);
-  }, [onValueChange, role]);
-
-  return <>{roleSelect}</>;
-}
-
-function OrgActivityCompany (props: { orgId?: number }) {
-  const { orgId } = props;
-
-  const [role, setRole] = React.useState<string>('pr_creators');
-  const [excludeSeenBefore, setExcludeSeenBefore] = React.useState<boolean>(false);
+  const [roleIndex, setRoleIndex] = React.useState(0);
+  const currentRole = ROLE_TABS[roleIndex];
 
   const params = useSearchParams();
   const repoIds = params.get('repoIds')?.toString();
   const period = params.get('period')?.toString();
 
-  const handleChangeRole = React.useCallback((newValue?: string) => {
-    newValue && setRole(newValue);
-  }, []);
-  const handleChangeExcludeSeenBefore = React.useCallback((newValue?: boolean) => {
-    setExcludeSeenBefore(!!newValue)
-  }, []);
-
   return (
-    <MainSideGridTemplate>
-      <ChartTemplate
-        key={role}
-        name="@ossinsight/widget-compose-org-activity-company"
-        visualizer={() => import('@/charts/compose/org/activity-company/visualization')}
-        searchParams={{
-          activity: 'participants',
-          role,
-          excludeSeenBefore: excludeSeenBefore ? 'true' : 'false',
-        }}
-        height={405}
-      >
-        <div className="absolute top-10 left-5">
-          <RoleInput
-            id="role-co"
-            value={role}
-            onValueChange={handleChangeRole}
-          />
+    <ScrollspySectionWrapper anchor="origins" className="pt-8 pb-8">
+      <h3 className="text-[18px] font-semibold text-[#e9eaee] pb-3" style={{ scrollMarginTop: '140px' }}>
+        Origins
+      </h3>
+
+      <div className="mb-6 flex gap-1 border-b border-[#3a3a3a]">
+        {ROLE_TABS.map((tab, i) => (
+          <button
+            key={tab.key}
+            className={`px-4 py-2 text-sm transition-colors ${
+              i === roleIndex
+                ? 'border-b-2 border-[var(--color-primary)] text-white'
+                : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
+            }`}
+            onClick={() => setRoleIndex(i)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-8">
+        {/* Company */}
+        <div className="grid grid-cols-12 gap-4" key={`company-${currentRole.key}`}>
+          <div className="col-span-8">
+            <ChartTemplate
+              title="Activity by Company"
+              name="@ossinsight/widget-analyze-org-company"
+              visualizer={() => import('@/charts/analyze/org/company/visualization')}
+              searchParams={{
+                activity: 'participants',
+                role: currentRole.key,
+              }}
+              height={405}
+            />
+          </div>
+          <div className="col-span-4">
+            <CompanyRankTable
+              key={currentRole.key + repoIds + period}
+              id={orgId}
+              type="participants"
+              className="h-[405px]"
+              role={currentRole.key}
+            />
+          </div>
         </div>
-      </ChartTemplate>
-      <CompanyRankTable
-        key={role + repoIds + period + (excludeSeenBefore ? 'new' : 'all')}
-        id={orgId}
-        type="participants"
-        className={`h-[405px]`}
-        role={role}
-        excludeSeenBefore={excludeSeenBefore}
-        handleExcludeSeenBefore={handleChangeExcludeSeenBefore}
-      />
-    </MainSideGridTemplate>
-  );
-}
 
-function OrgActivityMap (props: { orgId?: number }) {
-  const { orgId } = props;
-
-  const [role, setRole] = React.useState<string>('pr_creators');
-
-  const params = useSearchParams();
-  const repoIds = params.get('repoIds')?.toString();
-  const period = params.get('period')?.toString();
-
-  const handleChangeRole = React.useCallback((newValue?: string) => {
-    newValue && setRole(newValue);
-  }, []);
-
-  return (
-    <MainSideGridTemplate>
-      <ChartTemplate
-        key={role}
-        name="@ossinsight/widget-compose-org-activity-map"
-        visualizer={() => import('@/charts/compose/org/activity-map/visualization')}
-        searchParams={{
-          activity: 'participants',
-          role,
-        }}
-        height={365}
-      >
-        <div className="absolute top-10 left-5">
-          <RoleInput
-            id="role-map"
-            value={role}
-            onValueChange={handleChangeRole}
-          />
+        {/* Region */}
+        <div className="grid grid-cols-12 gap-4" key={`map-${currentRole.key}`}>
+          <div className="col-span-8">
+            <ChartTemplate
+              title="Activity by Region"
+              name="@ossinsight/widget-analyze-org-activity-map"
+              visualizer={() => import('@/charts/analyze/org/activity-map/visualization')}
+              searchParams={{
+                activity: 'participants',
+                role: currentRole.key,
+              }}
+              height={365}
+            />
+          </div>
+          <div className="col-span-4">
+            <GeoRankTable
+              key={currentRole.key + repoIds + period}
+              id={orgId}
+              type="participants"
+              role={currentRole.key}
+              className="h-[365px]"
+            />
+          </div>
         </div>
-      </ChartTemplate>
-      <GeoRankTable
-        key={role + repoIds + period}
-        id={orgId}
-        type="participants"
-        role={role}
-        className={`h-[365px]`}
-      />
-    </MainSideGridTemplate>
+      </div>
+    </ScrollspySectionWrapper>
   );
 }

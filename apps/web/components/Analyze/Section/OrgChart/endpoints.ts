@@ -87,6 +87,22 @@ const ENDPOINTS: Record<string, EndpointDef> = {
   '@ossinsight/widget-analyze-org-recent-pr-review-stats': {
     endpoints: ['orgs/reviews/review-prs/trends'],
   },
+  '@ossinsight/widget-analyze-org-recent-stats': {
+    endpoints: ['orgs/{activity}/trends'],
+  },
+
+  // Analyze: formerly compose-only (thin wrappers removed)
+  '@ossinsight/widget-analyze-org-activity-map': {
+    endpoints: ['orgs/{activity}/locations'],
+    extraParams: ['role'],
+  },
+  '@ossinsight/widget-analyze-org-company': {
+    endpoints: ['orgs/{activity}/organizations'],
+    extraParams: ['role', 'excludeSeenBefore'],
+  },
+  '@ossinsight/widget-analyze-org-engagement-scatter': {
+    endpoints: ['orgs/participants/engagements'],
+  },
 };
 
 function resolveTemplate(template: string, params: Record<string, any>): string {
@@ -107,24 +123,40 @@ function buildApiParams(params: Record<string, any>, extraKeys: string[] = []): 
   return usp;
 }
 
+export interface OrgFetchResult {
+  data: any[];
+  /** SQL from the first endpoint response */
+  sql?: string;
+  /** Resolved query name for the first endpoint (for SHOW SQL / EXPLAIN) */
+  queryName?: string;
+}
+
 export async function fetchChartData(
   name: string,
   params: Record<string, any>,
   signal?: AbortSignal,
-): Promise<any[]> {
+): Promise<OrgFetchResult> {
   const config = ENDPOINTS[name];
   if (!config) throw new Error(`Unknown chart: ${name}`);
 
   const queryParams = buildApiParams(params, config.extraParams);
+  let sql: string | undefined;
+  let queryName: string | undefined;
 
-  return Promise.all(
-    config.endpoints.map(async (template) => {
+  const data = await Promise.all(
+    config.endpoints.map(async (template, i) => {
       const endpoint = resolveTemplate(template, params);
       const url = `${INTERNAL_QUERY_API_SERVER}/${endpoint}?${queryParams.toString()}`;
       const res = await fetch(url, { signal });
       if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
       const json = await res.json();
+      if (i === 0) {
+        sql = json.sql;
+        queryName = endpoint;
+      }
       return json.data ?? [];
     }),
   );
+
+  return { data, sql, queryName };
 }

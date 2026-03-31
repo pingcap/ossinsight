@@ -1,6 +1,6 @@
 'use client';
 
-import SectionTemplate from '@/components/Analyze/Section';
+import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -12,16 +12,16 @@ export default function StarSection () {
   const { id: userId } = React.useContext(AnalyzeOwnerContext);
 
   return (
-    <SectionTemplate id="star" title="Star" level={2} className="pt-8"
-      description="The total number of starred repositories since 2011, which ignores developers' unstarring or restarring behavior."
-    >
+    <ScrollspySectionWrapper anchor="star" className="pt-8 pb-8">
+      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Star</h2>
+      <p className="text-sm text-[#8c8c8c] mb-4">The total number of starred repositories since 2011, which ignores developers&apos; unstarring or restarring behavior.</p>
       <StarChart userId={userId} />
-    </SectionTemplate>
+    </ScrollspySectionWrapper>
   );
 }
 
 function StarChart ({ userId }: { userId: number }) {
-  const { data, loading } = usePersonalData('personal-star-history', userId);
+  const { data, sql, queryName, loading } = usePersonalData('personal-star-history', userId);
 
   const chartData = useMemo(() => {
     const map = new Map<string, number>();
@@ -37,5 +37,7 @@ function StarChart ({ userId }: { userId: number }) {
     series: [{ type: 'bar' as const, data: chartData, color: chartColors[0], barMaxWidth: 10 }],
   }), [chartData]);
 
-  return <PersonalChart title="Star History" option={option} loading={loading} noData={!loading && chartData.length === 0} />;
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
+  return <PersonalChart title="Star History" option={option} loading={loading} noData={!loading && chartData.length === 0} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }

@@ -44,6 +44,9 @@ export const formatMonth = (value: number | string | Date) => {
 
 const now = new Date();
 
+const defaultSplitLine = { show: true, lineStyle: { color: '#2a2a2c', type: 'dashed' as const } };
+const defaultAxisLine = { lineStyle: { color: '#2a2a2c' } };
+
 export function timeAxis<T extends 'x' | 'y'>(
   id?: OptionId,
   option: AxisOption<T, TimeAxisBaseOption> = {},
@@ -53,6 +56,8 @@ export function timeAxis<T extends 'x' | 'y'>(
   return merge<AxisOption<T, TimeAxisBaseOption>>(option, {
     id,
     type: 'time',
+    splitLine: defaultSplitLine,
+    axisLine: defaultAxisLine,
     axisPointer: {
       label: {
         formatter: ({ value }) => {
@@ -89,6 +94,8 @@ export function valueAxis<T extends 'x' | 'y'>(
   return merge<AxisOption<T>>(option, {
     id,
     type: 'value',
+    splitLine: defaultSplitLine,
+    axisLine: defaultAxisLine,
     axisLabel: {
       formatter: (value) => format(value),
       margin: 8,
@@ -113,6 +120,8 @@ export function categoryAxis<T extends 'x' | 'y'>(
   return merge<AxisOption<T>>(option, {
     id,
     type: 'category',
+    splitLine: defaultSplitLine,
+    axisLine: defaultAxisLine,
     nameTextStyle: {
       align: filterEnum(option.position ?? 'left', ['left', 'right']),
     },

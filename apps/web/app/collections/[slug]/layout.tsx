@@ -14,9 +14,9 @@ export default async function CollectionLayout({
   return (
     <div className="flex min-h-screen">
       <CollectionSidebar collections={collections} currentSlug={slug} />
-      <div className="flex-1 min-w-0">
-        {children}
-      </div>
+      <main className="flex-1 block min-w-0 overflow-x-hidden">
+        <div className="px-6 py-4 pr-[10%] md:px-8 md:py-4 md:pr-[10%]">{children}</div>
+      </main>
     </div>
   );
 }
