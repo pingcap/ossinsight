@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getRepoByName } from '@/lib/server/internal-api';
 import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd, SoftwareSourceCodeJsonLd } from '@/components/json-ld';
-import { Breadcrumb } from '@/components/Breadcrumb';
 import ShareButtons from '@/components/ShareButtons';
 import RepoAnalyzePage from './content';
 
@@ -62,15 +61,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         language={repoInfo.language}
         url={`/analyze/${owner}/${repo}`}
       />
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-8">
-        <Breadcrumb
-          items={[
-            { name: 'Analyze', href: '/analyze' },
-            { name: owner, href: `/analyze/${owner}` },
-            { name: repo },
-          ]}
-        />
-      </div>
+
       <ShareButtons
         url={`/analyze/${owner}/${repo}`}
         title={`${owner}/${repo} — check the full analytics on OSSInsight`}

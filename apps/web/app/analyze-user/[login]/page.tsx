@@ -1,7 +1,6 @@
 import { fetchOwnerInfo } from '@/app/analyze/(org)/[owner]/fetchOwner';
 import AnalyzeOwnerContextProvider from '@/components/Context/Analyze/AnalyzeOwner';
 import { BreadcrumbListJsonLd, PersonJsonLd } from '@/components/json-ld';
-import { Breadcrumb } from '@/components/Breadcrumb';
 import { Metadata } from 'next';
 import UserAnalyzeContent from './content';
 
@@ -17,14 +16,7 @@ export default async function Page ({ params }: { params: Promise<{ login: strin
         { name: 'Analyze', url: '/analyze' },
         { name: displayName },
       ]} />
-      <div className="mx-auto max-w-[1600px] px-6 sm:px-8 lg:px-12">
-        <Breadcrumb
-          items={[
-            { name: 'Analyze', href: '/analyze' },
-            { name: displayName },
-          ]}
-        />
-      </div>
+
       <PersonJsonLd
         name={displayName}
         login={data.login}
