@@ -17,7 +17,7 @@ export default async function Page ({ params }: { params: Promise<{ login: strin
         { name: 'Analyze', url: '/analyze' },
         { name: displayName },
       ]} />
-      <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-[1600px] px-6 sm:px-8 lg:px-12">
         <Breadcrumb
           items={[
             { name: 'Analyze', href: '/analyze' },

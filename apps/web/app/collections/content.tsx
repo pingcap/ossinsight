@@ -386,7 +386,7 @@ export function CollectionsList({
   }, [previewItems]);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-8 sm:px-8 lg:px-12">
+    <div className="mx-auto max-w-[1600px] px-6 py-8 sm:px-8 lg:px-12">
       <h1 className="text-center text-[30px] font-semibold leading-none tracking-[-0.045em] text-[#f7f7f4] [text-shadow:0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.34)] sm:text-[36px] xl:text-[40px]">
         Explore Collections
       </h1>

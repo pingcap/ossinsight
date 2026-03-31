@@ -696,7 +696,7 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
 
 export function CollectionDetail({ collection, initialRankingData, faqItems }: { collection: Collection; initialRankingData?: CollectionQueryResponse<RankingRow> | null; faqItems?: { question: string; answer: string }[] }) {
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-8 sm:px-8 lg:px-12">
+    <div className="px-6 py-8 sm:px-8 lg:px-10">
       <Breadcrumb
         items={[
           { name: 'Collections', href: '/collections' },
