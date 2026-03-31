@@ -9,6 +9,7 @@ import {
 } from '@/components/Analyze/Table/RankTable';
 import { getWidgetSize } from '@/lib/charts-utils/utils';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useSearchParams } from 'next/navigation';
 
 export default function StarGrowthContent() {
@@ -20,10 +21,10 @@ export default function StarGrowthContent() {
 
   return (
     <section className="pt-8 pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Popularity</h2>
+      <SectionHeading>Popularity</SectionHeading>
       <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">Discover the popularity and reach of your repositories through stars, enabling you to gauge the community&apos;s interest and identify potential collaboration opportunities.</p>
       <ScrollspySectionWrapper anchor="star-growth" className="pt-8 pb-8">
-        <h3 className="text-[22px] font-semibold text-[#e9eaee] pb-3" style={{ scrollMarginTop: '140px' }}>Star Growth</h3>
+        <SectionHeading level="h3" className="text-[22px]">Star Growth</SectionHeading>
         <div className="flex flex-col gap-4">
           <ChartTemplate
             name='@ossinsight/widget-analyze-org-recent-stats'
@@ -35,7 +36,7 @@ export default function StarGrowthContent() {
             height={getWidgetSize().widgetWidth(4)}
           />
 
-          <h3 className="text-[22px] font-semibold text-[#e9eaee] pb-3 pt-4" style={{ scrollMarginTop: '140px' }}>Stars by Company</h3>
+          <SectionHeading level="h3" className="text-[22px] pt-4">Stars by Company</SectionHeading>
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-8">
               <ChartTemplate
@@ -51,7 +52,6 @@ export default function StarGrowthContent() {
             </div>
             <div className="col-span-4">
               <CompanyRankTable
-                key={'stars' + repoIds + period}
                 id={orgId}
                 type='stars'
                 role='stars'
@@ -60,7 +60,7 @@ export default function StarGrowthContent() {
             </div>
           </div>
 
-          <h3 className="text-[22px] font-semibold text-[#e9eaee] pb-3 pt-4" style={{ scrollMarginTop: '140px' }}>Stars Activity Map</h3>
+          <SectionHeading level="h3" className="text-[22px] pt-4">Stars Activity Map</SectionHeading>
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-8">
               <ChartTemplate
@@ -76,7 +76,6 @@ export default function StarGrowthContent() {
             </div>
             <div className="col-span-4">
               <GeoRankTable
-                key={orgId + repoIds + period}
                 id={orgId}
                 type='stars'
                 role='stars'

@@ -24,7 +24,7 @@ export const CodeBlockContainer = ({
 }: HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "group relative w-full overflow-hidden rounded-3xl border border-white/8 bg-[#121517] text-foreground",
+      "group relative w-full overflow-hidden rounded-md border border-white/8 bg-[#121517] text-foreground",
       className,
     )}
     {...props}

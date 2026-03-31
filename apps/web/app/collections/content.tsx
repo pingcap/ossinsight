@@ -82,13 +82,12 @@ function CollectionCard({
   collection: CollectionListItem;
   items: HotItem[];
 }) {
-  const router = useRouter();
   const slug = toCollectionSlug(collection.name);
 
   return (
-    <article
-      className="group/card cursor-pointer rounded-lg border-2 border-dashed border-[#3c3c3c] bg-transparent p-4 transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-[0_18px_42px_-28px_rgba(0,0,0,0.85)]"
-      onClick={() => router.push(`/collections/${slug}`)}
+    <Link
+      href={`/collections/${slug}`}
+      className="group/card cursor-pointer rounded-lg border-2 border-dashed border-[#3c3c3c] bg-transparent p-4 transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-[0_18px_42px_-28px_rgba(0,0,0,0.85)] block"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '240px' }}
     >
       <p className="text-base text-white">{collection.name}</p>
@@ -123,28 +122,12 @@ function CollectionCard({
       })}
 
       <div className="mt-3 text-sm" onClick={(event) => event.stopPropagation()}>
-        <Button
-          asChild
-          variant="ghost"
-          size="xs"
-          className="h-auto rounded-none px-0 py-0 text-[13px] font-medium tracking-[0.02em] text-[#ffe895] shadow-none hover:bg-transparent hover:text-[#fff2bd]"
-        >
-          <Link href={`/collections/${slug}`} className="inline-flex items-center gap-1.5">
-            <span
-              aria-hidden="true"
-              className="inline-flex h-4 w-4 items-center justify-center text-[#8fb5ff] transition-transform duration-200 group-hover/card:translate-x-0.5"
-            >
-              <ChevronRight className="h-3.5 w-3.5" />
-            </span>
-            <span>See All</span>
-            <span
-              aria-hidden="true"
-              className="h-px w-4 bg-current/45 transition-[width,opacity] duration-200 group-hover/card:w-6 group-hover/card:opacity-100"
-            />
-          </Link>
-        </Button>
+        <span className="inline-flex items-center gap-1.5 text-[13px] font-medium tracking-[0.02em] text-[#7c7c7c] group-hover/card:text-white transition-colors">
+          <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover/card:translate-x-0.5" />
+          <span>See All</span>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -254,7 +237,7 @@ function CollectionsToolbar({
       <Button
         asChild
         variant="outline"
-        className="h-9 rounded-md border-[#5d5531] bg-transparent px-3 text-sm text-[#ffe895] shadow-none hover:border-[#ffe895]/55 hover:bg-transparent hover:text-[#fff2bd]"
+        className="h-9 rounded-md border-white/20 bg-transparent px-3 text-sm text-white shadow-none hover:border-white/55 hover:bg-transparent hover:text-white"
       >
         <a
           href="https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection"

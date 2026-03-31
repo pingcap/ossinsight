@@ -20,7 +20,7 @@ const CATEGORIES = [
 ] as const;
 
 const CATEGORY_COLORS: Record<string, string> = {
-  'AI Agents': '#f7df83',
+  'AI Agents': '#e9eaee',
   'LLM Tools': '#6ea8fe',
   'MCP Servers': '#7ecfb2',
   'Coding Agents': '#f0a07c',
@@ -113,16 +113,16 @@ export function TrendingAIContent({
     <div className="min-h-screen bg-[#1a1a1b]">
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-[#363638] bg-gradient-to-b from-[#1a1a1b] to-[#121212] py-16 md:py-24">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #f7df83 0%, transparent 50%)' }} />
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #e9eaee 0%, transparent 50%)' }} />
         <div className="relative mx-auto max-w-6xl px-4 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#363638] bg-[#212122] px-4 py-1.5 text-sm text-[#c6c6d0]">
-            <Sparkles className="h-4 w-4 text-[#f7df83]" />
+            <Sparkles className="h-4 w-4 text-[#e9eaee]" />
             Updated hourly from 10B+ GitHub events
           </div>
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-[#e9eaee] md:text-5xl lg:text-6xl">
             Trending AI Repositories
             <br />
-            <span className="text-[#f7df83]">on GitHub — 2026</span>
+            <span className="text-[#e9eaee]">on GitHub — 2026</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-[#7c7c7c]">
             Real-time rankings of the top AI open source projects across agent frameworks,
@@ -141,8 +141,8 @@ export function TrendingAIContent({
               className={cn(
                 'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
                 activeCategory === cat.key
-                  ? 'bg-[#f7df83] text-[#1f1e28]'
-                  : 'border border-[#363638] bg-[#212122] text-[#c6c6d0] hover:border-[#f7df83] hover:text-[#f7df83]',
+                  ? 'bg-white text-[#1f1e28]'
+                  : 'border border-[#363638] bg-[#212122] text-[#c6c6d0] hover:border-white hover:text-white',
               )}
             >
               {cat.label}
@@ -162,11 +162,11 @@ export function TrendingAIContent({
                 <Link
                   key={repo.repo_name}
                   href={`/analyze/${repo.repo_name}`}
-                  className="group rounded-lg border border-[#363638] bg-[#212122] p-4 transition-colors hover:border-[#f7df83]"
+                  className="group rounded-lg border border-[#363638] bg-[#212122] p-4 transition-colors hover:border-white"
                 >
                   <div className="mb-2 flex items-center gap-2">
                     <RepoAvatar repoName={repo.repo_name} />
-                    <span className="truncate text-sm font-medium text-[#e9eaee] group-hover:text-[#f7df83]">
+                    <span className="truncate text-sm font-medium text-[#e9eaee] group-hover:text-white">
                       {repo.repo_name.split('/')[1]}
                     </span>
                   </div>
@@ -204,7 +204,7 @@ export function TrendingAIContent({
                   <th className="px-4 py-3 text-left text-xs font-medium text-[#7c7c7c]">Rank</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-[#7c7c7c]">Repository</th>
                   <th
-                    className="cursor-pointer px-4 py-3 text-right text-xs font-medium text-[#7c7c7c] hover:text-[#f7df83]"
+                    className="cursor-pointer px-4 py-3 text-right text-xs font-medium text-[#7c7c7c] hover:text-white"
                     onClick={() => handleSort('total')}
                   >
                     <span className="inline-flex items-center gap-1">
@@ -213,7 +213,7 @@ export function TrendingAIContent({
                     </span>
                   </th>
                   <th
-                    className="cursor-pointer px-4 py-3 text-right text-xs font-medium text-[#7c7c7c] hover:text-[#f7df83]"
+                    className="cursor-pointer px-4 py-3 text-right text-xs font-medium text-[#7c7c7c] hover:text-white"
                     onClick={() => handleSort('growth')}
                   >
                     <span className="inline-flex items-center gap-1">
@@ -241,7 +241,7 @@ export function TrendingAIContent({
                     <td className="px-4 py-3">
                       <Link
                         href={`/analyze/${repo.repo_name}`}
-                        className="inline-flex items-center gap-2 text-[#e9eaee] hover:text-[#f7df83]"
+                        className="inline-flex items-center gap-2 text-[#e9eaee] hover:text-white"
                       >
                         <RepoAvatar repoName={repo.repo_name} />
                         <span className="font-medium">{repo.repo_name}</span>
@@ -249,7 +249,7 @@ export function TrendingAIContent({
                     </td>
                     <td className="px-4 py-3 text-right text-[#c6c6d0]">
                       <span className="inline-flex items-center gap-1">
-                        <Star className="h-3 w-3 text-[#f7df83]" />
+                        <Star className="h-3 w-3 text-[#e9eaee]" />
                         {formatFullNumber(repo.total)}
                       </span>
                     </td>
@@ -303,13 +303,13 @@ export function TrendingAIContent({
                   </div>
                   {cat.topRepo && (
                     <p className="mb-3 text-sm text-[#c6c6d0]">
-                      Top: <Link href={`/analyze/${cat.topRepo}`} className="hover:text-[#f7df83]">{cat.topRepo}</Link>
+                      Top: <Link href={`/analyze/${cat.topRepo}`} className="hover:text-white">{cat.topRepo}</Link>
                     </p>
                   )}
                   {slug && (
                     <Link
                       href={`/collections/${slug}`}
-                      className="inline-flex items-center gap-1 text-sm text-[#f7df83] hover:underline"
+                      className="inline-flex items-center gap-1 text-sm text-[#e9eaee] hover:underline"
                     >
                       View full collection <ChevronRight className="h-3 w-3" />
                     </Link>
@@ -331,7 +331,7 @@ export function TrendingAIContent({
               return (
                 <div
                   key={item.question}
-                  className="rounded-xl border border-white/[0.07] overflow-hidden"
+                  className="rounded-md border border-white/[0.07] overflow-hidden"
                   style={{ backgroundColor: isOpen ? '#242526' : '#1a1a1b' }}
                 >
                   <button
@@ -345,7 +345,7 @@ export function TrendingAIContent({
                     </span>
                     <span
                       aria-hidden="true"
-                      className="shrink-0 text-[#ffe895] transition-transform duration-200"
+                      className="shrink-0 text-white transition-transform duration-200"
                       style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

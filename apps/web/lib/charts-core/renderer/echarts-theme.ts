@@ -1,7 +1,11 @@
 import { registerTheme } from 'echarts/core';
 
-export const darkColorPalette = ['#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78', '#73a373', '#73b9bc', '#7289ab', '#91ca8c', '#f49f42'];
-export const lightColorPalette = ['#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78', '#73a373', '#73b9bc', '#7289ab', '#91ca8c', '#f49f42'];
+export const echartsColorPalette = ['#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78', '#73a373', '#73b9bc', '#7289ab', '#91ca8c', '#f49f42'];
+
+/** @deprecated Use `echartsColorPalette` instead. */
+export const darkColorPalette = echartsColorPalette;
+/** @deprecated Use `echartsColorPalette` instead. */
+export const lightColorPalette = echartsColorPalette;
 
 function registerThemeDark () {
   const contrastColor = '#979797';
@@ -47,7 +51,7 @@ function registerThemeDark () {
     };
   };
 
-  const colorPalette = darkColorPalette;
+  const colorPalette = echartsColorPalette;
   const theme = {
     color: colorPalette,
     backgroundColor: bgColor,
@@ -198,7 +202,7 @@ function registerThemeLight () {
     };
   };
 
-  const colorPalette = lightColorPalette;
+  const colorPalette = echartsColorPalette;
   const theme = {
     color: colorPalette,
     backgroundColor: bgColor,

@@ -51,7 +51,7 @@ export default function Analyze({ query, params, title, titleLevel = 'h4', showS
     setDescription(el?.textContent?.trim() ?? undefined);
   }, []);
 
-  const contextValue: AnalyzeChartContextProps = {
+  const contextValue = useMemo<AnalyzeChartContextProps>(() => ({
     query,
     data: repoData,
     compareData: compareRepoData,
@@ -60,7 +60,7 @@ export default function Analyze({ query, params, title, titleLevel = 'h4', showS
     description,
     headingRef,
     descriptionRef,
-  };
+  }), [query, repoData, compareRepoData, sectionTitle, hash, description, headingRef, descriptionRef]);
 
   const sql = repoData.data?.sql;
   const queryParams = useMemo(() => ({ repoId, ...params }), [repoId, params]);

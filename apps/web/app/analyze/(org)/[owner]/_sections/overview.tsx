@@ -1,13 +1,12 @@
 'use client';
 import ChartTemplate from '@/components/Analyze/Section/Chart';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 
 export default function OverviewContent () {
   return (
     <ScrollspySectionWrapper anchor="overview" className="pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
-        Organization Overview
-      </h2>
+      <SectionHeading>Organization Overview</SectionHeading>
       <h3 className="text-[18px] font-semibold text-[#e9eaee]">Last 28 days Stats</h3>
       <div className="mt-3 grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="rounded-[6px] bg-[#242526] px-3 py-3">

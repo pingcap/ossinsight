@@ -20,7 +20,6 @@ function NavigationAnchorItem ({ item }: { item: NavItemType & { anchor: string 
     document.getElementById(item.anchor)?.scrollIntoView({
       behavior: 'smooth',
     });
-    history.replaceState(history.state, '', '#' + encodeURIComponent(item.anchor));
   }, [item.anchor]);
 
   return (

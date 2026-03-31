@@ -1,11 +1,9 @@
 import _ from 'lodash';
 
-// TODO
 interface AnalyzeTemplateParams<T> {
   id: 'main' | 'vs';
 }
 
-// TODO
 export function template<P, T = any>(
   fp: (params: AnalyzeTemplateParams<P>, i: number) => T | T[],
   vs?: boolean

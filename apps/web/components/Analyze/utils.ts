@@ -149,14 +149,3 @@ export const getCompletionRate = (
     handleOApi
   );
 };
-
-// // ! TODO remove this, use getRepoInfoByOwnerId instead
-// export const getRepoInfoById = (repoId: number | string) => {
-//   return fetch(`${API_SERVER}${PATH_GET_REPO_BY_ID}${repoId}`)
-//     .then(handleOApi)
-//     .then((data) => ({
-//       id: data.id,
-//       fullName: data.full_name,
-//       defaultBranch: data.default_branch,
-//     }));
-// };

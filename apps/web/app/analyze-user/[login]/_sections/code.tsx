@@ -1,11 +1,13 @@
 'use client';
 
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useMemo } from 'react';
 import PersonalChart from '../_charts/ChartWrapper';
 import { green, lightGreen, purple, redColors } from '../_charts/colors';
+import { createTimeSeriesOption } from '../_charts/createChartOption';
 import { usePersonalData } from '../_hooks/usePersonal';
 
 const sizes = [
@@ -22,7 +24,7 @@ export default function CodeSection () {
 
   return (
     <ScrollspySectionWrapper anchor="code" className="pt-8 pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Code</h2>
+      <SectionHeading>Code</SectionHeading>
       <div id="pushes-and-commits">
         <CodeSubmitHistory userId={userId} />
       </div>
@@ -37,14 +39,10 @@ export default function CodeSection () {
 
 function CodeSubmitHistory ({ userId }: { userId: number }) {
   const { data, sql, queryName, loading } = usePersonalData('personal-pushes-and-commits', userId);
-  const option = useMemo(() => ({
-    xAxis: { type: 'time' as const, min: '2011-01-01' },
-    yAxis: { type: 'value' as const },
-    series: [
-      { type: 'bar' as const, data: (data ?? []).map(r => [r.event_month, r.pushes]), name: 'push', color: green, barMaxWidth: 10 },
-      { type: 'bar' as const, data: (data ?? []).map(r => [r.event_month, r.commits]), name: 'commit', color: lightGreen, barMaxWidth: 10 },
-    ],
-  }), [data]);
+  const option = useMemo(() => createTimeSeriesOption([
+    { type: 'bar' as const, data: (data ?? []).map(r => [r.event_month, r.pushes]), name: 'push', color: green, barMaxWidth: 10 },
+    { type: 'bar' as const, data: (data ?? []).map(r => [r.event_month, r.commits]), name: 'commit', color: lightGreen, barMaxWidth: 10 },
+  ]), [data]);
 
   const queryParams = useMemo(() => ({ userId }), [userId]);
 
@@ -54,14 +52,10 @@ function CodeSubmitHistory ({ userId }: { userId: number }) {
 function PullRequestHistory ({ userId }: { userId: number }) {
   const { data, sql, queryName, loading } = usePersonalData('personal-pull-request-action-history', userId);
   const sorted = useMemo(() => [...(data ?? [])].sort((a, b) => String(a.event_month).localeCompare(String(b.event_month))), [data]);
-  const option = useMemo(() => ({
-    xAxis: { type: 'time' as const, min: '2011-01-01' },
-    yAxis: { type: 'value' as const },
-    series: [
-      { type: 'line' as const, data: sorted.map(r => [r.event_month, r.opened_prs]), name: 'Opened PRs', color: green, areaStyle: { opacity: 0.15 }, symbolSize: 0, lineStyle: { width: 1 } },
-      { type: 'line' as const, data: sorted.map(r => [r.event_month, r.merged_prs]), name: 'Merged PRs', color: purple, areaStyle: { opacity: 0.15 }, symbolSize: 0, lineStyle: { width: 1 } },
-    ],
-  }), [sorted]);
+  const option = useMemo(() => createTimeSeriesOption([
+    { type: 'line' as const, data: sorted.map(r => [r.event_month, r.opened_prs]), name: 'Opened PRs', color: green, areaStyle: { opacity: 0.15 }, symbolSize: 0, lineStyle: { width: 1 } },
+    { type: 'line' as const, data: sorted.map(r => [r.event_month, r.merged_prs]), name: 'Merged PRs', color: purple, areaStyle: { opacity: 0.15 }, symbolSize: 0, lineStyle: { width: 1 } },
+  ]), [sorted]);
 
   const queryParams = useMemo(() => ({ userId }), [userId]);
 
@@ -70,17 +64,13 @@ function PullRequestHistory ({ userId }: { userId: number }) {
 
 function PullRequestSize ({ userId }: { userId: number }) {
   const { data, sql, queryName, loading } = usePersonalData('personal-pull-request-size-history', userId);
-  const option = useMemo(() => ({
-    xAxis: { type: 'time' as const, min: '2011-01-01' },
-    yAxis: { type: 'value' as const },
-    series: sizes.map((size, i) => ({
-      type: 'bar' as const,
-      data: (data ?? []).map(r => [r.event_month, (r as any)[size.name]]),
-      name: `${size.name} (${size.description})`,
-      stack: 'total',
-      color: redColors.slice(0, 6)[i],
-    })),
-  }), [data]);
+  const option = useMemo(() => createTimeSeriesOption(sizes.map((size, i) => ({
+    type: 'bar' as const,
+    data: (data ?? []).map(r => [r.event_month, (r as any)[size.name]]),
+    name: `${size.name} (${size.description})`,
+    stack: 'total',
+    color: redColors.slice(0, 6)[i],
+  }))), [data]);
 
   const queryParams = useMemo(() => ({ userId }), [userId]);
 
@@ -89,14 +79,10 @@ function PullRequestSize ({ userId }: { userId: number }) {
 
 function LineOfCodes ({ userId }: { userId: number }) {
   const { data, sql, queryName, loading } = usePersonalData('personal-pull-request-code-changes-history', userId);
-  const option = useMemo(() => ({
-    xAxis: { type: 'time' as const, min: '2011-01-01' },
-    yAxis: { type: 'value' as const },
-    series: [
-      { type: 'line' as const, data: (data ?? []).map(r => [r.event_month, r.additions]), name: 'Additions', color: '#57ab5a', areaStyle: {}, symbolSize: 0, lineStyle: { width: 0 } },
-      { type: 'line' as const, data: (data ?? []).map(r => [r.event_month, -r.deletions]), name: 'Deletions', color: '#e5534b', areaStyle: {}, symbolSize: 0, lineStyle: { width: 0 } },
-    ],
-  }), [data]);
+  const option = useMemo(() => createTimeSeriesOption([
+    { type: 'line' as const, data: (data ?? []).map(r => [r.event_month, r.additions]), name: 'Additions', color: '#57ab5a', areaStyle: {}, symbolSize: 0, lineStyle: { width: 0 } },
+    { type: 'line' as const, data: (data ?? []).map(r => [r.event_month, -r.deletions]), name: 'Deletions', color: '#e5534b', areaStyle: {}, symbolSize: 0, lineStyle: { width: 0 } },
+  ]), [data]);
 
   const queryParams = useMemo(() => ({ userId }), [userId]);
 

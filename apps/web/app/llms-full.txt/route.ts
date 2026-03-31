@@ -71,7 +71,7 @@ Curated lists of GitHub repositories grouped by technology domain. Each collecti
   // Dynamic collections list
   let collections: Array<{ id: number; name: string }> = [];
   try {
-    collections = await listCollections();
+    collections = await listCollections() as any;
     const collectionLines = collections.map(
       (c: { name: string }) => `- [${c.name}](${SITE_URL}/collections/${toCollectionSlug(c.name)})`,
     );

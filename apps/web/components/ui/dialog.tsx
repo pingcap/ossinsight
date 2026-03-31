@@ -39,7 +39,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 bg-[rgba(10,12,18,0.56)] duration-100 supports-backdrop-filter:backdrop-blur-md data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-50 bg-[rgba(10,12,18,0.56)]",
         className
       )}
       {...props}
@@ -61,7 +61,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-[1.5rem] border border-white/10 bg-[#2f2f3a] p-5 text-sm text-[#e9eaee] shadow-[0_36px_100px_-52px_rgba(0,0,0,0.98)] ring-1 ring-black/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-50 flex flex-col -translate-x-1/2 -translate-y-1/2 gap-4 rounded-sm border border-white/10 bg-[#212122] p-5 text-sm text-[#e9eaee] shadow-[0_36px_100px_-52px_rgba(0,0,0,0.98)] ring-1 ring-black/10 outline-none sm:max-w-sm",
           className
         )}
         {...props}
@@ -71,7 +71,7 @@ function DialogContent({
         <DialogPrimitive.Close data-slot="dialog-close" asChild>
           <Button
               variant="ghost"
-              className="absolute top-3 right-3 text-[#b8bac6] hover:bg-white/[0.06] hover:text-[#fff0b7]"
+              className="absolute top-3 right-3 text-[#b8bac6] hover:bg-white/[0.06] hover:text-white"
               size="icon-sm"
             >
               <XIcon

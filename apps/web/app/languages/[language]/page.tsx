@@ -24,7 +24,6 @@ const LANGUAGE_COLORS: Record<string, string> = {
 };
 
 export const revalidate = 3600;
-export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: Promise<{ language: string }>;
@@ -80,7 +79,7 @@ export default async function LanguagePage({ params }: PageProps) {
   try {
     repos = await getTrendingReposByLanguage(language, 'past_month');
   } catch (err) {
-    console.error(`[languages/${language}] query failed:`, err);
+    // query failed – continue with empty repos
   }
 
   // Find other languages for sidebar navigation
@@ -164,7 +163,7 @@ export default async function LanguagePage({ params }: PageProps) {
                 </div>
                 <div className="h-8 w-px bg-[#333]" />
                 <div>
-                  <div className="text-2xl font-bold text-[#ffe895]">{nf.format(totalStars)}</div>
+                  <div className="text-2xl font-bold text-[#e9eaee]">{nf.format(totalStars)}</div>
                   <div className="text-xs text-[#7c7c7c] uppercase tracking-wider">Total Stars</div>
                 </div>
                 <div className="h-8 w-px bg-[#333]" />
@@ -221,7 +220,7 @@ export default async function LanguagePage({ params }: PageProps) {
                           <div className="min-w-0">
                             <Link
                               href={`/analyze/${repo.repo_name}`}
-                              className="text-sm font-medium text-white hover:text-[#ffe895] transition-colors"
+                              className="text-sm font-medium text-white hover:text-white transition-colors"
                             >
                               {repo.repo_name}
                             </Link>
@@ -234,7 +233,7 @@ export default async function LanguagePage({ params }: PageProps) {
                         </div>
 
                         {/* Stars */}
-                        <div className="hidden sm:block text-right text-sm text-[#ffe895]">
+                        <div className="hidden sm:block text-right text-sm text-[#e9eaee]">
                           {nf.format(repo.stars)}
                         </div>
 
@@ -245,7 +244,7 @@ export default async function LanguagePage({ params }: PageProps) {
 
                         {/* Mobile stats row */}
                         <div className="sm:hidden flex items-center gap-4 ml-9 text-xs text-[#7c7c7c]">
-                          <span className="text-[#ffe895]">⭐ {nf.format(repo.stars)}</span>
+                          <span className="text-[#e9eaee]">⭐ {nf.format(repo.stars)}</span>
                           <span>🍴 {nf.format(repo.forks)}</span>
                         </div>
                       </div>

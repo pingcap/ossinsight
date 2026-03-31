@@ -1,6 +1,7 @@
 'use client';
 
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useMemo, useState } from 'react';
@@ -23,7 +24,7 @@ export default function BehaviourSection () {
 
   return (
     <ScrollspySectionWrapper anchor="behaviour" className="pt-8 pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Behaviour</h2>
+      <SectionHeading>Behaviour</SectionHeading>
       <p className="text-sm text-[#8c8c8c] mb-4">You can see the total contributions in different repositories since 2011, as well as check the status of different contribution categories type by type.</p>
       <AllContributions userId={userId} />
       <ContributionTime userId={userId} />
@@ -112,7 +113,7 @@ function Select ({ label, value, onChange, options }: { label: string; value: st
   return (
     <label className="flex flex-col gap-1 text-xs text-[#8c8c8c]">
       {label}
-      <select value={value} onChange={e => onChange(e.target.value)} className="rounded border border-[#363638] bg-[#2e2e2f] px-2 py-1 text-sm text-[#e0e0e0] outline-none focus:border-[#fbe593]">
+      <select value={value} onChange={e => onChange(e.target.value)} className="rounded border border-[#363638] bg-[#2e2e2f] px-2 py-1 text-sm text-[#e0e0e0] outline-none focus:border-white">
         {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </label>

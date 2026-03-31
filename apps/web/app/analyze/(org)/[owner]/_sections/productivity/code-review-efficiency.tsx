@@ -1,12 +1,13 @@
 'use client';
 import ChartTemplate from '@/components/Analyze/Section/Chart';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { getWidgetSize } from '@/lib/charts-utils/utils';
 
 export default function CodeReviewEfficiencyContent() {
   return (
     <ScrollspySectionWrapper anchor="code-review-efficiency" className="pt-8 pb-8">
-      <h3 className="text-[18px] font-semibold text-[#e9eaee] pb-3" style={{ scrollMarginTop: '140px' }}>Code Review</h3>
+      <SectionHeading level="h3">Code Review</SectionHeading>
       <div className="flex flex-col gap-4">
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-4">

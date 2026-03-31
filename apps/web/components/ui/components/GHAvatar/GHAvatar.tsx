@@ -1,37 +1,56 @@
 import * as RuiAvatar from '@radix-ui/react-avatar';
 import { AvatarSkeleton } from '../Skeleton';
+import { twMerge } from 'tailwind-merge';
 
 export interface GHAvatarProps {
+  /** GitHub login name OR full avatar URL (avatars.githubusercontent.com/u/{id} or github.com/{login}.png) */
   name: string;
-  size: number;
+  /** Pixel size – common values: 16, 24, 32, 40, 48, 64 */
+  size?: number;
+  /** true = fully round (circle), false = rounded-[3px] square. Default true. */
+  rounded?: boolean;
+  /** Extra classes merged onto the <img> element */
+  className?: string;
 }
 
-export function GHAvatar ({ name, size = 8 }: GHAvatarProps) {
-  const sizeValue = `${(size || 8) * 0.25}rem`;
+export function GHAvatar ({ name, size = 32, rounded = true, className }: GHAvatarProps) {
+  const px = `${size}px`;
 
   return (
     <RuiAvatar.Root>
       <RuiAvatar.Fallback asChild>
-        <AvatarSkeleton size={size} />
+        <AvatarSkeleton size={size / 4} />
       </RuiAvatar.Fallback>
       <RuiAvatar.Image
-        className={`block rounded-full`}
+        className={twMerge(
+          'block',
+          rounded ? 'rounded-full' : 'rounded-[3px]',
+          className,
+        )}
         style={{
-          width: sizeValue,
-          height: sizeValue,
-          minWidth: sizeValue,
-          minHeight: sizeValue,
-          maxWidth: sizeValue,
-          maxHeight: sizeValue,
+          width: px,
+          height: px,
+          minWidth: px,
+          minHeight: px,
+          maxWidth: px,
+          maxHeight: px,
         }}
-        src={getAvatarUrl(name)}
+        src={resolveAvatarUrl(name)}
         alt={`Avatar for ${name}`}
       />
     </RuiAvatar.Root>
   );
 }
 
-function getAvatarUrl (name: string) {
-  name = name.split('/')[0];
-  return `https://github.com/${name}.png`;
+/**
+ * Accept:
+ *  - a full URL (starts with http)  → pass through
+ *  - a GitHub login or "owner/repo" → https://github.com/{login}.png
+ */
+function resolveAvatarUrl (name: string): string {
+  if (name.startsWith('http://') || name.startsWith('https://')) {
+    return name;
+  }
+  const login = name.split('/')[0];
+  return `https://github.com/${login}.png`;
 }

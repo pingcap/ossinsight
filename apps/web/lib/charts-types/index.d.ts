@@ -115,7 +115,6 @@ export interface VisualizerModule<Type extends string, VisualizationResult, Data
 
   grid?: WidgetImageGridSize;
 
-  // TODO: refine type
   eventHandlers?: Array<{
     type: string;
     query?: any;

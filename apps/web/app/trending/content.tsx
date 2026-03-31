@@ -138,7 +138,7 @@ export function TrendingContent({ repos, period, language, languages, periods }:
           </div>
           <div className="h-6 w-px bg-[#333]" />
           <div>
-            <span className="text-xl font-bold text-[#ffe895]">{nf.format(totalStars)}</span>
+            <span className="text-xl font-bold text-[#e9eaee]">{nf.format(totalStars)}</span>
             <span className="ml-2 text-xs text-[#7c7c7c] uppercase tracking-wider">Total Stars</span>
           </div>
           {language !== 'All' && (
@@ -197,7 +197,7 @@ export function TrendingContent({ repos, period, language, languages, periods }:
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/analyze/${repo.repo_name}`}
-                          className="text-sm font-medium text-white hover:text-[#ffe895] transition-colors truncate"
+                          className="text-sm font-medium text-white hover:text-white transition-colors truncate"
                         >
                           {repo.repo_name}
                         </Link>
@@ -222,7 +222,7 @@ export function TrendingContent({ repos, period, language, languages, periods }:
                     </div>
                   </div>
 
-                  <div className="hidden sm:block text-right text-sm text-[#ffe895]">
+                  <div className="hidden sm:block text-right text-sm text-[#e9eaee]">
                     {nf.format(repo.stars)}
                   </div>
 
@@ -231,7 +231,7 @@ export function TrendingContent({ repos, period, language, languages, periods }:
                   </div>
 
                   <div className="sm:hidden flex items-center gap-4 ml-9 text-xs text-[#7c7c7c]">
-                    <span className="text-[#ffe895]">⭐ {nf.format(repo.stars)}</span>
+                    <span className="text-[#e9eaee]">⭐ {nf.format(repo.stars)}</span>
                     <span>🍴 {nf.format(repo.forks)}</span>
                     {repoLang && (
                       <span className="flex items-center gap-1">

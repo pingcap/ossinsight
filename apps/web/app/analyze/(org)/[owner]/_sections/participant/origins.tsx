@@ -3,8 +3,10 @@ import ChartTemplate from '@/components/Analyze/Section/Chart';
 import { CompanyRankTable, GeoRankTable } from '@/components/Analyze/Table/RankTable';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
+import { TabBar, TabItem } from '@/components/ui/TabBar';
 
 const ROLE_TABS = [
   { key: 'pr_creators', label: 'PR Creators' },
@@ -17,8 +19,8 @@ const ROLE_TABS = [
 
 export default function OriginsContent () {
   const { id: orgId } = React.useContext(AnalyzeOwnerContext);
-  const [roleIndex, setRoleIndex] = React.useState(0);
-  const currentRole = ROLE_TABS[roleIndex];
+  const [roleKey, setRoleKey] = React.useState<string>(ROLE_TABS[0].key);
+  const currentRole = ROLE_TABS.find(t => t.key === roleKey) ?? ROLE_TABS[0];
 
   const params = useSearchParams();
   const repoIds = params.get('repoIds')?.toString();
@@ -26,29 +28,13 @@ export default function OriginsContent () {
 
   return (
     <ScrollspySectionWrapper anchor="origins" className="pt-8 pb-8">
-      <h3 className="text-[18px] font-semibold text-[#e9eaee] pb-3" style={{ scrollMarginTop: '140px' }}>
-        Origins
-      </h3>
+      <SectionHeading level="h3">Origins</SectionHeading>
 
-      <div className="mb-6 flex gap-1 border-b border-[#3a3a3a]">
-        {ROLE_TABS.map((tab, i) => (
-          <button
-            key={tab.key}
-            className={`px-4 py-2 text-sm transition-colors ${
-              i === roleIndex
-                ? 'border-b-2 border-[var(--color-primary)] text-white'
-                : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
-            }`}
-            onClick={() => setRoleIndex(i)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <TabBar items={ROLE_TABS as unknown as TabItem[]} value={roleKey} onChange={setRoleKey} className="mb-6" />
 
       <div className="flex flex-col gap-8">
         {/* Company */}
-        <div className="grid grid-cols-12 gap-4" key={`company-${currentRole.key}`}>
+        <div className="grid grid-cols-12 gap-4">
           <div className="col-span-8">
             <ChartTemplate
               title="Activity by Company"
@@ -63,7 +49,6 @@ export default function OriginsContent () {
           </div>
           <div className="col-span-4">
             <CompanyRankTable
-              key={currentRole.key + repoIds + period}
               id={orgId}
               type="participants"
               className="h-[405px]"
@@ -73,7 +58,7 @@ export default function OriginsContent () {
         </div>
 
         {/* Region */}
-        <div className="grid grid-cols-12 gap-4" key={`map-${currentRole.key}`}>
+        <div className="grid grid-cols-12 gap-4">
           <div className="col-span-8">
             <ChartTemplate
               title="Activity by Region"
@@ -88,7 +73,6 @@ export default function OriginsContent () {
           </div>
           <div className="col-span-4">
             <GeoRankTable
-              key={currentRole.key + repoIds + period}
               id={orgId}
               type="participants"
               role={currentRole.key}

@@ -43,7 +43,7 @@ export function AnalyzeSelector ({ id, tuple, onTupleChange }: AnalyzeSelectorPr
   }, [onTupleChange]);
 
   return (
-    <div className="flex min-w-0 items-stretch rounded-xl border border-border bg-input shadow-sm">
+    <div className="flex min-w-0 items-stretch rounded-md border border-border bg-input shadow-sm">
       <Select className="Select-borderless min-w-[8.5rem]" value={tuple.type} onValueChange={handleTypeChange} position="popper">
         <SelectItem value={'user'}>
           User

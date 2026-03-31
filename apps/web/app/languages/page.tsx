@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import { LANGUAGES } from '@/lib/server/internal-api';
+import ShareButtons from '@/components/ShareButtons';
 
 export const metadata: Metadata = {
   title: 'Programming Languages on GitHub',
@@ -108,14 +109,14 @@ export default function LanguagesPage() {
               <Link
                 key={lang}
                 href={`/languages/${encodeURIComponent(lang)}`}
-                className="group relative overflow-hidden rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] p-5 transition-all hover:-translate-y-0.5 hover:border-[#444] hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)]"
+                className="group relative overflow-hidden rounded-md border border-[#2a2a2a] bg-[#1a1a1a] p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#444] hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)]"
               >
                 <div className="flex items-center gap-3">
                   <span
                     className="h-4 w-4 shrink-0 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.1)]"
                     style={{ backgroundColor: LANGUAGE_COLORS[lang] ?? '#8b8b8b' }}
                   />
-                  <span className="text-lg font-semibold text-white group-hover:text-[#ffe895] transition-colors">
+                  <span className="text-lg font-semibold text-white group-hover:text-white transition-colors">
                     {lang}
                   </span>
                 </div>
@@ -147,7 +148,7 @@ export default function LanguagesPage() {
               <Link
                 key={lang}
                 href={`/languages/${encodeURIComponent(lang)}`}
-                className="group flex items-center gap-2.5 rounded-lg border border-[#2a2a2a] bg-transparent px-3.5 py-2.5 transition-all hover:border-[#444] hover:bg-[#1a1a1a]"
+                className="group flex items-center gap-2.5 rounded-lg border border-[#2a2a2a] bg-transparent px-3.5 py-2.5 transition-[border-color,box-shadow,transform] hover:border-[#444] hover:bg-[#1a1a1a]"
               >
                 <span
                   className="h-2.5 w-2.5 shrink-0 rounded-full"
@@ -161,6 +162,7 @@ export default function LanguagesPage() {
           </div>
         </section>
       </div>
+      <ShareButtons url="/languages" title="Browse GitHub Repositories by Programming Language" />
     </>
   );
 }

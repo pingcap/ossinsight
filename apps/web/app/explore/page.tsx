@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { BreadcrumbListJsonLd, DatasetJsonLd } from '@/components/json-ld';
 import { ExploreContent } from './content';
+import ShareButtons from '@/components/ShareButtons';
 
 export const metadata: Metadata = {
   title: 'GitHub Data Explorer',
@@ -41,6 +42,7 @@ export default function ExplorePage() {
       <Suspense>
         <ExploreContent />
       </Suspense>
+      <ShareButtons url="/explore" title="GitHub Data Explorer — OSSInsight" />
     </>
   );
 }

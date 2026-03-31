@@ -1,6 +1,7 @@
 import type { WidgetVisualizerContext } from '@/lib/charts-types';
 
 import { scaleToFit } from '@/lib/charts-utils/utils';
+import { COLORS, COLORS_LIGHT, getColor } from '@/charts/shared/time-heatmap';
 import { CSSProperties, ForwardedRef, forwardRef, useMemo } from 'react';
 
 type Params = {
@@ -28,8 +29,6 @@ function useFilteredData (input: Input, type: string, runtime: 'server' | 'clien
 
 export default function (input: Input, ctx: WidgetVisualizerContext<Params>) {
   const data = useFilteredData(input, 'all', ctx.runtime);
-  // TODO
-  // ! TOFIX user here is undefined
   const user = ctx.getUser(ctx.parameters.user_id);
 
   return (
@@ -73,7 +72,7 @@ const TimeDistribution = forwardRef(({ runtime, dpr, width: tw, height: th, titl
 
   const { width: realWidth, height: realHeight } = scaleToFit(width, height + paddingTop, tw, th);
 
-  const colors = colorScheme === 'light' ? contributeDistributionColorsLight : contributeDistributionColors;
+  const colors = colorScheme === 'light' ? COLORS_LIGHT : COLORS;
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={realWidth} height={realHeight}
@@ -150,31 +149,11 @@ const TimeDistribution = forwardRef(({ runtime, dpr, width: tw, height: th, titl
             ry={3}
           />
         ))}
-        <text fontSize={12} fill="#777" x={contributeDistributionColors.length * (size + 4)} y={height - 16}>more</text>
+        <text fontSize={12} fill="#777" x={COLORS.length * (size + 4)} y={height - 16}>more</text>
       </g>
     </svg>
   );
 });
 
-const contributeDistributionColors = ['#2C2C2C', '#00480D', '#017420', '#34A352', '#6CDE8C', '#B5FFC9'];
-const contributeDistributionColorsLight = ['#e8e8e8', '#B5FFC9', '#6CDE8C', '#34A352', '#017420', '#00480D'];
-
 export const width = 720;
 export const height = 310;
-
-const getColor = (num: number, max: number, colors: string[]) => {
-  const d = num / max;
-  if (num === 0) {
-    return colors[0];
-  } else if (d < 1 / 5) {
-    return colors[1];
-  } else if (d < 2 / 5) {
-    return colors[2];
-  } else if (d < 3 / 5) {
-    return colors[3];
-  } else if (d < 4 / 5) {
-    return colors[4];
-  } else {
-    return colors[5];
-  }
-};

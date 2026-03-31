@@ -11,15 +11,16 @@ export const days = Array(7).fill(0).map((_, i) => i);
 export const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const COLORS = ['#2C2C2C', '#00480D', '#017420', '#34A352', '#6CDE8C', '#B5FFC9'];
+export const COLORS_LIGHT = ['#e8e8e8', '#B5FFC9', '#6CDE8C', '#34A352', '#017420', '#00480D'];
 
-export function getColor(num: number, max: number): string {
-  if (num === 0) return COLORS[0];
+export function getColor(num: number, max: number, colors: string[] = COLORS): string {
+  if (num === 0) return colors[0];
   const d = num / max;
-  if (d < 1 / 5) return COLORS[1];
-  if (d < 2 / 5) return COLORS[2];
-  if (d < 3 / 5) return COLORS[3];
-  if (d < 4 / 5) return COLORS[4];
-  return COLORS[5];
+  if (d < 1 / 5) return colors[1];
+  if (d < 2 / 5) return colors[2];
+  if (d < 3 / 5) return colors[3];
+  if (d < 4 / 5) return colors[4];
+  return colors[5];
 }
 
 export const SIZE = 16;

@@ -1,5 +1,6 @@
 'use client';
 import * as React from 'react';
+import { useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   RemoteRepoInfo,
@@ -36,6 +37,7 @@ export default function OrgAnalyzePageHeaderAction() {
     React.useContext(AnalyzeOwnerContext);
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   React.useEffect(() => {
     setCurrentRepoIds(
@@ -52,12 +54,10 @@ export default function OrgAnalyzePageHeaderAction() {
     const urlPeriod = currentParams.get('period') || options[1].key;
     if (urlPeriod !== v.key) {
       currentParams.set('period', v.key);
-      router.push(
-        pathname +
-          '?' +
-          currentParams.toString() +
-          ((typeof window !== 'undefined' && window.location.hash) || '')
-      );
+      const hash = (typeof window !== 'undefined' && window.location.hash) || '';
+      startTransition(() => {
+        router.push(pathname + '?' + currentParams.toString() + hash);
+      });
     }
   };
 
@@ -84,46 +84,51 @@ export default function OrgAnalyzePageHeaderAction() {
       currentParams.delete('repoIds');
       selectedRepoIds.forEach((id) => currentParams.append('repoIds', `${id}`));
 
-      router.push(
-        pathname +
-          '?' +
-          currentParams.toString() +
-          ((typeof window !== 'undefined' && window.location.hash) || '')
-      );
+      const hash = (typeof window !== 'undefined' && window.location.hash) || '';
+      startTransition(() => {
+        router.push(pathname + '?' + currentParams.toString() + hash);
+      });
     }
   };
 
   React.useEffect(() => {
     const HEADER_HEIGHT = 60;
-    const scroll = function () {
-      const title = document.getElementById('action-bar-title');
-      const divider = document.getElementById('title-divider');
+    let rafId: number | null = null;
 
-      if (divider && isElementScrolltoInvisible(divider, HEADER_HEIGHT)) {
-        title?.classList.remove('h-8', 'visible', 'opacity-100');
-        title?.classList.add('h-0', 'invisible', 'opacity-0');
-      } else {
-        title?.classList.remove('h-0', 'invisible', 'opacity-0');
-        title?.classList.add('h-8', 'visible', 'opacity-100');
-      }
+    const scroll = function () {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const title = document.getElementById('action-bar-title');
+        const divider = document.getElementById('title-divider');
+
+        if (divider && isElementScrolltoInvisible(divider, HEADER_HEIGHT)) {
+          title?.classList.remove('h-8', 'visible', 'opacity-100');
+          title?.classList.add('h-0', 'invisible', 'opacity-0');
+        } else {
+          title?.classList.remove('h-0', 'invisible', 'opacity-0');
+          title?.classList.add('h-8', 'visible', 'opacity-100');
+        }
+      });
     };
 
     scroll();
-    window.addEventListener('scroll', scroll);
+    window.addEventListener('scroll', scroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', scroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <>
       {/* -- action bar -- */}
-      <div className='sticky top-[var(--site-header-height)] flex flex-col gap-2 py-4 bg-[var(--background-color-body)] z-10'>
+      <div className='sticky top-[var(--site-header-height)] flex flex-col gap-2 py-4 bg-[var(--background-color-body)] z-10 will-change-transform'>
         {/* -- small title -- */}
         <div
           className={twMerge(
-            'transition-all ease-in-out duration-300',
+            'transition-[opacity,height,visibility] ease-in-out duration-300',
             'invisible h-0 opacity-0'
           )}
           id='action-bar-title'
@@ -190,7 +195,7 @@ function stringArray2NumberArray(arr: (string | number)[]) {
       }
       acc.push(num);
     } catch (e) {
-      console.error(e);
+      // NaN parse error – skip value
     }
     return acc;
   }, []);

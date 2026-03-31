@@ -171,7 +171,7 @@ declare module '@/lib/charts-types/widgets-definitions' {
     }
     
     /**
-     * TODO
+     * Ranking of repos with the most new activities in an organization
      */
     '@ossinsight/widget-compose-org-activity-new-ranking': {
       isPrivate: false,
@@ -225,7 +225,7 @@ declare module '@/lib/charts-types/widgets-definitions' {
     }
     
     /**
-     * TODO
+     * Ranking of repos with the most active contributors in an organization
      */
     '@ossinsight/widget-compose-org-activity-active-ranking': {
       isPrivate: false,
@@ -316,13 +316,13 @@ declare module '@/lib/charts-types/widgets-definitions' {
     }
     
     /**
-     * TODO
+     * Basic radar chart visualization
      */
     '@ossinsight/basic-radar-chart': {
       isPrivate: false,
       params: {
-        start: any // TODO // Start time
-        end: any // TODO // End time
+        start: any // Start time
+        end: any // End time
         axis_field: string // Axis field
         value_field: string // Value field
         label_field: string // Label field
@@ -330,13 +330,13 @@ declare module '@/lib/charts-types/widgets-definitions' {
     }
     
     /**
-     * TODO
+     * Basic bubbles chart visualization
      */
     '@ossinsight/basic-bubbles-chart': {
       isPrivate: false,
       params: {
-        start: any // TODO // Start time
-        end: any // TODO // End time
+        start: any // Start time
+        end: any // End time
         axis_field: string // Axis field
         value_field: string // Value field
         label_field: string // Label field
@@ -670,7 +670,7 @@ declare module '@/lib/charts-types/widgets-definitions' {
     }
     
     /**
-     * TODO analyze-org-activity-efficiency
+     * Activity efficiency metrics for an organization
      */
     '@ossinsight/widget-analyze-org-activity-efficiency': {
       isPrivate: false,
@@ -696,7 +696,7 @@ declare module '@/lib/charts-types/widgets-definitions' {
     }
     
     /**
-     * TODO
+     * Activity action type ratio for an organization
      */
     '@ossinsight/widget-analyze-org-activity-action-ratio': {
       isPrivate: false,

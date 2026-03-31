@@ -26,7 +26,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
       variant={mappedVariant}
       size={mappedSize}
       className={cn(
-        !variant && 'border-white/10 bg-white/[0.03] text-[#d8dae3] hover:border-[#ffe895]/30 hover:bg-white/[0.06] hover:text-[#f6f7fb]',
+        !variant && 'border-white/10 bg-white/[0.03] text-[#d8dae3] hover:border-white/30 hover:bg-white/[0.06] hover:text-[#f6f7fb]',
         className,
       )}
     />

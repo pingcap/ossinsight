@@ -3,6 +3,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Analyze from '@/components/Analyze/Analyze';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 
@@ -32,7 +33,7 @@ function TopContributors() {
             <img
               src={`https://github.com/${actor_login}.png`}
               alt={actor_login}
-              className="w-10 h-10 rounded-full hover:ring-2 ring-yellow-500 transition-all"
+              className="w-10 h-10 rounded-full hover:ring-2 ring-yellow-500 transition-shadow"
             />
           </a>
         ))}
@@ -62,12 +63,6 @@ function MapCard() {
   );
 }
 
-// --- Card wrapper ---
-
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`p-3 bg-gray-800/50 rounded-lg border border-gray-700/50 ${className}`}>{children}</div>;
-}
-
 // --- Section ---
 
 export function RepositorySection() {
@@ -75,69 +70,49 @@ export function RepositorySection() {
 
   return (
     <ScrollspySectionWrapper anchor="repository" className="pt-8 pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
-        Repository Statistics - Last 28 Days
-      </h2>
+      <SectionHeading>Repository Statistics - Last 28 Days</SectionHeading>
 
-      {/* 2x2 chart grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <Card>
-          <RepoChart
-            title="Stars"
-            name="@ossinsight/widget-analyze-repo-recent-stars"
-            visualizer={() => import('@/charts/analyze/repo/recent-stars/visualization')}
-            repoId={repoId!}
-            repoName={repoName}
-            style={{ height: 150 }}
-          />
-        </Card>
-
-        <Card>
-          <RepoChart
-            title="Issues"
-            name="@ossinsight/widget-analyze-repo-recent-issues"
-            visualizer={() => import('@/charts/analyze/repo/recent-issues/visualization')}
-            repoId={repoId!}
-            repoName={repoName}
-            style={{ height: 150 }}
-          />
-        </Card>
-
-        <Card>
-          <RepoChart
-            title="Pull Requests"
-            name="@ossinsight/widget-analyze-repo-recent-pull-requests"
-            visualizer={() => import('@/charts/analyze/repo/recent-pull-requests/visualization')}
-            repoId={repoId!}
-            repoName={repoName}
-            style={{ height: 150 }}
-          />
-        </Card>
-
-        <Card>
-          <RepoChart
-            title="Commits"
-            name="@ossinsight/widget-analyze-repo-recent-commits"
-            visualizer={() => import('@/charts/analyze/repo/recent-commits/visualization')}
-            repoId={repoId!}
-            repoName={repoName}
-            style={{ height: 150 }}
-          />
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RepoChart
+          title="Stars"
+          name="@ossinsight/widget-analyze-repo-recent-stars"
+          visualizer={() => import('@/charts/analyze/repo/recent-stars/visualization')}
+          repoId={repoId!}
+          repoName={repoName}
+          style={{ height: 150 }}
+        />
+        <RepoChart
+          title="Issues"
+          name="@ossinsight/widget-analyze-repo-recent-issues"
+          visualizer={() => import('@/charts/analyze/repo/recent-issues/visualization')}
+          repoId={repoId!}
+          repoName={repoName}
+          style={{ height: 150 }}
+        />
+        <RepoChart
+          title="Pull Requests"
+          name="@ossinsight/widget-analyze-repo-recent-pull-requests"
+          visualizer={() => import('@/charts/analyze/repo/recent-pull-requests/visualization')}
+          repoId={repoId!}
+          repoName={repoName}
+          style={{ height: 150 }}
+        />
+        <RepoChart
+          title="Commits"
+          name="@ossinsight/widget-analyze-repo-recent-commits"
+          visualizer={() => import('@/charts/analyze/repo/recent-commits/visualization')}
+          repoId={repoId!}
+          repoName={repoName}
+          style={{ height: 150 }}
+        />
       </div>
 
-      {/* Bottom row: Geo + Contributors */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
-        <Analyze query="analyze-stars-map" params={{ period: 'last_28_days' }}>
-          <Card>
-            <MapCard />
-          </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <Analyze query="analyze-stars-map" params={{ period: 'last_28_days' }} title="Stars Geo">
+          <MapCard />
         </Analyze>
-
-        <Analyze query="analyze-recent-top-contributors">
-          <Card>
-            <TopContributors />
-          </Card>
+        <Analyze query="analyze-recent-top-contributors" title="Top Contributors">
+          <TopContributors />
         </Analyze>
       </div>
     </ScrollspySectionWrapper>

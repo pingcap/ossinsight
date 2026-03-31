@@ -128,7 +128,7 @@ export function HeaderAnalyzeSelector({ apiBase = '', navigateTo }: HeaderAnalyz
         onClick={openModal}
         variant="outline"
         size="lg"
-        className="w-full min-w-[20rem] max-w-[32rem] justify-start gap-2.5 rounded-xl border-white/10 bg-transparent px-3.5 text-slate-200 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.6)] hover:border-[#ffe895]/25 hover:bg-white/[0.04] hover:text-slate-100"
+        className="w-full min-w-[20rem] max-w-[32rem] justify-start gap-2.5 rounded-sm border-white/10 bg-transparent px-3.5 text-slate-200 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.6)] hover:border-white/20 hover:bg-white/[0.04] hover:text-slate-100"
       >
         <LucideSearchIcon className="size-4 text-[#ffe895]" />
         Search ...
@@ -138,7 +138,7 @@ export function HeaderAnalyzeSelector({ apiBase = '', navigateTo }: HeaderAnalyz
       <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeModal(); }}>
         <DialogContent
           showCloseButton={false}
-          className="top-[10vh] max-h-[80vh] w-[min(68rem,calc(100vw-2rem))] max-w-none translate-y-0 overflow-y-auto rounded-[1.75rem] border border-white/10 bg-[#1a1a1b] p-0 text-[#e9eaee] shadow-[0_40px_120px_-60px_rgba(0,0,0,0.98)] ring-1 ring-black/20 supports-backdrop-filter:bg-[#1a1a1b]/98 supports-backdrop-filter:backdrop-blur-2xl sm:w-[min(68rem,calc(100vw-2.5rem))] sm:max-w-none"
+          className="search-dialog top-[10vh] max-h-[80vh] translate-y-0 overflow-y-auto rounded-sm border border-white/10 bg-[#1a1a1b] p-0 text-[#e9eaee] shadow-[0_40px_120px_-60px_rgba(0,0,0,0.98)] ring-1 ring-black/20 supports-backdrop-filter:bg-[#1a1a1b]/98 supports-backdrop-filter:backdrop-blur-2xl"
         >
           <DialogTitle className="sr-only">Search</DialogTitle>
           <DialogDescription className="sr-only">
@@ -176,7 +176,7 @@ function SelectTabs({ selectedType, onChange }: { selectedType: string; onChange
           variant={tab.id === selectedType ? 'secondary' : 'ghost'}
           size="sm"
           className={twMerge(
-            'justify-start rounded-xl px-3.5 text-[13px]',
+            'justify-start rounded-md px-3.5 text-[13px]',
             tab.id === selectedType ? 'bg-[#212122] text-[#ffe895] hover:bg-[#2a2a2c]' : 'text-slate-300 hover:bg-white/[0.05] hover:text-slate-100',
           )}
           onClick={() => onChange(tab.id)}
@@ -209,7 +209,7 @@ function CommonInput({ placeholder, handleInputValueChange }: { placeholder: str
       <Input
         ref={inputRef}
         type="text"
-        className="h-11 rounded-xl border-white/10 bg-[#212122] pl-9 text-[#eef0f5] placeholder:text-[#84879a] focus-visible:border-[#f7df83]/45 focus-visible:ring-2 focus-visible:ring-[#f7df83]/18"
+        className="h-11 rounded-md border-white/10 bg-[#212122] pl-9 text-[#eef0f5] placeholder:text-[#84879a] focus-visible:border-[#f7df83]/45 focus-visible:ring-2 focus-visible:ring-[#f7df83]/18"
         placeholder={placeholder}
         autoFocus
         onChange={(e) => handleInputValueChange(e.target.value || '')}
@@ -245,7 +245,7 @@ function CommonResultList<T extends { id: string | number }>({
         <li
           tabIndex={0}
           key={item.id}
-          className="group cursor-pointer overflow-hidden rounded-xl px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-white/[0.05] hover:text-slate-100 focus:bg-white/[0.06] focus:text-slate-100"
+          className="group cursor-pointer overflow-hidden rounded-md px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-white/[0.05] hover:text-slate-100 focus:bg-white/[0.06] focus:text-slate-100"
           onKeyDown={(e) => { if (e.key === 'Enter') handleSelectItem?.(item); }}
           onClick={() => handleSelectItem?.(item)}
         >

@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { useAnalyzeContext } from '@/components/Analyze/context';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 
 type SimilarRepo = {
   repo_name: string;
@@ -94,13 +95,7 @@ export default function SimilarReposRadial() {
 
   return (
     <div className="mt-8">
-      <h3
-        id="similar-repos"
-        className="pb-2 text-[18px] font-semibold text-[#e9eaee]"
-        style={{ scrollMarginTop: '140px' }}
-      >
-        Similar Repositories
-      </h3>
+      <SectionHeading level="h3" id="similar-repos" className="pb-2">Similar Repositories</SectionHeading>
       <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
         Repositories sharing the most topics in common. Click a node to analyze it.
       </p>

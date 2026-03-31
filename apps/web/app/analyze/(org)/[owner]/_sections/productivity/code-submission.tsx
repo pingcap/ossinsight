@@ -1,6 +1,7 @@
 'use client';
 import ChartTemplate from '@/components/Analyze/Section/Chart';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { getWidgetSize } from '@/lib/charts-utils/utils';
 import * as React from 'react';
 
@@ -11,7 +12,7 @@ function getLocalTimezoneOffset() {
 export default function CodeSubmissionContent () {
   return (
     <ScrollspySectionWrapper anchor="code-submission" className="pt-8 pb-8">
-      <h3 className="text-[18px] font-semibold text-[#e9eaee] pb-3" style={{ scrollMarginTop: '140px' }}>Code Submission</h3>
+      <SectionHeading level="h3">Code Submission</SectionHeading>
       <div className="flex flex-col gap-4">
         <ChartTemplate
           name='@ossinsight/widget-compose-org-activity-growth-total'

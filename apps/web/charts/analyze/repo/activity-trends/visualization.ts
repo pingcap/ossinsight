@@ -26,8 +26,6 @@ function fmtDate (val: number) {
   return `${parts[2].value}-${parts[0].value}`;
 }
 
-// TODO: This is a copy of the widget from widgets/analyze-repo-stars-history
-// TODO: We should update after APIs are updated
 export default function (
   input: Input,
   ctx: WidgetVisualizerContext<Params>,

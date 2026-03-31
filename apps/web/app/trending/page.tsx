@@ -9,7 +9,6 @@ import {
 import { TrendingContent } from './content';
 
 export const revalidate = 3600;
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Trending GitHub Repositories',
@@ -49,7 +48,7 @@ export default async function TrendingPage({ searchParams }: PageProps) {
   try {
     repos = await getTrendingRepos(language, period);
   } catch (err) {
-    console.error('[trending] query failed:', err);
+    // query failed – continue with empty repos
   }
 
   const jsonLd = {

@@ -11,7 +11,7 @@ const Gauge = GaugeIcon as React.ComponentType<any>;
 const Pencil = PencilIcon as React.ComponentType<any>;
 import type { EChartsOption } from 'echarts';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   collectionHistoryDimensions,
@@ -24,7 +24,6 @@ import { type CollectionQueryResponse, useCollectionApi } from '@/lib/collection
 import type { Collection } from '@/utils/api';
 import { formatMonth } from '@/lib/charts-utils/utils';
 
-// @ts-expect-error - dynamic import type mismatch with Next.js types
 const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false }) as React.ComponentType<any>;
 
 type HistoryRow = {
@@ -35,7 +34,7 @@ type HistoryRow = {
 };
 
 const COLORS = [
-  '#f7df83',
+  '#e9eaee',
   '#5f92ff',
   '#73b9bc',
   '#e69d87',
@@ -115,9 +114,6 @@ function CollectionPageHeader({
   );
 }
 
-function LoadingSkeleton({ className, ...props }: React.ComponentProps<typeof Skeleton>) {
-  return <Skeleton className={['bg-white/[0.08]', className].filter(Boolean).join(' ')} {...props} />;
-}
 
 function TrendChartSkeleton({
   height,
@@ -133,7 +129,7 @@ function TrendChartSkeleton({
           <LoadingSkeleton key={index} className="h-5 w-28 rounded-full" />
         ))}
       </div>
-      <LoadingSkeleton className="w-full rounded-2xl" style={{ height }} />
+      <LoadingSkeleton className="w-full rounded-md" style={{ height }} />
       {showControls && (
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <LoadingSkeleton className="h-8 w-16 rounded-md" />
@@ -149,7 +145,7 @@ function BarChartRaceSection({ collectionId, collectionName }: { collectionId: n
   const [metric, setMetric] = useMetricFromUrl('bar-chart-race');
   const [playing, setPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const dataPath = getCollectionHistoryPath(collectionId, metric);
   const explainPath = getCollectionHistoryExplainPath(collectionId, metric);
   const { data, loading, hasLoaded, error } = useCollectionApi<CollectionQueryResponse<HistoryRow>>(dataPath);

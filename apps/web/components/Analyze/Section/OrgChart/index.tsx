@@ -5,14 +5,21 @@ import { createVisualizationContext, createWidgetContext } from '@/lib/charts-co
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { fetchChartData } from './endpoints';
+import { useChartContainer } from '@/components/Analyze/hooks/useChartContainer';
 
 const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false });
 
 const dpr = typeof devicePixelRatio === 'number' ? devicePixelRatio : 2;
 
+interface VisualizerModule {
+  type: 'echarts' | 'react-svg' | 'react';
+  default: (...args: any[]) => any;
+  asyncComponent?: boolean;
+}
+
 interface OrgChartProps {
   name: string;
-  visualizer: () => Promise<any>;
+  visualizer: () => Promise<VisualizerModule>;
   params: Record<string, any>;
   className?: string;
   orgId?: number;
@@ -21,25 +28,15 @@ interface OrgChartProps {
 }
 
 export default function OrgChart({ name, visualizer, params, className, orgId, orgLogin, onSQLReady }: OrgChartProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  const [vizModule, setVizModule] = useState<any>(null);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      setSize({ width: entry.contentRect.width, height: entry.contentRect.height });
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+  const { containerRef, size } = useChartContainer();
+  const [vizModule, setVizModule] = useState<VisualizerModule | null>(null);
 
   const paramsKey = useMemo(() => JSON.stringify(params), [params]);
   const dataQuery = useQuery({
     queryKey: ['org-chart', name, paramsKey],
     queryFn: ({ signal }) => fetchChartData(name, params, signal),
     placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000, // 5 minutes - chart data doesn't change frequently
   });
   const fetchResult = dataQuery.data ?? null;
   const data = fetchResult?.data ?? null;
@@ -55,8 +52,8 @@ export default function OrgChart({ name, visualizer, params, className, orgId, o
   useEffect(() => {
     let stale = false;
     visualizerRef.current()
-      .then((mod: any) => { if (!stale) setVizModule(mod); })
-      .catch((e: any) => { console.warn(`[OrgChart] Failed to load visualizer for: ${name}`, e); });
+      .then((mod) => { if (!stale) setVizModule(mod); })
+      .catch(() => { /* visualizer load failed */ });
     return () => { stale = true; };
   }, []);
 
@@ -79,14 +76,14 @@ export default function OrgChart({ name, visualizer, params, className, orgId, o
   const ready = !loading && !!data && !!vizModule && !!ctx;
 
   return (
-    <div ref={containerRef} className={className} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} className={`w-full h-full ${className ?? ''}`}>
       {ready && <OrgChartContent vizModule={vizModule} data={data} ctx={ctx} linkedData={linkedData} />}
     </div>
   );
 }
 
 function OrgChartContent({ vizModule, data, ctx, linkedData }: {
-  vizModule: any;
+  vizModule: VisualizerModule;
   data: any[];
   ctx: any;
   linkedData: any;
@@ -100,7 +97,7 @@ function OrgChartContent({ vizModule, data, ctx, linkedData }: {
   if (type === 'react') {
     const Component = vizModule.default;
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div className="w-full h-full flex flex-col">
         <Component data={data} ctx={ctx} linkedData={linkedData} />
       </div>
     );
@@ -114,7 +111,7 @@ function OrgChartContent({ vizModule, data, ctx, linkedData }: {
 }
 
 function EChartsRenderer({ vizModule, data, ctx }: {
-  vizModule: any;
+  vizModule: VisualizerModule;
   data: any[];
   ctx: any;
 }) {
@@ -127,7 +124,7 @@ function EChartsRenderer({ vizModule, data, ctx }: {
   return (
     <LazyECharts
       option={option}
-      style={{ width: '100%', height: '100%' }}
+      className="w-full h-full"
       notMerge
       lazyUpdate
       theme="dark"
@@ -136,7 +133,7 @@ function EChartsRenderer({ vizModule, data, ctx }: {
 }
 
 function ReactSvgRenderer({ vizModule, data, ctx }: {
-  vizModule: any;
+  vizModule: VisualizerModule;
   data: any[];
   ctx: any;
 }) {
@@ -149,7 +146,7 @@ function ReactSvgRenderer({ vizModule, data, ctx }: {
 }
 
 function AsyncSvgTopLevel({ vizModule, data, ctx }: {
-  vizModule: any;
+  vizModule: VisualizerModule;
   data: any[];
   ctx: any;
 }) {

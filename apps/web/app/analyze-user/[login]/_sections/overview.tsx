@@ -1,10 +1,11 @@
 'use client';
 
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import { TextSkeleton } from '@/components/ui/components/Skeleton';
-import { formatNumber } from '@/lib/charts-utils/utils';
-import NextImage from 'next/image';
+import { GHAvatar } from '@/components/ui/components/GHAvatar';
+import { formatNumber, number2percent } from '@/lib/charts-utils/utils';
 import NextLink from 'next/link';
 import {
   StarIcon,
@@ -14,6 +15,8 @@ import {
   RepoIcon,
   PersonIcon,
 } from '@primer/octicons-react';
+import MetricTable from '@/components/ui/MetricTable';
+import type { MetricItem } from '@/components/ui/MetricTable';
 import * as React from 'react';
 import { useMemo } from 'react';
 import PersonalChart from '../_charts/ChartWrapper';
@@ -29,12 +32,11 @@ export default function OverviewSection () {
       {/* -- header -- */}
       <NextLink target="_blank" rel="noopener noreferrer" href={`https://github.com/${login}`}>
         <h1 className="font-semibold text-[28px] text-title inline-flex items-center cursor-pointer">
-          <NextImage
-            src={`https://avatars.githubusercontent.com/u/${userId}`}
-            alt={`${login} avatar`}
-            className="inline mr-[10px] rounded-full"
-            width={40}
-            height={40}
+          <GHAvatar
+            name={`https://avatars.githubusercontent.com/u/${userId}`}
+            size={40}
+            rounded={true}
+            className="inline mr-[10px]"
           />
           {login}
         </h1>
@@ -55,7 +57,7 @@ export default function OverviewSection () {
       <hr className="my-1 h-[1px] border-t-0 bg-[#363638]" />
 
       {/* -- Overview section -- */}
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Overview</h2>
+      <SectionHeading>Overview</SectionHeading>
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-6 items-start">
         <div>
           <h4 className="text-[14px] font-medium text-[#e9eaee] pb-2">Metrics</h4>
@@ -81,59 +83,23 @@ function LabelItem ({ icon, label, count, loading }: { icon: React.ReactNode; la
 }
 
 function OverviewTable ({ overview, loading }: { overview: ReturnType<typeof usePersonalOverview>['data']; loading: boolean }) {
-  const items = [
-    { icon: <StarIcon fill="#FAC858" size={16} />, label: 'Starred Repos', value: overview?.star_repos },
-    { icon: <StarIcon fill="#FAC858" size={16} />, label: 'Stars Earned', value: overview?.star_earned },
-    { icon: <RepoIcon fill="#6940D0" size={16} />, label: 'Contributed to', value: overview?.contribute_repos },
-    { icon: <IssueOpenedIcon fill="#FDE494" size={16} />, label: 'Issues', value: overview?.issues },
-    { icon: <GitPullRequestIcon fill="#D34764" size={16} />, label: 'Pull Requests', value: overview?.pull_requests },
-    { icon: <CodeReviewIcon fill="#2F92FF" size={16} />, label: 'Code Reviews', value: overview?.code_reviews },
+  const items: MetricItem[] = [
+    { icon: <StarIcon fill="#FAC858" size={16} />, label: 'Starred Repos', value: formatNumber(overview?.star_repos ?? 0) },
+    { icon: <StarIcon fill="#FAC858" size={16} />, label: 'Stars Earned', value: formatNumber(overview?.star_earned ?? 0) },
+    { icon: <RepoIcon fill="#6940D0" size={16} />, label: 'Contributed to', value: formatNumber(overview?.contribute_repos ?? 0) },
+    { icon: <IssueOpenedIcon fill="#FDE494" size={16} />, label: 'Issues', value: formatNumber(overview?.issues ?? 0) },
+    { icon: <GitPullRequestIcon fill="#D34764" size={16} />, label: 'Pull Requests', value: formatNumber(overview?.pull_requests ?? 0) },
+    { icon: <CodeReviewIcon fill="#2F92FF" size={16} />, label: 'Code Reviews', value: formatNumber(overview?.code_reviews ?? 0) },
+    {
+      icon: <GitPullRequestIcon fill="#D34764" size={16} />,
+      label: 'PR Code Changes',
+      value: (
+        <><span className="text-[#57ab5a]">+{formatNumber(overview?.code_additions ?? 0)}</span>{' / '}<span className="text-[#e5534b]">-{formatNumber(overview?.code_deletions ?? 0)}</span></>
+      ),
+    },
   ];
 
-  return (
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="border-b border-[#323234]">
-          <th className="pb-2 text-left text-[13px] font-medium text-[#d8d8d8]" />
-          <th className="pb-2 text-right text-[13px] font-medium text-[#d8d8d8]" />
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item) => (
-          <tr key={item.label} className="border-b border-[#2a2a2c] last:border-0">
-            <td className="py-3 pr-4 text-[14px] text-[#d8d8d8]">
-              <span className="inline-flex items-center gap-2">
-                <span className="inline-flex h-4 w-4 items-center justify-center">{item.icon}</span>
-                <span>{item.label}</span>
-              </span>
-            </td>
-            <td className="py-3 text-right text-[15px] font-medium leading-none text-[#e9eaee] tabular-nums">
-              {loading ? (
-                <span className="inline-block h-5 w-12 animate-pulse rounded bg-[#343436]" />
-              ) : (
-                formatNumber(item.value ?? 0)
-              )}
-            </td>
-          </tr>
-        ))}
-        <tr className="border-b border-[#2a2a2c] last:border-0">
-          <td className="py-3 pr-4 text-[14px] text-[#d8d8d8]">
-            <span className="inline-flex items-center gap-2">
-              <span className="inline-flex h-4 w-4 items-center justify-center"><GitPullRequestIcon fill="#D34764" size={16} /></span>
-              <span>PR Code Changes</span>
-            </span>
-          </td>
-          <td className="py-3 text-right text-[15px] font-medium leading-none tabular-nums">
-            {loading ? (
-              <span className="inline-block h-5 w-20 animate-pulse rounded bg-[#343436]" />
-            ) : (
-              <><span className="text-[#57ab5a]">+{formatNumber(overview?.code_additions ?? 0)}</span>{' / '}<span className="text-[#e5534b]">-{formatNumber(overview?.code_deletions ?? 0)}</span></>
-            )}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
+  return <MetricTable items={items} loading={loading} />;
 }
 
 function Languages ({ userId }: { userId: number }) {
@@ -153,14 +119,14 @@ function Languages ({ userId }: { userId: number }) {
           <div key={lang.language} className="flex items-center gap-1.5 text-sm">
             <span className="block w-1.5 h-1.5 rounded-full" style={{ backgroundColor: languageColors[i % languageColors.length] }} />
             <span className="text-[#F9F9F9] font-bold">{lang.language}</span>
-            <span className="text-[#C4C4C4]">{lang.percentage === 1 ? '100' : (lang.percentage * 100).toPrecision(2)}%</span>
+            <span className="text-[#C4C4C4]">{number2percent(lang.percentage)}</span>
           </div>
         ))}
         {othersPercent > 0 && (
           <div className="flex items-center gap-1.5 text-sm">
             <span className="block w-1.5 h-1.5 rounded-full bg-[#3c3c3c]" />
             <span className="text-[#F9F9F9] font-bold">Others</span>
-            <span className="text-[#C4C4C4]">{(othersPercent * 100).toPrecision(2)}%</span>
+            <span className="text-[#C4C4C4]">{number2percent(othersPercent)}</span>
           </div>
         )}
       </div>

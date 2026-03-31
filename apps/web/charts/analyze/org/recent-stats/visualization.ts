@@ -145,7 +145,6 @@ export default function (
       splitLine: {
         lineStyle: {
           color: '#2a2a2c', type: 'dashed',
-          type: 'dashed',
         },
       },
     },

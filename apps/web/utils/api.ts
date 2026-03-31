@@ -1,3 +1,8 @@
+import { cache } from 'react';
+
+// React.cache only works on the server; on the client we skip it.
+const serverCache = typeof window === 'undefined' ? cache : <T extends (...args: any[]) => any>(fn: T) => fn;
+
 export const PUBLIC_API_SERVER = 'https://api.ossinsight.io';
 export const EXPLORER_API_SERVER = process.env.NEXT_PUBLIC_EXPLORER_API_SERVER || PUBLIC_API_SERVER;
 export const API_SERVER = typeof window === 'undefined' ? getSiteOrigin() : '';
@@ -83,7 +88,7 @@ export interface Collection {
   past_month_visits?: number;
 }
 
-export async function fetchCollections(): Promise<Collection[]> {
+async function _fetchCollections(): Promise<Collection[]> {
   if (typeof window === 'undefined') {
     const { listCollections } = await import('@/lib/server/internal-api');
     const collections = await listCollections() as Collection[];
@@ -98,6 +103,10 @@ export async function fetchCollections(): Promise<Collection[]> {
   const collections = (json.data ?? []) as Collection[];
   return collections.filter((collection) => collection.public !== 0);
 }
+
+// React.cache deduplicates calls within a single server request,
+// so generateMetadata and the page component share the same result.
+export const fetchCollections = serverCache(_fetchCollections);
 
 export async function fetchGitHubUser(login: string) {
   if (typeof window === 'undefined') {

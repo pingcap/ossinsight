@@ -45,7 +45,7 @@ export const Select = React.forwardRef<
             : <SelectValue placeholder={placeholder ? <span className="text-content text-sm">{placeholder}</span> : undefined} />}
         </UISelectTrigger>
         <UISelectContent
-          className="z-10 min-w-[10rem] rounded-xl border border-border bg-popover p-1 text-subtitle shadow-[0_18px_40px_-24px_rgba(0,0,0,0.85)]"
+          className="z-10 min-w-[10rem] rounded-md border border-border bg-popover p-1 text-subtitle shadow-[0_18px_40px_-24px_rgba(0,0,0,0.85)]"
           position={position}
         >
           {children}
@@ -62,7 +62,7 @@ export const SelectItem = React.forwardRef<
   return (
     <UISelectItem
       className={cn(
-        'rounded-lg px-3 py-2 text-sm text-subtitle outline-none transition-colors focus:bg-accent focus:text-active data-[state=checked]:text-active',
+        'rounded px-3 py-2 text-sm text-subtitle outline-none transition-colors focus:bg-accent focus:text-active data-[state=checked]:text-active',
         className
       )}
       {...props}

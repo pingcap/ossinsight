@@ -7,6 +7,18 @@ import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import ShareButtons from '@/components/ShareButtons';
 import { Metadata } from 'next';
 
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return [
+    { owner: 'pingcap' },
+    { owner: 'microsoft' },
+    { owner: 'google' },
+    { owner: 'facebook' },
+    { owner: 'vercel' },
+  ];
+}
+
 export default async function Page ({ params }: { params: Promise<{ owner: string }> }) {
   const { owner } = await params;
   const data = await fetchOwnerInfo(decodeURIComponent(owner));

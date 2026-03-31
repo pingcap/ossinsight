@@ -10,6 +10,7 @@ import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import { toCollectionSlug } from '@/lib/collections';
 import { CollectionsList } from './content';
 import type { Collection } from '@/utils/api';
+import ShareButtons from '@/components/ShareButtons';
 
 export const metadata: Metadata = {
   title: 'Open Source Collections — AI Agent Frameworks, GitHub Trending & More',
@@ -126,6 +127,7 @@ export default async function CollectionsPage({
         sort={result.sort}
         pagination={result.pagination}
       />
+      <ShareButtons url="/collections" title="Explore Open Source Collections on OSSInsight" />
     </>
   );
 }

@@ -21,7 +21,7 @@ export default async function executeApiDatasource (config: ApiDatasourceConfig,
   }
 
   const template = parseTemplate(config.url);
-  // TODO: replaceAll is a workaround, e.g. /api/queries/orgs/issues%2Fclosed-ratio => /api/queries/orgs/issues/closed-ratio
+  // Decode encoded slashes in URI-template output so API routes resolve correctly.
   const urlExpanded = rewriteInternalApiUrl(
     template.expand(ctx.parameters).replaceAll(`%2F`, `/`),
   );

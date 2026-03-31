@@ -114,7 +114,6 @@ async function fetchAllAIRepos(): Promise<TrendingAIResponse> {
 
     return { repos, categories };
   } catch (error) {
-    console.warn('[trending/ai] Failed to pre-fetch data:', error);
     return { repos: [], categories: [] };
   }
 }

@@ -10,10 +10,10 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#1a1a1b] flex flex-col items-center justify-center px-6 text-white">
       {/* Accent line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-[#f7df83]" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-white" />
 
       {/* 404 number */}
-      <div className="text-[120px] font-bold leading-none text-[#f7df83] opacity-20 select-none mb-2">
+      <div className="text-[120px] font-bold leading-none text-[#e9eaee] opacity-20 select-none mb-2">
         404
       </div>
 
@@ -32,7 +32,7 @@ export default function NotFound() {
       <div className="flex flex-col sm:flex-row gap-4">
         <Link
           href="/"
-          className="inline-flex items-center justify-center rounded-lg bg-[#f7df83] text-[#1a1a1b] font-semibold px-6 py-3 hover:bg-[#f5d85a] transition-colors"
+          className="inline-flex items-center justify-center rounded-lg bg-white text-[#1a1a1b] font-semibold px-6 py-3 hover:bg-white/90 transition-colors"
         >
           ← Back to Home
         </Link>
@@ -53,15 +53,15 @@ export default function NotFound() {
       {/* Quick links */}
       <div className="mt-12 text-sm text-white/40">
         <span>Try: </span>
-        <Link href="/collections" className="text-[#f7df83]/70 hover:text-[#f7df83] transition-colors underline">
+        <Link href="/collections" className="text-white/70 hover:text-white transition-colors underline">
           Collections
         </Link>
         <span className="mx-2">·</span>
-        <Link href="/trending" className="text-[#f7df83]/70 hover:text-[#f7df83] transition-colors underline">
+        <Link href="/trending" className="text-white/70 hover:text-white transition-colors underline">
           Trending
         </Link>
         <span className="mx-2">·</span>
-        <Link href="/explore" className="text-[#f7df83]/70 hover:text-[#f7df83] transition-colors underline">
+        <Link href="/explore" className="text-white/70 hover:text-white transition-colors underline">
           Data Explorer
         </Link>
       </div>

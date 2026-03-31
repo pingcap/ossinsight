@@ -4,6 +4,7 @@ import type {
 } from '@/lib/charts-types';
 import { simpleGrid } from '@/lib/charts-utils/options';
 import { compare } from '@/lib/charts-utils/visualizer/analyze';
+import { chartColors } from '@/app/analyze-user/[login]/_charts/colors';
 
 type Params = {
   user_id: string;
@@ -34,15 +35,6 @@ type DataPoint = {
 };
 
 type Input = [DataPoint[], DataPoint[] | undefined];
-
-const chartColors = [
-  '#34A352',
-  '#D34764',
-  '#FF9D36',
-  '#FDE494',
-  '#2F92FF',
-  '#BCDAFF',
-];
 
 const generateDataset = (data: DataPoint[]) => {
   const initialDataset: Record<ContributionType, DataPoint[]> = {} as Record<ContributionType, DataPoint[]>;

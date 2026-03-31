@@ -374,7 +374,7 @@ function renderExplorerCell(column: string, value: unknown) {
     return (
       <Link
         href={`/analyze/${value}`}
-        className="text-[#fbe593] transition-colors hover:text-[#fceeb4]"
+        className="text-white transition-colors hover:text-white"
       >
         {String(value)}
       </Link>
@@ -384,7 +384,7 @@ function renderExplorerCell(column: string, value: unknown) {
   if (isLikelyUrl(column, value)) {
     return (
       <a
-        className="text-[#fbe593] transition-colors hover:text-[#fceeb4]"
+        className="text-white transition-colors hover:text-white"
         href={String(value)}
         target="_blank"
         rel="noopener noreferrer"
@@ -1021,14 +1021,14 @@ function ResultViewToggle({
 }) {
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-[#3c3c3c] bg-[#2d2d34] px-2 py-1">
-      <BarChart3 className={cn('size-3.5', value === 'visualization' ? 'text-[#fbe593]' : 'text-[#8b8b8e]')} />
+      <BarChart3 className={cn('size-3.5', value === 'visualization' ? 'text-white' : 'text-[#8b8b8e]')} />
       <Switch
         aria-label="Switch result view"
         checked={value === 'raw'}
         disabled={disabled}
         onCheckedChange={(checked) => onValueChange(checked ? 'raw' : 'visualization')}
       />
-      <TableProperties className={cn('size-3.5', value === 'raw' ? 'text-[#fbe593]' : 'text-[#8b8b8e]')} />
+      <TableProperties className={cn('size-3.5', value === 'raw' ? 'text-white' : 'text-[#8b8b8e]')} />
     </div>
   );
 }
@@ -1326,7 +1326,7 @@ function ExplorerResult({
                       onClick={() => setFeedback((value) => (value === 'up' ? null : 'up'))}
                       className={cn(
                         'inline-flex h-7 w-7 items-center justify-center rounded-full transition',
-                        feedback === 'up' ? 'text-[#fbe593]' : 'text-[#d7d7d8] hover:text-white',
+                        feedback === 'up' ? 'text-white' : 'text-[#d7d7d8] hover:text-white',
                       )}
                       aria-label="Helpful"
                     >
@@ -1337,7 +1337,7 @@ function ExplorerResult({
                       onClick={() => setFeedback((value) => (value === 'down' ? null : 'down'))}
                       className={cn(
                         'inline-flex h-7 w-7 items-center justify-center rounded-full transition',
-                        feedback === 'down' ? 'text-[#fbe593]' : 'text-[#d7d7d8] hover:text-white',
+                        feedback === 'down' ? 'text-white' : 'text-[#d7d7d8] hover:text-white',
                       )}
                       aria-label="Not helpful"
                     >
@@ -1753,7 +1753,7 @@ function ExploreOurDataCard() {
           <div className="bg-[linear-gradient(90deg,#FFBCA7_2.21%,#DAA3D8_30.93%,#B587FF_67.95%,#6B7AFF_103.3%)] bg-clip-text text-[32px] font-semibold leading-[1.5] text-transparent">
             Our data source
           </div>
-          <img src="/img/explore/ads-1.svg" alt="" className="mt-3 max-w-[90%]" />
+          <img src="/img/explore/ads-1.svg" alt="" width={540} height={180} className="mt-3 max-w-[90%] h-auto" />
           <div className="mt-3 text-[16px] font-medium leading-[1.8] text-white">
             <img src="/img/explore-logo-layer-0.png" alt="Explore" className="mx-2 inline h-6 w-auto align-text-bottom" />
             GitHub Data Explorer for

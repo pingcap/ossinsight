@@ -240,11 +240,11 @@ export function HLGHOrgRepoSelectorTemplate(props: {
           disabled={disabled}
           variant='outline'
           size='lg'
-          className='w-[260px] max-w-[260px] justify-between rounded-xl border-white/10 bg-white/[0.03] px-3 text-slate-200 hover:border-[#ffe895]/25 hover:bg-white/[0.06]'
+          className='w-[260px] max-w-[260px] justify-between rounded-md border-white/10 bg-white/[0.03] px-3 text-slate-200 hover:border-white/25 hover:bg-white/[0.06]'
           style={{ width: 260, maxWidth: 260 }}
         >
           <span className='flex items-center min-w-0 overflow-hidden'>
-            <RepoIcon className='mr-2 flex-shrink-0 text-[#ffe895]' />
+            <RepoIcon className='mr-2 flex-shrink-0 text-[#e9eaee]' />
             <span className='truncate'>
               {selectedItems.length === 0
                 ? allItem.name
@@ -252,7 +252,7 @@ export function HLGHOrgRepoSelectorTemplate(props: {
             </span>
           </span>
           <span className='flex items-center gap-1 ml-2 flex-shrink-0'>
-            <span className='rounded-full bg-[var(--selector-fill-color)] px-1.5 py-0.5 text-[11px] font-medium text-[#1f1e28]'>
+            <span className='rounded-full bg-[var(--selector-fill-color)] px-1.5 py-0.5 text-[11px] font-medium text-white'>
               {selectedItems.length === 0
                 ? 'All'
                 : parseItemsLength(selectedItems.length)}

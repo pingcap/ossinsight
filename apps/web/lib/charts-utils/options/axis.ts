@@ -65,7 +65,6 @@ export function timeAxis<T extends 'x' | 'y'>(
         },
       },
     },
-    // TODO: prevent compute multi-times
     min: !_.isEmpty(fromRecent)
       ? fromRecent === true
         ? undefined
@@ -132,8 +131,6 @@ export function logAxis<T extends 'x' | 'y'>(
   id?: OptionId,
   option: AxisOption<T, LogAxisBaseOption> = {}
 ): AxisOption<T> {
-  // TODO
-  // const small = isSmall();
   return merge<AxisOption<T>>(option, {
     id,
     type: 'log',

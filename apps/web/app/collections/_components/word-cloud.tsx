@@ -1,9 +1,13 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import NextLink from 'next/link';
 import { toCollectionSlug } from '@/lib/collections';
+
 import type { Collection } from '@/utils/api';
+
+// Cast to avoid JSX type errors from @types/react version mismatch
+const Link = NextLink as unknown as React.ComponentType<any>;
 
 type CloudWord = {
   id: number;
@@ -37,7 +41,6 @@ const WORD_CLOUD_COLORS = [
 ] as const;
 
 export function CollectionsWordCloud({ collections }: { collections: Collection[] }) {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 400 });
   const [words, setWords] = useState<CloudWord[]>([]);
@@ -148,10 +151,9 @@ export function CollectionsWordCloud({ collections }: { collections: Collection[
   return (
     <div ref={containerRef} className="relative h-[400px] w-full overflow-hidden">
       {words.map((word) => (
-        <button
+        <Link
           key={`${word.id}-${word.slug}`}
-          type="button"
-          onClick={() => router.push(`/collections/${word.slug}`)}
+          href={`/collections/${word.slug}`}
           className="absolute whitespace-nowrap text-[16px] font-bold italic opacity-60 transition-opacity hover:opacity-100 focus-visible:opacity-100"
           style={{
             color: colorBySlug.get(word.slug) ?? WORD_CLOUD_COLORS[0],
@@ -161,7 +163,7 @@ export function CollectionsWordCloud({ collections }: { collections: Collection[
           }}
         >
           {word.text}
-        </button>
+        </Link>
       ))}
     </div>
   );

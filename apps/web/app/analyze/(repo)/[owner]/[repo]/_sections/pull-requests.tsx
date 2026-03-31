@@ -10,6 +10,7 @@ import {
 } from '@primer/octicons-react';
 import Analyze from '@/components/Analyze/Analyze';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 
 const RepoChart = dynamic(
@@ -82,9 +83,7 @@ export function PullRequestsSection() {
 
   return (
     <ScrollspySectionWrapper anchor="pull-requests" className="pt-8 pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>
-        Pull Requests
-      </h2>
+      <SectionHeading>Pull Requests</SectionHeading>
 
       <div className={hasVs ? 'max-w-[720px]' : 'max-w-[560px]'}>
         <Analyze query="analyze-repo-pr-overview">

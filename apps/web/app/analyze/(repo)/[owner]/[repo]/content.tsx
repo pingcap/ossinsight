@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AnalyzeContext, RepoInfo } from '@/components/Analyze/context';
 import { StickyRepoHeader } from '@/components/Analyze/StickyRepoHeader';
 import { OverviewSection } from './_sections/overview';
@@ -20,17 +20,17 @@ interface RepoAnalyzePageProps {
 export default function RepoAnalyzePage({ repoInfo, vsRepoInfo, vsName }: RepoAnalyzePageProps) {
   const isComparing = vsRepoInfo != null;
 
+  const contextValue = useMemo(() => ({
+    repoName: repoInfo.full_name,
+    comparingRepoName: vsName,
+    repoId: repoInfo.id,
+    comparingRepoId: vsRepoInfo?.id,
+    repoInfo,
+    comparingRepoInfo: vsRepoInfo ?? undefined,
+  }), [repoInfo, vsRepoInfo, vsName]);
+
   return (
-    <AnalyzeContext.Provider
-      value={{
-        repoName: repoInfo.full_name,
-        comparingRepoName: vsName,
-        repoId: repoInfo.id,
-        comparingRepoId: vsRepoInfo?.id,
-        repoInfo: repoInfo,
-        comparingRepoInfo: vsRepoInfo ?? undefined,
-      }}
-    >
+    <AnalyzeContext.Provider value={contextValue}>
       <StickyRepoHeader repoName={repoInfo.full_name} />
       <OverviewSection />
       <PeopleSection />

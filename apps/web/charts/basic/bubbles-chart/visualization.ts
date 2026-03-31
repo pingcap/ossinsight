@@ -15,7 +15,7 @@ export default function (input: any[], ctx: WidgetVisualizerContext<Params>): EC
   return {
     series: {
       type: 'scatter',
-      color: ctx.theme.colorScheme === 'light' ? '#FFB240' : 'rgb(255, 232, 149)',
+      color: ctx.theme.colorScheme === 'light' ? '#FFB240' : 'rgb(255, 255, 255)',
       encode: {
         x: ctx.parameters.axis_field,
         y: ctx.parameters.label_field,

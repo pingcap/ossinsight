@@ -16,11 +16,15 @@ import {
   StarIcon,
 } from '@primer/octicons-react';
 
+import { GHAvatar } from '@/components/ui/components/GHAvatar';
 import Analyze from '@/components/Analyze/Analyze';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import ShareButtons from '@/components/ShareButtons';
 import SimilarReposRadial from './SimilarReposRadial';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
+import MetricTable from '@/components/ui/MetricTable';
+import type { MetricItem } from '@/components/ui/MetricTable';
 import { queryAPI } from '@/utils/api';
 import { useDebouncedValue } from '@/utils/useDebouncedValue';
 import {
@@ -46,16 +50,6 @@ type CollectionItem = {
   name: string;
 };
 
-function formatValue(value: unknown): string {
-  if (value == null) {
-    return '-';
-  }
-  if (typeof value === 'number') {
-    return value.toLocaleString();
-  }
-  return String(value);
-}
-
 function toCollectionSlug(name: string) {
   return name
     .toLowerCase()
@@ -73,7 +67,7 @@ function SummaryTable() {
   const hasVs = comparingRepoId != null;
   const loading = data.loading;
 
-  const items = useMemo(() => [
+  const items: MetricItem[] = useMemo(() => [
     {
       label: 'Stars',
       value: mainData?.stars,
@@ -107,8 +101,16 @@ function SummaryTable() {
     },
     {
       label: 'Language',
-      value: repoInfo?.language,
-      vsValue: comparingRepoInfo?.language,
+      value: repoInfo?.language ? (
+        <Link href={`/languages/${encodeURIComponent(repoInfo.language)}`} className="hover:text-white transition-colors">
+          {repoInfo.language}
+        </Link>
+      ) : undefined,
+      vsValue: comparingRepoInfo?.language ? (
+        <Link href={`/languages/${encodeURIComponent(comparingRepoInfo.language)}`} className="hover:text-white transition-colors">
+          {comparingRepoInfo.language}
+        </Link>
+      ) : undefined,
       icon: <CodeIcon fill="#309CF2" size={16} />,
       isStatic: true,
     },
@@ -122,51 +124,12 @@ function SummaryTable() {
   ], [mainData, vsData, repoInfo, comparingRepoInfo]);
 
   return (
-    <div className="h-full">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b border-[#323234]">
-            <th className="pb-2 text-left text-[13px] font-normal text-[#8c8c8c]" />
-            <th className="pb-2 text-right text-[13px] font-medium text-[#d8d8d8]">{repoName}</th>
-            {hasVs ? (
-              <th className="pb-2 pl-4 text-right text-[13px] font-medium text-[#d8d8d8]">{comparingRepoName}</th>
-            ) : null}
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <tr key={item.label} className="border-b border-[#2a2a2c] last:border-0">
-              <td className="py-3 pr-4 text-[14px] text-[#d8d8d8]">
-                <span className="inline-flex items-center gap-2">
-                  <span className="inline-flex h-4 w-4 items-center justify-center">{item.icon}</span>
-                  <span>{item.label}</span>
-                </span>
-              </td>
-              <td className="py-3 text-right text-[15px] font-medium leading-none text-[#e9eaee] tabular-nums">
-                {loading && !item.isStatic ? (
-                  <span className="inline-block h-6 w-16 animate-pulse rounded bg-[#343436]" />
-                ) : item.label === 'Language' && item.value && typeof item.value === 'string' ? (
-                  <Link href={`/languages/${encodeURIComponent(item.value)}`} className="hover:text-[#ffe895] transition-colors">
-                    {item.value}
-                  </Link>
-                ) : (
-                  formatValue(item.value)
-                )}
-              </td>
-              {hasVs ? (
-                <td className="py-3 pl-4 text-right text-[15px] font-medium leading-none text-[#e9eaee] tabular-nums">
-                  {loading && !item.isStatic ? (
-                    <span className="inline-block h-6 w-16 animate-pulse rounded bg-[#343436]" />
-                  ) : (
-                    formatValue(item.vsValue)
-                  )}
-                </td>
-              ) : null}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <MetricTable
+      items={items}
+      loading={loading}
+      header={repoName}
+      vsHeader={hasVs ? comparingRepoName : undefined}
+    />
   );
 }
 
@@ -249,20 +212,14 @@ export function OverviewSection() {
             />
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center justify-center rounded-[4px] bg-white p-[2px]">
-                <img
-                  width={40}
-                  height={40}
-                  src={`https://github.com/${repoName.split('/')[0]}.png`}
-                  alt={repoName}
-                  className="rounded-[3px]"
-                />
+                <GHAvatar name={repoName} size={40} rounded={false} />
               </span>
               <h1 className="min-w-0 text-[28px] font-semibold leading-tight text-[#e9eaee]">
                 <a
                   href={`https://github.com/${repoName}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#fbe593]"
+                  className="hover:text-white"
                 >
                   {repoName}
                 </a>
@@ -292,7 +249,7 @@ export function OverviewSection() {
                 ) : (
                   <Link
                     href="/collections"
-                    className="text-[#7c7c7c] transition-colors hover:text-[#fbe593]"
+                    className="text-[#7c7c7c] transition-colors hover:text-white"
                   >
                     Browse Collections →
                   </Link>
@@ -316,7 +273,7 @@ export function OverviewSection() {
           </>
         ) : null}
 
-        <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Overview</h2>
+        <SectionHeading>Overview</SectionHeading>
 
         <div className="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <div>
@@ -457,19 +414,13 @@ function CompareAction({ repoInfo }: { repoInfo: NonNullable<ReturnType<typeof u
         <span className="text-[28px] font-semibold text-[#a3a3a3]">vs.</span>
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center justify-center rounded-[4px] bg-white p-[2px]">
-            <img
-              src={`https://github.com/${comparingRepoInfo.full_name.split('/')[0]}.png`}
-              alt=""
-              width={40}
-              height={40}
-              className="rounded-[3px]"
-            />
+            <GHAvatar name={comparingRepoInfo.full_name} size={40} rounded={false} />
           </span>
           <a
             href={`https://github.com/${comparingRepoInfo.full_name}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[28px] font-semibold leading-tight text-[#e9eaee] hover:text-[#fbe593]"
+            className="text-[28px] font-semibold leading-tight text-[#e9eaee] hover:text-white"
           >
             {comparingRepoInfo.full_name}
           </a>

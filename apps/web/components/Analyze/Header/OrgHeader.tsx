@@ -1,7 +1,7 @@
 'use client';
 import { TextSkeleton } from '@/components/ui/components/Skeleton';
+import { GHAvatar } from '@/components/ui/components/GHAvatar';
 import * as React from 'react';
-import NextImage from 'next/image';
 import {
   RepoIcon,
   StarIcon,
@@ -112,12 +112,11 @@ export function OrgTitleIconEle(props: {
           wrapperClassName
         )}
       >
-        <NextImage
-          src={`https://avatars.githubusercontent.com/u/${id}`}
-          alt={`${name} logo`}
-          className={twMerge('inline mr-[10px] rounded-full', iconClassName)}
-          width={iconSize}
-          height={iconSize}
+        <GHAvatar
+          name={`https://avatars.githubusercontent.com/u/${id}`}
+          size={iconSize}
+          rounded={true}
+          className={twMerge('inline mr-[10px]', iconClassName)}
         />
         {name}
       </WrapperMemo>

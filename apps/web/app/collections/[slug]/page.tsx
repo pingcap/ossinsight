@@ -53,7 +53,7 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
       if (sum > 0) totalStarsInCollection = sum;
     }
   } catch (error) {
-    console.warn(`[collections/${slug}] Failed to pre-fetch ranking data:`, error);
+    // pre-fetch failed – continue without initial data
   }
 
   const collectionFaq = getCollectionFaqItems(collection.name);

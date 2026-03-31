@@ -4,6 +4,18 @@ import { getRepoByName } from '@/lib/server/internal-api';
 import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd, SoftwareSourceCodeJsonLd } from '@/components/json-ld';
 import RepoAnalyzePage from './content';
 
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return [
+    { owner: 'pingcap', repo: 'tidb' },
+    { owner: 'facebook', repo: 'react' },
+    { owner: 'microsoft', repo: 'vscode' },
+    { owner: 'tensorflow', repo: 'tensorflow' },
+    { owner: 'kubernetes', repo: 'kubernetes' },
+  ];
+}
+
 interface PageProps {
   params: Promise<{ owner: string; repo: string }>;
   searchParams: Promise<{ vs?: string }>;
@@ -109,7 +121,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
       description = `${parts.join(' · ')}. ${repoInfo.description || `Real-time analytics on stars, commits, issues, pull requests, and contributors.`}`;
     }
   } catch (error) {
-    console.warn(`[analyze/${owner}/${repo}] Failed to fetch repo info for metadata:`, error);
+    // metadata fetch failed – use default description
   }
 
   return {

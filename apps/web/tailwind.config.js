@@ -30,6 +30,13 @@ module.exports = {
         'primary-highlighted': 'var(--color-primary-highlighted)',
         'primary-foreground': 'hsl(var(--primary-foreground) / <alpha-value>)',
         disabled: 'var(--color-disabled)',
+        'text-secondary': 'var(--text-color-secondary)',
+        'text-muted': 'var(--text-color-muted)',
+        'text-gray': 'var(--text-color-gray)',
+        'border-subtle': 'var(--border-color-subtle)',
+        'border-default': 'var(--border-color-default)',
+        'card': 'var(--bg-card)',
+        'page': 'var(--bg-page)',
       },
       backgroundColor: {
         body: 'var(--background-color-body)',

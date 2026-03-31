@@ -6,10 +6,10 @@
   :root {
     color-scheme: dark;
 
-    --color-primary: rgb(255, 232, 149);
-    --color-primary-highlighted: rgb(255, 238, 175);
+    --color-primary: rgb(255, 255, 255);
+    --color-primary-highlighted: rgb(255, 255, 255);
     --color-primary-reverse: rgb(31, 30, 40);
-    --color-primary-darkened: rgba(255, 232, 149, 0.6);
+    --color-primary-darkened: rgba(255, 255, 255, 0.6);
     --color-disabled: #615f6f;
 
     --background-color-body: #1a1a1b;
@@ -28,6 +28,15 @@
     --border-color-default: #363638;
     --border-color-dimmed: #29292a;
 
+    --text-color-secondary: #d8d8d8;
+    --text-color-muted: #7c7c7c;
+    --text-color-gray: #8c8c8c;
+
+    --border-color-subtle: #2a2a2c;
+
+    --bg-card: #242526;
+    --bg-page: #1a1a1b;
+
     --divide-color-default: #363638;
     --divide-color-dimmed: #29292a;
 
@@ -43,8 +52,8 @@
     --headless-tab-text: #9f9f9f;
     --headless-tab-active-text: #2c2c2c;
 
-    --selector-border-color: #fff7ca;
-    --selector-fill-color: #d4af2b;
+    --selector-border-color: #555;
+    --selector-fill-color: #555;
 
     --site-header-height: 60px;
     --site-left-nav-width: 240px;
@@ -105,11 +114,11 @@
 
 @layer utilities {
   .site-link {
-    @apply font-medium text-[#ffe895] underline decoration-[#ffe895]/30 underline-offset-4 transition hover:text-[#fff2bd] hover:decoration-[#ffe895]/60;
+    @apply font-medium text-[#d8d8d8] underline decoration-white/20 underline-offset-4 transition hover:text-white hover:decoration-white/50;
   }
 
   .site-link-muted {
-    @apply text-[#d6dae5] underline decoration-white/15 underline-offset-4 transition hover:text-[#ffe895] hover:decoration-[#ffe895]/50;
+    @apply text-[#d6dae5] underline decoration-white/15 underline-offset-4 transition hover:text-white hover:decoration-white/40;
   }
 }
 
@@ -151,8 +160,7 @@
 
   .TextInput:not(.TextInput-borderless):focus,
   .TextInput:not(.TextInput-borderless):focus-within {
-    @apply shadow-control;
-    border-color: var(--color-primary);
+    border-color: #888;
   }
 
   .Button {
@@ -164,7 +172,8 @@
   }
 
   .Button:focus-visible {
-    @apply outline-none shadow-control;
+    @apply outline-none;
+    border-color: #888;
   }
 
   .Button-primary {
@@ -210,22 +219,21 @@
   }
 
   .SelectWrapper:not(.Select-borderless) .SelectTrigger {
-    @apply border border-transparent;
-    --tw-shadow-color: var(--color-primary-darkened);
+    @apply border border-[#3a3a3a];
   }
 
   .SelectWrapper:not(.Select-borderless) .SelectTrigger:hover {
     background-color: var(--background-color-popover);
+    border-color: #555;
   }
 
   .SelectWrapper:not(.Select-borderless) .SelectTrigger:focus,
   .SelectWrapper:not(.Select-borderless) .SelectTrigger:focus-visible {
-    @apply shadow-control;
-    border-color: var(--color-primary);
+    border-color: #888;
   }
 
   .SelectTrigger[data-placeholder] {
-    color: var(--color-primary);
+    color: var(--text-color-content);
   }
 
   .SelectIcon {
@@ -342,8 +350,7 @@
 
   .SiteHeader-menu-item:focus-visible,
   .SiteHeader-menu-trigger:focus-visible {
-    @apply text-primary shadow-control;
-    --tw-shadow-color: var(--color-primary-darkened);
+    @apply text-white outline-none;
   }
 
   .SiteHeader-menu-trigger-indicator {
@@ -385,10 +392,13 @@
   }
 
   .kbd {
-    @apply inline-flex min-h-[2.2em] min-w-[2.2em] items-center justify-center rounded-lg border px-2 text-sm leading-5 text-slate-200;
-    background-color: #1a1a1b;
-    border-color: rgb(255 255 255 / 0.14);
-    border-bottom-width: 2px;
+    @apply inline-flex min-h-[2.2em] min-w-[2.2em] items-center justify-center rounded px-1.5 text-xs leading-5 text-[#888];
+    background-color: #252525;
+  }
+
+  .search-dialog {
+    width: min(48rem, calc(100vw - 2rem)) !important;
+    max-width: none !important;
   }
 
   .kbd-sm {

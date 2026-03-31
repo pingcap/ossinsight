@@ -17,7 +17,7 @@ export function ScrollspySectionWrapper ({ anchor, children, ...props }: HTMLAtt
   }, [anchor, spy]);
 
   return (
-    <section ref={ref} {...props}>
+    <section ref={ref} style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }} {...props}>
       {children}
     </section>
   );

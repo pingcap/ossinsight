@@ -33,11 +33,7 @@ export function CollectionSidebar({
 
   return (
     <CollapsibleSidebar>
-      <div className="border-b border-[#30313a] px-4 py-3 pr-10">
-        <div className="text-sm font-medium text-white">Collections</div>
-      </div>
-
-      <nav className="flex-1 overflow-y-auto px-2 py-3">
+      <nav className="flex-1 overflow-y-auto px-2 pt-4 pb-3">
         {filteredCollections.map((collection) => {
           const slug = toCollectionSlug(collection.name);
           const isActive = slug === currentSlug;
@@ -81,7 +77,7 @@ export function CollectionSidebar({
         })}
 
         {filteredCollections.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-center text-sm text-slate-500">
+          <div className="rounded-md border border-dashed border-white/10 px-4 py-6 text-center text-sm text-slate-500">
             No collections match this filter.
           </div>
         )}

@@ -1,6 +1,7 @@
 'use client';
 
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
@@ -15,13 +16,14 @@ import {
   usePersonalContributionActivities,
   useRange,
 } from '../_hooks/usePersonal';
+import { TabBar } from '@/components/ui/TabBar';
 
 export default function ActivitiesSection () {
   const { id: userId } = React.useContext(AnalyzeOwnerContext);
 
   return (
     <ScrollspySectionWrapper anchor="activities" className="pt-8 pb-8">
-      <h2 className="text-[22px] font-semibold text-[#e9eaee] pb-4" style={{ scrollMarginTop: '140px' }}>Contribution Activities</h2>
+      <SectionHeading>Contribution Activities</SectionHeading>
       <p className="text-sm text-[#8c8c8c] mb-4">All personal activities happened on all public repositories in GitHub since 2011. You can check each specific activity type by type with a timeline.</p>
       <ActivityChart userId={userId} />
     </ScrollspySectionWrapper>
@@ -71,36 +73,8 @@ function ActivityChart ({ userId }: { userId: number }) {
   return (
     <div>
       <div className="flex flex-wrap gap-6 mb-4">
-        <div className="flex gap-1 border-b border-[#3a3a3a]">
-          {contributionActivityTypes.map(({ key, label }) => (
-            <button
-              key={key}
-              className={`px-3 py-2 text-sm transition-colors ${
-                type === key
-                  ? 'border-b-2 border-[var(--color-primary)] text-white'
-                  : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
-              }`}
-              onClick={() => setType(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-1 border-b border-[#3a3a3a]">
-          {contributionActivityRanges.map(({ key, label }) => (
-            <button
-              key={key}
-              className={`px-3 py-2 text-sm transition-colors ${
-                period === key
-                  ? 'border-b-2 border-[var(--color-primary)] text-white'
-                  : 'text-[#8c8c8c] hover:text-[#d8d8d8]'
-              }`}
-              onClick={() => setPeriod(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <TabBar items={contributionActivityTypes} value={type} onChange={(key) => setType(key as ContributionActivityType)} />
+        <TabBar items={contributionActivityRanges} value={period} onChange={(key) => setPeriod(key as ContributionActivityRange)} />
       </div>
       <PersonalChart title={title} option={option} height={chartHeight} loading={loading} noData={!loading && (!data || data.length === 0)} sql={sql} queryName={queryName} queryParams={queryParams} />
     </div>

@@ -28,7 +28,7 @@ import { useRemoteData, getRemoteDataQueryKey } from '@/utils/useRemoteData';
 import { queryAPI } from '@/utils/api';
 import { fetchGitHubRepo, SITE_HOST } from '@/utils/api';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { Select, SelectItem } from '@/components/ui/components/Selector/Select';
 import * as Tooltip from '@/components/ui/components/Tooltip';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -569,7 +569,7 @@ function HeroSearch() {
         display: 'flex', alignItems: 'center', gap: 8,
         backgroundColor: '#212122',
         border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: 16,
+        borderRadius: 6,
         boxShadow: '0 16px 40px -28px rgba(0,0,0,0.85)',
         padding: '10px 16px',
       }}>
@@ -624,7 +624,7 @@ function HeroSearch() {
           minWidth: 420, maxHeight: '80vh',
           backgroundColor: '#1a1a1b',
           border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 16,
+          borderRadius: 6,
           boxShadow: '0 32px 80px -48px rgba(0,0,0,0.98)',
           overflow: 'hidden', zIndex: 50, display: 'flex', flexDirection: 'column', textAlign: 'left',
         }}>
@@ -697,7 +697,7 @@ function HeroSearch() {
                         style={{
                           display: 'flex', alignItems: 'center', gap: 8,
                           padding: '6px 16px', cursor: 'pointer',
-                          backgroundColor: activeIndex === flatIdx ? 'rgba(255,232,149,0.08)' : 'transparent',
+                          backgroundColor: activeIndex === flatIdx ? 'rgba(255,255,255,0.08)' : 'transparent',
                         }}
                       >
                         <img src={avatarUrl} alt="" width={24} height={24} style={{ borderRadius: item.type === 'User' ? '50%' : 4, flexShrink: 0, backgroundColor: '#2a2a2c' }} />
@@ -822,7 +822,7 @@ function HeroSection() {
               rel="noopener noreferrer"
               className="opacity-60 hover:opacity-100 transition-opacity"
             >
-              <img src="/img/tidb-cloud-logo-o.png" alt="TiDB Cloud" style={{ height: 20 }} />
+              <img src="/img/tidb-cloud-logo-o.png" alt="TiDB Cloud" width={107} height={20} style={{ height: 20 }} />
             </a>
           </div>
           </div>
@@ -890,9 +890,6 @@ interface TrendingRepo {
   total_score: number;
 }
 
-function LoadingSkeleton({ className }: { className?: string }) {
-  return <Skeleton className={['bg-white/[0.08]', className].filter(Boolean).join(' ')} />;
-}
 
 function TrendingReposTableSkeleton({ rowCount }: { rowCount: number }) {
   return (
@@ -1046,8 +1043,8 @@ function TrendingReposSection() {
               key={lang}
               className={`px-2 py-0.5 text-sm rounded-md transition-colors ${
                 language === lang
-                  ? 'border border-[#ffe895]/55 bg-[#ffe895]/[0.07] text-[#ffe895]'
-                  : 'border border-transparent text-gray-400 hover:text-[#fff0b7]'
+                  ? 'border border-white/55 bg-white/[0.07] text-white'
+                  : 'border border-transparent text-gray-400 hover:text-white'
               }`}
               onClick={() => setLanguage(lang)}
             >
@@ -1099,7 +1096,7 @@ function TrendingReposSection() {
                     <td className="px-3 py-3">
                       <div>
                         <span className="text-lg font-bold">
-                          <Link href={`/analyze/${repo.repo_name}`} className="text-[#ffe895] transition-colors hover:text-[#fff0b7]">
+                          <Link href={`/analyze/${repo.repo_name}`} className="text-[#e9eaee] transition-colors hover:text-white">
                             {repo.repo_name}
                           </Link>
                           <a href={`https://github.com/${repo.repo_name}`} target="_blank" rel="noopener noreferrer" className="ml-1 text-[#7c7c7c] hover:text-white inline-flex align-middle">
@@ -1112,7 +1109,7 @@ function TrendingReposSection() {
                               <Link
                                 key={c}
                                 href={`/collections/${toSlug(c.trim())}`}
-                                className="rounded-full bg-[#312d1f] px-2 py-0.5 text-xs text-[#ffe895] transition-colors hover:bg-[#3d3724] hover:text-[#fff0b7]"
+                                className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs text-[#e9eaee] transition-colors hover:bg-white/10 hover:text-white"
                               >
                                 {c.trim()}
                               </Link>
@@ -1180,7 +1177,7 @@ function TrendingReposSection() {
 
       {/* View All link */}
       <div className="mt-4 text-center">
-        <Link href="/trending" className="inline-flex items-center gap-1 text-sm font-medium text-[#ffe895] hover:text-[#fff2bd] transition-colors">
+        <Link href="/trending" className="inline-flex items-center gap-1 text-sm font-medium text-[#e9eaee] hover:text-white transition-colors">
           View All Trending →
         </Link>
       </div>
@@ -1265,10 +1262,10 @@ function HotCollectionsSection() {
 
           <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide px-8">
             {collections.slice(0, 10).map((col) => (
-              <div
+              <Link
                 key={col.id}
-                className="shrink-0 w-[280px] p-4 border-2 border-dashed border-[#3c3c3c] rounded-lg cursor-pointer hover:shadow-lg hover:-translate-y-[1px] hover:scale-[1.02] transition-all"
-                onClick={() => { router.push(`/collections/${toSlug(col.name)}`); }}
+                href={`/collections/${toSlug(col.name)}`}
+                className="shrink-0 w-[280px] p-4 border-2 border-dashed border-[#3c3c3c] rounded-lg cursor-pointer hover:shadow-lg hover:-translate-y-[1px] hover:scale-[1.02] transition-[box-shadow,transform] block"
               >
                 <div className="text-base font-medium mb-1">{col.name}</div>
                 <div className="text-sm text-[#7C7C7C] mb-3">{col.repos} repositories</div>
@@ -1291,19 +1288,19 @@ function HotCollectionsSection() {
                       width={32}
                       height={32}
                     />
-                    <span className="text-sm truncate text-[#ffe895] transition-colors hover:text-[#fff0b7]">{item.repo_name}</span>
+                    <span className="text-sm truncate text-[#e9eaee] transition-colors hover:text-white">{item.repo_name}</span>
                   </div>
                 ))}
 
                 <div className="mt-3 text-sm">
                   <Link
                     href={`/collections/${toSlug(col.name)}`}
-                    className="text-[#ffe895] transition-colors hover:text-[#fff0b7]"
+                    className="text-[#e9eaee] transition-colors hover:text-white"
                   >
                     &gt; See All
                   </Link>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -1342,21 +1339,21 @@ function FAQSection() {
           return (
             <div
               key={i}
-              className="rounded-xl border border-white/[0.07] overflow-hidden"
+              className="rounded-md border border-white/[0.07] overflow-hidden"
               style={{ backgroundColor: isOpen ? '#242526' : '#1a1a1b' }}
             >
               <button
                 type="button"
                 onClick={() => toggle(i)}
                 aria-expanded={isOpen}
-                className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffe895]/50"
+                className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
               >
                 <span className="text-[15px] font-medium text-[#e3e3e3]">
                   {item.question}
                 </span>
                 <span
                   aria-hidden="true"
-                  className="shrink-0 text-[#ffe895] transition-transform duration-200"
+                  className="shrink-0 text-white transition-transform duration-200"
                   style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1403,9 +1400,9 @@ function Footer() {
           </p>
           <p className="font-bold text-lg mt-1">#OSSInsight #TiDBCloud</p>
           <div className="mt-4 flex justify-center">
-            <div className="inline-flex overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] shadow-[0_18px_45px_-28px_rgba(0,0,0,0.82)]">
+            <div className="inline-flex overflow-hidden rounded-md border border-white/10 bg-white/[0.03] shadow-[0_18px_45px_-28px_rgba(0,0,0,0.82)]">
               <a
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#ffe895] transition-colors hover:bg-white/[0.05] hover:text-[#fff0b7]"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#e9eaee] transition-colors hover:bg-white/[0.05] hover:text-white"
                 href="https://github.com/pingcap/ossinsight"
                 rel="noopener noreferrer"
                 target="_blank"

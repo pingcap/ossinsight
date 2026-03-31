@@ -8,7 +8,7 @@ import { QueryProvider } from '@/components/providers/query-provider';
 import { AppShell } from '@/components/app-shell';
 import { OrganizationJsonLd, SiteNavigationJsonLd, WebSiteJsonLd } from '@/components/json-ld';
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({subsets:['latin'],variable:'--font-sans',display:'swap'});
 
 
 // import { Inter } from 'next/font/google'

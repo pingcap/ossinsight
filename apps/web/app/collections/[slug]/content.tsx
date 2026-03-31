@@ -36,7 +36,7 @@ import ShareButtons from '@/components/ShareButtons';
 import { CollectionFAQ } from './collection-faq';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 import { ExportButton, downloadCsv } from '@/components/ui/export-button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import {
   Table,
   TableBody,
@@ -92,7 +92,7 @@ type HistoryRankRow = {
 };
 
 const RANK_COLORS = [
-  '#f7df83',
+  '#e9eaee',
   '#6ea8fe',
   '#7ecfb2',
   '#f0a07c',
@@ -228,9 +228,6 @@ function CollectionMetricTabs<TMetric extends string>({
   );
 }
 
-function LoadingSkeleton({ className, ...props }: React.ComponentProps<typeof Skeleton>) {
-  return <Skeleton className={cn('bg-white/[0.08]', className)} {...props} />;
-}
 
 function RankingTableSkeleton({ isMonthView }: { isMonthView: boolean }) {
   return (
@@ -283,7 +280,7 @@ function ChartSkeleton({ height }: { height: number }) {
           <LoadingSkeleton key={index} className="h-5 w-28 rounded-full" />
         ))}
       </div>
-      <LoadingSkeleton className="w-full rounded-2xl" style={{ height }} />
+      <LoadingSkeleton className="w-full rounded-md" style={{ height }} />
     </div>
   );
 }

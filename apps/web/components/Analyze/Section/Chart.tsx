@@ -88,7 +88,7 @@ export default function ChartTemplate (props: ChartTemplateProps) {
   }, [orgId, periodMemo, repoIdsMemo, searchParams]);
 
   return (
-    <div key={searchParamsStrMemo}>
+    <div>
       {title && (
         <div className="flex items-center justify-between gap-4 mb-3">
           {React.createElement(titleLevel, { className: TITLE_STYLES[titleLevel] }, title)}

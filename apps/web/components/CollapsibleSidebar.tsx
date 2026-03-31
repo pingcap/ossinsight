@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from 'react';
 
 interface CollapsibleSidebarContextValue {
   collapsed: boolean;
@@ -37,12 +37,13 @@ export function CollapsibleSidebar({
 }: CollapsibleSidebarProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
   const toggle = useCallback(() => setCollapsed(prev => !prev), []);
+  const contextValue = useMemo(() => ({ collapsed, toggle }), [collapsed, toggle]);
 
   return (
-    <CollapsibleSidebarContext.Provider value={{ collapsed, toggle }}>
+    <CollapsibleSidebarContext.Provider value={contextValue}>
       <aside
         className={cn(
-          'sticky top-[var(--site-header-height)] hidden h-[calc(100vh-var(--site-header-height))] shrink-0 overflow-hidden border-r border-[#2f3032] bg-[#242526] transition-[width] duration-200 md:block',
+          'sticky top-[var(--site-header-height)] hidden h-[calc(100vh-var(--site-header-height))] shrink-0 overflow-hidden border-r border-[#2f3032] bg-[#242526] md:block',
           className,
         )}
         style={{ width: collapsed ? collapsedWidth : width }}

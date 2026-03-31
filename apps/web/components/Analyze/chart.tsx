@@ -106,8 +106,8 @@ export function withChart<T = unknown, P = void>(
           lazyUpdate
           showLoading={showLoading}
           loadingOption={{
-            color: 'rgb(255, 232, 149)',
-            textColor: 'rgb(255, 232, 149)',
+            color: 'rgb(255, 255, 255)',
+            textColor: 'rgb(255, 255, 255)',
             maskColor: 'rgba(0, 0, 0, 0.3)',
           }}
           theme="dark"

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { HomeContent } from './home-content';
 import { FAQPageJsonLd, SiteApplicationJsonLd, WebPageJsonLd } from '@/components/json-ld';
 import { FAQ_ITEMS } from './faq-data';
+import ShareButtons from '@/components/ShareButtons';
 
 export const metadata: Metadata = {
   title: {
@@ -64,6 +65,7 @@ export default function HomePage() {
         </p>
       </div>
       <HomeContent />
+      <ShareButtons url="/" title="OSSInsight — Open Source Intelligence" />
     </>
   );
 }
