@@ -9,7 +9,7 @@ export default function UserAnalyzeLayout ({ children }: { children: React.React
     <ScrollspyContextProvider>
       <div className="flex">
         <div className="flex w-full flex-col md:flex-row">
-          <aside className="hidden border-r border-[#2f3032] bg-[#242526] md:block md:w-[220px] md:flex-none md:min-h-[calc(100vh-var(--site-header-height))]">
+          <aside className="hidden border-r border-[#2f3032] bg-[#242526] md:block md:w-[300px] md:flex-none md:min-h-[calc(100vh-var(--site-header-height))]">
             <div className="sticky top-[var(--site-header-height)] h-full max-h-[calc(100vh-var(--site-header-height))] overflow-y-auto styled-scrollbar">
               <Navigation items={navItems} />
             </div>
