@@ -63,7 +63,7 @@ export default forwardRef(function Svg ({ visualizer, data, parameters, linkedDa
             setPromiseEl(res);
           }
         })
-        .catch(() => { /* ignore for now */ });
+        .catch((err: unknown) => { if (!controller.signal.aborted) console.error('[AsyncSvgSubChart] render error:', err); });
       return () => {
         controller.abort('context change');
       };

@@ -3,23 +3,25 @@ import { Ref, RefObject, useEffect, useState, useSyncExternalStore } from 'react
 export function useOnline () {
   return useSyncExternalStore(
     cb => {
+      if (typeof window === 'undefined') return () => {};
       window.addEventListener('online', cb);
 
       return () => {
         window.removeEventListener('online', cb);
       };
     },
-    () => window.navigator.onLine,
+    () => typeof window !== 'undefined' ? window.navigator.onLine : true,
     () => true);
 }
 
 export function useDocumentVisible () {
   return useSyncExternalStore(
     cb => {
+      if (typeof document === 'undefined') return () => {};
       document.addEventListener('visibilitychange', cb);
       return () => document.removeEventListener('visibilitychange', cb);
     },
-    () => document.visibilityState !== 'hidden',
+    () => typeof document !== 'undefined' ? document.visibilityState !== 'hidden' : true,
     () => true,
   );
 }

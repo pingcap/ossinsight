@@ -70,7 +70,7 @@ function AsyncSvgSubChart({ vizModule, data, ctx }: { vizModule: any; data: any;
     const controller = new AbortController();
     Promise.resolve(vizModule.default(data, ctx, controller.signal))
       .then((result: any) => { if (!controller.signal.aborted) setEl(result); })
-      .catch(() => {});
+      .catch((err: unknown) => { if (!controller.signal.aborted) console.error('[AsyncSvgSubChart] render error:', err); });
     return () => controller.abort();
   }, [data, ctx, vizModule]);
 

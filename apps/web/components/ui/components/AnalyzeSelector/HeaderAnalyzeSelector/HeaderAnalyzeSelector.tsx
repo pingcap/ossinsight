@@ -172,9 +172,13 @@ export function HeaderAnalyzeSelector(props: HeaderAnalyzeSelectorProps) {
 
   React.useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
+      const tag = (event.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (event.target as HTMLElement)?.isContentEditable) {
+        return;
+      }
       if (event.key === '/') {
         openModal();
-        // event.preventDefault();
+        event.preventDefault();
       } else if (event.key === 'Escape') {
         closeModal();
         event.preventDefault();

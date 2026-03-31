@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const collections = await listCollections();
     for (const collection of collections) {
-      const slug = toCollectionSlug(collection.name);
+      const slug = toCollectionSlug(String(collection.name ?? ''));
       entries.push({
         url: `${SITE_URL}/collections/${slug}`,
         changeFrequency: 'weekly',
@@ -100,7 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             if (!seen.has(key)) {
               seen.add(key);
               entries.push({
-                url: `${SITE_URL}/compare/${repos[i]}/${repos[j]}`,
+                url: `${SITE_URL}/compare/${String(repos[i])}/${String(repos[j])}`,
                 changeFrequency: 'weekly',
                 priority: 0.6,
               });

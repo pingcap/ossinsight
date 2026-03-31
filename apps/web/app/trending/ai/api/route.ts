@@ -57,7 +57,9 @@ export async function GET(req: Request) {
             total: row.total ?? 0,
             last_period_total: row.last_period_total,
             last_period_rank: row.last_period_rank,
-            growth: row.last_period_total ?? 0,
+            growth: row.last_period_total && row.last_period_total > 0
+              ? Math.round(((row.total ?? 0) - row.last_period_total) / row.last_period_total * 100)
+              : 0,
             category,
             collection_id: id,
           });
