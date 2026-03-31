@@ -254,7 +254,7 @@ function RankingTableSkeleton({ isMonthView }: { isMonthView: boolean }) {
               {isMonthView && (
                 <TableHead className="h-12 px-4"><LoadingSkeleton className="h-6 w-28" /></TableHead>
               )}
-              <TableHead className="h-12 px-4"><LoadingSkeleton className="h-6 w-32" /></TableHead>
+              <TableHead className="h-12 px-4" style={{ width: '99%' }}><LoadingSkeleton className="h-6 w-32" /></TableHead>
               <TableHead className="h-12 px-4"><LoadingSkeleton className="h-6 w-24" /></TableHead>
               <TableHead className="h-12 px-4 text-right"><LoadingSkeleton className="ml-auto h-6 w-20" /></TableHead>
             </TableRow>
@@ -426,7 +426,7 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
                       {formatMonth(rows[0]?.last_month)}
                     </TableHead>
                   )}
-                  <TableHead className="h-12 px-4 text-[20px] font-bold text-white">Repository</TableHead>
+                  <TableHead className="h-12 px-4 text-[20px] font-bold text-white" style={{ width: '99%' }}>Repository</TableHead>
                   <TableHead className="h-12 px-4 text-[20px] font-bold text-white">
                     {activeMetric?.title}
                   </TableHead>
