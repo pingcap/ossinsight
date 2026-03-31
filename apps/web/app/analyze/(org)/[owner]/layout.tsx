@@ -15,7 +15,7 @@ export default function UserOrgAnalyzeLayout ({ children }: { children: React.Re
             </div>
           </aside>
           <main className="flex-1 block">
-            <div className="max-w-[1280px] px-6 pt-16 pb-0 md:px-8">{children}</div>
+            <div className="mx-auto max-w-[1400px] px-6 pt-16 pb-0 md:px-8 lg:px-12">{children}</div>
           </main>
         </div>
       </div>
