@@ -5,9 +5,9 @@ import { FAQ_ITEMS } from './faq-data';
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'OSSInsight - Open Source Software Insight',
+    absolute: 'OSSInsight — AI Agent Analytics & Open Source GitHub Intelligence',
   },
-  description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software. Free & open source.',
+  description: 'Track AI agent frameworks, LLM tools, MCP servers & 10B+ GitHub events. Compare repos, discover trending projects, and get real-time open source intelligence. Free & open source.',
   keywords: [
     'open source analytics',
     'GitHub insights',
@@ -20,15 +20,24 @@ export const metadata: Metadata = {
     'MCP servers',
     'LLM frameworks',
     'open source AI',
+    'AI agent ranking',
+    'LLM tools ranking',
+    'coding agents',
+    'RAG frameworks',
+    'GitHub trending AI',
+    'open source intelligence',
+    'AI developer tools',
+    'model context protocol',
+    'GitHub analytics API',
   ],
   openGraph: {
-    title: 'OSSInsight - Open Source Software Insight',
-    description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software.',
-    images: [{ url: '/seo-widgets-homepage.jpeg', width: 1200, height: 630, alt: 'OSSInsight - Open Source Software Insight' }],
+    title: 'OSSInsight — AI Agent Analytics & Open Source GitHub Intelligence',
+    description: 'Track AI agent frameworks, LLM tools, MCP servers & 10B+ GitHub events. Compare repos, discover trending projects, and get real-time open source intelligence.',
+    images: [{ url: '/seo-widgets-homepage.jpeg', width: 1200, height: 630, alt: 'OSSInsight — AI Agent Analytics & Open Source GitHub Intelligence' }],
   },
   twitter: {
-    title: 'OSSInsight - Open Source Software Insight',
-    description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software.',
+    title: 'OSSInsight — AI Agent Analytics & Open Source GitHub Intelligence',
+    description: 'Track AI agent frameworks, LLM tools, MCP servers & 10B+ GitHub events. Compare repos, discover trending projects, and get real-time open source intelligence.',
     card: 'summary_large_image',
     images: ['/seo-widgets-homepage.jpeg'],
   },

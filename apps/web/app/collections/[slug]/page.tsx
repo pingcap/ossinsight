@@ -1,4 +1,5 @@
 import { toCollectionSlug } from '@/lib/collections';
+import { getCollectionSeoDescription } from '@/lib/collection-seo';
 import { fetchCollections } from '@/utils/api';
 import { getCollectionRanking } from '@/lib/server/internal-api';
 import type { Metadata } from 'next';
@@ -9,25 +10,24 @@ import { getCollectionFaqItems } from './faq-data';
 
 export const revalidate = 3600;
 
-const COLLECTION_DESC = 'Last 28 days / Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity.';
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const collections = await fetchCollections();
   const collection = collections.find((c) => toCollectionSlug(c.name) === slug);
   if (!collection) return { title: 'Collection Not Found' };
-  const ogTitle = `${collection.name} - GitHub Repository Rankings`;
+  const description = getCollectionSeoDescription(collection.name);
+  const ogTitle = `${collection.name} — Top GitHub Repositories & Rankings 2026 | OSSInsight`;
   return {
     title: `${collection.name} - Ranking`,
-    description: COLLECTION_DESC,
+    description,
     alternates: { canonical: `/collections/${slug}` },
     openGraph: {
       title: ogTitle,
-      description: COLLECTION_DESC,
+      description,
     },
     twitter: {
       title: ogTitle,
-      description: COLLECTION_DESC,
+      description,
     },
   };
 }
@@ -60,10 +60,10 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
 
   return (
     <>
-      <CollectionPageJsonLd name={collection.name} description={COLLECTION_DESC} slug={slug} />
+      <CollectionPageJsonLd name={collection.name} description={getCollectionSeoDescription(collection.name)} slug={slug} />
       <DatasetJsonLd
         name={`${collection.name} — GitHub Repository Rankings`}
-        description={`Open source ranking dataset for ${collection.name}. ${COLLECTION_DESC}`}
+        description={`Open source ranking dataset for ${collection.name}. ${getCollectionSeoDescription(collection.name)}`}
         url={`/collections/${slug}`}
         distributionUrl={`/collections/${slug}`}
       />

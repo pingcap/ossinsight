@@ -17,6 +17,7 @@ export default function robots(): MetadataRoute.Robots {
           '/languages/',
           '/compare/',
           '/blog/',
+          '/api/mcp',
         ],
         disallow: [
           '/api/',
@@ -30,15 +31,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
         // Crawl-delay not natively supported by Next.js MetadataRoute.Robots,
         // but we include it via the raw rule for compliant crawlers.
-      },
-      {
-        // Rate-limit aggressive bots but allow Googlebot / Bingbot at default speed
-        userAgent: 'AhrefsBot',
-        disallow: ['/'],
-      },
-      {
-        userAgent: 'SemrushBot',
-        disallow: ['/'],
       },
       // Explicitly allow AI search crawlers
       {
