@@ -1,5 +1,29 @@
 import { VisualizerModule } from '@/lib/charts-types';
-import { EChartsOption, EChartsType, init } from 'echarts';
+import * as echarts from 'echarts/core';
+import type { EChartsOption } from 'echarts/core';
+import type { ECharts as EChartsType } from 'echarts/core';
+import {
+  LineChart,
+  BarChart,
+  HeatmapChart,
+  BoxplotChart,
+  ScatterChart,
+  EffectScatterChart,
+  MapChart,
+  CustomChart,
+} from 'echarts/charts';
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  DatasetComponent,
+  LegendComponent,
+  DataZoomComponent,
+  VisualMapComponent,
+  GeoComponent,
+  GraphicComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 import mergeRefs from 'merge-refs';
 import { ForwardedRef, forwardRef, RefObject, useEffect, useRef, useState } from 'react';
 import { LinkedData } from '../../parameters/resolver';
@@ -7,6 +31,27 @@ import { WidgetReactVisualizationProps } from '../../types';
 import { createVisualizationContext, createWidgetContext } from '../../utils/context';
 import '../echarts-map';
 import '../echarts-theme';
+
+echarts.use([
+  LineChart,
+  BarChart,
+  HeatmapChart,
+  BoxplotChart,
+  ScatterChart,
+  EffectScatterChart,
+  MapChart,
+  CustomChart,
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  DatasetComponent,
+  LegendComponent,
+  DataZoomComponent,
+  VisualMapComponent,
+  GeoComponent,
+  GraphicComponent,
+  CanvasRenderer,
+]);
 
 interface EChartsComponentProps extends WidgetReactVisualizationProps {
   data: any;
@@ -32,7 +77,7 @@ function EChartsComponent ({ className, style, data, visualizer, parameters, lin
         echartsRef.current = undefined;
       }
     } else if (isAvailableSize(size)) {
-      ec = echartsRef.current = init(containerRef.current!, colorScheme === 'auto' ? 'dark' : colorScheme, {});
+      ec = echartsRef.current = echarts.init(containerRef.current!, colorScheme === 'auto' ? 'dark' : colorScheme, {});
     }
   }, [size]);
 
@@ -40,7 +85,7 @@ function EChartsComponent ({ className, style, data, visualizer, parameters, lin
     let ec = echartsRef.current;
     if (ec) {
       ec.dispose();
-      ec = echartsRef.current = init(containerRef.current!, colorScheme === 'auto' ? 'dark' : colorScheme, {});
+      ec = echartsRef.current = echarts.init(containerRef.current!, colorScheme === 'auto' ? 'dark' : colorScheme, {});
     }
   }, [colorScheme]);
 

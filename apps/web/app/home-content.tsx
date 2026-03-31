@@ -1212,6 +1212,7 @@ interface CollectionGroup {
 }
 
 function HotCollectionsSection() {
+  const router = useRouter();
   const { data, loading } = useCollectionApi<CollectionQueryResponse<HotCollectionItem>>(getCollectionsHotPath());
   const rawData = data?.data ?? [];
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -1268,7 +1269,7 @@ function HotCollectionsSection() {
               <div
                 key={col.id}
                 className="shrink-0 w-[280px] p-4 border-2 border-dashed border-[#3c3c3c] rounded-lg cursor-pointer hover:shadow-lg hover:-translate-y-[1px] hover:scale-[1.02] transition-all"
-                onClick={() => { window.location.href = `/collections/${toSlug(col.name)}`; }}
+                onClick={() => { router.push(`/collections/${toSlug(col.name)}`); }}
               >
                 <div className="text-base font-medium mb-1">{col.name}</div>
                 <div className="text-sm text-[#7C7C7C] mb-3">{col.repos} repositories</div>

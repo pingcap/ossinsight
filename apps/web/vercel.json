@@ -1,5 +1,16 @@
 {
   "relatedProjects": ["prj_MGvL5diJ4d5aAIxrubFRKA1LGvCp"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/blog", "destination": "https://ossinsight-docs.vercel.app/blog" },
     { "source": "/blog/:path*", "destination": "https://ossinsight-docs.vercel.app/blog/:path*" },

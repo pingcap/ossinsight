@@ -18,8 +18,6 @@ hide_title: true
   •
   <a href="/collections/open-source-database">Collections</a>
   •
-  <a href="/docs/workshop">Workshop</a>
-  •
   <a href="/blog">Blogs</a>
   •
   <a href="https://twitter.com/OSSInsight">Twitter</a>

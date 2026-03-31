@@ -5,7 +5,7 @@ title: FAQ
 
 ## Where does these data come from?
 
-* Historical Data: http://gharchive.org/
+* Historical Data: https://gharchive.org/
 * Realtime Data: https://docs.github.com/en/rest/activity/events#list-public-events
 
 ## Why the stars(or other metrics) on this site is different from that on GitHub?

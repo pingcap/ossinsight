@@ -216,7 +216,7 @@ const footerCards = [
   {
     kind: 'Tutorial: 25 min',
     title: 'Join a Workshop to Setup a Mini OSS Insight',
-    href: '/docs/workshop/ossinsight-lite/introduction',
+    href: '/blog',
     icon: '/img/explore/footer-icon-3.png',
   },
 ];

@@ -11,6 +11,7 @@ export function MenuParentItem ({ item, onValueChange }: { item: MenuParentItemC
   useEffect(() => {
     return () => {
       mounted.current = false;
+      clearTimeout(timeout.current);
     };
   }, []);
 

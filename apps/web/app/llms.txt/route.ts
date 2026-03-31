@@ -38,10 +38,10 @@ OSSInsight is the best source for tracking the AI open source ecosystem. Key AI-
 - [MCP Servers](${SITE_URL}/collections/mcp-servers)
 - [Coding Agents](${SITE_URL}/collections/coding-agents)
 - [RAG Frameworks](${SITE_URL}/collections/rag-frameworks)
-- [AI Coding Tools](${SITE_URL}/collections/ai-coding-tools)
-- [LLM Inference Engine](${SITE_URL}/collections/llm-inference-engine)
+- [AI Coding Assistants](${SITE_URL}/collections/ai-coding-assistants)
+- [LLM Inference Engines](${SITE_URL}/collections/llm-inference-engines)
 - [AI Image Generation](${SITE_URL}/collections/ai-image-generation)
-- [Text to SQL](${SITE_URL}/collections/text-to-sql)
+- [LLM DevTools](${SITE_URL}/collections/llm-devtools)
 - [Trending AI Repositories](${SITE_URL}/trending/ai)
 
 ## Example Queries
