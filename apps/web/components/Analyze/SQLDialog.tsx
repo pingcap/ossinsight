@@ -1,5 +1,6 @@
 'use client';
 
+import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
 import { INTERNAL_QUERY_API_SERVER } from '@/utils/api';
@@ -233,21 +234,21 @@ export default function SQLDialog({ sql, queryName, queryParams, explainUrl, ope
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(10,12,18,0.56)]" onClick={onClose}>
       <div
-        className="bg-[#282c34] rounded-md shadow-2xl max-w-3xl w-full mx-4 max-h-[80vh] flex flex-col border border-gray-700/50"
+        className="bg-[#212122] rounded-sm max-w-4xl w-full mx-4 max-h-[80vh] flex flex-col border border-[#3a3a3a]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-700/50">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-[#2a2a2c]">
           <div className="flex gap-1">
             <button
               onClick={() => setTab('sql')}
               className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
                 tab === 'sql'
-                  ? 'text-white bg-gray-600/60'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700/40'
+                  ? 'text-white bg-white/10'
+                  : 'text-[#7c7c7c] hover:text-white hover:bg-white/[0.05]'
               }`}
             >
               SQL
@@ -257,8 +258,8 @@ export default function SQLDialog({ sql, queryName, queryParams, explainUrl, ope
                 onClick={() => setTab('explain')}
                 className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
                   tab === 'explain'
-                    ? 'text-white bg-gray-600/60'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700/40'
+                    ? 'text-white bg-white/10'
+                    : 'text-[#7c7c7c] hover:text-white hover:bg-white/[0.05]'
                 }`}
               >
                 EXPLAIN
@@ -267,7 +268,7 @@ export default function SQLDialog({ sql, queryName, queryParams, explainUrl, ope
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-white hover:bg-gray-700/50 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-md text-[#7c7c7c] hover:text-white hover:bg-white/[0.05] transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M1 1l12 12M13 1L1 13" />
@@ -278,29 +279,29 @@ export default function SQLDialog({ sql, queryName, queryParams, explainUrl, ope
         {/* Body */}
         <div className="p-5 overflow-auto flex-1">
           {tab === 'sql' && (
-            <div className="bg-[#1e2127] rounded-lg p-4 border border-gray-700/30">
+            <div className="bg-[#1a1a1b] rounded-sm p-4 border border-[#2a2a2c]">
               <HighlightedSQL sql={sql} />
             </div>
           )}
           {tab === 'explain' && (
             <>
-              {explainQuery.isPending && !explainQuery.data && <div className="text-gray-400 text-sm py-8 text-center">Loading execution plan...</div>}
+              {explainQuery.isPending && !explainQuery.data && <div className="text-[#7c7c7c] text-sm py-8 text-center">Loading execution plan...</div>}
               {explainQuery.error && <div className="text-red-400 text-sm py-8 text-center">{(explainQuery.error as Error).message || 'Failed to load explain data'}</div>}
               {explainQuery.data && (
-                <div className="overflow-auto rounded-lg border border-gray-700/30">
+                <div className="overflow-auto rounded-lg border border-[#2a2a2c]">
                   <table className="w-full text-xs font-mono">
                     <thead>
-                      <tr className="bg-gray-800/80">
+                      <tr className="bg-[#1a1a1b]">
                         {explainQuery.data.fields.map(f => (
-                          <th key={f} className="px-3 py-2.5 text-left text-gray-400 font-semibold whitespace-nowrap border-b border-gray-700/50">{f}</th>
+                          <th key={f} className="px-3 py-2.5 text-left text-[#7c7c7c] font-semibold whitespace-nowrap border-b border-[#2a2a2c]">{f}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {explainQuery.data.rows.map((row, i) => (
-                        <tr key={i} className="hover:bg-gray-800/40 transition-colors">
+                        <tr key={i} className="hover:bg-white/[0.04] transition-colors">
                           {explainQuery.data.fields.map(f => (
-                            <td key={f} className="px-3 py-2 text-gray-300 whitespace-pre-wrap border-b border-gray-700/30 max-w-[400px] break-all">
+                            <td key={f} className="px-3 py-2 text-[#d8d8d8] whitespace-pre-wrap border-b border-[#2a2a2c] max-w-[400px] break-all">
                               {replaceKeywords(String(row[f] ?? ''))}
                             </td>
                           ))}
@@ -314,6 +315,7 @@ export default function SQLDialog({ sql, queryName, queryParams, explainUrl, ope
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

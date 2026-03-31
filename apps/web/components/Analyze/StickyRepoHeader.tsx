@@ -32,11 +32,11 @@ export function StickyRepoHeader({ repoName }: StickyRepoHeaderProps) {
 
   return (
     <div
-      className={`fixed left-0 right-0 top-[var(--site-header-height)] z-20 bg-[#1a1a1a]/95 backdrop-blur border-b border-[#2f3032] transition-[opacity,transform] duration-200 will-change-transform ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
+      className={`sticky top-[var(--site-header-height)] z-20 -mx-8 bg-[#1a1a1a]/95 backdrop-blur border-b border-[#2f3032] transition-[opacity,transform] duration-200 will-change-transform ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full h-0 overflow-hidden pointer-events-none'
       }`}
     >
-      <div className="flex items-center gap-2.5 px-6 py-2 md:px-8">
+      <div className="flex items-center gap-2.5 px-8 py-2">
         <GHAvatar name={repoName} size={24} rounded={false} />
         <a
           href={`https://github.com/${repoName}`}
