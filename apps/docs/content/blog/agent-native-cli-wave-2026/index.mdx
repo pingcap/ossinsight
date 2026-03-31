@@ -1,0 +1,184 @@
+---
+title: "The Agent Interface Layer: Software's New Platform Primitive"
+date: 2026-03-31
+authors: [OSSInsight]
+tags: [insight, ai, agents, cli, trends]
+image: /blog-assets/agent-native-cli-wave-2026/cover.png
+description: "Six repos, 130,000+ stars, 90 days. A structural wave is rewriting how software exposes itself to the world — and it looks exactly like the REST API revolution did 15 years ago."
+keywords: [agent-native CLI, AI agents GitHub 2026, CLI-Anything, Google Workspace CLI, software agent interface, AI tool trend, GitHub trending 2026, agent skills]
+---
+
+There's a pattern forming on GitHub that I don't think has been named yet.
+
+In Q1 2026, at least six major repositories launched with the same premise: take software that already exists, and give it a **structured CLI interface that AI agents can use**. Not a new AI tool. Not an LLM wrapper. A CLI.
+
+The numbers are hard to ignore:
+
+| Repo | Stars | Days Old | Stars/Day | Fork Ratio |
+|------|-------|----------|-----------|------------|
+| [CLI-Anything](https://ossinsight.io/analyze/HKUDS/CLI-Anything) | 25,212 | 23 | **1,096** | 8.96% |
+| [agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser) | 25,808 | 79 | 331 | 6.06% |
+| [Google Workspace CLI](https://ossinsight.io/analyze/googleworkspace/cli) | 23,219 | 28 | **829** | 4.90% |
+| [jackwener/opencli](https://ossinsight.io/analyze/jackwener/opencli) | 9,231 | 16 | **576** | 8.35% |
+| [Agent-Reach](https://ossinsight.io/analyze/Panniantong/Agent-Reach) | 13,881 | 34 | 408 | 7.90% |
+| [larksuite/cli](https://ossinsight.io/analyze/larksuite/cli) | 4,722 | 5 | **944** | 4.62% |
+
+*Data from GitHub API, March 31, 2026*
+
+All six of these launched in 2026. All six crossed 4,000+ stars within days of launch. And they're solving the same problem from different angles.
+
+That's not a coincidence. That's a platform shift.
+
+![Star velocity comparison](/blog-assets/agent-native-cli-wave-2026/star-velocity.png)
+
+## What These Repos Are Actually Doing
+
+Let me be concrete about what each of these things is, because the descriptions can blur together.
+
+**[CLI-Anything](https://ossinsight.io/analyze/HKUDS/CLI-Anything)** (HKUDS, Hong Kong University of Science and Design): Takes existing desktop GUI applications — Blender, GIMP, LibreOffice, OBS, Zotero — and wraps them in a structured Python CLI with a REPL mode, JSON output, and an auto-generated `SKILL.md` file that tells AI agents how to use it. The architecture insight is in their [`HARNESS.md`](https://github.com/HKUDS/CLI-Anything/blob/main/cli-anything-plugin/HARNESS.md), which describes a methodology for "GUI-to-CLI" conversion:
+
+> *"CLI-Anything: Bridging the Gap Between AI Agents and the World's Software. Today's Software Serves Humans. Tomorrow's Users will be Agents."*
+
+As of March 31, 30 applications are in their [CLI-Hub registry](https://hkuds.github.io/CLI-Anything/), with new ones merging daily. PR velocity: **4–6 new CLI harnesses per week**.
+
+**[Google Workspace CLI](https://ossinsight.io/analyze/googleworkspace/cli)** (Rust, 23k stars): A single CLI covering Drive, Gmail, Calendar, Sheets, Docs, Chat, Admin, and more. The key detail: it's "dynamically built from Google Discovery Service" — meaning it auto-generates commands from Google's own API schema. It ships with AI agent skills built-in.
+
+**[larksuite/cli](https://ossinsight.io/analyze/larksuite/cli)** (Go, 4.7k stars in 5 days): Official Lark/Feishu CLI covering Messenger, Docs, Base, Sheets, Calendar, Mail, Tasks, and Meetings. **200+ commands, 19 AI Agent Skills**. Launched March 25, built by Larksuite's own engineering team.
+
+**[agent-browser](https://ossinsight.io/analyze/vercel-labs/agent-browser)** (Rust, Vercel Labs): Browser automation CLI for AI agents — the idea that the browser itself becomes a structured CLI command surface rather than a DOM soup.
+
+**[Agent-Reach](https://ossinsight.io/analyze/Panniantong/Agent-Reach)**: "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees."
+
+The unifying thesis: **everything software does should be expressible as a CLI command with structured output**.
+
+## The REST API Parallel
+
+Here's the lens that unlocks this pattern.
+
+In 2007–2012, the same thing happened with HTTP. Twitter launched a REST API. Facebook launched Graph. Google launched Places API. Stripe launched in 2011 with a "payments as API" positioning. The pattern was: take a product that existed, add a programmatic interface, and suddenly a new ecosystem of apps could be built on top of it.
+
+The insight at the time was: **mobile apps need to call services, not scrape websites**. The HTTP API was the interface layer that made mobile viable.
+
+We're now in 2026, and the insight is: **AI agents need to call software, not emulate mouse clicks**. The CLI (with structured output + SKILL.md) is the interface layer that makes agents viable.
+
+The infrastructure play is the same:
+- **2010s**: Build a REST API → enable mobile apps
+- **2026**: Build an agent CLI → enable AI agents
+
+The difference is speed. Twitter's API took years to bootstrap. CLI-Anything wrapped 30 applications in three weeks.
+
+## The Fork Ratio Signal
+
+Star counts are social. Fork ratios are behavioral.
+
+When I look at GitHub's average fork ratio (forks/stars), it hovers around 1.5–3% for typical popular repos. Viral "awesome list" repos can drop to under 1% — lots of likes, almost nobody cloning.
+
+These agent-native CLI repos are running 5–9%:
+
+![Fork ratio vs Stars](/blog-assets/agent-native-cli-wave-2026/fork-ratio.png)
+
+CLI-Anything's **8.96%** fork ratio — 2,260 forks on 25,212 stars — is telling. People aren't just starring it because it looks cool. They're forking it because they want to **run it, modify it, and build their own harnesses**. That's signal that the repo has crossed from "interesting idea" to "actually useful infrastructure."
+
+Compare that to a typical viral GitHub repo: even something like a popular UI component library might sit at 3–4%. The fork-to-star ratio here suggests genuine production adoption, not just hype.
+
+The opencli (8.35%) and CLI-Anything (8.96%) fork ratios stand out in particular — both are tools for *building* more CLIs, which naturally attracts the fork-and-extend crowd.
+
+## Inside CLI-Anything: The Architecture Is the Insight
+
+I cloned CLI-Anything to see what the actual implementation philosophy is. The HARNESS.md file (their methodology guide) reveals a design decision most coverage misses:
+
+The harnesses don't reinvent the software — they **expose the existing backend**:
+
+> *"Most GUI apps separate presentation from logic. Find the core library/framework (e.g., MLT for Shotcut, ImageMagick for GIMP). Map GUI actions to API calls — every button click corresponds to a function call."*
+
+For Blender: the harness calls `blender --background` with Python scripts. For LibreOffice: it calls `libreoffice --headless`. For Kdenlive: it calls `melt` (the MLT framework CLI). The CLI isn't an emulation layer — it's a thin wrapper around the backends that already exist.
+
+This is architecturally significant. It means the harnesses are **stable** (they inherit the stability of the underlying backends) and **composable** (standard Python Click CLIs that behave consistently).
+
+Every generated CLI ships with three things:
+1. A `--json` output flag for machine-readable results
+2. A REPL mode for stateful multi-step operations  
+3. A `SKILL.md` autodiscovery file so AI agents can learn the interface
+
+The skill file is the clever part. It's not documentation for humans — it's a structured capability declaration for agents:
+
+```yaml
+# From CLI-Anything's openclaw-skill/SKILL.md
+name: cli-anything
+description: Use when the user wants OpenClaw to build, refine, test, 
+  or validate a CLI-Anything harness for a GUI application.
+```
+
+By standardizing this format, CLI-Anything created an **interface registry** — not just for its own CLIs, but as a template for the entire ecosystem.
+
+## The Launch Timeline
+
+![Launch timeline Q1 2026](/blog-assets/agent-native-cli-wave-2026/timeline.png)
+
+What's striking is the clustering. Vercel Labs launched agent-browser in January. larksuite CLI launched in late February (and went official OSS in March). Google Workspace CLI launched March 2. CLI-Anything launched March 8. opencli launched March 14.
+
+Five major "agent-native CLI" launches in 10 weeks. None of these teams are coordinating. They're responding to the same signal: **their users have coding agents, and their software has no good interface for those agents**.
+
+The larksuite/cli case is particularly interesting because Lark (Feishu) is both a large enterprise platform and a company known for moving fast in developer tooling. When an enterprise SaaS company builds a 200-command CLI with 19 built-in AI agent skills as its opening release, that's a strategic bet — not a hackathon project.
+
+## What's Being Built vs. What's Being Adopted
+
+There's a useful split in these repos by orientation:
+
+**Platform builders** (building the infrastructure for others to build agent CLIs):
+- CLI-Anything: methodology + registry for GUI → CLI conversion
+- jackwener/opencli: "Make Any Website & Tool Your CLI" — universal CLI hub
+
+**Ecosystem converters** (wrapping specific, widely-used software):
+- googleworkspace/cli: wraps Google's own APIs
+- larksuite/cli: wraps Lark/Feishu APIs
+- agent-browser: wraps the browser
+
+**Data access layer** (giving agents read access to the internet):
+- Agent-Reach: unified CLI over social/content platforms without API keys
+
+The distinction matters because the platform builders are betting that the *number* of CLI harnesses will compound. CLI-Anything already has 30 apps in its registry after 23 days. If the pattern holds from the skills/plugin ecosystems — which went from 0 to thousands in months — you'd expect hundreds of app harnesses by Q3.
+
+## The "Cognitive Level" Question
+
+Here's the uncomfortable version of this trend.
+
+If every piece of software gets a SKILL.md and a structured CLI, then the AI agent becomes the layer that **decides which software to use** for a given task. The human describes an outcome. The agent queries a skill registry, selects the right CLI harnesses, chains them together, and produces the result.
+
+That's a significant shift in software UX. Instead of "user opens Blender, navigates the UI, exports the file," you get "user says 'make a 3D render of X,' agent runs blender-cli render with the right parameters."
+
+CLI-Anything's opening line is more of a thesis statement than a marketing claim:
+
+> *"Today's Software Serves Humans. Tomorrow's Users will be Agents."*
+
+Whether that's a product roadmap or a civilizational claim is a separate debate. But the GitHub data in Q1 2026 suggests a meaningful cohort of developers agrees with the premise — at least enough to build toward it.
+
+## The Data That Would Prove This Is Real
+
+I want to be careful about extrapolating too much from 90 days of growth. Stars and forks measure intent, not outcomes.
+
+The metrics that would confirm this as a genuine platform shift (rather than a hype cycle):
+1. **Downstream dependency counts** — how many projects `pip install` these CLIs?
+2. **PR contribution velocity** — CLI-Anything is at 4–6 merged harnesses/week; does it sustain?
+3. **Enterprise forks** — private forks from org accounts (not measurable via public API)
+4. **Convergence on a standard** — do these tools converge on a shared SKILL.md schema, or fragment?
+
+Right now, point #4 is the open question. There are at least three competing skill/agent interface formats (OpenClaw's SKILL.md, MCP schemas, AGENTS.md patterns). If they converge, the agent-native CLI wave has legs. If they fragment, you get a standards war that slows adoption.
+
+The REST API parallel is instructive here too: the reason REST won (over SOAP, over XML-RPC) was simplicity of the underlying abstraction. A CLI with JSON output and a capability description file is about as simple as it gets. That might be its advantage.
+
+## What to Watch
+
+Three signals worth tracking in the next 90 days:
+
+1. **Registry growth rate for CLI-Anything CLI-Hub** — currently 30 apps. If it hits 200+ by June, the harness contribution pattern is self-sustaining.
+
+2. **Enterprise SaaS CLI launches** — larksuite/cli and googleworkspace/cli were both launched by the platform owners. Watch for Notion, Linear, Atlassian, Salesforce. If they ship agent-native CLIs in the next quarter, this becomes a product requirement, not an open-source curiosity.
+
+3. **Skill/interface format convergence** — whether a single `SKILL.md`-equivalent format emerges as the dominant discovery mechanism. The OpenClaw/CLI-Anything SKILL.md format has the most momentum in the data right now, but it's early.
+
+The wave is clearly here. The question is whether it builds into a new infrastructure layer or crests and recedes.
+
+---
+
+*All star counts, fork ratios, and creation dates verified via GitHub REST API on March 31, 2026. Repo links go to [OSSInsight](https://ossinsight.io) analyze pages for live data.*
