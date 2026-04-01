@@ -1,30 +1,9 @@
 [
-  {
-    "id": 48833910,
-    "fullName": "tikv/tikv"
-  },
-  {
-    "id": 11730342,
-    "fullName": "vuejs/vue"
-  },
-  {
-    "id": 4164482,
-    "fullName": "django/django"
-  },
-  {
-    "id": 27193779,
-    "fullName": "nodejs/node"
-  },
-  {
-    "id": 65600975,
-    "fullName": "pytorch/pytorch"
-  },
-  {
-    "id": 8514,
-    "fullName": "rails/rails"
-  },
-  {
-    "id": 16563587,
-    "fullName": "cockroachdb/cockroach"
-  }
+  {"id": 48833910, "fullName": "tikv/tikv"},
+  {"id": 697851815, "fullName": "crewAIInc/crewAI"},
+  {"id": 644938068, "fullName": "vllm-project/vllm"},
+  {"id": 783329542, "fullName": "modelcontextprotocol/servers"},
+  {"id": 575560771, "fullName": "microsoft/autogen"},
+  {"id": 781432923, "fullName": "openai/codex"},
+  {"id": 65600975, "fullName": "pytorch/pytorch"}
 ]

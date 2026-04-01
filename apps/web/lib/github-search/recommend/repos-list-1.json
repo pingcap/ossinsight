@@ -1,30 +1,9 @@
 [
-  {
-    "id": 41986369,
-    "fullName": "pingcap/tidb"
-  },
-  {
-    "id": 10270250,
-    "fullName": "facebook/react"
-  },
-  {
-    "id": 41881900,
-    "fullName": "microsoft/vscode"
-  },
-  {
-    "id": 45717250,
-    "fullName": "tensorflow/tensorflow"
-  },
-  {
-    "id": 1863329,
-    "fullName": "laravel/laravel"
-  },
-  {
-    "id": 20580498,
-    "fullName": "kubernetes/kubernetes"
-  },
-  {
-    "id": 60246359,
-    "fullName": "ClickHouse/ClickHouse"
-  }
+  {"id": 41986369, "fullName": "pingcap/tidb"},
+  {"id": 552661142, "fullName": "langchain-ai/langchain"},
+  {"id": 661366490, "fullName": "ollama/ollama"},
+  {"id": 694934975, "fullName": "langgenius/dify"},
+  {"id": 726325074, "fullName": "open-webui/open-webui"},
+  {"id": 624874037, "fullName": "ggml-org/llama.cpp"},
+  {"id": 779495842, "fullName": "anthropics/claude-code"}
 ]

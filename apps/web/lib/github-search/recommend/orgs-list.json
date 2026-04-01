@@ -1,34 +1,10 @@
 [
-  {
-    "id": 11855343,
-    "login": "pingcap"
-  },
-  {
-    "id": 41004122,
-    "login": "tikv"
-  },
-  {
-    "id": 59082378,
-    "login": "chaos-mesh"
-  },
-  {
-    "id": 6154722,
-    "login": "microsoft"
-  },
-  {
-    "id": 47359,
-    "login": "apache"
-  },
-  {
-    "id": 69631,
-    "login": "facebook"
-  },
-  {
-    "id": 5430905,
-    "login": "rust-lang"
-  },
-  {
-    "id": 14985020,
-    "login": "vercel"
-  }
+  {"id": 11855343, "login": "pingcap"},
+  {"id": 126733545, "login": "langchain-ai"},
+  {"id": 139895814, "login": "openai"},
+  {"id": 132110672, "login": "anthropics"},
+  {"id": 6154722, "login": "microsoft"},
+  {"id": 15658638, "login": "huggingface"},
+  {"id": 69631, "login": "meta-llama"},
+  {"id": 14985020, "login": "vercel"}
 ]

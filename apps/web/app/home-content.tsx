@@ -567,13 +567,13 @@ function HeroSearch() {
       {/* Input */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 8,
-        backgroundColor: '#212122',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: 6,
+        backgroundColor: '#252525',
+        border: '1px solid rgba(255,255,255,0.15)',
+        borderRadius: 4,
         boxShadow: '0 16px 40px -28px rgba(0,0,0,0.85)',
         padding: '10px 16px',
       }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFE895" strokeWidth="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e9eaee" strokeWidth="2">
           <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
         </svg>
         <input
@@ -791,61 +791,60 @@ function HeroSection() {
   const intervalData = intervalsQuery.data?.data ?? [];
 
   return (
-    <section className="max-w-[1536px] mx-auto px-6 pt-16 pb-4">
-      <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+    <section className="max-w-[1536px] mx-auto px-6 pt-14 pb-6">
+      <div className="flex flex-col lg:flex-row gap-10 items-stretch">
         {/* Left */}
         <div className="flex-[3] flex flex-col justify-center items-end">
           <div className="w-full max-w-[800px] text-right">
-          <p className="text-[#C4C4C4] text-2xl font-medium mb-2">
-            SELECT insights FROM <AnimatedTotal value={totalEvents} /> GitHub events
+          <p className="text-[#999] text-xl font-mono mb-3 tracking-wide">
+            SELECT <span className="text-white font-semibold">AI</span><span className="text-[#666]">_insights</span> FROM <span className="text-[#ccc] tabular-nums"><AnimatedTotal value={totalEvents} /></span> <span className="text-[#666]">GitHub events</span>
           </p>
-          <h1 className="text-5xl lg:text-[64px] font-bold leading-[80px] mb-2 text-[#e3e3e3]">
-            Open Source Software
+          <h1 className="text-5xl lg:text-[60px] font-bold leading-[1.15] mb-3 text-[#e3e3e3]">
+            Open Source <span className="text-white/30">(</span><span className="text-white font-extrabold">AI</span><span className="text-white/30">)</span> Software
             <br />
-            <span className="text-[#FFE895]">
-              <svg className="inline-block align-middle mr-2" style={{ width: '1em', height: '1em' }} viewBox="0 0 24 24" fill="currentColor">
+            <span className="text-white">
+              <svg className="inline-block align-middle mr-2 opacity-80" style={{ width: '0.85em', height: '0.85em' }} viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
               </svg>
               Insight
             </span>
           </h1>
           <HeroSearch />
-          <p className="text-sm text-[#7c7c7c] mt-2">
+          <p className="text-[13px] text-[#666] mt-3 leading-relaxed">
             Deep insight into developers and repos on GitHub
             <br />
-            about stars, pull requests, issues, pushes, comments, reviews...
+            <span className="text-[#888]">stars · pull requests · issues · commits · reviews</span>
           </p>
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-5">
             <a
               href="https://www.pingcap.com/tidb-cloud/"
               target="_blank"
               rel="noopener noreferrer"
-              className="opacity-60 hover:opacity-100 transition-opacity"
+              className="opacity-40 hover:opacity-70 transition-opacity"
             >
-              <img src="/img/tidb-cloud-logo-o.png" alt="TiDB Cloud" width={107} height={20} style={{ height: 20 }} />
+              <img src="/img/tidb-cloud-logo-o.png" alt="TiDB Cloud" width={107} height={20} style={{ height: 18 }} />
             </a>
           </div>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="hidden lg:block w-px bg-gray-700 self-stretch" />
+        <div className="hidden lg:block w-px self-stretch" style={{ background: 'linear-gradient(to bottom, transparent, #333 30%, #333 70%, transparent)' }} />
 
         {/* Right */}
-        <div className="flex-[2] flex flex-col min-w-0">
-          <div className="mb-2 mt-0" />
+        <div className="flex-[2] flex flex-col min-w-0 justify-center">
           <div className="w-full sm:max-w-[61.8%]">
             <EventsBarChart data={intervalData.length > 0 ? intervalData : []} />
           </div>
 
-          <p className="mt-4 mb-2 text-[14px] font-bold text-[#C4C4C4]">
-            What is happening on GitHub <span className="text-[#47D9A1]">NOW!</span>
+          <p className="mt-5 mb-2 text-[13px] font-semibold text-[#bbb]">
+            What is happening on GitHub <span className="text-[#47D9A1] font-bold">NOW</span>
             <span className="ml-1 inline-flex align-middle">
               <Tooltip.InfoTooltip
                 iconProps={{
-                  className: 'inline text-[#8c8c8c]',
-                  width: 14,
-                  height: 14,
+                  className: 'inline text-[#666]',
+                  width: 13,
+                  height: 13,
                 }}
                 contentProps={{
                   className: 'text-[12px] leading-[16px] max-w-[260px] bg-[var(--background-color-tooltip)] text-[var(--text-color-tooltip)]',
@@ -859,17 +858,16 @@ function HeroSection() {
             </span>
           </p>
           <LiveEventFeed />
-          <div className="mt-3 text-[12px]">
+          <div className="mt-4 text-[11px]">
             <Link
               href="/blog/why-we-choose-tidb-to-support-ossinsight"
-              className="text-[#7c7c7c] underline decoration-transparent transition-colors hover:text-[#a9a9a9]"
+              className="text-[#555] hover:text-[#888] transition-colors"
             >
-              🤖️ How do we create this real-time effect?
+              How do we create this real-time effect? →
             </Link>
           </div>
         </div>
       </div>
-
     </section>
   );
 }
@@ -1293,12 +1291,7 @@ function HotCollectionsSection() {
                 ))}
 
                 <div className="mt-3 text-sm">
-                  <Link
-                    href={`/collections/${toSlug(col.name)}`}
-                    className="text-[#e9eaee] transition-colors hover:text-white"
-                  >
-                    &gt; See All
-                  </Link>
+                  <span className="text-[#999] transition-colors group-hover:text-white">&gt; See All</span>
                 </div>
               </Link>
             ))}
@@ -1477,10 +1470,11 @@ function Footer() {
 
 // --- Main ---
 
-export function HomeContent() {
+export function HomeContent({ aiSection }: { aiSection?: React.ReactNode }) {
   return (
     <div>
       <HeroSection />
+      {aiSection}
       <TrendingReposSection />
       <HotCollectionsSection />
       <FAQSection />
