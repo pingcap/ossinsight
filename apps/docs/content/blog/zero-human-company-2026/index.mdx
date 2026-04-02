@@ -1,0 +1,172 @@
+---
+title: "The Zero-Human Company Wave: GitHub's Most Ambitious Bet of 2026"
+date: 2026-04-02
+authors: [OSSInsight]
+tags: [insight, ai, agents, trends, orchestration]
+image: /blog-assets/zero-human-company-2026/cover.png
+description: "A cluster of repos launched in Q1 2026 with a wild premise: AI agents don't just assist companies — they run them. Here's what the GitHub data actually shows."
+keywords: [zero-human company, AI agents GitHub 2026, paperclip, autonomous company, multi-agent orchestration, one-person company, agentic company OS, GitHub trending 2026]
+---
+
+In early 2026, something shifted on GitHub.
+
+It wasn't another AI coding tool. It wasn't a model wrapper. A cluster of repos launched within weeks of each other with a premise that would have sounded like science fiction twelve months ago: **AI agents don't just assist a company — they *are* the company**.
+
+Not "AI-assisted." Not "AI-powered." **Zero-human.**
+
+The numbers are real:
+
+| Repo | Stars | Days Old | Stars/Day | Fork Ratio |
+|------|-------|----------|-----------|------------|
+| [paperclipai/paperclip](https://ossinsight.io/analyze/paperclipai/paperclip) | 43,911 | 30 | **1,464** | **15.4%** |
+| [Yeachan-Heo/oh-my-claudecode](https://ossinsight.io/analyze/Yeachan-Heo/oh-my-claudecode) | 21,015 | 83 | 253 | 8.4% |
+| [cft0808/edict](https://ossinsight.io/analyze/cft0808/edict) | 13,905 | 38 | 366 | 10.2% |
+| [TinyAGI/tinyagi](https://ossinsight.io/analyze/TinyAGI/tinyagi) | 3,446 | 52 | 66 | 14.1% |
+| [Claw-Company/clawcompany](https://ossinsight.io/analyze/Claw-Company/clawcompany) | 749 | 19 | 39 | 9.6% |
+| [nicepkg/auto-company](https://ossinsight.io/analyze/nicepkg/auto-company) | 128 | 50 | 2.6 | 34.4% |
+
+*Data from GitHub REST API, April 2, 2026*
+
+That's ~83,000 combined stars for repos with a shared premise — and `paperclip` alone hit 43,900 stars in a single month, making it one of the fastest-growing repos in GitHub history.
+
+![Cover: The Zero-Human Company Wave](/blog-assets/zero-human-company-2026/cover.png)
+
+---
+
+## What Is a "Zero-Human Company" Repo?
+
+These aren't agent frameworks. They're not LLM wrappers. The thing that unifies this cluster is a higher-level claim:
+
+> *A human should be able to set a goal at the top of a hierarchy, and a team of AI agents will execute, coordinate, audit, and ship — without being micromanaged at each step.*
+
+The language in READMEs is telling. From `paperclip`:
+
+> "If OpenClaw is an *employee*, Paperclip is the *company*."
+
+From `tinyagi`:
+
+> "TinyAGI is the agent teams orchestrator for One Person Company."
+
+From `clawcompany`:
+
+> "You are the Chairman. Your AI team executes autonomously."
+
+This is a new abstraction layer. The question isn't "how do I prompt an LLM?" — it's "how do I design an org chart for agents?"
+
+---
+
+## The Architecture Patterns
+
+These repos aren't all doing the same thing. After reading their READMEs and code, there are at least four distinct approaches:
+
+![Architecture Comparison Table](/blog-assets/zero-human-company-2026/architecture-comparison.png)
+
+### Pattern 1: Task Manager OS (`paperclipai/paperclip`)
+
+Paperclip is a Node.js server with a React UI that works like a **business management system** — not a coding harness. You define a company goal, hire AI "employees" (which can be OpenClaw, Claude Code, Codex, Cursor, or any HTTP endpoint), assign them budgets, and watch from a dashboard.
+
+The key design insight: agents are treated as **fungible workers with job descriptions**, not hard-coded nodes in a DAG. The CEO agent creates sub-tasks; subordinate agents pick them up and report back.
+
+Contributors: 30, though one contributor has 1,135 commits — this is still essentially a solo project that the community is rapidly adopting.
+
+### Pattern 2: Hierarchical Imperial Architecture (`cft0808/edict`)
+
+This is the most architecturally opinionated entry. `edict` models a company after **Tang Dynasty governance** — 三省六部 (Three Chancelleries, Six Ministries). The flow:
+
+```
+皇上 (You) → 太子 (Triage) → 中书省 (Planning) → 门下省 (Review/Veto) → 尚书省 (Dispatch) → 六部 (Execution)
+```
+
+The "门下省 (Gate Review)" layer — which can *veto* plans before execution — is the novel safety mechanism. Compare to CrewAI or AutoGen: neither has a dedicated institutional veto layer.
+
+With 13,905 stars and 12 contributors in 38 days, `edict` is the fastest-growing Chinese-language multi-agent framework we've tracked.
+
+### Pattern 3: Harness Orchestrator (`oh-my-claudecode`)
+
+Oh-my-claudecode is the most pragmatic approach: it wraps Claude Code itself as an agent runtime and adds a multi-agent coordination layer on top. Human stays in the loop but at the task-dispatch level, not the implementation level.
+
+The README is available in 7 languages (English, Korean, Chinese, Japanese, Spanish, Vietnamese, Portuguese) — an unusual early internationalization bet for a 83-day-old repo.
+
+### Pattern 4: Role Templates (`Claw-Company/clawcompany`)
+
+ClawCompany offers 38 predefined roles across 6 company templates (General, YC Startup, Trading Desk, Research Lab, Software Dev, Harness Builder). The key insight is **cost routing**: "Professional work gets Opus/Sonnet. Routine work gets Flash-Lite. 30× cheaper than all-Opus."
+
+This is the first repo in this cluster to explicitly tackle **model cost optimization as a first-class architectural concern**.
+
+---
+
+## The Fork Ratio Signal
+
+Star counts measure attention. Fork ratios measure *intent to build*.
+
+![Fork Ratio vs Stars Scatter](/blog-assets/zero-human-company-2026/fork-ratio-scatter.png)
+
+`paperclip`'s **15.4% fork ratio** (6,764 forks / 43,911 stars) is unusually high. For comparison, typical popular repos in the agent space run 5–8%. A 15% fork ratio suggests developers are actually deploying and customizing it — not just starring it.
+
+Even more striking: `auto-company` has a **34.4% fork ratio** (44 forks / 128 stars). With only 128 stars, virtually everyone who liked it enough to star it also forked it. That's the signature of a small but intensely engaged developer community that plans to actually build on top of the code.
+
+---
+
+## The Star Velocity Story
+
+The growth curves reveal different community dynamics:
+
+![Star Growth Timeline](/blog-assets/zero-human-company-2026/star-growth-timeline.png)
+
+- **paperclip** had a near-vertical launch — classic viral spread, likely driven by a highly-resonant concept ("zero-human company") rather than technical depth.
+- **oh-my-claudecode** grew more steadily, with stair-step jumps correlating to each major feature release.
+- **edict** had an explosive start (3,200 stars in its first week) then moderated — the Chinese-language HN/Twitter circuit reacted immediately to the architecture concept.
+
+---
+
+## Why This Wave Is Happening Now
+
+Three things converged in Q1 2026:
+
+1. **Agent capability crossed a threshold.** Claude Code, Codex, and OpenClaw shipped enough autonomy that agents can now handle multi-hour tasks without human intervention. This unlocked the "company of agents" mental model.
+
+2. **Context management got solved (partially).** OpenViking and similar projects showed that persistent agent memory across tasks is tractable. You can't have a "Chief Marketing Officer agent" if it forgets what the company does after each session.
+
+3. **The concept became legible.** The Manus acquisition (covered in [planning-with-files](https://ossinsight.io/blog/personal-ai-stacks-2026)) surfaced the idea of persistent agent workflows to a mass audience. Within weeks, the GitHub community was building it from scratch.
+
+---
+
+## The Insight That Surprised Me
+
+The repos that grow fastest here are **not the most technically sophisticated**.
+
+`paperclip` (43,911 stars, 30 contributors) has a simpler codebase than `edict` (13,905 stars, 12 contributors). But `paperclip`'s framing — "your agents are employees, you're the CEO" — is viscerally intuitive to anyone who has managed people.
+
+The abstraction that resonates isn't the one with the most agents or the cleverest routing algorithm. It's the one that maps cleanly onto a **mental model humans already have**: running a company.
+
+The technical architecture seems secondary. What the community is actually voting on — with stars, forks, and commits — is *the metaphor*.
+
+---
+
+## What Comes Next
+
+The telltale sign of a maturing cluster is **ecosystem tooling**. We're already seeing it:
+
+- [NousResearch/hermes-paperclip-adapter](https://github.com/NousResearch/hermes-paperclip-adapter) (489 stars): Paperclip adapter for Hermes models.
+- [AnthonyDavidAdams/zero-employee-company-book](https://github.com/AnthonyDavidAdams/zero-employee-company-book): A book about building AI-run companies with Paperclip, released two weeks after the framework.
+- **Clipmart** (announced in Paperclip's README): A marketplace for downloading pre-built AI company templates. "Browse pre-built company structures, agent configs, and skills — and import them into your Paperclip instance in seconds."
+
+The marketplace moment is when a framework cluster becomes an ecosystem. We're 30 days away from that, maybe less.
+
+---
+
+## The Open Question
+
+Every company-as-agents repo we looked at punts on one critical question: **who owns the output?**
+
+If an agent CEO approves a contract, an agent engineer ships the code, and an agent marketer publishes the post — and something goes wrong — the human "Chairman" set the goal five steps up the chain. Current legal and organizational frameworks have no answer for this.
+
+That's not a blocker for developers building experiments. But it's the wall that every serious "zero-human company" deployment will eventually hit.
+
+The GitHub data shows a community that has decided to build first and ask that question later. 83,000 combined stars in 90 days suggests they're not wrong to do so.
+
+---
+
+*Numbers from GitHub REST API, April 2, 2026. Analysis by [OSSInsight](https://ossinsight.io).*
+
+*Track all repos in this cluster: [paperclipai/paperclip](https://ossinsight.io/analyze/paperclipai/paperclip) · [oh-my-claudecode](https://ossinsight.io/analyze/Yeachan-Heo/oh-my-claudecode) · [cft0808/edict](https://ossinsight.io/analyze/cft0808/edict) · [clawcompany](https://ossinsight.io/analyze/Claw-Company/clawcompany)*
