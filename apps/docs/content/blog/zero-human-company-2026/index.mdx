@@ -103,7 +103,7 @@ Star counts measure attention. Fork ratios measure *intent to build*.
 
 `paperclip`'s **15.4% fork ratio** (6,764 forks / 43,911 stars) is unusually high. For comparison, typical popular repos in the agent space run 5–8%. A 15% fork ratio suggests developers are actually deploying and customizing it — not just starring it.
 
-Even more striking: `auto-company` has a **34.4% fork ratio** (44 forks / 128 stars). With only 128 stars, virtually everyone who liked it enough to star it also forked it. That's the signature of a small but intensely engaged developer community that plans to actually build on top of the code.
+Note: smaller repos like `auto-company` (128 stars, 44 forks) show high fork ratios on paper (~34%), but at that sample size, a handful of forks can swing the percentage wildly. Fork ratio analysis is only meaningful at scale — which makes `paperclip`'s 15% at 43K+ stars all the more notable.
 
 ---
 
@@ -128,6 +128,16 @@ Three things converged in Q1 2026:
 2. **Context management got solved (partially).** OpenViking and similar projects showed that persistent agent memory across tasks is tractable. You can't have a "Chief Marketing Officer agent" if it forgets what the company does after each session.
 
 3. **The concept became legible.** The Manus acquisition (covered in [planning-with-files](https://ossinsight.io/blog/personal-ai-stacks-2026)) surfaced the idea of persistent agent workflows to a mass audience. Within weeks, the GitHub community was building it from scratch.
+
+---
+
+## The Counterpoint: Wave or Hype Cycle?
+
+It's worth noting: **83K combined stars sounds massive, but one repo accounts for 53% of the total.** Remove `paperclip`, and you're looking at ~40K stars distributed across five projects — impressive but not unprecedented for a trending topic on GitHub.
+
+Stars measure attention, not adoption. The fork ratios suggest real usage for the top projects, but we don't yet have data on how many of these forks result in running deployments versus weekend experiments. The "zero-human company" framing is potent marketing — and potent marketing inflates star counts.
+
+The honest read: this is a **real architectural trend** (multi-agent orchestration is clearly happening) wrapped in **hype-cycle branding** (the "zero-human" framing overpromises). Both can be true simultaneously.
 
 ---
 
