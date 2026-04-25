@@ -8,7 +8,7 @@ export type DebouncedOptions = {
 }
 
 export function useDebouncedCallback<Fn extends (...args: any[]) => void> (fn: Fn, { timeout }: DebouncedOptions) {
-  const debouncedHandle = useRef<ReturnType<typeof setTimeout>>();
+  const debouncedHandle = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   fn = useLatestValue(fn);
 
   const debouncedFn = useCallback((...params: Parameters<Fn>) => {

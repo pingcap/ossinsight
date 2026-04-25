@@ -10,7 +10,7 @@ export interface InputPopoverProps {
   input: ReactElement;
   popperContent: ReactNode;
 
-  popoverPortalProps?: Omit<RuiPopover.PortalProps, 'children'>;
+  popoverPortalProps?: Omit<RuiPopover.PopoverPortalProps, 'children'>;
   popoverContentProps?: Omit<RuiPopover.PopoverContentProps, 'children' | 'onOpenAutoFocus'>;
 }
 
