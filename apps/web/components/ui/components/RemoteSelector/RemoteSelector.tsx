@@ -1,4 +1,4 @@
-import { ChangeEvent, cloneElement, FocusEvent, MouseEvent, ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FocusEvent, MouseEvent, ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { InputPopover, InputPopoverProps } from '../InputPopover';
 import { RemoteSelectedItem } from './RemoteSelectedItem';
 import { useRemoteList, UseRemoteListOptions } from './useRemoteList';
