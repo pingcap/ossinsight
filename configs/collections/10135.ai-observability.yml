@@ -13,3 +13,6 @@ items:
   - uptrain-ai/uptrain
   - whylabs/whylogs
   - zenml-io/zenml
+  - wandb/wandb
+  - microsoft/promptflow
+  - langchain-ai/langsmith-sdk
