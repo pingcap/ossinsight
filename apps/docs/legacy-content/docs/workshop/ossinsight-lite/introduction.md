@@ -11,8 +11,6 @@ By joining this workshop, you can get:
 1. A free MySQL-Compatible serverless database with analytical capability
 2. A well-designed personal/repos GitHub activities analysis tool
 
-Live Demo: http://ossinsight-lite.vercel.app/
-
 
 ## Requirements
 
