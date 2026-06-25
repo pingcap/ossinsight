@@ -1,0 +1,30 @@
+id: 10143
+name: Tomography
+items:
+  - astra-toolbox/astra-toolbox
+  - CERN/TIGRE
+  - odlgroup/odl
+  - tomopy/tomopy
+  - TomographicImaging/CIL
+  - RTKConsortium/RTK
+  - cicwi/tomosipo
+  - DiamondLightSource/Savu
+  - algotom/algotom
+  - antonyvam/nDTomo
+  - llnl/LEAP
+  - lanl/scico
+  - dkazanc/ToMoBAR
+  - TomographicImaging/CCPi-Regularisation-Toolkit
+  - cabouman/svmbir
+  - cabouman/mbirjax
+  - UCL/STIR
+  - SyneRBI/SIRF
+  - gschramm/parallelproj
+  - PyTomography/PyTomography
+  - villekf/OMEGA
+  - carterbox/torch-radon # Fork from: matteo-ronchetti/torch-radon
+  - csyben/PYRO-NN
+  - deepinv/deepinv
+  - openchemistry/tomviz
+  - gianthk/alrecon
+  - rosalindfranklininstitute/ot2rec
