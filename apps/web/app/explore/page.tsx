@@ -1,19 +1,17 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import { BreadcrumbListJsonLd, DatasetJsonLd } from '@/components/json-ld';
-import { ExploreContent } from './content';
-import ShareButtons from '@/components/ShareButtons';
+import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { ExploreMaintenance } from './maintenance';
 
 export const metadata: Metadata = {
-  title: 'GitHub Data Explorer',
-  description: 'Discover insights in GitHub event data with AI-generated SQL and preset visualizations.',
+  title: 'Data Explorer 维护中',
+  description: 'OSSInsight Data Explorer 正在维护中，暂时不可用。',
   openGraph: {
-    title: 'GitHub Data Explorer | OSSInsight',
-    description: 'Discover insights in GitHub event data with AI-generated SQL and preset visualizations.',
+    title: 'Data Explorer 维护中 | OSSInsight',
+    description: 'OSSInsight Data Explorer 正在维护中，暂时不可用。',
   },
   twitter: {
-    title: 'GitHub Data Explorer | OSSInsight',
-    description: 'Discover insights in GitHub event data with AI-generated SQL and preset visualizations.',
+    title: 'Data Explorer 维护中 | OSSInsight',
+    description: 'OSSInsight Data Explorer 正在维护中，暂时不可用。',
     card: 'summary_large_image',
   },
   alternates: { canonical: '/explore' },
@@ -26,23 +24,7 @@ export default function ExplorePage() {
         { name: 'Home', url: '/' },
         { name: 'Data Explorer' },
       ]} />
-      <DatasetJsonLd
-        name="GitHub Open Source Event Data"
-        description="Over 10 billion GitHub events from 2011 to present, including stars, forks, pull requests, issues, commits, and contributor activity for millions of open source repositories."
-        url="https://ossinsight.io/explore"
-      />
-      <div className="sr-only">
-        <h1>GitHub Data Explorer</h1>
-        <p>
-          Discover insights in GitHub event data with AI-generated SQL. Ask questions in plain English
-          about GitHub repositories, developers, and trends — OSSInsight generates and runs SQL queries
-          against over 10 billion GitHub events and returns interactive visualizations.
-        </p>
-      </div>
-      <Suspense>
-        <ExploreContent />
-      </Suspense>
-      <ShareButtons url="/explore" title="GitHub Data Explorer — OSSInsight" />
+      <ExploreMaintenance />
     </>
   );
 }
