@@ -6,7 +6,6 @@ import { normalizeExplorerChart, inferExplorerFields } from "@/lib/explorer/char
 import { explorerChartKinds, type ExplorerAnswer } from "@/lib/explorer/contracts";
 import { buildExplorerPlanningPrompt } from "@/lib/explorer/prompt";
 import { executeExplorerRows, explainExplorerRows } from "@/lib/explorer/query";
-import { explorerRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "edge";
 export const maxDuration = 30;
@@ -15,6 +14,16 @@ const requestSchema = z.object({
   question: z.string().trim().min(4).max(400),
   stream: z.boolean().optional(),
 });
+
+const maintenanceResponse = {
+  error: "Data Explorer is under maintenance.",
+  code: "EXPLORER_UNDER_MAINTENANCE",
+  message: "Data Explorer 正在维护中，暂时不可用。",
+};
+
+function isExplorerUnderMaintenance() {
+  return true;
+}
 
 const chartSchema = z.object({
   kind: z.enum(explorerChartKinds),
@@ -45,11 +54,21 @@ const openai = createOpenAI({
 });
 
 export async function POST(request: Request) {
+  if (isExplorerUnderMaintenance()) {
+    return Response.json(maintenanceResponse, {
+      status: 503,
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     request.headers.get("x-real-ip") ??
     "unknown";
 
+  const { explorerRateLimit } = await import("@/lib/rate-limit");
   const { success, remaining, reset } = await explorerRateLimit.limit(ip);
   if (!success) {
     const retryAfterSeconds = Math.max(1, Math.ceil((reset - Date.now()) / 1000));
