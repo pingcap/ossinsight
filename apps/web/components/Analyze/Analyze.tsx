@@ -26,9 +26,17 @@ export interface AnalyzeProps {
 export default function Analyze({ query, params = {}, title, titleLevel, showSQL, children }: AnalyzeProps) {
   const { repoId, comparingRepoId } = useAnalyzeContext();
 
-  const sanitizedParams = Object.fromEntries(
-    Object.entries(params).filter(([_, v]) => v !== '' && String(v).trim() !== '')
-  );
+  const sanitizedParams: Record<string, any> = {};
+  if (params) {
+    for (const key in params) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        const value = params[key];
+        if (value !== '' && value !== null && value !== undefined && String(value).trim() !== '') {
+          sanitizedParams[key] = value;
+        }
+      }
+    }
+  }
 
   const repoData = useRemoteData(query, { repoId, ...sanitizedParams }, true);
   const compareRepoData = useRemoteData(
