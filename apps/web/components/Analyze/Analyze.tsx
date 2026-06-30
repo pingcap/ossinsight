@@ -23,13 +23,17 @@ export interface AnalyzeProps {
   children: React.ReactNode | ((context: AnalyzeChartContextProps) => React.ReactNode);
 }
 
-export default function Analyze({ query, params, title, titleLevel = 'h4', showSQL = false, children }: AnalyzeProps) {
+export default function Analyze({ query, params = {}, title, titleLevel, showSQL, children }: AnalyzeProps) {
   const { repoId, comparingRepoId } = useAnalyzeContext();
 
-  const repoData = useRemoteData(query, { repoId, ...params }, repoId != null);
+  const sanitizedParams = Object.fromEntries(
+    Object.entries(params).filter(([_, v]) => v !== '' && String(v).trim() !== '')
+  );
+
+  const repoData = useRemoteData(query, { repoId, ...sanitizedParams }, true);
   const compareRepoData = useRemoteData(
     query,
-    { repoId: comparingRepoId, ...params },
+    { repoId: comparingRepoId, ...sanitizedParams },
     comparingRepoId != null,
   );
 
