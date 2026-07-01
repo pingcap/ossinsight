@@ -1,8 +1,6 @@
 import type { ExecuteArgs, FullResult } from '@tidbcloud/serverless';
 import { BIG_NUMBER_TYPES } from './executor/utils';
-import { createTiDBConnection } from './connection';
-
-const tidb = createTiDBConnection();
+import { getTiDBConnection } from './connection';
 
 export type QueryRows = Record<string, any>[];
 
@@ -11,6 +9,7 @@ export async function executeSQL(
   args: ExecuteArgs = null,
   signal?: AbortSignal,
 ) {
+  const tidb = getTiDBConnection();
   const result = await tidb.execute(statement, args, {
     fullResult: true,
   }) as FullResult;

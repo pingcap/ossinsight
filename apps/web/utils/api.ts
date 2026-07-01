@@ -8,23 +8,53 @@ export const EXPLORER_API_SERVER = process.env.NEXT_PUBLIC_EXPLORER_API_SERVER |
 export const API_SERVER = typeof window === 'undefined' ? getSiteOrigin() : '';
 export const INTERNAL_API_SERVER = `${API_SERVER}/api`;
 export const INTERNAL_QUERY_API_SERVER = `${INTERNAL_API_SERVER}/q`;
-export const SITE_HOST = process.env.NEXT_PUBLIC_SITE_HOST || (typeof window === 'undefined' ? getSiteOrigin() : window.location.origin);
+export const SITE_HOST = typeof window === 'undefined'
+  ? getSiteOrigin()
+  : normalizeOrigin(process.env.NEXT_PUBLIC_SITE_HOST) ?? window.location.origin;
 
 export function getSiteOrigin() {
-  const explicitHost = process.env.NEXT_PUBLIC_SITE_HOST;
+  const explicitHost = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_HOST);
   if (explicitHost) {
-    return explicitHost.replace(/\/$/, '');
+    return explicitHost;
   }
 
   const previewHost =
     process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL ||
     process.env.VERCEL_BRANCH_URL ||
     process.env.VERCEL_URL;
-  if (previewHost) {
-    return `https://${previewHost}`;
+  const previewOrigin = normalizeOrigin(previewHost);
+  if (previewOrigin) {
+    return previewOrigin;
   }
 
   return `http://127.0.0.1:${process.env.PORT || 3001}`;
+}
+
+export function normalizeOrigin(origin?: string | null) {
+  const trimmed = origin?.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const candidate = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `${isLocalOrigin(trimmed) ? 'http' : 'https'}://${trimmed}`;
+
+  try {
+    return new URL(candidate).origin;
+  } catch {
+    return null;
+  }
+}
+
+function isLocalOrigin(origin: string) {
+  const host = origin
+    .replace(/^https?:\/\//i, '')
+    .replace(/^\[([^\]]+)\].*$/, '$1')
+    .split('/')[0]
+    .split(':')[0];
+
+  return host === 'localhost' || host === '127.0.0.1' || host === '::1';
 }
 
 export function rewriteInternalApiUrl(url: string) {
