@@ -4,7 +4,7 @@ import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
 import * as React from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PersonalChart from '../_charts/ChartWrapper';
 import TimeDistribution from '../_charts/TimeDistribution';
 import { chartColors } from '../_charts/colors';
@@ -67,6 +67,8 @@ function AllContributions ({ userId }: { userId: number }) {
     return { repos, seriesList };
   }, [data]);
 
+  const queryParams = useMemo(() => ({ userId }), [userId]);
+
   if (!loading && repos.length === 0) return null;
 
   const option = {
@@ -80,15 +82,17 @@ function AllContributions ({ userId }: { userId: number }) {
     series: seriesList,
   };
 
-  const queryParams = useMemo(() => ({ userId }), [userId]);
-
   return <PersonalChart title="Type of total contributions" option={option} loading={loading} noData={repos.length === 0} sql={sql} queryName={queryName} queryParams={queryParams} />;
 }
 
 function ContributionTime ({ userId }: { userId: number }) {
   const [period, setPeriod] = useState('past_1_year');
   const [type, setType] = useState('all');
-  const [zone, setZone] = useState(() => Math.round(-new Date().getTimezoneOffset() / 60));
+  const [zone, setZone] = useState(0);
+
+  useEffect(() => {
+    setZone(Math.round(-new Date().getTimezoneOffset() / 60));
+  }, []);
 
   const { data } = usePersonalData('personal-contribution-time-distribution', userId, { period });
   const filteredData = useMemo(() => (data ?? []).filter(item => item.type === type), [data, type]);
