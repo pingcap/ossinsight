@@ -2,10 +2,8 @@ import { FullResult } from '@tidbcloud/serverless';
 import { Liquid } from 'liquidjs';
 import { DateTime } from 'luxon';
 import { EndpointConfig } from '../config';
-import { createTiDBConnection } from '../connection';
+import { getTiDBConnection } from '../connection';
 import { applyLegacyQueryParameters, BIG_NUMBER_TYPES, prepareQueryContext } from './utils';
-
-const tidb = createTiDBConnection();
 
 const templateEngine = new Liquid();
 
@@ -17,6 +15,7 @@ export default async function executeEndpoint (name: string, config: EndpointCon
   // ARCHITECTURAL NOTE: SQL is built via string replacement (applyLegacyQueryParameters)
   // rather than parameterized queries. Safety relies on prepareQueryContext validation
   // (pattern/enum checks) and stringifyParamValue quote-escaping for STRING types.
+  const tidb = getTiDBConnection();
   const start = DateTime.now();
   const result = await tidb.execute(sql, null, {
     fullResult: true,
