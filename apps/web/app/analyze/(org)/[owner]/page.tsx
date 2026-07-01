@@ -7,6 +7,7 @@ import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import ShareButtons from '@/components/ShareButtons';
 import { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 export async function generateStaticParams() {

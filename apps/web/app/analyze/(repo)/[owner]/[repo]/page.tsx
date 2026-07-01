@@ -4,6 +4,7 @@ import { getRepoByName } from '@/lib/server/internal-api';
 import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd, SoftwareSourceCodeJsonLd } from '@/components/json-ld';
 import RepoAnalyzePage from './content';
 
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
