@@ -21,7 +21,6 @@ import Analyze from '@/components/Analyze/Analyze';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import ShareButtons from '@/components/ShareButtons';
-import SimilarReposRadial from './SimilarReposRadial';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 import MetricTable from '@/components/ui/MetricTable';
 import type { MetricItem } from '@/components/ui/MetricTable';
@@ -315,8 +314,6 @@ export function OverviewSection() {
         style={{ height: vs ? 400 : 300 }}
       />
       </div>
-
-      {!vs && <SimilarReposRadial />}
     </ScrollspySectionWrapper>
   );
 }
