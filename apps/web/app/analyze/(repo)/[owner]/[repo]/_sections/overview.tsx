@@ -268,7 +268,7 @@ export function OverviewSection() {
           </>
         ) : null}
 
-        <SectionHeading>Overview</SectionHeading>
+        <SectionHeading className={repoInfo ? 'mt-8' : undefined}>Overview</SectionHeading>
 
         <div className="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <div>
