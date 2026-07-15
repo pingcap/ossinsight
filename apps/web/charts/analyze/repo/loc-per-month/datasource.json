@@ -1,7 +1,7 @@
 [
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-loc-per-month",
+    "url": "/api/q/analyze-loc-per-month",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"
@@ -13,7 +13,7 @@
   },
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-loc-per-month",
+    "url": "/api/q/analyze-loc-per-month",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"

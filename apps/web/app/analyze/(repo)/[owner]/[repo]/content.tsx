@@ -31,7 +31,7 @@ export default function RepoAnalyzePage({ repoInfo, vsRepoInfo, vsName }: RepoAn
 
   return (
     <AnalyzeContext.Provider value={contextValue}>
-      <StickyRepoHeader repoName={repoInfo.full_name} />
+      <StickyRepoHeader repoName={repoInfo.full_name} repoId={repoInfo.id} />
       <OverviewSection />
       <PeopleSection />
       <CommitsSection />

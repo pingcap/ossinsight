@@ -110,7 +110,7 @@ export function TrendingAIContent({
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1a1b]">
+    <div className="min-h-screen overflow-x-hidden bg-[#1a1a1b]">
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-[#363638] bg-gradient-to-b from-[#1a1a1b] to-[#121212] py-16 md:py-24">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #e9eaee 0%, transparent 50%)' }} />

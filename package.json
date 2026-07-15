@@ -11,6 +11,8 @@
     "start:web": "pnpm --filter web start",
     "start:all": "turbo run start --filter=web --filter=docs",
     "start:docs": "turbo run start --filter=docs",
+    "sync:queries": "node scripts/sync-queries.mjs",
+    "check:queries": "node scripts/sync-queries.mjs --check",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types"
   },

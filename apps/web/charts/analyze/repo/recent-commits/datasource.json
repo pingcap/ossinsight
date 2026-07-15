@@ -1,7 +1,7 @@
 [
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-recent-commits",
+    "url": "/api/q/analyze-recent-commits",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"

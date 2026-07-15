@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GHAvatar } from '@/components/ui/components/GHAvatar';
+import { RepoSwitcher } from '@/components/Analyze/RepoSwitcher';
 
 interface StickyRepoHeaderProps {
   repoName: string;
+  repoId: number;
 }
 
-export function StickyRepoHeader({ repoName }: StickyRepoHeaderProps) {
+export function StickyRepoHeader({ repoName, repoId }: StickyRepoHeaderProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -36,16 +37,8 @@ export function StickyRepoHeader({ repoName }: StickyRepoHeaderProps) {
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full h-0 overflow-hidden pointer-events-none'
       }`}
     >
-      <div className="flex items-center gap-2.5 px-8 py-2">
-        <GHAvatar name={repoName} size={24} rounded={false} />
-        <a
-          href={`https://github.com/${repoName}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[15px] font-medium text-[#e9eaee] hover:text-white transition-colors"
-        >
-          {repoName}
-        </a>
+      <div className="flex items-center px-6 py-1 md:px-8">
+        <RepoSwitcher repoName={repoName} repoId={repoId} variant="sticky" />
       </div>
     </div>
   );

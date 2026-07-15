@@ -6,6 +6,7 @@ import {
   recentStatsChartXAxis,
   recentStatsLineSeries, simpleGrid,
 } from '@/lib/charts-utils/options';
+import { detailedRecentStatsAxes, detailedRecentStatsTooltip } from '../recent-stats-options';
 
 type Params = {
   repo_id: string;
@@ -29,20 +30,20 @@ type Input = [DataPoint[], DataPoint[] | undefined];
 
 export default function (
   data: Input,
-  ctx: WidgetVisualizerContext<Params>
+  ctx: WidgetVisualizerContext<Params & { options?: { showAxes?: boolean } }>
 ): EChartsVisualizationConfig {
   const [main, vs] = data;
+  const showAxes = ctx.parameters?.options?.showAxes === true;
 
   return {
     dataset: {
       source: [...main.sort((a, b) => a.idx - b.idx)],
     },
-    xAxis: recentStatsChartXAxis(),
-    yAxis: {
-      type: 'value',
-      show: false,
-    },
-    grid: simpleGrid(2),
+    ...(showAxes ? detailedRecentStatsAxes(main) : {
+      xAxis: recentStatsChartXAxis(),
+      yAxis: { type: 'value' as const, show: false },
+      grid: simpleGrid(2),
+    }),
     series: [
       // {
       //   type: 'line',
@@ -67,7 +68,7 @@ export default function (
       //   name: 'Merged',
       // },
       recentStatsLineSeries(
-        'idx',
+        showAxes ? 'current_period_day' : 'idx',
         'current_period_opened_day_issues',
         {
           name: 'Current period',
@@ -93,8 +94,8 @@ export default function (
         }
       ),
       recentStatsLineSeries(
-        'idx',
-        'last_period_closed_day_issues',
+        showAxes ? 'current_period_day' : 'idx',
+        'last_period_opened_day_issues',
         {
           name: 'Last period',
           color: '#A0A3FB80',
@@ -116,13 +117,15 @@ export default function (
         }
       ),
     ],
-    tooltip: {
-      show: false,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'line',
-      },
-    },
+    tooltip: showAxes
+      ? detailedRecentStatsTooltip({
+          currentValueField: 'current_period_opened_day_issues',
+          previousValueField: 'last_period_opened_day_issues',
+          unit: 'Issue(s)',
+          currentColor: '#7378FF',
+          previousColor: '#A0A3FB',
+        })
+      : { show: false, trigger: 'axis' },
   };
 }
 

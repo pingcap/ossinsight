@@ -71,6 +71,9 @@ export function RepositorySection() {
   return (
     <ScrollspySectionWrapper anchor="repository" className="pt-8 pb-8">
       <SectionHeading>Repository Statistics - Last 28 Days</SectionHeading>
+      <p className="mb-5 text-xs text-[#8f8f96]">
+        X-axis: date · Y-axis: daily activity · Solid line: current 28 days · Dashed line: previous 28 days
+      </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RepoChart
@@ -79,7 +82,8 @@ export function RepositorySection() {
           visualizer={() => import('@/charts/analyze/repo/recent-stars/visualization')}
           repoId={repoId!}
           repoName={repoName}
-          style={{ height: 150 }}
+          showAxes
+          style={{ height: 200 }}
         />
         <RepoChart
           title="Issues"
@@ -87,7 +91,8 @@ export function RepositorySection() {
           visualizer={() => import('@/charts/analyze/repo/recent-issues/visualization')}
           repoId={repoId!}
           repoName={repoName}
-          style={{ height: 150 }}
+          showAxes
+          style={{ height: 200 }}
         />
         <RepoChart
           title="Pull Requests"
@@ -95,7 +100,8 @@ export function RepositorySection() {
           visualizer={() => import('@/charts/analyze/repo/recent-pull-requests/visualization')}
           repoId={repoId!}
           repoName={repoName}
-          style={{ height: 150 }}
+          showAxes
+          style={{ height: 200 }}
         />
         <RepoChart
           title="Commits"
@@ -103,7 +109,8 @@ export function RepositorySection() {
           visualizer={() => import('@/charts/analyze/repo/recent-commits/visualization')}
           repoId={repoId!}
           repoName={repoName}
-          style={{ height: 150 }}
+          showAxes
+          style={{ height: 200 }}
         />
       </div>
 

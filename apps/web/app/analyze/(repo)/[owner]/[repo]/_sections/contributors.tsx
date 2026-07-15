@@ -7,6 +7,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useRemoteData } from '@/utils/useRemoteData';
 import { HLSelect, type SelectParamOption } from '@/components/ui/components/Selector/Select';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
+import { Switch } from '@/components/ui/switch';
 
 // --- Types ---
 
@@ -79,38 +80,59 @@ export function ContributorsSection() {
       </p>
 
       {/* Controls */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         <HLSelect<string>
           value={descriptor}
           onChange={setDescriptor}
           options={descriptors}
         />
 
-        <div className="flex-1" />
+        <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+          <div className="flex h-9 items-center gap-2.5 rounded-md border border-white/10 bg-[#202021] px-3">
+            <Switch
+              id="exclude-contributor-bots"
+              checked={excludeBots}
+              onCheckedChange={setExcludeBots}
+              className="focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1a1b]"
+            />
+            <label
+              htmlFor="exclude-contributor-bots"
+              className="cursor-pointer select-none text-sm text-[#c6c6d0]"
+            >
+              Exclude Bots
+            </label>
+          </div>
 
-        <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={excludeBots}
-            onChange={(e) => setExcludeBots(e.target.checked)}
-            className="rounded"
-          />
-          Exclude Bots
-        </label>
-
-        <div className="flex rounded overflow-hidden border border-gray-600">
-          <button
-            className={`px-3 py-1 text-sm ${!showPercentage ? 'bg-yellow-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-            onClick={() => setShowPercentage(false)}
+          <div
+            role="group"
+            aria-label="Contributor ranking value"
+            className="inline-flex h-9 items-center rounded-md border border-white/10 bg-[#202021] p-1"
           >
-            # Total Events
-          </button>
-          <button
-            className={`px-3 py-1 text-sm ${showPercentage ? 'bg-yellow-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-            onClick={() => setShowPercentage(true)}
-          >
-            % Percentage
-          </button>
+            <button
+              type="button"
+              aria-pressed={!showPercentage}
+              className={`h-7 rounded px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 ${
+                !showPercentage
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-[#8f8f96] hover:bg-white/[0.05] hover:text-[#e9eaee]'
+              }`}
+              onClick={() => setShowPercentage(false)}
+            >
+              # Total Events
+            </button>
+            <button
+              type="button"
+              aria-pressed={showPercentage}
+              className={`h-7 rounded px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 ${
+                showPercentage
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-[#8f8f96] hover:bg-white/[0.05] hover:text-[#e9eaee]'
+              }`}
+              onClick={() => setShowPercentage(true)}
+            >
+              % Percentage
+            </button>
+          </div>
         </div>
       </div>
 
@@ -135,6 +157,9 @@ export function ContributorsSection() {
                 <img
                   src={`https://github.com/${item.actor_login}.png`}
                   alt={item.actor_login}
+                  width={32}
+                  height={32}
+                  loading="lazy"
                   className="w-8 h-8 rounded-full"
                 />
               </a>
@@ -160,7 +185,7 @@ export function ContributorsSection() {
               </div>
 
               {/* Value */}
-              <div className="w-28 text-sm text-right shrink-0">
+              <div className="w-28 shrink-0 text-right text-sm tabular-nums">
                 {showPercentage
                   ? `${item.proportion === 1 ? '100' : (item.proportion * 100).toPrecision(2)}%`
                   : (

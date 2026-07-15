@@ -6,7 +6,7 @@ import type { AIRepoItem, TrendingAIResponse } from './api/route';
 
 export const revalidate = 3600;
 
-const TITLE = 'Trending AI Repositories on GitHub — Real-Time Rankings 2026 | OSSInsight';
+const TITLE = 'Trending AI Repositories on GitHub — Real-Time Rankings 2026';
 const DESCRIPTION =
   'Discover the top trending AI repositories on GitHub in 2026. Real-time rankings of AI agent frameworks, LLM tools, MCP servers, coding agents, RAG frameworks, and more — powered by 10B+ GitHub events.';
 

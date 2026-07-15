@@ -3,7 +3,7 @@
 import { HTMLAttributes, useEffect, useRef } from 'react';
 import { useScrollspyContext } from './ScrollspyContext';
 
-export function ScrollspySectionWrapper ({ anchor, children, ...props }: HTMLAttributes<HTMLDivElement> & { anchor?: string }) {
+export function ScrollspySectionWrapper ({ anchor, children, className, style, ...props }: HTMLAttributes<HTMLDivElement> & { anchor?: string }) {
   const spy = useScrollspyContext();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -17,7 +17,13 @@ export function ScrollspySectionWrapper ({ anchor, children, ...props }: HTMLAtt
   }, [anchor, spy]);
 
   return (
-    <section ref={ref} style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }} {...props}>
+    <section
+      ref={ref}
+      id={anchor}
+      className={`scroll-mt-24 ${className ?? ''}`}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px', ...style }}
+      {...props}
+    >
       {children}
     </section>
   );

@@ -46,3 +46,7 @@ configs/endpoints/**/*
 .idea
 .vscode
 .run
+
+.learnings
+.claude/
+.husky/

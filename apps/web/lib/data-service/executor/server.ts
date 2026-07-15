@@ -3,16 +3,16 @@ import { Liquid } from 'liquidjs';
 import { DateTime } from 'luxon';
 import { EndpointConfig } from '../config';
 import { getTiDBConnection } from '../connection';
-import { applyLegacyQueryParameters, BIG_NUMBER_TYPES, prepareQueryContext } from './utils';
+import { applyQueryParameters, BIG_NUMBER_TYPES, prepareQueryContext } from './utils';
 
 const templateEngine = new Liquid();
 
 export default async function executeEndpoint (name: string, config: EndpointConfig, sqlTemplate: string, params: Record<string, any>, geo?: any, signal?: AbortSignal) {
   const queryParams = prepareQueryContext(config, params);
-  const replacedSQL = applyLegacyQueryParameters(config, sqlTemplate, queryParams);
+  const replacedSQL = applyQueryParameters(config, sqlTemplate, queryParams);
   const sql = await templateEngine.parseAndRender(replacedSQL, queryParams);
 
-  // ARCHITECTURAL NOTE: SQL is built via string replacement (applyLegacyQueryParameters)
+  // ARCHITECTURAL NOTE: SQL is built via string replacement (applyQueryParameters)
   // rather than parameterized queries. Safety relies on prepareQueryContext validation
   // (pattern/enum checks) and stringifyParamValue quote-escaping for STRING types.
   const tidb = getTiDBConnection();

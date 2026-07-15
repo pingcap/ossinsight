@@ -4,8 +4,9 @@ import * as Menubar from '@radix-ui/react-menubar';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Menu as MenuIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import type { MouseEventHandler } from 'react';
 import type {
   ConfigIconType,
   Divider,
@@ -47,6 +48,7 @@ function NavLink({
   forceReload,
   className,
   active,
+  onClick,
   children,
 }: {
   href: string;
@@ -54,6 +56,7 @@ function NavLink({
   forceReload?: boolean;
   className?: string;
   active?: boolean;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
   children: React.ReactNode;
 }) {
   if (isAbsoluteUrl(href) || forceReload) {
@@ -64,6 +67,7 @@ function NavLink({
         rel={newTab ? 'noreferrer noopener' : undefined}
         className={className}
         data-active={active ? 'true' : undefined}
+        onClick={onClick}
       >
         {children}
       </a>
@@ -71,7 +75,7 @@ function NavLink({
   }
 
   return (
-    <Link href={href} className={className} data-active={active ? 'true' : undefined}>
+    <Link href={href} className={className} data-active={active ? 'true' : undefined} onClick={onClick}>
       {children}
     </Link>
   );
@@ -167,6 +171,85 @@ function HeaderMenuItem({
   return <HeaderMenuLink item={item} pathname={pathname} />;
 }
 
+function MobileHeaderMenu({
+  items,
+  pathname,
+  onNavigate,
+}: {
+  items: Array<MenuItemConfig | MenuParentItemConfig | Spacer | Divider>;
+  pathname: string | null;
+  onNavigate: () => void;
+}) {
+  const visibleItems = items.filter(
+    (item): item is MenuItemConfig | MenuParentItemConfig => item !== 'spacer' && item !== 'divider',
+  );
+
+  return (
+    <Menubar.Menu value="mobile-navigation">
+      <Menubar.Trigger
+        aria-label="Open navigation menu"
+        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-300 outline-none transition-colors hover:bg-white/[0.05] hover:text-white focus-visible:ring-2 focus-visible:ring-[#ffe895]/30 xl:hidden"
+      >
+        <MenuIcon className="h-5 w-5" />
+      </Menubar.Trigger>
+      <Menubar.Portal>
+        <Menubar.Content
+          align="end"
+          sideOffset={12}
+          className="z-50 max-h-[calc(100vh-5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto rounded-lg border border-white/8 bg-[var(--background-color-popover)] p-2 text-sm text-slate-200 shadow-2xl"
+        >
+          <ul className="space-y-1">
+            {visibleItems.map((item) => {
+              if ('items' in item) {
+                return (
+                  <li key={item.label} className="pt-2 first:pt-0">
+                    <div className="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
+                      {item.label}
+                    </div>
+                    <ul className="space-y-1">
+                      {item.items.map((subItem) => (
+                        <li key={subItem.label}>
+                          <NavLink
+                            href={subItem.href}
+                            newTab={subItem.newTab}
+                            forceReload={subItem.forceReload}
+                            active={isActiveMenuItem(subItem, pathname)}
+                            onClick={onNavigate}
+                            className="flex items-center gap-2 rounded-md px-3 py-2.5 text-slate-300 outline-none transition-colors hover:bg-white/[0.05] hover:text-white focus-visible:bg-white/[0.05] focus-visible:text-white data-[active=true]:text-[#ffe895]"
+                          >
+                            {renderIcon(subItem.icon, 'h-4 w-4 shrink-0')}
+                            <span>{subItem.label}</span>
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              }
+
+              return (
+                <li key={item.label}>
+                  <NavLink
+                    href={item.href}
+                    newTab={item.newTab}
+                    forceReload={item.forceReload}
+                    active={isActiveMenuItem(item, pathname)}
+                    onClick={onNavigate}
+                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-slate-300 outline-none transition-colors hover:bg-white/[0.05] hover:text-white focus-visible:bg-white/[0.05] focus-visible:text-white data-[active=true]:text-[#ffe895]"
+                  >
+                    {renderIcon(item.icon, 'h-4 w-4 shrink-0')}
+                    <span>{item.label}</span>
+                  </NavLink>
+                </li>
+              );
+            })}
+          </ul>
+        </Menubar.Content>
+      </Menubar.Portal>
+    </Menubar.Menu>
+  );
+}
+
 export function SiteHeader({
   logo,
   homeHref = '/',
@@ -210,6 +293,7 @@ export function SiteHeader({
       <div className="flex-1 xl:hidden" />
 
       {children}
+      <MobileHeaderMenu items={menuItems} pathname={pathname} onNavigate={() => setValue(undefined)} />
     </Menubar.Root>
   );
 }

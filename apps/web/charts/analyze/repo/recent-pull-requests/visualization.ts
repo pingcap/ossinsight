@@ -3,10 +3,10 @@ import type {
   WidgetVisualizerContext,
 } from '@/lib/charts-types';
 import {
-  grid,
   recentStatsChartXAxis,
   recentStatsLineSeries, simpleGrid,
 } from '@/lib/charts-utils/options';
+import { detailedRecentStatsAxes, detailedRecentStatsTooltip } from '../recent-stats-options';
 
 type Params = {
   repo_id: string;
@@ -30,23 +30,23 @@ type Input = [DataPoint[], DataPoint[] | undefined];
 
 export default function (
   data: Input,
-  ctx: WidgetVisualizerContext<Params>
+  ctx: WidgetVisualizerContext<Params & { options?: { showAxes?: boolean } }>
 ): EChartsVisualizationConfig {
   const [main, vs] = data;
+  const showAxes = ctx.parameters?.options?.showAxes === true;
 
   return {
     dataset: {
       source: [...main.sort((a, b) => a.idx - b.idx)],
     },
-    xAxis: recentStatsChartXAxis(),
-    yAxis: {
-      type: 'value',
-      show: false,
-    },
-    grid: simpleGrid(2),
+    ...(showAxes ? detailedRecentStatsAxes(main) : {
+      xAxis: recentStatsChartXAxis(),
+      yAxis: { type: 'value' as const, show: false },
+      grid: simpleGrid(2),
+    }),
     series: [
       recentStatsLineSeries(
-        'idx',
+        showAxes ? 'current_period_day' : 'idx',
         'current_period_opened_day_prs',
         {
           name: 'Current period',
@@ -72,8 +72,8 @@ export default function (
         }
       ),
       recentStatsLineSeries(
-        'idx',
-        'last_period_merged_day_prs',
+        showAxes ? 'current_period_day' : 'idx',
+        'last_period_opened_day_prs',
         {
           name: 'Last period',
           color: '#BCCE7480',
@@ -117,13 +117,15 @@ export default function (
       //   name: 'Merged',
       // },
     ],
-    tooltip: {
-      show: false,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'line',
-      },
-    },
+    tooltip: showAxes
+      ? detailedRecentStatsTooltip({
+          currentValueField: 'current_period_opened_day_prs',
+          previousValueField: 'last_period_opened_day_prs',
+          unit: 'Pull Request(s)',
+          currentColor: '#D1F935',
+          previousColor: '#BCCE74',
+        })
+      : { show: false, trigger: 'axis' },
   };
 }
 

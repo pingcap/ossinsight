@@ -822,7 +822,13 @@ function HeroSection() {
               rel="noopener noreferrer"
               className="opacity-40 hover:opacity-70 transition-opacity"
             >
-              <img src="/img/tidb-cloud-logo-o.png" alt="TiDB Cloud" width={107} height={20} style={{ height: 18 }} />
+              <img
+                src="/img/tidb-cloud-logo-o.png"
+                alt="TiDB Cloud"
+                width={99}
+                height={22}
+                className="h-[22px] w-auto max-w-none"
+              />
             </a>
           </div>
           </div>

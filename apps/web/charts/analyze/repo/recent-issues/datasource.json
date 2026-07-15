@@ -1,7 +1,7 @@
 [
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-recent-issues",
+    "url": "/api/q/analyze-recent-issues",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"
