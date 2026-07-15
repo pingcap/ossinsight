@@ -5,7 +5,6 @@ import fp from 'fastify-plugin';
 import App from '../../src/app';
 import { AddressInfo } from 'net';
 import * as path from 'path';
-import io from 'socket.io-client';
 import { OutgoingHttpHeaders } from 'http';
 import { register } from 'prom-client';
 import {getTestRedis} from "./redis";
@@ -93,23 +92,6 @@ export class StartedApp {
     const address = this.app.server.address() as AddressInfo;
     // noinspection HttpUrlsUsage
     return `http://${address.address}:${address.port}`;
-  }
-
-  async ioEmit (event: string, payload: any, bindingEvent = `/q/${payload.query}`): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const url = this.url;
-      const socket = io(url, { transports: ['websocket'], autoConnect: false, reconnection: false });
-      socket.once(bindingEvent, (payload) => {
-        resolve(payload);
-        socket.close();
-      });
-      setTimeout(() => {
-        reject(new Error('io emit timeout'));
-        socket.close();
-      }, 500);
-      socket.connect();
-      socket.emit(event, payload);
-    });
   }
 
   expectGet (url: string, config: Omit<MockRequest, 'method'> = {}) {

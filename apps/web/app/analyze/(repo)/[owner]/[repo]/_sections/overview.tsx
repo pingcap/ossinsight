@@ -21,6 +21,7 @@ import Analyze from '@/components/Analyze/Analyze';
 import { ScrollspySectionWrapper } from '@/components/Scrollspy/SectionWrapper';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import ShareButtons from '@/components/ShareButtons';
+import { RepoSwitcher } from '@/components/Analyze/RepoSwitcher';
 import { useAnalyzeChartContext, useAnalyzeContext } from '@/components/Analyze/context';
 import MetricTable from '@/components/ui/MetricTable';
 import type { MetricItem } from '@/components/ui/MetricTable';
@@ -201,27 +202,22 @@ export function OverviewSection() {
       <div id="overview-main">
         {repoInfo ? (
           <>
-            <ShareButtons
-              url={`/analyze/${repoName}`}
-              title={`${repoName} — check the full analytics on OSSInsight`}
-              stars={repoInfo.stars ?? undefined}
-              forks={repoInfo.forks ?? undefined}
-              language={repoInfo.language ?? undefined}
-              hashtags={['opensource', 'github']}
-            />
+            {vs == null && (
+              <ShareButtons
+                url={`/analyze/${repoName}`}
+                title={`${repoName} — check the full analytics on OSSInsight`}
+                stars={repoInfo.stars ?? undefined}
+                forks={repoInfo.forks ?? undefined}
+                language={repoInfo.language ?? undefined}
+                hashtags={['opensource', 'github']}
+              />
+            )}
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center justify-center rounded-[4px] bg-white p-[2px]">
                 <GHAvatar name={repoName} size={40} rounded={false} />
               </span>
               <h1 className="min-w-0 text-[28px] font-semibold leading-tight text-[#e9eaee]">
-                <a
-                  href={`https://github.com/${repoName}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white"
-                >
-                  {repoName}
-                </a>
+                <RepoSwitcher repoName={repoName} repoId={repoId!} />
               </h1>
               <CompareAction repoInfo={repoInfo} />
             </div>

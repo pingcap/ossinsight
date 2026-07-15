@@ -1,0 +1,31 @@
+{
+  "cacheHours": 1,
+  "engine": "liquid",
+  "cacheProvider": "NORMAL_TABLE",
+  "params": [
+    {
+      "name": "ownerId",
+      "replaces": "11855343",
+      "type": "integer"
+    },
+    {
+      "name": "repoIds",
+      "replaces": "41986369",
+      "type": "array",
+      "default": [],
+      "itemType": "integer",
+      "maxArrayLength": 50
+    },
+    {
+      "name": "period",
+      "type": "string",
+      "enums": ["past_7_days", "past_28_days", "past_90_days", "past_12_months"],
+      "default": "past_28_days"
+    },
+    {
+      "name": "excludeBots",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

@@ -1,6 +1,5 @@
 import { bootstrapApp, getTestApp, releaseApp } from './helpers/app';
 import { bootstrapTestDatabase, releaseTestDatabase } from './helpers/db';
-import io from 'socket.io-client';
 import {bootstrapTestRedis, releaseTestRedis} from "./helpers/redis";
 
 beforeAll(bootstrapTestDatabase);
@@ -14,12 +13,10 @@ const allowedOrigins = ['https://ossinsight.io', 'https://pingcap-ossinsight-pre
 
 describe('http', () => {
   test('should start', async () => {
-    await getTestApp().expectGet(`/q/events-total`).toMatchObject({
+    await getTestApp().expectGet(`/`).toMatchObject({
       statusCode: 200,
       body: {
-        data: [
-          expect.anything(),
-        ],
+        root: true,
       },
     });
   });
@@ -27,7 +24,7 @@ describe('http', () => {
   describe('cors rules', () => {
     test('should accept', async () => {
       for (const origin of allowedOrigins) {
-        await getTestApp().expectGet(`/q/events-total`, { headers: { Origin: origin } })
+        await getTestApp().expectGet(`/`, { headers: { Origin: origin } })
           .toMatchObject({
             headers: {
               'access-control-allow-origin': origin,
@@ -38,7 +35,7 @@ describe('http', () => {
     });
 
     test('should reject', async () => {
-      await getTestApp().expectGet(`/q/events-total`, { headers: { 'Origin': 'https://example.com' } })
+      await getTestApp().expectGet(`/`, { headers: { 'Origin': 'https://example.com' } })
         .toMatchObject({
           headers: expect.not.objectContaining({
             'access-control-allow-origin': expect.anything(),
@@ -49,9 +46,6 @@ describe('http', () => {
 
   describe('api', () => {
     const APIs = [
-      '/q/explain/{query}',
-      '/q/{query}',
-      '/qo/repos/groups/osdb',
       '/gh/repo/{owner}/{repo}',
       '/collections',
       '/collections/{collectionId}'
@@ -72,7 +66,6 @@ describe('http', () => {
 
     // Variable replacements in above URLs
     const variables = {
-      query: 'events-total',
       owner: 'pingcap',
       repo: 'ossinsight',
       collectionId: '1',
@@ -87,13 +80,6 @@ describe('http', () => {
       });
     });
 
-    it(`should execute playground SQL`, async () => {
-      await getTestApp().expectPost('/q/playground', {
-        id: '449649595',
-        sql: 'SELECT\n  *\nFROM\n  github_events\nWHERE\n  repo_id = 449649595\n  AND type = \'PullRequestEvent\'\nORDER BY\n  created_at ASC\nLIMIT\n  1\n;',
-        type: 'repo',
-      }).toMatchObject({ statusCode: 200, body: {} });
-    });
   });
 
   describe('swagger json', () => {
@@ -116,72 +102,3 @@ describe('http', () => {
     });
   });
 });
-
-describe('socket.io', () => {
-  test('should start', async () => {
-    let data = await getTestApp().ioEmit('q', { query: 'events-total' }, '/q/events-total');
-    expect(data.payload.data.length).toBe(1);
-  });
-
-  test('should be compact format', async () => {
-    await expect(getTestApp().ioEmit('q', {
-      query: 'events-total',
-      format: 'compact',
-      excludeMeta: true
-    }, '/q/events-total'))
-        .resolves
-        .toMatchObject({
-          payload: {
-            data: [
-              expect.any(Array)
-            ],
-            fields: expect.any(Array),
-          },
-          compact: true,
-        });
-  });
-
-  for (const transport of ['websocket']) {
-    describe(transport, () => {
-      test('should follow cors rules', async () => {
-        await new Promise<void>((resolve, reject) => {
-          const socket = io(getTestApp().url, {
-            transports: [transport],
-            extraHeaders: {
-              Origin: 'https://example.com',
-            },
-          })
-          socket.on('connect', () => {
-            reject(new Error('should be rejected by CORS'));
-            socket.close();
-          })
-          socket.on('connect_error', (err) => {
-            expect(err.message).toMatch(/(websocket|xhr poll) error/);
-            resolve();
-            socket.close();
-          });
-        });
-
-        for (const origin of allowedOrigins) {
-          await new Promise<void>((resolve, reject) => {
-            const socket = io(getTestApp().url, {
-              transports: [transport],
-              extraHeaders: {
-                Origin: origin,
-              },
-            })
-            socket.on('connect', () => {
-              resolve();
-              socket.close();
-            })
-            socket.on('connect_error', err => {
-              reject(err);
-              socket.close();
-            });
-          });
-        }
-      });
-    });
-  }
-});
-

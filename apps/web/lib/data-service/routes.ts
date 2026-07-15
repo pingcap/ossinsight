@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import { Liquid } from 'liquidjs';
 import loadEndpoint, { hasEndpoint } from '@/lib/data-service/endpoints';
 import { APIError, executeEndpoint } from '@/lib/data-service';
-import { applyLegacyQueryParameters, prepareQueryContext } from '@/lib/data-service/executor/utils';
+import { applyQueryParameters, prepareQueryContext } from '@/lib/data-service/executor/utils';
 import { executeRows } from './query';
 
 const templateEngine = new Liquid();
@@ -95,7 +95,7 @@ export async function explainQuery(queryName: string, searchParams: URLSearchPar
   const endpoint = await loadEndpoint(queryName);
   const queryParams = getSearchParams(searchParams);
   const context = prepareQueryContext(endpoint.config, queryParams);
-  const sql = await templateEngine.parseAndRender(applyLegacyQueryParameters(endpoint.config, endpoint.sql, context), context);
+  const sql = await templateEngine.parseAndRender(applyQueryParameters(endpoint.config, endpoint.sql, context), context);
   // Note: EXPLAIN cannot use parameterized queries for the statement itself,
   // but the SQL has already been validated through prepareQueryContext + template rendering.
   const explainResult = await executeRows(`EXPLAIN FORMAT = 'brief' ${sql}`, null, signal);
@@ -235,4 +235,3 @@ LIMIT 100
     types: result.types,
   } satisfies QueryResult;
 }
-

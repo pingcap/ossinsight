@@ -1,7 +1,7 @@
 [
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-commits-time-distribution",
+    "url": "/api/q/analyze-commits-time-distribution",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"
@@ -14,7 +14,7 @@
   },
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-commits-time-distribution",
+    "url": "/api/q/analyze-commits-time-distribution",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"

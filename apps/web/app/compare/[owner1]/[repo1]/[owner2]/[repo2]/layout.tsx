@@ -3,7 +3,7 @@
 import Navigation, { NavItemType } from '@/components/Analyze/Navigation/Navigation';
 import { CollapsibleSidebar } from '@/components/CollapsibleSidebar';
 import { ScrollspyContextProvider } from '@/components/Scrollspy';
-import { StarIcon, PeopleIcon, GitCommitIcon, GitPullRequestIcon, IssueOpenedIcon, RepoIcon, PersonIcon } from '@primer/octicons-react';
+import { StarIcon, PeopleIcon, GitCommitIcon, GitPullRequestIcon, IssueOpenedIcon } from '@primer/octicons-react';
 
 export default function RepoAnalyzeLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -52,17 +52,5 @@ const navItems: NavItemType[] = [
     title: 'Issues',
     anchor: 'issues',
     Icon: IssueOpenedIcon,
-  },
-  {
-    id: 'repository',
-    title: 'Repository',
-    anchor: 'repository',
-    Icon: RepoIcon,
-  },
-  {
-    id: 'contributors',
-    title: 'Contributors',
-    anchor: 'contributors',
-    Icon: PersonIcon,
   },
 ];

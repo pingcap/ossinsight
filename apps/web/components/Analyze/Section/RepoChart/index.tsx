@@ -50,6 +50,8 @@ interface RepoChartProps {
   titleLevel?: 'h2' | 'h3' | 'h4';
   /** Show inline SHOW SQL button (only used when no title). Default: false */
   showSQL?: boolean;
+  /** Render detailed chart axes when supported by the visualizer. */
+  showAxes?: boolean;
   /** Callback when SQL becomes available (for rendering in parent title row) */
   onSQLReady?: (sql: string, queryName?: string) => void;
 }
@@ -57,7 +59,7 @@ interface RepoChartProps {
 export default function RepoChart({
   name, repoId, repoName, vsRepoId, vsRepoName,
   visualizer, params = {}, className, aspectRatio, style,
-  title, titleLevel = 'h4', showSQL = false, onSQLReady,
+  title, titleLevel = 'h4', showSQL = false, showAxes = false, onSQLReady,
 }: RepoChartProps) {
   const { containerRef, size } = useChartContainer();
   const [vizModule, setVizModule] = useState<VisualizerModule | null>(null);
@@ -99,6 +101,10 @@ export default function RepoChart({
     const widgetParams: Record<string, any> = {
       ...params,
       repo_id: String(repoId),
+      options: {
+        ...(params.options ?? {}),
+        showAxes,
+      },
     };
     if (vsRepoId != null) {
       widgetParams.vs_repo_id = String(vsRepoId);
@@ -107,9 +113,21 @@ export default function RepoChart({
       ...createVisualizationContext({ width: size.width, height: size.height, dpr, colorScheme: 'dark' }),
       ...createWidgetContext('client', widgetParams, linkedData),
     };
-  }, [size.width, size.height, params, repoId, vsRepoId, linkedData]);
+  }, [size.width, size.height, params, repoId, vsRepoId, linkedData, showAxes]);
 
   const ready = !loading && !!fetchResult && !!vizModule && !!ctx;
+
+  const axisDateRange = useMemo(() => {
+    if (!showAxes || !fetchResult?.main) return null;
+    const dates = fetchResult.main
+      .flatMap((dataset) => dataset)
+      .map((row) => row?.current_period_day)
+      .filter((date): date is string => typeof date === 'string')
+      .sort();
+    if (dates.length === 0) return null;
+    const formatDate = (date: string) => date.slice(5).replace('-', '/');
+    return [formatDate(dates[0]), formatDate(dates[dates.length - 1])] as const;
+  }, [fetchResult?.main, showAxes]);
 
   const containerStyle: React.CSSProperties = aspectRatio
     ? { aspectRatio: String(aspectRatio), ...style }
@@ -146,6 +164,13 @@ export default function RepoChart({
           <ChartSkeleton />
         ) : null}
       </div>
+      {axisDateRange && (
+        <div className="mt-1 flex items-center justify-between pl-9 pr-2 text-[10px] leading-none text-[#8f8f96]">
+          <span>{axisDateRange[0]}</span>
+          <span className="uppercase tracking-[0.12em] text-[#707077]">Date</span>
+          <span>{axisDateRange[1]}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -193,6 +218,7 @@ function EChartsRenderer({ vizModule, input, ctx }: {
     <LazyECharts
       option={option}
       className="w-full h-full"
+      style={{ width: '100%', height: '100%' }}
       notMerge
       lazyUpdate
       theme="dark"

@@ -16,9 +16,7 @@ test('should insert record', async () => {
   const app = getTestApp();
   expect(app.app.apiRequestRecorder).not.toBeUndefined();
 
-  // Only http request trigger access logs.
-  await app.ioEmit('q', { query: 'events-total' });
-  await app.expectGet('/q/events-total').toMatchObject({
+  await app.expectGet('/').toMatchObject({
     statusCode: 200,
   });
 

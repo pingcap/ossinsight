@@ -1,6 +1,6 @@
 {
   "type": "api",
-  "url": "https://api.ossinsight.io/q/personal-contribution-time-distribution",
+  "url": "/api/q/personal-contribution-time-distribution",
   "parser": {
     "type": "json",
     "extract": "$.data[*]"

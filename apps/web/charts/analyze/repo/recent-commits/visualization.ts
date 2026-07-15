@@ -6,6 +6,7 @@ import type {
 import {
   simpleGrid,
 } from '@/lib/charts-utils/options';
+import { detailedRecentStatsAxes } from '../recent-stats-options';
 
 type Params = {
   repo_id: string;
@@ -25,25 +26,24 @@ type Input = [DataPoint[], DataPoint[] | undefined];
 
 export default function (
   data: Input,
-  ctx: WidgetVisualizerContext<Params>,
+  ctx: WidgetVisualizerContext<Params & { options?: { showAxes?: boolean } }>,
 ): EChartsVisualizationConfig {
   const [main, vs] = data;
+  const showAxes = ctx.parameters?.options?.showAxes === true;
 
   return {
     dataset: {
       source: [...main.sort((a, b) => a.idx - b.idx)],
     },
-    xAxis: {
-      type: 'time',
-    },
-    yAxis: {
-      type: 'value',
-    },
-    grid: simpleGrid(2),
+    ...(showAxes ? detailedRecentStatsAxes(main) : {
+      xAxis: { type: 'time' as const },
+      yAxis: { type: 'value' as const },
+      grid: simpleGrid(2),
+    }),
     series: {
       type: 'bar',
       encode: {
-        x: 'current_period_day',
+        x: showAxes ? 'idx' : 'current_period_day',
         y: 'current_period_day_commits',
       },
       color: ctx.theme.colors.sky['400'],

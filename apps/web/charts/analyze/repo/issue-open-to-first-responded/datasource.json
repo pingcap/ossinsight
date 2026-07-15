@@ -1,7 +1,7 @@
 [
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-issue-open-to-first-responded",
+    "url": "/api/q/analyze-issue-open-to-first-responded",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"
@@ -13,7 +13,7 @@
   },
   {
     "type": "api",
-    "url": "https://api.ossinsight.io/q/analyze-issue-open-to-first-responded",
+    "url": "/api/q/analyze-issue-open-to-first-responded",
     "parser": {
       "type": "json",
       "extract": "$.data[*]"

@@ -45,7 +45,7 @@ export function prepareQueryContext(queryConfig: EndpointConfig, values: Record<
   return context;
 }
 
-export function applyLegacyQueryParameters(
+export function applyQueryParameters(
   queryConfig: EndpointConfig,
   sqlTemplate: string,
   context: Record<string, any>,

@@ -58,9 +58,6 @@ function isLocalOrigin(origin: string) {
 }
 
 export function rewriteInternalApiUrl(url: string) {
-  if (url.startsWith(`${PUBLIC_API_SERVER}/q/`)) {
-    return `${INTERNAL_QUERY_API_SERVER}/${url.slice(`${PUBLIC_API_SERVER}/q/`.length)}`;
-  }
   if (url.startsWith(`${PUBLIC_API_SERVER}/gh/`)) {
     return `${API_SERVER}/gh/${url.slice(`${PUBLIC_API_SERVER}/gh/`.length)}`;
   }
