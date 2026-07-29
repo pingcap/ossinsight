@@ -6,6 +6,7 @@ import { normalizeExplorerChart, inferExplorerFields } from "@/lib/explorer/char
 import { explorerChartKinds, type ExplorerAnswer } from "@/lib/explorer/contracts";
 import { buildExplorerPlanningPrompt } from "@/lib/explorer/prompt";
 import { executeExplorerRows, explainExplorerRows } from "@/lib/explorer/query";
+import { createMinimaxModel, readMinimaxConfig } from "@/lib/explorer/provider";
 
 export const runtime = "edge";
 export const maxDuration = 30;
@@ -53,6 +54,24 @@ const openai = createOpenAI({
   apiKey: openaiApiKey,
 });
 
+const minimaxConfig = readMinimaxConfig();
+
+function resolveExplorerModel() {
+  if (minimaxConfig) {
+    return createMinimaxModel(minimaxConfig);
+  }
+  return openai("gpt-5.2");
+}
+
+const explorerProviderOptions = minimaxConfig
+  ? undefined
+  : {
+      openai: {
+        reasoningEffort: "low" as const,
+        textVerbosity: "low" as const,
+      },
+    };
+
 export async function POST(request: Request) {
   if (isExplorerUnderMaintenance()) {
     return Response.json(maintenanceResponse, {
@@ -90,7 +109,7 @@ export async function POST(request: Request) {
   try {
     const body = requestSchema.parse(await request.json());
 
-    if (!openaiApiKey) {
+    if (!minimaxConfig && !openaiApiKey) {
       return Response.json(
         { error: "Missing OPENAI_API_TOKEN (or OPENAI_API_KEY) for Data Explorer." },
         { status: 500, headers: { "Cache-Control": "no-store" } },
@@ -125,18 +144,13 @@ export async function POST(request: Request) {
 
 async function generateExplorerPlan(question: string) {
   const { object: plan } = await generateObject({
-    model: openai("gpt-5.2"),
+    model: resolveExplorerModel(),
     schemaName: "ExplorerPlan",
     schemaDescription:
       "A safe readonly SQL plan and chart plan for OSSInsight Data Explorer.",
     schema: planSchema,
     prompt: buildExplorerPlanningPrompt(question),
-    providerOptions: {
-      openai: {
-        reasoningEffort: "low",
-        textVerbosity: "low",
-      },
-    },
+    providerOptions: explorerProviderOptions,
   });
 
   return plan;
@@ -201,18 +215,13 @@ function streamExplorerAnswer(question: string, startedAt: number) {
           send({ type: "phase", phase: "generating" });
 
           const result = streamObject({
-            model: openai("gpt-5.2"),
+            model: resolveExplorerModel(),
             schemaName: "ExplorerPlan",
             schemaDescription:
               "A safe readonly SQL plan and chart plan for OSSInsight Data Explorer.",
             schema: planSchema,
             prompt: buildExplorerPlanningPrompt(question),
-            providerOptions: {
-              openai: {
-                reasoningEffort: "low",
-                textVerbosity: "low",
-              },
-            },
+            providerOptions: explorerProviderOptions,
           });
 
           let lastPreview = "";
