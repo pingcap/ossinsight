@@ -1,0 +1,102 @@
+---
+title: "The Verification Gap: The Fastest-Growing Agent Repos Ship Zero Tests"
+date: 2026-08-09
+authors: [OSSInsight]
+tags: [insight, ai, github, open-source]
+image: /blog-assets/skills-verification-gap-2026/cover.png
+description: "The agent repositories growing fastest on GitHub are made mostly of Markdown - and the three fastest in our sample ship no test files at all. We measured file trees, not READMEs, across 11 repositories to size the gap between distributing agent instructions and verifying them."
+keywords: [AI agents, GitHub trends 2026, agent skills, SKILL.md, testing, OSSInsight]
+---
+
+Agent repositories have been getting easier to grow and harder to verify at the same time.
+
+We took 11 widely-used agent repositories and measured something READMEs cannot tell you: **what is actually inside the file tree**. For each repository we counted Markdown files, test files, and CI workflows from the recursive Git tree API, then lined that up against star velocity.
+
+> **Core finding:** the three fastest-growing repositories in this sample - averaging **245 stars/day** - contain **zero test files** between them. The seven code-heavy repositories have a median of **11.9 stars/day** and **73 test files**.
+
+That is a **20× difference** in growth rate running in the exact opposite direction from verification coverage.
+
+## Snapshot Table (Verified via GitHub API)
+
+| Repository | Stars | Stars/Day | Files | Markdown Files | Markdown Share | Test Files | CI Workflows |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| [VoltAgent/awesome-openclaw-skills](https://ossinsight.io/analyze/VoltAgent/awesome-openclaw-skills) | 51,834 | 265.8 | 35 | 32 | 91% | **0** | 1 |
+| [anthropics/claude-code](https://ossinsight.io/analyze/anthropics/claude-code) | 140,752 | 264.6 | 229 | 106 | 46% | **0** | 12 |
+| [kepano/obsidian-skills](https://ossinsight.io/analyze/kepano/obsidian-skills) | 44,485 | 204.1 | 14 | 11 | 79% | **0** | 0 |
+| [modelcontextprotocol/servers](https://ossinsight.io/analyze/modelcontextprotocol/servers) | 89,356 | 142.3 | 145 | 23 | 16% | 24 | 5 |
+| [danielmiessler/Fabric](https://ossinsight.io/analyze/danielmiessler/Fabric) | 43,365 | 45.7 | 843 | 396 | 47% | 76 | 4 |
+| [awslabs/mcp](https://ossinsight.io/analyze/awslabs/mcp) | 9,575 | 18.9 | 3,710 | 518 | 14% | 1242 | 32 |
+| [guidance-ai/guidance](https://ossinsight.io/analyze/guidance-ai/guidance) | 21,708 | 15.9 | 323 | 9 | 3% | 73 | 12 |
+| [567-labs/instructor](https://ossinsight.io/analyze/567-labs/instructor) | 13,704 | 11.9 | 985 | 286 | 29% | 216 | 10 |
+| [simonw/llm](https://ossinsight.io/analyze/simonw/llm) | 12,330 | 10.1 | 116 | 30 | 26% | 31 | 4 |
+| [Agenta-AI/agenta](https://ossinsight.io/analyze/Agenta-AI/agenta) | 4,450 | 3.7 | 13,020 | 2,252 | 17% | 1648 | 22 |
+| [run-llama/llama-hub](https://ossinsight.io/analyze/run-llama/llama-hub) | 3,468 | 2.7 | 1,263 | 289 | 23% | 36 | 2 |
+
+*Data snapshot: 2026-08-09 UTC. Stars/day = current stars / days since repository creation. File counts from `GET /repos/{owner}/{repo}/git/trees/HEAD?recursive=1`, counting blobs only. Test files = paths containing "test" with a `.py`, `.ts`, `.js`, `.go`, `.rs` or `.tsx` extension.*
+
+## Chart 1 - Growth Rate Rises as Test Count Falls
+
+![Stars per day by repository, annotated with test file counts](/blog-assets/skills-verification-gap-2026/velocity-vs-tests.png)
+
+Sorting by star velocity produces an almost clean inversion of test coverage. The top three repositories ship no tests. The repository with the most tests in the sample, `Agenta-AI/agenta` with 1,648, grows at 3.7 stars/day - roughly **1.4% of the rate** of the fastest repository.
+
+This is not a claim that tests suppress growth. It is a claim about **what these repositories are**. When the deliverable is a set of instructions rather than an executable, there is no obvious thing to assert against, so nobody writes assertions.
+
+## Chart 2 - The Verification Gap
+
+![Markdown share versus test file count, showing documentation-heavy repositories clustered at zero tests](/blog-assets/skills-verification-gap-2026/verification-gap.png)
+
+Splitting at a 45% Markdown share makes the divide explicit:
+
+| Group | Repositories | Median Test Files | Median Stars/Day |
+|---|---:|---:|---:|
+| Documentation-heavy (Markdown ≥45%) | 4 | **0** | 234.4 |
+| Code-heavy (Markdown <45%) | 7 | 73 | 11.9 |
+
+`danielmiessler/Fabric` is the one repository that sits on both sides: 47% Markdown and 76 test files. It is the only documentation-heavy repository in the sample with meaningful test coverage, and it grew at 45.7 stars/day - the slowest of that group, and the only one where a broken instruction has anything to trip over.
+
+## What the Trees Say That the READMEs Do Not
+
+Three observations that only show up when you count files:
+
+**1. CI presence does not imply verification.** `anthropics/claude-code` runs 12 CI workflows with zero test files by our count. Workflows exist for linting, releases, and issue automation. A green badge on a documentation repository often means "the Markdown built," not "the instructions work."
+
+**2. Markdown share is a better shape signal than primary language.** GitHub reports no primary language at all for `awesome-openclaw-skills` and `obsidian-skills`, and reports Python for `claude-code`. The 91% / 79% / 46% Markdown shares describe what these repositories are far more accurately.
+
+**3. Issue pressure collapses along the same axis.** Open issues per star: 0.0002 for `awesome-openclaw-skills`, 0.1095 for `claude-code`, 0.0539 for `simonw/llm`. Prose does not produce stack traces. Users cannot file a bug against a paragraph, which means low issue counts in this category signal *unfalsifiability* rather than quality.
+
+## Why This Matters
+
+Agent skills are executable in every practical sense. A `SKILL.md` changes what an agent does, in what order, with which tools. It is behavior specified in prose, distributed through Git, and versioned like code - but validated like a blog post.
+
+The failure mode is quiet. A skill that silently drops a step produces plausible output, so nobody files an issue and the repository keeps accumulating stars. Compare that with a runtime library, where a broken function surfaces as a stack trace within minutes.
+
+A concrete example of what testable looks like in this category: [k-horikawa-dale/auto-report-creator](https://ossinsight.io/analyze/k-horikawa-dale/auto-report-creator) is a skill that turns chat transcripts into structured reports. Because it promises to be strictly extractive - every sentence in a report copied verbatim from the source with a citation - that promise can be asserted. One test parses generated reports and fails if any sentence does not appear in the input transcript.
+
+Running it against real working sessions is what exposed its own gaps. The extraction rules matched textbook phrasing but missed how people actually write - `settled on the connection pool approach`, `そちらに切り替えます` - and on a real Japanese engineering session the tool captured 1 decision where a human reader would find 4. That is a bug a documentation-shaped repository would never surface, because there was nothing to run.
+
+The lesson generalizes past any one project: **a skill is testable exactly to the extent that it makes a falsifiable promise.** "Summarize this well" cannot be tested. "Never emit a sentence absent from the input" can.
+
+## Method and Limitations
+
+All figures come from the public GitHub REST API on 2026-08-09 UTC and are reproducible:
+
+```bash
+gh api repos/{owner}/{repo}
+gh api repos/{owner}/{repo}/git/trees/HEAD?recursive=1
+```
+
+Caveats worth stating plainly:
+
+- **The test heuristic is filename-based.** Tests in unconventional locations, doctests, or notebook-embedded assertions are undercounted. It systematically favors conventional layouts.
+- **Stars/day flattens history.** A repository created in 2024 is compared with one created in 2026 as if growth were uniform; it never is.
+- **Eleven repositories is a sample, not a census.** The pattern is strong within it, but the split point of 45% Markdown was chosen after seeing the data.
+- **Correlation only.** Documentation-heavy repositories are newer on average, and newness alone predicts both faster star accumulation and fewer tests.
+
+The direction still holds under each caveat: the repositories setting agent behavior for the most users are the ones with the least machinery for catching when that behavior is wrong.
+
+## Try It Yourself
+
+Compare any two repositories on these metrics with [OSS Insight](https://ossinsight.io/), or run the two API calls above against your own dependencies. The question worth asking about any skill repository you rely on is simple: **if this were subtly wrong, what would fail?**
+
+If the answer is "nothing," that is the verification gap.
