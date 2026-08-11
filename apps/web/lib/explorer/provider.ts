@@ -76,8 +76,9 @@ export function readMinimaxConfig(
 // Build a language model bound to the MiniMax OpenAI-compatible endpoint.
 export function createMinimaxModel(config: MinimaxConfig) {
   const provider = createOpenAI({
+    name: "minimax",
     apiKey: config.apiKey,
     baseURL: config.baseURL,
   });
-  return provider(config.modelId);
+  return provider.chat(config.modelId);
 }
