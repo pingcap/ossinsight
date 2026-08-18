@@ -6,7 +6,10 @@ import ShareButtons from '@/components/ShareButtons';
 import AIHomeContent from './ai-home-content';
 import { getCategoryData, getAITrending, getTrendingForTreemap } from './ai-home-data';
 
-export const revalidate = 3600;
+// Rendered per request: the AI treemap/category data is fetched server-side from
+// TiDB, and prerendering it at build time bakes in whatever the build host could
+// reach. Matches the treatment the analyze routes got in 06e1ff5.
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: {
