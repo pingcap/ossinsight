@@ -365,6 +365,12 @@ export default function AIHomeContent({ categories, trendingRepos }: AIHomeProps
     };
   }, [trendingRepos]);
 
+  // No data (upstream query failed or returned nothing): render nothing rather
+  // than a 500px-tall blank ECharts canvas with a stray Download button.
+  if (trendingRepos.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-8">
       <div className="relative mx-auto max-w-[1280px] px-6">
