@@ -4,7 +4,8 @@ import { FAQPageJsonLd, SiteApplicationJsonLd, WebPageJsonLd } from '@/component
 import { FAQ_ITEMS } from './faq-data';
 import ShareButtons from '@/components/ShareButtons';
 import AIHomeContent from './ai-home-content';
-import { getCategoryData, getAITrending, getTrendingForTreemap } from './ai-home-data';
+import { getCategoryData, getTrendingForTreemap } from './ai-home-data';
+import { isStarRankingDegraded } from '@/lib/data-quality';
 
 // Rendered per request: the AI treemap/category data is fetched server-side from
 // TiDB, and prerendering it at build time bakes in whatever the build host could
@@ -36,10 +37,12 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [categories, trendingRepos] = await Promise.all([
-    getCategoryData(),
-    getTrendingForTreemap(),
-  ]);
+  // While star data is degraded the treemap is not rendered, so skip the
+  // ~10 WatchEvent-derived queries that would feed it.
+  const degraded = isStarRankingDegraded();
+  const [categories, trendingRepos] = degraded
+    ? [[], []]
+    : await Promise.all([getCategoryData(), getTrendingForTreemap()]);
 
   return (
     <>

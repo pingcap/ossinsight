@@ -23,6 +23,8 @@ import {
   TagIcon,
 } from '@primer/octicons-react';
 import { getCollectionsHotPath } from '@/lib/collections';
+import { isStarRankingDegraded } from '@/lib/data-quality';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
 import { type CollectionQueryResponse, useCollectionApi } from '@/lib/collections-client';
 import { useRemoteData, getRemoteDataQueryKey } from '@/utils/useRemoteData';
 import { queryAPI } from '@/utils/api';
@@ -1001,7 +1003,8 @@ function TrendingReposSection() {
     language: language === 'All' ? 'All' : language,
   }), [period, language]);
 
-  const { data, loading } = useRemoteData<TrendingRepo>('trending-repos', params);
+  const degraded = isStarRankingDegraded();
+  const { data, loading } = useRemoteData<TrendingRepo>('trending-repos', params, !degraded);
   const allRepos = data?.data ?? [];
   const totalCount = allRepos.length;
   const repos = allRepos.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
@@ -1009,6 +1012,16 @@ function TrendingReposSection() {
 
   // Reset page when filters change
   useEffect(() => { setPage(0); }, [period, language]);
+
+  if (degraded) {
+    return (
+      <section className="px-6 pt-16 pb-8 max-w-[1536px] mx-auto">
+        <a id="trending-repos" />
+        <h2 className="text-2xl font-bold mb-4">&#x1F525; Trending Repos</h2>
+        <DataQualityNotice />
+      </section>
+    );
+  }
 
   return (
     <section className="px-6 pt-16 pb-8 max-w-[1536px] mx-auto">
