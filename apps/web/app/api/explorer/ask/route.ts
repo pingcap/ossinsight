@@ -18,7 +18,7 @@ const requestSchema = z.object({
 const maintenanceResponse = {
   error: "Data Explorer is under maintenance.",
   code: "EXPLORER_UNDER_MAINTENANCE",
-  message: "Data Explorer 正在维护中，暂时不可用。",
+  message: "Data Explorer is under maintenance and temporarily unavailable.",
 };
 
 function isExplorerUnderMaintenance() {
