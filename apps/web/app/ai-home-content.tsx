@@ -367,6 +367,8 @@ export default function AIHomeContent({ categories, trendingRepos }: AIHomeProps
 
   // No data (upstream query failed or returned nothing): render nothing rather
   // than a 500px-tall blank ECharts canvas with a stray Download button.
+  // Also covers the degraded-data incident, where page.tsx stops fetching:
+  // the Trending Repos section carries the single user-facing notice.
   if (trendingRepos.length === 0) {
     return null;
   }

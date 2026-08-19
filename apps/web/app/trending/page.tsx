@@ -7,6 +7,8 @@ import {
   getTrendingRepos,
 } from '@/lib/server/internal-api';
 import { TrendingContent } from './content';
+import { isStarRankingDegraded } from '@/lib/data-quality';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
 
 export const revalidate = 3600;
 
@@ -45,10 +47,14 @@ export default async function TrendingPage({ searchParams }: PageProps) {
     total_score: number;
   }> = [];
 
-  try {
-    repos = await getTrendingRepos(language, period);
-  } catch (err) {
-    // query failed – continue with empty repos
+  const degraded = isStarRankingDegraded();
+
+  if (!degraded) {
+    try {
+      repos = await getTrendingRepos(language, period);
+    } catch (err) {
+      // query failed – continue with empty repos
+    }
   }
 
   const jsonLd = {
@@ -74,7 +80,7 @@ export default async function TrendingPage({ searchParams }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {repos.length > 0 && (
+      {!degraded && repos.length > 0 && (
         <ItemListJsonLd
           name="Trending GitHub Repositories"
           items={repos.map((r) => ({
@@ -83,13 +89,23 @@ export default async function TrendingPage({ searchParams }: PageProps) {
           }))}
         />
       )}
-      <TrendingContent
-        repos={repos}
-        period={period}
-        language={language}
-        languages={LANGUAGES as unknown as string[]}
-        periods={PERIODS as unknown as Array<{ value: string; label: string }>}
-      />
+      {degraded ? (
+        <main className="mx-auto w-full max-w-[1536px] px-6 py-16">
+          <h1 className="mb-2 text-3xl font-bold">&#x1F525; Trending Repositories</h1>
+          <p className="mb-8 text-sm text-gray-400">
+            Ranked by community activity across GitHub.
+          </p>
+          <DataQualityNotice />
+        </main>
+      ) : (
+        <TrendingContent
+          repos={repos}
+          period={period}
+          language={language}
+          languages={LANGUAGES as unknown as string[]}
+          periods={PERIODS as unknown as Array<{ value: string; label: string }>}
+        />
+      )}
     </>
   );
 }

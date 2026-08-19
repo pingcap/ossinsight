@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowUp, ArrowDown, Star, TrendingUp, ChevronRight, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isStarRankingDegraded } from '@/lib/data-quality';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
 import type { TrendingAIResponse, AIRepoItem } from './api/route';
 
 const CATEGORIES = [
@@ -132,6 +134,7 @@ export function TrendingAIContent({
       </section>
 
       <div className="mx-auto max-w-6xl px-4 py-8">
+        {isStarRankingDegraded() && <DataQualityNotice variant="inline" className="mb-6" />}
         {/* Category Filter Tabs */}
         <div className="mb-8 flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
