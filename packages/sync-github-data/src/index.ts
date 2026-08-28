@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import {initSnapshotStarsCommand} from "@commands/repos/snapshot-stars";
 import {initSyncReposInBatchCommand} from "@commands/repos/sync-in-batch";
 import {initSyncUsersInBatchCommand} from "@commands/users/sync-in-batch";
 import {AppConfig, SyncGitHubDataEnvSchema} from "@env";
@@ -20,6 +21,7 @@ async function main() {
 
   const reposCommand = program.command('repos');
   initSyncReposInBatchCommand(reposCommand, config, logger);
+  initSnapshotStarsCommand(reposCommand, config, logger);
 
   const usersCommand = program.command('users');
   initSyncUsersInBatchCommand(usersCommand, config, logger);

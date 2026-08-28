@@ -2,14 +2,17 @@ import {resolve} from "path";
 
 export interface AppConfig {
   CONFIGS_PATH: string;
-  DATABASE_URL: string;
+  // Optional at load time so that `repos snapshot-stars --dry-run --repos <...>`
+  // can run without database credentials; every command that touches the
+  // database still requires it (Prisma reads it from the environment).
+  DATABASE_URL?: string;
   GITHUB_ACCESS_TOKENS: string[];
   LOG_LEVEL: string;
 }
 
 export const SyncGitHubDataEnvSchema = {
   type: 'object',
-  required: ['DATABASE_URL', 'GITHUB_ACCESS_TOKENS'],
+  required: ['GITHUB_ACCESS_TOKENS'],
   properties: {
     CONFIGS_PATH: {
       type: 'string',
