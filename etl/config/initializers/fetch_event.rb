@@ -3,51 +3,94 @@ require 'open-uri'
 require 'yajl'
 
 class FetchEvent
-  attr_reader :per_page, :url, :token
+  # Since ~2025-05-23 GitHub partitions the /events firehose BY POSITION
+  # (https://github.com/igrigorik/gharchive.org/issues/310):
+  #   - offsets 1-100 (page 1 at per_page=100) are a ~97% PushEvent block;
+  #   - the healthy event mix lives ONLY at offsets 101-300 (pages 2-3);
+  #   - the window is hard-capped at 300 items (page 4 errors out);
+  #   - per_page values over 100 are silently clamped to 100;
+  #   - the DEFAULT per_page=30 would put pages 1-3 entirely inside the
+  #     Push-only offset 1-100 partition.
+  # Both query params MUST therefore be explicit: per_page=100 and page=1..3.
+  # Anything else either misses the healthy mix or fetches nothing extra.
+  PER_PAGE = 100
+  MAX_PAGES = 3
 
+  attr_reader :per_page, :token
+
+  # The per_page argument is kept for call-site compatibility (Realtime passes
+  # start.sh's value through) but is pinned to PER_PAGE regardless — see the
+  # partition note above: any other value silently loses the healthy event mix.
   def initialize(per_page, token)
-    @per_page = per_page
+    @per_page = PER_PAGE
     @token = token
-    @base_url = 'https://api.github.com/events?per_page='
-    @url = @base_url + per_page.to_s
   end
 
-  def get_response
+  def url_for(page)
+    "https://api.github.com/events?per_page=#{per_page}&page=#{page}"
+  end
+
+  def get_response(page)
+    url = url_for(page)
     resp = nil
     begin
       Retryable.retryable(tries: 5, on: [Timeout::Error, Net::OpenTimeout, OpenURI::HTTPError]) do
-        resp = URI.open(url, 
-          open_timeout: 600, 
+        resp = URI.open(url,
+          open_timeout: 600,
           read_timeout: 600,
           'user-agent' => 'ossinsight.io',
           'Authorization' => 'token ' + token
         )
       end
-    rescue OpenURI::HTTPError
-      puts "skip 404 file: #{url}"
+    rescue OpenURI::HTTPError => e
+      # e.message is the real status line (e.g. "403 Forbidden"). This used to
+      # print "skip 404 file" for ANY HTTP error, which hid rate limits and
+      # banned credentials behind a fake 404 for months.
+      puts "HTTP error (#{e.message.strip}) fetching #{url}"
+      nil
+    rescue Timeout::Error, Net::OpenTimeout => e
+      # Contain post-retry timeouts per page so one bad page does not discard
+      # the events already fetched from the other pages this iteration.
+      puts "#{e.class} after retries fetching #{url}"
+      nil
     else
       resp&.read
     end
   end
 
   def run
-    json = get_response
-    if json
-      json = Yajl::Parser.parse(json)
-      new_events = json.map do |event|
-        parse_event(event)
-      end
+    new_events = []
+    fetched_pages = []
+    (1..MAX_PAGES).each do |page|
+      json = get_response(page)
+      next unless json
 
-      new_event_ids = new_events.map { |e| e['id'].to_i }
-      exist_event_ids = EventLog.where(id: new_event_ids).pluck(:id)
-      real_events = new_events.reject{ |e| exist_event_ids.include?(e['id'].to_i) }
-      
-      real_events.each_slice(33) do |es|
-        EventLog.insert_all(es.map{|e| {id: e['id'], created_at: Time.now}})
-        GithubEvent.insert_all(es)
-      end
-    else
-      puts "No response"
+      new_events.concat(Yajl::Parser.parse(json).map { |event| parse_event(event) })
+      fetched_pages << page
+    end
+
+    if fetched_pages.empty?
+      puts "No response (all #{MAX_PAGES} pages failed)"
+      return
+    end
+    if fetched_pages.size < MAX_PAGES
+      puts "degraded fetch: only page(s) #{fetched_pages.join(',')} of #{MAX_PAGES} succeeded"
+    end
+
+    # Intra-batch dedup is REQUIRED before the EventLog check: the firehose
+    # shifts between the three page requests, so the same event id can appear
+    # on two pages, and github_events has NO primary/unique key — a duplicate
+    # that survives to insert_all is inserted twice. EventLog's PK only guards
+    # against ids seen in PREVIOUS runs, not within this merged batch.
+    new_events = new_events.uniq { |e| e['id'].to_i }
+
+    new_event_ids = new_events.map { |e| e['id'].to_i }
+    exist_event_ids = EventLog.where(id: new_event_ids).pluck(:id)
+    real_events = new_events.reject{ |e| exist_event_ids.include?(e['id'].to_i) }
+
+    real_events.each_slice(33) do |es|
+      EventLog.insert_all(es.map{|e| {id: e['id'], created_at: Time.now}})
+      GithubEvent.insert_all(es)
     end
   end
 
