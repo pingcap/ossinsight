@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { APIError } from '@/lib/data-service';
+import { APIError, DegradedDataError } from '@/lib/data-service';
 import { getQueryName, runQuery } from '@/lib/data-service/routes';
 
 interface Params {
@@ -24,6 +24,17 @@ export async function GET (req: NextRequest, reqCtx: { params: Promise<Params> }
       },
     });
   } catch (err) {
+    if (err instanceof DegradedDataError) {
+      return new Response(JSON.stringify({ message: err.message, data_quality: err.dataQuality }), {
+        status: err.statusCode,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          // Never let CDNs pin the incident body on this otherwise-cached route.
+          'Cache-Control': 'no-store',
+        },
+      });
+    }
+
     if (err instanceof APIError) {
       return new Response(JSON.stringify({ message: err.message }), {
         status: err.statusCode,

@@ -11,6 +11,8 @@ import type {
   CollectionRankingMetric,
   CollectionRankRange,
 } from '@/lib/collections';
+import { isStarRankingDegraded, STAR_DATA_INCIDENT } from '@/lib/data-quality';
+import { DegradedDataError } from '@/lib/data-service';
 
 export const runtime = 'edge';
 export const revalidate = 300; // 5 min cache
@@ -36,6 +38,21 @@ function err(message: string, status = 400) {
   });
 }
 
+/**
+ * Structured degraded response (documented in ./README.md): HTTP 503 with
+ * `{ ok: false, error, data_quality }` so agents can distinguish an active
+ * data incident from a regular failure. Never cached.
+ */
+function degraded(message: string) {
+  return new Response(
+    JSON.stringify({ ok: false, error: message, data_quality: STAR_DATA_INCIDENT.marker }),
+    {
+      status: 503,
+      headers: { ...CORS_HEADERS, 'Cache-Control': 'no-store' },
+    },
+  );
+}
+
 const VALID_METRICS = new Set(['stars', 'pull-requests', 'pull-request-creators', 'issues']);
 const VALID_RANGES = new Set(['last-28-days', 'month']);
 
@@ -53,6 +70,13 @@ async function handleRanking(params: URLSearchParams) {
 
   const range = (params.get('range') || 'last-28-days') as CollectionRankRange;
   if (!VALID_RANGES.has(range)) return err(`Invalid range. Use: ${[...VALID_RANGES].join(', ')}`);
+
+  // Star rankings are built on WatchEvent rows and are blocked while the
+  // star-data incident is active. Other metrics still run, but their
+  // payloads carry a data_quality marker (counts are lower bounds).
+  if (metric === 'stars' && isStarRankingDegraded()) {
+    return degraded('Star-based rankings are temporarily unavailable due to degraded GitHub event data. Try metric=pull-requests or metric=issues (lower-bound counts), or action=repo for accurate star totals.');
+  }
 
   const result = await getCollectionRanking(Number(collectionId), metric, range);
   return ok(result);
@@ -74,6 +98,12 @@ async function handleTrending(params: URLSearchParams) {
 
   if (!isValidPeriod(period)) {
     return err('Invalid period. Use: past_24_hours, past_week, past_month, past_3_months');
+  }
+
+  // Trending scores are dominated by WatchEvent counts; blocked while the
+  // star-data incident is active.
+  if (isStarRankingDegraded()) {
+    return degraded('Trending rankings are temporarily unavailable due to degraded GitHub event data. Use action=repo for accurate per-repository star totals.');
   }
 
   const repos = await getTrendingRepos(language, period as Period);
@@ -126,6 +156,9 @@ export async function GET(req: Request) {
         compare: 'Compare two repositories (params: repo1, repo2)',
       },
       docs: 'https://ossinsight.io/llms.txt',
+      // Surfaced while the star-data incident is active: trending and
+      // metric=stars rankings return 503 with this same marker attached.
+      ...(isStarRankingDegraded() ? { data_quality: STAR_DATA_INCIDENT.marker } : null),
     });
   }
 
@@ -140,6 +173,9 @@ export async function GET(req: Request) {
       default: return err(`Unknown action: ${action}. Available: collections, ranking, repo, trending, search, compare`);
     }
   } catch (error) {
+    if (error instanceof DegradedDataError) {
+      return degraded(error.message);
+    }
     console.error(`[MCP API] Error handling action=${action}:`, error);
     return err('Internal server error', 500);
   }

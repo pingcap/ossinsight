@@ -3,7 +3,8 @@ import orgsRecommendList from '@/lib/github-search/recommend/orgs-list.json';
 import reposRecommendList1 from '@/lib/github-search/recommend/repos-list-1.json';
 import reposRecommendList2 from '@/lib/github-search/recommend/repos-list-2.json';
 import usersRecommendList from '@/lib/github-search/recommend/users-list.json';
-import { APIError } from '@/lib/data-service';
+import { APIError, DegradedDataError } from '@/lib/data-service';
+import { isStarRankingDegraded } from '@/lib/data-quality';
 import {
   type CollectionMetric,
   type CollectionRankRange,
@@ -646,6 +647,12 @@ export async function getTrendingReposByLanguage(
   period: 'past_24_hours' | 'past_week' | 'past_month' = 'past_month',
   signal?: AbortSignal,
 ) {
+  // mv_trending_repos is persisted from the WatchEvent-scored trending-repos
+  // query, so it bypasses the runQuery gate; enforce the incident here too.
+  if (isStarRankingDegraded()) {
+    throw new DegradedDataError('trending-repos');
+  }
+
   const { rows } = await executeRows(
     `
       WITH latest_snapshot AS (
@@ -702,6 +709,12 @@ export async function getTrendingRepos(
   period: Period = 'past_week',
   signal?: AbortSignal,
 ) {
+  // mv_trending_repos is persisted from the WatchEvent-scored trending-repos
+  // query, so it bypasses the runQuery gate; enforce the incident here too.
+  if (isStarRankingDegraded()) {
+    throw new DegradedDataError('trending-repos');
+  }
+
   const { rows } = await executeRows(
     `
       WITH latest_snapshot AS (

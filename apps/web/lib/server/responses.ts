@@ -1,4 +1,4 @@
-import { APIError } from '@/lib/data-service';
+import { APIError, DegradedDataError } from '@/lib/data-service';
 
 type CacheHeaders = {
   cacheControl?: string;
@@ -19,6 +19,17 @@ export function jsonCachedResponse(body: unknown, cacheHeaders: CacheHeaders = {
 }
 
 export function createApiErrorResponse(error: unknown) {
+  if (error instanceof DegradedDataError) {
+    return new Response(JSON.stringify({ message: error.message, data_quality: error.dataQuality }), {
+      status: error.statusCode,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // Never let CDNs pin the incident body.
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   if (error instanceof APIError) {
     return new Response(JSON.stringify({ message: error.message }), {
       status: error.statusCode,

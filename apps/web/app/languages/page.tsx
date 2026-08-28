@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import { LANGUAGES } from '@/lib/server/internal-api';
 import ShareButtons from '@/components/ShareButtons';
+import { isStarRankingDegraded } from '@/lib/data-quality';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
 
 export const metadata: Metadata = {
   title: 'Programming Languages on GitHub',
@@ -73,6 +75,8 @@ const TIER_1 = ['JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'Rust', 'C++
 const TIER_2 = LANGUAGES.filter(l => !(TIER_1 as readonly string[]).includes(l));
 
 export default function LanguagesPage() {
+  const degraded = isStarRankingDegraded();
+
   return (
     <>
       <BreadcrumbListJsonLd items={[
@@ -97,6 +101,11 @@ export default function LanguagesPage() {
             Discover the most popular and fastest-growing open source projects, organized by programming language.
             Rankings powered by real-time analysis of 10 billion+ GitHub events.
           </p>
+          {degraded && (
+            <div className="mx-auto mt-6 max-w-2xl text-left">
+              <DataQualityNotice />
+            </div>
+          )}
         </div>
 
         {/* Tier 1: Featured languages — large cards */}

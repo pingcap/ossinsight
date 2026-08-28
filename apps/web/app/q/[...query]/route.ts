@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { APIError } from '@/lib/data-service';
+import { APIError, DegradedDataError } from '@/lib/data-service';
 import { getQueryName, runQuery } from '@/lib/data-service/routes';
 
 interface Params {
@@ -22,6 +22,16 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
       },
     });
   } catch (error) {
+    if (error instanceof DegradedDataError) {
+      return new Response(JSON.stringify({ message: error.message, data_quality: error.dataQuality }), {
+        status: error.statusCode,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'no-store',
+        },
+      });
+    }
+
     if (error instanceof APIError) {
       return new Response(JSON.stringify({ message: error.message }), {
         status: error.statusCode,
