@@ -3,7 +3,14 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { API_SERVER } from '@/utils/api';
 
+export interface DataQualityEnvelope {
+  status: 'degraded' | 'unavailable';
+  [key: string]: unknown;
+}
+
 export interface CollectionQueryResponse<T> {
+  /** Present when the star-data incident gate degraded or paused this query. */
+  data_quality?: DataQualityEnvelope;
   query: string;
   params: Record<string, any>;
   data: T[];

@@ -25,7 +25,7 @@ export async function GET (req: NextRequest, reqCtx: { params: Promise<Params> }
     });
   } catch (err) {
     if (err instanceof DegradedDataError) {
-      return new Response(JSON.stringify({ message: err.message, data_quality: err.dataQuality }), {
+      return new Response(JSON.stringify(err.toResponseBody()), {
         status: err.statusCode,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',

@@ -1,78 +1,119 @@
 import STAR_INCIDENT_QUERY_LISTS from '../../../configs/data-quality/star-incident-queries.json';
 
 /**
- * Star/PR/issue metrics on OSSInsight are derived from GitHub's global public
- * events firehose (`https://api.github.com/events`), which the ETL ingests in
- * `etl/config/initializers/fetch_event.rb`.
+ * Star/PR/issue metrics on OSSInsight come from GitHub's public events
+ * firehose (`https://api.github.com/events`), ingested by the ETL in
+ * `etl/` (GH Archive hourly bulk import plus a live /events poller).
  *
- * Two independent GitHub-side changes degraded that data:
+ * THREE measured GitHub-side changes degraded that data. All dates below were
+ * measured against GH Archive hourly files and the production database, not
+ * inferred:
  *
- * 1. Position-partitioned firehose (~2025-05-23, gharchive.org#310): at
- *    per_page=100, offsets 1-100 (page 1) are a ~97% PushEvent block; the
- *    healthy event mix only appears at offsets 101-300 (pages 2-3), and the
- *    feed is hard-capped at 300 items. Our ETL polled only page 1, so star
- *    capture fell to ~0.6% of baseline and PR/issue/fork events collapsed
- *    with it. GitHub did not drop the data entirely — it moved it to pages
- *    our pipeline never read. GH Archive and its mirrors (BigQuery,
- *    ClickHouse, ecosyste.ms, OpenDigger) read the feed the same way, so the
- *    missing events never reached any public archive.
+ * 1. Volume cut (2025-05-24). Every event type dropped ~32% overnight with
+ *    the event MIX PRESERVED - fewer events, same proportions. This alone did
+ *    not distort rankings.
  *
- * 2. Payload trimming (~2025-11): GitHub trims payload fields for
- *    scalability, so PR `additions`/`deletions` and push commit counts
- *    arrive as 0. Semantically that 0 means "unknown", not zero; fixing the
- *    pagination does not restore these fields.
+ * 2. Payload trimming (2025-10-09, day-exact and atomic). PR
+ *    `additions`/`deletions`/`changed_files`, push `size`/`distinct_size`,
+ *    `pr_merged` and `pr_merged_at` now arrive as 0 or the 1970 epoch
+ *    sentinel. Measured: 2025-10-08 = 96.2% of PRs carried `additions`,
+ *    2025-10-09 = 0%. In this era 0 means UNKNOWN, not zero. Fixing
+ *    pagination does NOT restore these fields; they need per-object refetch
+ *    (GraphQL `pullRequests` returns them at ~100 PRs per rate-limit point).
  *
- * Repo-scoped `/repos/{owner}/{repo}/events` still returns a full event mix,
- * and GraphQL `stargazerCount` still works, so totals synced from GitHub
- * remain accurate.
+ * 3. Mix collapse (2026-03 through 2026-07, progressive). The feed is
+ *    partitioned by POSITION: offsets 1-100 are a ~97% PushEvent block and
+ *    the healthy mix only appears at offsets 101-300, hard-capped at 300
+ *    items total (`per_page` is clamped to 100). Our ETL read only offsets
+ *    1-100, so WatchEvent/month fell 2,223,459 (2026-02) -> 69,004
+ *    (2026-08). GitHub did not delete the data; it moved it past the offset
+ *    our pipeline read. GH Archive and its mirrors read the feed the same
+ *    way, so the missing events reached no public archive either.
  *
- * Consequence: any ranking derived from WatchEvent rows is meaningless (the
- * `past_24_hours` trending leaderboard had a top repo with 12 stars and a
- * median of 1 star), and other event-derived counts are lower bounds.
+ * Consequence, by tier:
+ * - History through 2025-05-23 is intact and trustworthy (59.74% of the
+ *   database).
+ * - Rankings whose ORDER depends on recent star events are noise and are
+ *   served as an explicit `unavailable` envelope, never as numbers.
+ * - Other event-derived counts still run but are LOWER BOUNDS, and their
+ *   responses carry a `degraded` marker.
+ *
+ * Not affected: `github_repos.stars` and other totals synced directly from
+ * GitHub via `packages/sync-github-data`, and history before the dates above.
  *
  * This is an explicit incident switch, deliberately not an automatic
  * threshold: WatchEvent volume in our DB is near zero, so using the degraded
  * data to decide whether the data is degraded would be circular. The switch
  * lives in `configs/data-quality/star-incident-queries.json` (shared with
- * packages/api-server); flip `active` there to false once the ETL reads
- * pages 1-3 and the affected windows are re-materialized, or rankings are
- * driven by `stargazerCount` snapshot deltas instead of WatchEvent rows.
+ * packages/api-server and the public /v1 proxy); flip `active` there to false
+ * once the ETL reads offsets 1-300 and the affected windows are
+ * re-materialized, or rankings are driven by `stargazerCount` snapshot deltas.
  */
 export const STAR_DATA_INCIDENT = {
   active: STAR_INCIDENT_QUERY_LISTS.active,
 
-  /** Firehose became position-partitioned; our ETL kept reading only page 1 (gharchive.org#310). */
-  suspectSince: '2025-05-23',
+  /** Uniform ~32% volume cut across all event types; mix preserved. */
+  suspectSince: '2025-05-24',
 
-  /** Page-1 event mix collapsed to near-zero non-Push events (gharchive.org#320). */
-  severelyDegradedSince: '2026-05-01',
+  /** Payload trimming: PR/push size fields arrive as 0 = unknown (day-exact). */
+  payloadTrimmedSince: '2025-10-09',
 
-  headline: 'Star-based rankings are temporarily unavailable',
+  /** Progressive collapse of the event mix from the position-partitioned feed. */
+  severelyDegradedSince: '2026-03-01',
+
+  headline: 'Star-based rankings are paused',
 
   body:
-    "GitHub restructured its public events firehose, and our ingestion pipeline " +
-    'only read the section that now carries almost exclusively push events — so ' +
-    'star, pull request and issue events were barely captured, and star-based ' +
-    'rankings would be badly misleading. ' +
-    "We've turned them off rather than publish numbers we know are wrong. " +
-    'Repository activity and totals sourced directly from GitHub are unaffected.',
+    'GitHub changed how its public events feed is paginated, and our ingestion ' +
+    'read only the first slice, so star, pull request and issue events since ' +
+    'mid-2025 were badly under-captured. Rankings that depend on those counts ' +
+    'would be misleading, so we pause them instead of publishing numbers we ' +
+    'know are wrong. History before May 2025, repository totals synced ' +
+    'directly from GitHub, and commit activity are unaffected.',
 
-  /** Machine-readable marker for API consumers. */
+  /**
+   * Machine-readable envelope for API/MCP consumers.
+   *
+   * `unavailable` is returned with HTTP 200 and an empty result set: the
+   * metric cannot be computed right now, and an empty list here means
+   * "we cannot answer", NOT "there are no results". `degraded` accompanies
+   * real rows that are lower bounds.
+   */
   marker: {
     status: 'degraded' as const,
     metric: 'github_event_derived',
     source: 'github_public_events_firehose',
-    suspect_since: '2025-05-23',
-    severely_degraded_since: '2026-05-01',
+    volume_cut_since: '2025-05-24',
+    payload_trimmed_since: '2025-10-09',
+    severely_degraded_since: '2026-03-01',
     note:
-      'GitHub position-partitioned the /events firehose (~2025-05-23) and our ETL read only the ' +
-      'near-Push-only first page, so event-derived star/PR/issue counts are lower bounds, not exact ' +
-      'values. Additionally, since ~2025-11 GitHub trims payload fields: PR additions/deletions and ' +
-      'push commit counts arrive as 0, meaning unknown.',
+      'Event-derived counts are LOWER BOUNDS. GitHub position-partitioned the /events feed ' +
+      '(offsets 1-100 are ~97% PushEvent; the healthy mix starts at offset 101) and our ETL read ' +
+      'only the first slice, so star/PR/issue capture collapsed through 2026-03..2026-07. ' +
+      'Separately, since 2025-10-09 GitHub trims payload fields: PR additions/deletions and push ' +
+      'commit counts arrive as 0, which means unknown, not zero. History before 2025-05-24 is intact.',
+    docs: 'https://ossinsight.io/docs/data-quality',
+  },
+
+  /** Envelope for a blocked ranking: HTTP 200, empty rows, explicit reason. */
+  unavailableMarker: {
+    status: 'unavailable' as const,
+    metric: 'github_event_derived_ranking',
+    source: 'github_public_events_firehose',
+    unavailable_since: '2026-03-01',
+    reason:
+      'This ranking is ordered by recent star/PR/issue event counts, and our capture of those ' +
+      'events fell to roughly 0.3% of baseline, so the ordering would be noise. An empty result ' +
+      'here means the metric cannot be computed, not that there are no matching repositories.',
+    alternative:
+      'Current totals synced directly from GitHub remain accurate: use /v1/repos/{owner}/{repo} ' +
+      'for star and fork counts, or /v1/collections/{id} for collection membership.',
+    docs: 'https://ossinsight.io/docs/data-quality',
   },
 } as const;
 
 export type DataQualityMarker = typeof STAR_DATA_INCIDENT.marker;
+export type DataQualityUnavailableMarker = typeof STAR_DATA_INCIDENT.unavailableMarker;
 
 /** True when a WatchEvent-derived ranking must not be rendered. */
 export function isStarRankingDegraded(): boolean {

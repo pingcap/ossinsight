@@ -23,11 +23,12 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
     });
   } catch (error) {
     if (error instanceof DegradedDataError) {
-      return new Response(JSON.stringify({ message: error.message, data_quality: error.dataQuality }), {
-        status: error.statusCode,
+      return new Response(JSON.stringify(error.toResponseBody()), {
+        status: DegradedDataError.RESPONSE_STATUS,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Cache-Control': 'no-store',
+        Warning: '199 - "degraded data: star-event derived ranking unavailable"',
         },
       });
     }

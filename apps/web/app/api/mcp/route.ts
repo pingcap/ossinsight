@@ -43,12 +43,24 @@ function err(message: string, status = 400) {
  * `{ ok: false, error, data_quality }` so agents can distinguish an active
  * data incident from a regular failure. Never cached.
  */
+// HTTP 200 with an explicit `unavailable` envelope rather than 5xx: agents
+// retry and surface errors on 5xx, whereas `ok: false` + `data` + the marker
+// lets them explain the gap and follow `alternative` to a working endpoint.
 function degraded(message: string) {
   return new Response(
-    JSON.stringify({ ok: false, error: message, data_quality: STAR_DATA_INCIDENT.marker }),
+    JSON.stringify({
+      ok: false,
+      error: message,
+      data: [],
+      data_quality: STAR_DATA_INCIDENT.unavailableMarker,
+    }),
     {
-      status: 503,
-      headers: { ...CORS_HEADERS, 'Cache-Control': 'no-store' },
+      status: 200,
+      headers: {
+        ...CORS_HEADERS,
+        'Cache-Control': 'no-store',
+        Warning: '199 - "degraded data: star-event derived ranking unavailable"',
+      },
     },
   );
 }
