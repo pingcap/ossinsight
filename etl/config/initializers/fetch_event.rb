@@ -39,6 +39,14 @@ class FetchEvent
     @token = token
     @rate_limit_remaining = nil
     @rate_limit_reset_at = nil
+    @token_rejected = false
+  end
+
+  # True when GitHub refused the credential itself rather than throttling it:
+  # a suspended account or a revoked token 403/401s on every request forever,
+  # so leaving it in rotation silently costs that share of every poll.
+  def token_rejected?
+    @token_rejected
   end
 
   # True when this token has (almost) no hourly budget left. Realtime uses it
@@ -72,8 +80,26 @@ class FetchEvent
     rescue OpenURI::HTTPError => e
       # e.message is the real status line (e.g. "403 Forbidden"). This used to
       # print "skip 404 file" for ANY HTTP error, which hid rate limits and
-      # banned credentials behind a fake 404 for months.
-      puts "HTTP error (#{e.message.strip}) fetching #{url}"
+      # suspended accounts behind a fake 404 for months. The body carries the
+      # actual reason and is the only way to tell "slow down" from "this
+      # credential is dead".
+      status = e.message.strip
+      body = (e.io.read.gsub(/\s+/, ' ')[0, 300] rescue '<unreadable>')
+      remaining = (e.io.meta['x-ratelimit-remaining'] rescue nil)
+
+      # Distinguish "this credential is dead" from "slow down". A suspended
+      # account 403s with NO x-ratelimit-* headers at all, so the budget cannot
+      # be used to tell them apart — the body is the only signal. Retrying a
+      # dead credential is pointless; it must leave the rotation.
+      budget_exhausted = !remaining.nil? && !remaining.to_s.empty? && remaining.to_i.zero?
+      throttled = budget_exhausted ||
+        body.include?('rate limit') ||
+        body.include?('abuse') ||
+        body.include?('secondary')
+      @token_rejected = status.start_with?('401') ||
+        (status.start_with?('403') && !throttled)
+
+      puts "HTTP error (#{status}) fetching #{url} | remaining=#{remaining} | body=#{body}"
       nil
     rescue Timeout::Error, Net::OpenTimeout => e
       # Contain post-retry timeouts per page so one bad page does not discard

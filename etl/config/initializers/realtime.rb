@@ -21,10 +21,20 @@ class Realtime
     @tokens_count = @tokens.size
     # token => Time at which its hourly window resets, for tokens known to be spent.
     @exhausted_until = {}
+    # Credentials GitHub refuses outright (suspended account, revoked token).
+    # These never recover on their own, so they are dropped for the process
+    # lifetime rather than retried into every poll.
+    @rejected = {}
   end
 
   def run
     loop do
+      if usable_token_count.zero?
+        puts "FATAL: all #{tokens_count} GitHub tokens were rejected (suspended or revoked); ingestion cannot continue until they are replaced"
+        sleep MAX_BACKOFF_SECONDS
+        next
+      end
+
       token = next_available_token
       if token.nil?
         wait = backoff_seconds
@@ -36,7 +46,10 @@ class Realtime
       begin
         fetcher = FetchEvent.new(per_page, token)
         fetcher.run
-        if fetcher.rate_limited?
+        if fetcher.token_rejected?
+          @rejected[token] = true
+          puts "token …#{token[-4..]} rejected by GitHub (suspended or revoked); #{usable_token_count} of #{tokens_count} still usable"
+        elsif fetcher.rate_limited?
           @exhausted_until[token] = Time.now.to_i + (fetcher.seconds_until_reset || MAX_BACKOFF_SECONDS)
         else
           @exhausted_until.delete(token)
@@ -57,10 +70,15 @@ class Realtime
   # A token whose window is known to have reset, preferring an unseen one.
   def next_available_token
     now = Time.now.to_i
-    available = tokens.reject { |t| (@exhausted_until[t] || 0) > now }
+    available = tokens.reject { |t| @rejected[t] || (@exhausted_until[t] || 0) > now }
     return nil if available.empty?
 
     available[rand(available.size)]
+  end
+
+  # Credentials not permanently refused by GitHub.
+  def usable_token_count
+    tokens.count { |t| !@rejected[t] }
   end
 
   # Time until the earliest token resets, clamped so a bad reset header cannot
