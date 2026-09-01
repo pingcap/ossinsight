@@ -163,8 +163,8 @@ class Realtime
     ids = events.map { |e| e['id'].to_i }
     existing = EventLog.where(id: ids).pluck(:id).to_set
     fresh = events.reject { |e| existing.include?(e['id'].to_i) }
-    stored = stored_ids(fresh.select { |e| older_than_window?(e) })
-    fresh = fresh.reject { |e| stored.include?(e['id'].to_i) } unless stored.empty?
+    stored = stored_keys(fresh.select { |e| older_than_window?(e) })
+    fresh = fresh.reject { |e| stored.include?(stored_key(e)) } unless stored.empty?
     fresh.each_slice(WRITE_SLICE) do |es|
       EventLog.insert_all(es.map { |e| { id: e['id'], created_at: Time.now } })
       GithubEvent.insert_all(es)
@@ -178,18 +178,31 @@ class Realtime
     true
   end
 
-  # Ids among `events` that github_events already holds. github_events is
-  # LIST-partitioned by type with a local index on id, so one predicate per
-  # type lets TiDB prune each branch to a single partition; UNION ALL keeps
-  # it to one round trip.
-  def stored_ids(events)
+  # Events among `events` that github_events already holds, as
+  # "id|created_at" keys. The id alone is NOT enough: since 2026-08 the
+  # feed numbers events from a counter that currently sits in the 14.2e9
+  # range and collides with real 2020-11 ids (22% of a 2026-09-01 sample
+  # matched a different, six-year-old event). created_at is part of the
+  # key so a colliding new event is still inserted.
+  #
+  # github_events is LIST-partitioned by type with a local index on id, so
+  # one predicate per type lets TiDB prune each branch to a single
+  # partition; UNION ALL keeps it to one round trip.
+  def stored_keys(events)
     return Set.new if events.empty?
 
     conn = GithubEvent.connection
     sql = events.group_by { |e| e['type'] }.map do |type, es|
-      "SELECT id FROM github_events WHERE type = #{conn.quote(type)} AND id IN (#{es.map { |e| e['id'].to_i }.uniq.join(',')})"
+      "SELECT id, DATE_FORMAT(created_at, '%Y-%m-%dT%H:%i:%sZ') FROM github_events " \
+        "WHERE type = #{conn.quote(type)} AND id IN (#{es.map { |e| e['id'].to_i }.uniq.join(',')})"
     end.join(' UNION ALL ')
-    conn.select_values(sql).map(&:to_i).to_set
+    conn.select_rows(sql).map { |id, at| "#{id.to_i}|#{at}" }.to_set
+  end
+
+  # The feed's created_at is always "YYYY-MM-DDTHH:MM:SSZ", the same form
+  # stored_keys asks the database for.
+  def stored_key(event)
+    "#{event['id'].to_i}|#{event['created_at']}"
   end
 
   # A dropped connection is the common failure; reconnect and try once more.
