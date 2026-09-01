@@ -72,7 +72,10 @@ export default async function CollectionsPage({
       page,
       pageSize,
     }),
-    getHotCollections(),
+    // recent-hot-collections is blocked while the star-data incident is
+    // active (its ranks come from WatchEvent counts); fall back to the
+    // stock-star preview repos instead of failing the page.
+    getHotCollections().catch(() => null),
     listCollections() as Promise<Collection[]>,
   ]);
 
@@ -121,7 +124,7 @@ export default async function CollectionsPage({
       <CollectionsList
         collections={result.data}
         allCollections={allCollections}
-        hotItems={hotCollections.data ?? []}
+        hotItems={hotCollections?.data ?? []}
         previewItems={normalizedPreviewItems}
         keyword={result.keyword}
         sort={result.sort}

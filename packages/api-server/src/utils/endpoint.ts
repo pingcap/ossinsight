@@ -1,5 +1,10 @@
 import {APIError} from "./error";
 import {FastifyInstance} from "fastify";
+import {
+  STAR_DATA_INCIDENT_MARKER,
+  STAR_DATA_UNAVAILABLE_MARKER,
+  getPublicApiDataQuality,
+} from "./data-quality";
 
 export function proxyGet(
   app: FastifyInstance,
@@ -53,10 +58,45 @@ export function proxyGet(
         pathname = pathname.slice(0, -1);
       }
 
+      // Star-data incident gate (see ./data-quality). proxyGet talks to TiDB
+      // Data Service directly, so QueryRunner's gate never sees these routes;
+      // without this check every /v1 ranking would keep serving noise.
+      const dataQuality = getPublicApiDataQuality(pathname);
+      if (dataQuality === 'blocked') {
+        // HTTP 200 with an explicit `unavailable` envelope, not 5xx: ~470 public
+        // repositories reference api.ossinsight.io, and an error status would
+        // break those integrations and fire their alerting for a known data
+        // condition. The empty `rows` must not be read as "no results" - that is
+        // what `status: "unavailable"` is for.
+        reply
+          .code(200)
+          .header('Cache-Control', 'no-store')
+          .header('Warning', '199 - "degraded data: star-event derived ranking unavailable"')
+          .send({
+            type: 'sql_endpoint',
+            data: { columns: [], rows: [], result: { row_count: 0 } },
+            data_quality: STAR_DATA_UNAVAILABLE_MARKER,
+          });
+        return;
+      }
+
       // Retrieve query result from TiDB data service.
       const targetURL = `${pathname}?${queryStrings.join('&')}`;     
       const res = await app.tidbDataService.request(targetURL);
       delete res.headers['transfer-encoding'];
+
+      if (dataQuality === 'tainted') {
+        const body = typeof res.data === 'object' && res.data !== null
+          ? { ...res.data, data_quality: STAR_DATA_INCIDENT_MARKER }
+          : res.data;
+        delete res.headers['content-length'];
+        reply
+          .code(res.status)
+          .headers(res.headers)
+          .header('Warning', '199 - "degraded data: event-derived counts are lower bounds"')
+          .send(body);
+        return;
+      }
 
       reply
         .code(res.status)

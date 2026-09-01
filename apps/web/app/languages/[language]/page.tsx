@@ -8,6 +8,8 @@ import {
   isValidLanguage,
   getTrendingReposByLanguage,
 } from '@/lib/server/internal-api';
+import { isStarRankingDegraded } from '@/lib/data-quality';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
 
 const LANGUAGE_COLORS: Record<string, string> = {
   JavaScript: '#f1e05a', Java: '#b07219', Python: '#3572A5', PHP: '#4F5D95',
@@ -76,10 +78,14 @@ export default async function LanguagePage({ params }: PageProps) {
     total_score: number;
   }> = [];
 
-  try {
-    repos = await getTrendingReposByLanguage(language, 'past_month');
-  } catch (err) {
-    // query failed – continue with empty repos
+  const degraded = isStarRankingDegraded();
+
+  if (!degraded) {
+    try {
+      repos = await getTrendingReposByLanguage(language, 'past_month');
+    } catch (err) {
+      // query failed – continue with empty repos
+    }
   }
 
   // Find other languages for sidebar navigation
@@ -114,7 +120,7 @@ export default async function LanguagePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {repos.length > 0 && (
+      {!degraded && repos.length > 0 && (
         <ItemListJsonLd
           name={`Trending ${language} Repositories`}
           items={repos.map((r) => ({
@@ -155,7 +161,7 @@ export default async function LanguagePage({ params }: PageProps) {
             </p>
 
             {/* Stats summary */}
-            {repos.length > 0 && (
+            {!degraded && repos.length > 0 && (
               <div className="mb-8 flex items-center gap-6 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-6 py-4">
                 <div>
                   <div className="text-2xl font-bold text-white">{repos.length}</div>
@@ -179,7 +185,9 @@ export default async function LanguagePage({ params }: PageProps) {
               🔥 Trending {language} Repos — Past Month
             </h2>
 
-            {repos.length === 0 ? (
+            {degraded ? (
+              <DataQualityNotice className="mt-2" />
+            ) : repos.length === 0 ? (
               <p className="mt-6 text-sm text-[#7c7c7c]">No trending repositories found for {language}.</p>
             ) : (
               <>

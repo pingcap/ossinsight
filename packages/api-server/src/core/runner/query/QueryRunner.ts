@@ -10,6 +10,8 @@ import {Pool, QueryOptions} from "mysql2/promise";
 import {PersistConfig, QuerySchema} from "@ossinsight/types";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
+import {getQueryDataQuality, STAR_DATA_INCIDENT_MARKER} from "../../../utils/data-quality";
+import {APIError} from "../../../utils/error";
 
 export const enum QueryType {
   QUERY = 'query',
@@ -68,6 +70,22 @@ export class QueryRunner {
           throw new Error(`Query config ${queryName} not found.`);
         }
 
+        // Star-data incident gate (see src/utils/data-quality.ts): rankings
+        // built on WatchEvent rows must not be served while the incident is
+        // active; other event-derived queries run, but their responses carry
+        // a machine-readable data_quality marker. EXPLAIN stays functional.
+        const dataQuality = type === QueryType.QUERY ? getQueryDataQuality(queryName) : 'ok';
+        if (dataQuality === 'blocked') {
+          throw new APIError(
+            503,
+            `Query "${queryName}" is temporarily unavailable: it ranks repositories by star events, ` +
+            `and GitHub's public events firehose has been degraded since ${STAR_DATA_INCIDENT_MARKER.suspect_since}. ` +
+            'See the payload.data_quality field for details.',
+            undefined,
+            { data_quality: STAR_DATA_INCIDENT_MARKER }
+          );
+        }
+
         presetQueryCounter.inc();
 
         const { cacheHours = -1, onlyFromCache = false, cacheProvider } = queryConfig;
@@ -81,7 +99,7 @@ export class QueryRunner {
           refreshCache
         );
     
-        return cache.load(async () => {
+        const result = await cache.load(async () => {
           return await measure(presetQueryTimer, async () => {
             let sql;
             if (queryConfig.engine === 'liquid') {
@@ -115,6 +133,17 @@ export class QueryRunner {
             };
           })
         });
+
+        if (dataQuality === 'tainted') {
+          // Attached after cache.load so the marker is never baked into the
+          // cache and disappears as soon as the incident switch is turned off.
+          return {
+            ...result,
+            data_quality: STAR_DATA_INCIDENT_MARKER,
+          };
+        }
+
+        return result;
     }
 
     async persistResult(key: string, cfg: PersistConfig, params: Record<string, any>, rows: any[]) {

@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon';
 import { Liquid } from 'liquidjs';
 import loadEndpoint, { hasEndpoint } from '@/lib/data-service/endpoints';
-import { APIError, executeEndpoint } from '@/lib/data-service';
+import { APIError, DegradedDataError, executeEndpoint } from '@/lib/data-service';
 import { applyLegacyQueryParameters, prepareQueryContext } from '@/lib/data-service/executor/utils';
+import { getQueryDataQuality, STAR_DATA_INCIDENT } from '@/lib/data-quality';
 import { executeRows } from './query';
 
 const templateEngine = new Liquid();
@@ -64,6 +65,14 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
     throw new APIError('Endpoint not found.', 404);
   }
 
+  // Star-data incident gate (see @/lib/data-quality): rankings built on
+  // WatchEvent rows must not be served at all; other event-derived queries
+  // run, but their responses carry a machine-readable data_quality marker.
+  const dataQuality = getQueryDataQuality(queryName);
+  if (dataQuality === 'blocked') {
+    throw new DegradedDataError(queryName);
+  }
+
   const endpoint = await loadEndpoint(queryName);
   const queryParams = getSearchParams(searchParams);
   const result = queryName === 'trending-repos'
@@ -84,6 +93,9 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
     })),
     types: result.types,
     geo: result.geo,
+    ...(dataQuality === 'tainted'
+      ? { data_quality: STAR_DATA_INCIDENT.marker }
+      : null),
   };
 }
 

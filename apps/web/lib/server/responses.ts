@@ -1,4 +1,4 @@
-import { APIError } from '@/lib/data-service';
+import { APIError, DegradedDataError } from '@/lib/data-service';
 
 type CacheHeaders = {
   cacheControl?: string;
@@ -19,6 +19,18 @@ export function jsonCachedResponse(body: unknown, cacheHeaders: CacheHeaders = {
 }
 
 export function createApiErrorResponse(error: unknown) {
+  if (error instanceof DegradedDataError) {
+    return new Response(JSON.stringify(error.toResponseBody()), {
+      status: DegradedDataError.RESPONSE_STATUS,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // Never let CDNs pin the incident body.
+        'Cache-Control': 'no-store',
+        Warning: '199 - "degraded data: star-event derived ranking unavailable"',
+      },
+    });
+  }
+
   if (error instanceof APIError) {
     return new Response(JSON.stringify({ message: error.message }), {
       status: error.statusCode,

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { APIError } from '@/lib/data-service';
+import { APIError, DegradedDataError } from '@/lib/data-service';
 import { getQueryName, runQuery } from '@/lib/data-service/routes';
 import { corsHeaders, corsPreflight } from '@/lib/cors';
 
@@ -31,6 +31,18 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
       },
     });
   } catch (error) {
+    if (error instanceof DegradedDataError) {
+      return new Response(JSON.stringify(error.toResponseBody()), {
+        status: DegradedDataError.RESPONSE_STATUS,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'no-store',
+        Warning: '199 - "degraded data: star-event derived ranking unavailable"',
+          ...cors,
+        },
+      });
+    }
+
     if (error instanceof APIError) {
       return new Response(JSON.stringify({ message: error.message }), {
         status: error.statusCode,
