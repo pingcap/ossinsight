@@ -13,10 +13,23 @@ class FetchEvent
   #     Push-only offset 1-100 partition.
   # Both query params MUST therefore be explicit: per_page=100 and page=1..3.
   # Anything else either misses the healthy mix or fetches nothing extra.
+  #
+  # Measured 2026-09-01: the feed is NOT a stable "latest 300 events" window.
+  # Two requests issued in the same instant return identical bodies, but
+  # requests even one second apart share ZERO event ids, and a single page can
+  # span more than a week of created_at values. Consequently there is no poll
+  # cadence that achieves complete capture, and no diminishing return from
+  # polling faster: distinct events recovered scale with the request budget.
+  # That makes the rate limit the binding constraint, so the poller tracks it
+  # explicitly (see rate_limit_remaining) instead of spinning into 403s.
   PER_PAGE = 100
   MAX_PAGES = 3
 
-  attr_reader :per_page, :token
+  # Stop fetching for this iteration when the token's hourly budget is nearly
+  # gone, leaving room for the other pages and for Realtime to rotate tokens.
+  RATE_LIMIT_FLOOR = 50
+
+  attr_reader :per_page, :token, :rate_limit_remaining, :rate_limit_reset_at
 
   # The per_page argument is kept for call-site compatibility (Realtime passes
   # start.sh's value through) but is pinned to PER_PAGE regardless — see the
@@ -24,6 +37,20 @@ class FetchEvent
   def initialize(per_page, token)
     @per_page = PER_PAGE
     @token = token
+    @rate_limit_remaining = nil
+    @rate_limit_reset_at = nil
+  end
+
+  # True when this token has (almost) no hourly budget left. Realtime uses it
+  # to back off rather than burn the loop on 403s.
+  def rate_limited?
+    !rate_limit_remaining.nil? && rate_limit_remaining <= RATE_LIMIT_FLOOR
+  end
+
+  # Seconds until this token's window resets, or nil when unknown.
+  def seconds_until_reset
+    return nil unless rate_limit_reset_at
+    [(rate_limit_reset_at - Time.now.to_i), 0].max
   end
 
   def url_for(page)
@@ -54,14 +81,32 @@ class FetchEvent
       puts "#{e.class} after retries fetching #{url}"
       nil
     else
+      record_rate_limit(resp)
       resp&.read
     end
+  end
+
+  # GitHub returns the budget on every response; without reading it the poller
+  # cannot tell "no new events" from "we are being throttled".
+  def record_rate_limit(resp)
+    meta = resp&.meta
+    return unless meta
+
+    remaining = meta['x-ratelimit-remaining']
+    reset = meta['x-ratelimit-reset']
+    @rate_limit_remaining = remaining.to_i if remaining
+    @rate_limit_reset_at = reset.to_i if reset
   end
 
   def run
     new_events = []
     fetched_pages = []
     (1..MAX_PAGES).each do |page|
+      if rate_limited?
+        puts "rate limit nearly exhausted (#{rate_limit_remaining} left, resets in #{seconds_until_reset}s); skipping pages #{page}-#{MAX_PAGES} this iteration"
+        break
+      end
+
       json = get_response(page)
       next unless json
 
