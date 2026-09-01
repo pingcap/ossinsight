@@ -264,13 +264,11 @@ namespace :gh do
 
     filename = "#{date}-#{hour}.json.gz"
     puts "Start import #{date.to_s}-#{hour_str} ..."
-    start_time = "#{date.to_s} #{hour_str}:00:00"
-    end_time   = "#{date.to_s} #{hour_str}:59:59"
-    loop do
-      n = GithubEvent.where(created_at: (start_time..end_time)).limit(10000).delete_all
-      puts "deleted #{n} records"
-      break if n < 10000
-    end
+    # This used to DELETE every github_events row of the hour and re-insert
+    # the archive file, which was right while GH Archive was the complete
+    # record and the live poller a stopgap. By 2026-09-01 the archive file
+    # held ~1.8k events against ~150k captured live, so each run replaced
+    # the hour with 1% of itself. The importer now only adds what is missing.
     importer = Importer.new(filename)
     importer.run!
     puts "Done #{date.to_s}-#{hour_str} ..."
@@ -308,15 +306,7 @@ namespace :gh do
         next if filename == "2020-06-10-12.json.gz"
         puts "Start import gharchive event data from #{from} to #{to} ..."
 
-        hour_str = '%02d' % hour
-        start_time = "#{d.to_s} #{hour_str}:00:00"
-        end_time   = "#{d.to_s} #{hour_str}:59:59"
-        loop do
-          n = GithubEvent.where(created_at: (start_time..end_time)).limit(10000).delete_all
-          puts "deleted #{n} records"
-          break if n < 10000
-        end
-
+        # Additive, like gh:hourly: the importer skips events already stored.
         importer = Importer.new(filename)
         importer.run!
       end

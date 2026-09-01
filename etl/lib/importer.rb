@@ -171,14 +171,67 @@ class Importer
     end
   end
 
+  # Default is insert_missing: the live poller (Realtime) already holds most
+  # of every hour, and since 2026-09-01 nothing may delete or blindly re-add
+  # what it captured. insert_all / upsert_all remain for loading a range
+  # that is known to be empty.
   def import!
     if ENV['upsert_all']
       upsert_all
     elsif ENV['insert_all']
       insert_all
     else
-      insert_all
+      insert_missing
     end
+  end
+
+  # Ids per lookup query; ~1k keeps each IN list small enough to stay an
+  # index lookup on one partition.
+  LOOKUP_CHUNK = 1000
+  INSERT_SLICE = 10000
+
+  # Insert only the archive events github_events does not already hold, and
+  # say how many it did: that ratio is a direct measurement of the live
+  # poller's capture rate against an independent reader of the same feed.
+  def insert_missing
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    existing = existing_keys(events)
+    missing = events.reject { |e| existing.include?(event_key(e)) }
+    missing.each_slice(INSERT_SLICE) { |es| GithubEvent.insert_all(es) }
+    elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+    captured = events.count - missing.count
+    pct = events.count.zero? ? 0.0 : captured * 100.0 / events.count
+    puts format('archive %s: %d events, %d already captured live (%.1f%%), inserted %d in %.1fs',
+                filename, events.count, captured, pct, missing.count, elapsed)
+  end
+
+  # "id|created_at" keys of the given events that github_events already
+  # holds. The id alone is NOT enough: since 2026-08 the /events feed numbers
+  # events from a counter that collides with real 2020 ids, so a matching id
+  # may be a different, six-year-old event. github_events is LIST-partitioned
+  # by type, so one query per type prunes to a single partition.
+  def existing_keys(events)
+    conn = GithubEvent.connection
+    keys = Set.new
+    events.group_by { |e| e['type'] }.each do |type, es|
+      es.map { |e| e['id'].to_i }.uniq.each_slice(LOOKUP_CHUNK) do |ids|
+        sql = "SELECT id, DATE_FORMAT(created_at, '%Y-%m-%dT%H:%i:%sZ') FROM github_events " \
+              "WHERE type = #{conn.quote(type)} AND id IN (#{ids.join(',')})"
+        conn.select_rows(sql).each { |id, at| keys << "#{id.to_i}|#{at}" }
+      end
+    end
+    keys
+  end
+
+  # Same form existing_keys asks the database for. Archive timestamps are
+  # already "YYYY-MM-DDTHH:MM:SSZ"; the parse guards against a variant.
+  def event_key(event)
+    at = begin
+      Time.iso8601(event['created_at']).utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+    rescue ArgumentError, TypeError
+      event['created_at']
+    end
+    "#{event['id'].to_i}|#{at}"
   end
 
   def upsert_all
