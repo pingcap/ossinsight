@@ -5,6 +5,8 @@ import { createVisualizationContext, createWidgetContext } from '@/lib/charts-co
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { fetchRepoChartData, type FetchResult } from './endpoints';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
+import { getWidgetDataQuality } from '@/lib/widget-data-quality';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 import { ChartSkeleton } from '@/components/ui/skeletons';
 import { useChartContainer } from '@/components/Analyze/hooks/useChartContainer';
@@ -139,6 +141,9 @@ export default function RepoChart({
       ) : showSQL ? (
         <div className="flex justify-end mb-1">{sqlButton}</div>
       ) : null}
+      {getWidgetDataQuality(name) === 'tainted' && (
+        <DataQualityNotice variant="inline" className="mb-3" />
+      )}
       <div ref={containerRef} className={`relative w-full overflow-hidden ${className ?? ''}`} style={containerStyle}>
         {ready ? (
           <RepoChartContent vizModule={vizModule} data={fetchResult} ctx={ctx} />

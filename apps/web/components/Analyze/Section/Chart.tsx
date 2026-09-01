@@ -11,6 +11,8 @@ import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { AnalyzeOwnerContext } from '@/components/Context/Analyze/AnalyzeOwner';
+import { DataQualityNotice } from '@/components/DataQualityNotice';
+import { getWidgetDataQuality } from '@/lib/widget-data-quality';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 
 export interface ChartTemplateProps {
@@ -94,6 +96,9 @@ export default function ChartTemplate (props: ChartTemplateProps) {
           {React.createElement(titleLevel, { className: TITLE_STYLES[titleLevel] }, title)}
           {sql && <ShowSQLInline sql={sql} queryName={queryName} queryParams={queryParams} />}
         </div>
+      )}
+      {getWidgetDataQuality(name) === 'tainted' && (
+        <DataQualityNotice variant="inline" className="mb-3" />
       )}
       <div
         className={twMerge('relative w-full h-full overflow-hidden', className)}

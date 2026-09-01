@@ -160,3 +160,8 @@ export async function fetchChartData(
 
   return { data, sql, queryName };
 }
+
+/** Preset query names a widget reads, for data-quality classification. */
+export function getOrgEndpointNames(widgetName: string): string[] {
+  return ENDPOINTS[widgetName]?.endpoints ?? [];
+}
