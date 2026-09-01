@@ -1,0 +1,64 @@
+# Daily stargazer count snapshots for all collection repos.
+#
+# Since ~2025-05 the GitHub /events firehose no longer delivers a usable star-event
+# stream, so star rankings are moving from WatchEvent flow to snapshot deltas. This
+# job records the authoritative running total (GraphQL `stargazerCount`) once per
+# day into the `sys_repo_star_snapshots` table. Every day this job does not run is
+# a data point that can never be recovered, which is why it is scheduled daily and
+# why the command is idempotent (safe to re-run / re-dispatch on the same day).
+#
+# Required repository secrets:
+# - DATABASE_URL: TiDB connection string in Prisma mysql format, e.g.
+#   mysql://user:password@host:4000/gharchive_dev?sslaccept=strict
+#   (same cluster/database as the existing "Sync Collection Configs" workflow;
+#   note that Prisma needs the `sslaccept=strict` query parameter for TiDB
+#   Serverless, unlike the @tidbcloud/serverless driver).
+# - GH_ACCESS_TOKENS (optional): comma-separated GitHub personal access tokens
+#   (public repo read access is enough). When absent, the workflow falls back to
+#   the built-in GITHUB_TOKEN, whose 1,000 GraphQL points/hour are still ample:
+#   the whole run costs ~250 points (~2.5k repos at ~10 repos per point).
+name: Daily Star Snapshots
+
+on:
+  schedule:
+    # Daily at 00:23 UTC, right after the UTC day rollover, so the snapshot day
+    # matches the day the counts are observed as closely as possible.
+    - cron: '23 0 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Fetch stargazer counts but skip all database writes'
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    # Do not run the cron on forks; manual dispatch works anywhere.
+    if: github.repository == 'pingcap/ossinsight' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        # The pnpm version is taken from the "packageManager" field in package.json.
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --filter @ossinsight/sync-github-data
+
+      - name: Build CLI
+        run: pnpm --filter @ossinsight/sync-github-data build
+
+      - name: Snapshot stargazer counts
+        run: pnpm --filter @ossinsight/sync-github-data start repos snapshot-stars ${{ inputs.dry_run && '--dry-run' || '' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GITHUB_ACCESS_TOKENS: ${{ secrets.GH_ACCESS_TOKENS || secrets.GITHUB_TOKEN }}

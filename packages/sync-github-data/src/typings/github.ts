@@ -109,3 +109,10 @@ export interface GitHubOrganizationNode {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface GitHubRepoStarCountNode {
+  databaseId: number;
+  nameWithOwner: string;
+  stargazerCount: number;
+  forkCount: number;
+}

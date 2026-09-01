@@ -8,7 +8,7 @@
     "build": "rm -rf dist && prisma generate && pnpm run build:ts",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
-    "start": "node dist/index.js",
+    "start": "TS_NODE_BASEURL=./dist node -r tsconfig-paths/register dist/index.js",
     "dev:start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "keywords": [],

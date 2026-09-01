@@ -121,6 +121,21 @@ model GitHubEvent {
   @@map("github_events")
 }
 
+// Daily total-star snapshots for collection repos, written by the
+// `repos snapshot-stars` command through raw SQL. The table DDL lives in
+// `configs/materialized_views/sys_repo_star_snapshots/ddl.sql`.
+model SysRepoStarSnapshot {
+  repoId         BigInt   @map("repo_id")
+  snapshotDay    DateTime @db.Date @map("snapshot_day")
+  stargazerCount Int      @map("stargazer_count")
+  forksCount     Int?     @map("forks_count")
+  retrievedAt    DateTime @db.DateTime(0) @map("retrieved_at")
+  source         String   @default("github_graphql") @db.VarChar(32)
+
+  @@id([repoId, snapshotDay])
+  @@map("sys_repo_star_snapshots")
+}
+
 model LocationCacheItem {
   address          String   @id
   valid            Boolean
