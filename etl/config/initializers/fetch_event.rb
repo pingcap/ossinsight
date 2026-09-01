@@ -69,14 +69,15 @@ class FetchEvent
     url = url_for(page)
     resp = nil
     begin
-      Retryable.retryable(tries: 5, on: [Timeout::Error, Net::OpenTimeout, OpenURI::HTTPError]) do
-        resp = URI.open(url,
-          open_timeout: 600,
-          read_timeout: 600,
-          'user-agent' => 'ossinsight.io',
-          'Authorization' => 'token ' + token
-        )
-      end
+      # No in-request retry and short timeouts: each page is polled again
+      # half a second later by Realtime, and that next poll IS the retry. The
+      # old 600s timeouts could pin a page for ten minutes on one hung socket.
+      resp = URI.open(url,
+        open_timeout: 5,
+        read_timeout: 15,
+        'user-agent' => 'ossinsight.io',
+        'Authorization' => 'token ' + token
+      )
     rescue OpenURI::HTTPError => e
       # e.message is the real status line (e.g. "403 Forbidden"). This used to
       # print "skip 404 file" for ANY HTTP error, which hid rate limits and
@@ -101,10 +102,8 @@ class FetchEvent
 
       puts "HTTP error (#{status}) fetching #{url} | remaining=#{remaining} | body=#{body}"
       nil
-    rescue Timeout::Error, Net::OpenTimeout => e
-      # Contain post-retry timeouts per page so one bad page does not discard
-      # the events already fetched from the other pages this iteration.
-      puts "#{e.class} after retries fetching #{url}"
+    rescue Timeout::Error, Net::OpenTimeout, Errno::ECONNRESET, EOFError, SocketError => e
+      puts "#{e.class} fetching #{url}"
       nil
     else
       record_rate_limit(resp)
@@ -124,6 +123,19 @@ class FetchEvent
     @rate_limit_reset_at = reset.to_i if reset
   end
 
+  # One page of the feed as github_events rows, or nil when the request
+  # failed. Rate-limit and rejection state is updated as a side effect; the
+  # caller (Realtime) decides what that means for the token.
+  def fetch(page)
+    json = get_response(page)
+    return nil unless json
+
+    Yajl::Parser.parse(json).map { |event| parse_event(event) }
+  end
+
+  # Sequential fetch-then-write of all pages with one token. Realtime no
+  # longer uses this (it polls pages concurrently and writes on its own
+  # thread); kept for one-off runs from a console.
   def run
     new_events = []
     fetched_pages = []
@@ -133,10 +145,10 @@ class FetchEvent
         break
       end
 
-      json = get_response(page)
-      next unless json
+      events = fetch(page)
+      next unless events
 
-      new_events.concat(Yajl::Parser.parse(json).map { |event| parse_event(event) })
+      new_events.concat(events)
       fetched_pages << page
     end
 
