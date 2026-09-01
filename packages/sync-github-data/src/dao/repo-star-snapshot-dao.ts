@@ -25,10 +25,37 @@ export class RepoStarSnapshotDao {
    * table by itself while the DDL stays single-sourced in the configs directory.
    */
   async ensureTable(configsPath: string): Promise<void> {
+    // The runtime account is not guaranteed to hold CREATE. The scheduled job
+    // authenticates as a read/write-only user, so bootstrapping is best-effort:
+    // if the table is already there, a missing CREATE grant must not fail the
+    // run. Only a genuinely absent table is fatal, and it says how to fix it.
+    if (await this.tableExists()) {
+      this.logger.debug(`Table ${REPO_STAR_SNAPSHOTS_TABLE} already exists.`);
+      return;
+    }
+
     const ddlPath = path.join(configsPath, 'materialized_views', REPO_STAR_SNAPSHOTS_TABLE, 'ddl.sql');
     const ddl = fs.readFileSync(ddlPath, 'utf-8');
-    await this.prisma.$executeRawUnsafe(ddl);
-    this.logger.debug(`Ensured table ${REPO_STAR_SNAPSHOTS_TABLE} exists.`);
+    try {
+      await this.prisma.$executeRawUnsafe(ddl);
+      this.logger.info(`Created table ${REPO_STAR_SNAPSHOTS_TABLE}.`);
+    } catch (err) {
+      throw new Error(
+        `Table ${REPO_STAR_SNAPSHOTS_TABLE} does not exist and this account cannot create it. ` +
+        `Apply configs/materialized_views/${REPO_STAR_SNAPSHOTS_TABLE}/ddl.sql with an account ` +
+        `holding CREATE, then re-run. Original error: ${(err as Error).message}`,
+      );
+    }
+  }
+
+  /** Whether the snapshot table is already present, using no DDL privilege. */
+  private async tableExists(): Promise<boolean> {
+    const rows = await this.prisma.$queryRaw<Array<{ n: bigint | number }>>`
+      SELECT COUNT(*) AS n
+      FROM information_schema.tables
+      WHERE table_schema = DATABASE() AND table_name = ${REPO_STAR_SNAPSHOTS_TABLE}
+    `;
+    return Number(rows?.[0]?.n ?? 0) > 0;
   }
 
   // Idempotent by design: re-running the snapshot job on the same day only
