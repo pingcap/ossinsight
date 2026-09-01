@@ -170,3 +170,8 @@ export async function fetchRepoChartData(
 export function getEndpointConfig(name: string) {
   return ENDPOINTS[name];
 }
+
+/** Preset query names a widget reads, for data-quality classification. */
+export function getRepoEndpointNames(widgetName: string): string[] {
+  return ENDPOINTS[widgetName]?.endpoints ?? [];
+}
