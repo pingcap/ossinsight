@@ -68,10 +68,16 @@ export function proxyGet(
         // break those integrations and fire their alerting for a known data
         // condition. The empty `rows` must not be read as "no results" - that is
         // what `status: "unavailable"` is for.
+        // .serializer() bypasses the route's response schema, which otherwise
+        // strips data_quality: the schema describes the upstream Data Service
+        // shape and has no property for it, so Fastify would silently drop the
+        // one field that explains why rows is empty.
         reply
           .code(200)
           .header('Cache-Control', 'no-store')
           .header('Warning', '199 - "degraded data: star-event derived ranking unavailable"')
+          .type('application/json; charset=utf-8')
+          .serializer((payload: unknown) => JSON.stringify(payload))
           .send({
             type: 'sql_endpoint',
             data: { columns: [], rows: [], result: { row_count: 0 } },
@@ -94,6 +100,7 @@ export function proxyGet(
           .code(res.status)
           .headers(res.headers)
           .header('Warning', '199 - "degraded data: event-derived counts are lower bounds"')
+          .serializer((payload: unknown) => JSON.stringify(payload))
           .send(body);
         return;
       }
