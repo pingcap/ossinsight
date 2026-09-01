@@ -155,7 +155,14 @@ export async function snapshotStars(config: AppConfig, logger: Logger, options: 
     if (!config.DATABASE_URL) {
       throw new Error(`DATABASE_URL is required (only "--dry-run --repos <...>" can run without it).`);
     }
-    prisma = new PrismaClient();
+    // TiDB Serverless rejects unencrypted connections, and Prisma only negotiates
+    // TLS when the URL asks for it. The shared DATABASE_URL secret is also read by
+    // jobs using the @tidbcloud/serverless driver, which needs no such parameter,
+    // so the secret cannot simply be rewritten — normalize here instead of
+    // depending on its exact format.
+    prisma = new PrismaClient({
+      datasources: { db: { url: withTiDBSsl(config.DATABASE_URL) } },
+    });
     snapshotDao = new RepoStarSnapshotDao(logger, prisma);
   }
 
@@ -233,4 +240,16 @@ export async function snapshotStars(config: AppConfig, logger: Logger, options: 
   if (counters.processed > 0 && counters.written === 0) {
     throw new Error(`All ${counters.processed} repos failed to snapshot, see the logs above.`);
   }
+}
+
+/**
+ * Ensure a TiDB Serverless connection string carries `sslaccept=strict`, which
+ * Prisma needs to negotiate TLS, and accept the `tidb://` scheme some deployed
+ * configs use.
+ */
+export function withTiDBSsl(url: string): string {
+  if (!url) return url;
+  const normalized = url.replace(/^tidb:\/\//, 'mysql://');
+  if (/[?&]sslaccept=/.test(normalized)) return normalized;
+  return normalized + (normalized.includes('?') ? '&' : '?') + 'sslaccept=strict';
 }
