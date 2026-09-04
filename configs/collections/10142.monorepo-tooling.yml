@@ -1,0 +1,12 @@
+id: 10142
+name: Monorepo Tooling
+items:
+  - bazelbuild/bazel
+  - gradle/gradle
+  - lerna/lerna
+  - microsoft/lage
+  - microsoft/rushstack
+  - moonrepo/moon
+  - nrwl/nx
+  - pantsbuild/pants
+  - vercel/turborepo
