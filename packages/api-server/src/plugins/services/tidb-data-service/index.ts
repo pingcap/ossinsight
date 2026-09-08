@@ -63,7 +63,29 @@ export class TiDBDataService {
     return await countAPIRequest(counter, endpointName, async () => {
       return await measure(timer, async () => {
         const startTime = DateTime.now();
-        const res = await this.client.get(targetURL);
+        let res;
+        try {
+          res = await this.client.get(targetURL);
+        } catch (err) {
+          // A 404 from Data Service means that endpoint NAME does not exist
+          // there. It never means "no matching rows" - a valid endpoint with
+          // no data answers 200 with an empty `rows` array. Several paths are
+          // registered in this server without a Data Service counterpart, and
+          // routes/v1/index.ts forwards any unmatched /v1 path verbatim, so
+          // without this every unknown path surfaced as 500 through the
+          // generic error handler in app.ts and looked like an outage.
+          // Measured 2026-09-07: ~600/day, all on /v1/repos/{owner}/{repo},
+          // /v1/repos/{owner}/{repo}/stargazers/monthly and
+          // /v1/collections/{id} - three paths this API never implemented.
+          if (Axios.isAxiosError(err) && err.response?.status === 404) {
+            throw new APIError(
+              404,
+              `No such API endpoint: ${endpointName}. See https://api.ossinsight.io/docs/json for the endpoints this API serves.`,
+              err as Error
+            );
+          }
+          throw err;
+        }
         const endTime = DateTime.now();
         const duration = endTime.diff(startTime, 'seconds').seconds;
         this.logger.info({

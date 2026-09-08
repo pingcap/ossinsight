@@ -124,9 +124,13 @@ export const STAR_DATA_UNAVAILABLE_MARKER = {
     'This ranking is ordered by recent star/PR/issue event counts, and our capture of those events ' +
     'fell to roughly 0.3% of baseline, so the ordering would be noise. An empty result here means ' +
     'the metric cannot be computed, not that there are no matching repositories.',
+  // Both endpoints named here are verified to exist and answer 200 (checked
+  // 2026-09-07). The previous text pointed at /v1/repos/{owner}/{repo} and
+  // /v1/collections/{id}, neither of which this API ever implemented, so the
+  // gate was sending every caller from a withheld metric straight to a 500.
   alternative:
-    'Current totals synced directly from GitHub remain accurate: use /v1/repos/{owner}/{repo} for ' +
-    'star and fork counts, or /v1/collections/{id} for collection membership.',
+    'Totals synced directly from GitHub remain accurate: use /gh/repos/{owner}/{repo} for ' +
+    'star and fork counts, or /v1/collections/{id}/repos for collection membership.',
   docs: 'https://ossinsight.io/docs/data-quality',
 } as const;
 
