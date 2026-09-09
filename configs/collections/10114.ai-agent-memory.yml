@@ -8,4 +8,5 @@ items:
   - deepset-ai/haystack
   - memvid/memvid
   - getzep/zep-python
+  - caura-ai/caura
   - pingcap/tidb
