@@ -5,22 +5,22 @@ import { createOpenAI } from "@ai-sdk/openai";
 // endpoint through the MINIMAX_API_REGION environment variable.
 export const MINIMAX_REGION_BASE_URLS = {
   global_en: "https://api.minimax.io/v1",
-  cn_zh: "https://api.minimaxi.com/v1",
+  cn_zh: "https://api.minimax.cn/v1",
 } as const;
 
 export type MinimaxRegion = keyof typeof MINIMAX_REGION_BASE_URLS;
 
 export const MINIMAX_DEFAULT_REGION: MinimaxRegion = "global_en";
 
-// Supported MiniMax text models and their context windows (in tokens).
+// Current MiniMax text choices and their context windows (in tokens).
 export const MINIMAX_MODELS = {
+  "MiniMax-M3.1-Flash": { contextWindow: 1_000_000 },
   "MiniMax-M3": { contextWindow: 1_000_000 },
-  "MiniMax-M2.7": { contextWindow: 204_800 },
 } as const;
 
 export type MinimaxModelId = keyof typeof MINIMAX_MODELS;
 
-export const MINIMAX_DEFAULT_MODEL: MinimaxModelId = "MiniMax-M3";
+export const MINIMAX_DEFAULT_MODEL: MinimaxModelId = "MiniMax-M3.1-Flash";
 
 export function resolveMinimaxRegion(
   value: string | undefined,
@@ -32,10 +32,9 @@ export function resolveMinimaxRegion(
 
 export function resolveMinimaxModel(
   value: string | undefined,
-): MinimaxModelId {
-  return value && value in MINIMAX_MODELS
-    ? (value as MinimaxModelId)
-    : MINIMAX_DEFAULT_MODEL;
+): string {
+  // An explicit deployment setting may select a legacy model or a custom route.
+  return value?.trim() || MINIMAX_DEFAULT_MODEL;
 }
 
 export function resolveMinimaxBaseUrl(
@@ -50,7 +49,7 @@ export interface MinimaxConfig {
   apiKey: string;
   region: MinimaxRegion;
   baseURL: string;
-  modelId: MinimaxModelId;
+  modelId: string;
 }
 
 // Read the MiniMax configuration from the environment. Returns null when no
