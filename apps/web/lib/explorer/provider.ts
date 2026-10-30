@@ -5,7 +5,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 // endpoint through the MINIMAX_API_REGION environment variable.
 export const MINIMAX_REGION_BASE_URLS = {
   global_en: "https://api.minimax.io/v1",
-  cn_zh: "https://api.minimax.cn/v1",
+  cn_zh: "https://api.minimaxi.com/v1",
 } as const;
 
 export type MinimaxRegion = keyof typeof MINIMAX_REGION_BASE_URLS;

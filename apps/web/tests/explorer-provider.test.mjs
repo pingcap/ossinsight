@@ -93,11 +93,11 @@ function completion(body) {
 
 const cases = [
   { name: "global default", env: {}, model: "MiniMax-M3.1-Flash", base: "https://api.minimax.io/v1" },
-  { name: "China default", env: { MINIMAX_API_REGION: "cn_zh" }, model: "MiniMax-M3.1-Flash", base: "https://api.minimax.cn/v1" },
+  { name: "China default", env: { MINIMAX_API_REGION: "cn_zh" }, model: "MiniMax-M3.1-Flash", base: "https://api.minimaxi.com/v1" },
   { name: "explicit M3", env: { MINIMAX_MODEL: "MiniMax-M3" }, model: "MiniMax-M3", base: "https://api.minimax.io/v1" },
   { name: "explicit legacy", env: { MINIMAX_MODEL: "MiniMax-M2.7" }, model: "MiniMax-M2.7", base: "https://api.minimax.io/v1" },
   { name: "custom deployment", env: { MINIMAX_MODEL: " deployment-model ", MINIMAX_API_BASE_URL: " https://gateway.example.test/v1/// " }, model: "deployment-model", base: "https://gateway.example.test/v1" },
-  { name: "explicit legacy endpoint", env: { MINIMAX_API_REGION: "cn_zh", MINIMAX_API_BASE_URL: "https://api.minimaxi.com/v1" }, model: "MiniMax-M3.1-Flash", base: "https://api.minimaxi.com/v1" },
+  { name: "explicit China endpoint", env: { MINIMAX_API_REGION: "cn_zh", MINIMAX_API_BASE_URL: "https://api.minimaxi.com/v1" }, model: "MiniMax-M3.1-Flash", base: "https://api.minimaxi.com/v1" },
   { name: "blank setting", env: { MINIMAX_MODEL: "  " }, model: "MiniMax-M3.1-Flash", base: "https://api.minimax.io/v1" },
 ];
 
