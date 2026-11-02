@@ -81,8 +81,10 @@ export function enforceSQLPolicy(sql: string, policy: SQLPolicy = {}): string {
       reject('Variables, assignments, and database-qualified references are not allowed');
     }
     if (node.type === 'function' || node.type === 'aggr_func') {
+      // Keyword forms such as bare CURRENT_DATE parse with an 'origin' name part.
       const name = node.type === 'aggr_func' ? node.name :
-        (!node.name?.schema && node.name?.name?.length === 1 && node.name.name[0].type === 'default'
+        (!node.name?.schema && node.name?.name?.length === 1 &&
+          ['default', 'origin'].includes(node.name.name[0].type)
           ? node.name.name[0].value : null);
       if (typeof name !== 'string' || !FUNCTIONS.has(name.toUpperCase())) {
         reject('This SQL function is not allowed');

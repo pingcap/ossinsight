@@ -15,6 +15,11 @@ function scans(ast: any): any[] {
 
 describe('SQL execution policy', () => {
   test.each([
+    'SELECT COUNT(*) FROM github_events WHERE created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)',
+    'SELECT COUNT(*) FROM github_events WHERE created_at >= CURRENT_TIMESTAMP - INTERVAL 7 DAY',
+  ])('allows keyword-form date functions: %s', sql => expect(() => enforceSQLPolicy(sql)).not.toThrow());
+
+  test.each([
     'DELETE FROM github_events', 'UPDATE github_events SET repo_id=42',
     'DROP TABLE github_events', 'SELECT 1; DELETE FROM github_events',
     'SHOW INDEXES FROM github_events', 'this is not SQL',

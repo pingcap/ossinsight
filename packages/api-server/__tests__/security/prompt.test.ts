@@ -26,6 +26,11 @@ test('caller and retrieval injection remain JSON data in a separate role', async
   expect(JSON.parse(messages[1].content as string)).toEqual({question:attack, entities:attack, examples:attack});
 });
 
+test('an empty stop list is omitted from the model request', async () => {
+  const [, promptConfig] = await manager.getPrompt('playground-generate-sql', {question:'stats', repo_id:42});
+  expect(promptConfig).not.toHaveProperty('stop');
+});
+
 test('identity never leaves the service automatically', async () => {
   const [messages] = await manager.getPrompt('playground-generate-sql', {question:'my PRs', repo_id:42, github_id:987654, github_login:'private-identity', token:'secret'});
   expect(JSON.stringify(messages)).not.toMatch(/987654|private-identity|secret/);

@@ -54,6 +54,11 @@ test.each(['DELETE FROM github_events','SELECT 1; SELECT 2','SELECT * FROM sys_u
   await expect(service.questionToSQL(log as any,'stats',{repo_id:42})).rejects.toThrow();
 });
 
+test.each(['', null])('an unanswerable question returns no SQL instead of failing generation: %p', async sql => {
+  const [answer] = await bot({RQ:'weather', sqlCanAnswer:false, sql}).questionToAnswerInNonStream('weather');
+  expect(answer).toMatchObject({sqlCanAnswer:false, querySQL:null});
+});
+
 test('cannot overwrite the validated answer through unknown output fields', async () => {
   const service = bot({sql:'SELECT 1',querySQL:'DELETE FROM github_events'});
   await expect(service.questionToAnswerInNonStream('stats')).rejects.toThrow();

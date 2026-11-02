@@ -196,7 +196,9 @@ export class BotService {
                 break;
             case 'sql':
                 key = "querySQL";
-                value = enforceSQLPolicy(value);
+                // No SQL means the model could not answer (sqlCanAnswer: false);
+                // the explorer reports that instead of a generation failure.
+                value = typeof value === 'string' && value.trim() ? enforceSQLPolicy(value) : null;
                 answer.querySQL = value;
                 break;
             case 'chart':

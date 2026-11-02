@@ -17,7 +17,7 @@ export default fp(async app => {
 
 export interface PromptConfig {
   model: string;
-  stop: string[];
+  stop?: string[];
   max_tokens: number;
   temperature: number;
   top_p: number;
@@ -66,9 +66,10 @@ export class PromptManager {
     for (const key of name === 'embedding-explorer-generate-answer' ? ['entities', 'examples'] : []) {
       if (context[key] != null) data[key] = boundedText(context[key], key, 24000);
     }
+    // An empty stop array is not a valid OpenAI request value; omit it instead.
     return [[
       { role: 'system', content: instructions },
       { role: 'user', content: JSON.stringify(data) },
-    ], { model, stop, max_tokens, temperature, top_p, n }];
+    ], { model, max_tokens, temperature, top_p, n, ...(stop.length ? { stop } : {}) }];
   }
 }
