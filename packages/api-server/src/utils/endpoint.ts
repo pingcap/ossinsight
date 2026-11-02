@@ -1,5 +1,6 @@
 import {APIError} from "./error";
 import {FastifyInstance} from "fastify";
+import {responseHeaders} from './response-headers';
 import {
   STAR_DATA_INCIDENT_MARKER,
   STAR_DATA_UNAVAILABLE_MARKER,
@@ -98,7 +99,7 @@ export function proxyGet(
         delete res.headers['content-length'];
         reply
           .code(res.status)
-          .headers(res.headers)
+          .headers(responseHeaders(res.headers))
           .header('Warning', '199 - "degraded data: event-derived counts are lower bounds"')
           .serializer((payload: unknown) => JSON.stringify(payload))
           .send(body);
@@ -107,7 +108,7 @@ export function proxyGet(
 
       reply
         .code(res.status)
-        .headers(res.headers)
+        .headers(responseHeaders(res.headers))
         .send(res.data);
     })
 }

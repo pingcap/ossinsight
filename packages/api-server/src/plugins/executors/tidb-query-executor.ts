@@ -1,5 +1,5 @@
 import {Pool} from "mysql2/promise";
-import {pino} from "pino";
+import pino from "pino";
 import {TiDBQueryExecutor} from "../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
 

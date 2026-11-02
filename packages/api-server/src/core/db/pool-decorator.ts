@@ -1,5 +1,5 @@
 import {Connection, Pool} from "mysql2/promise";
-import {pino} from "pino";
+import pino from "pino";
 
 /**
  * Mysql2 pool decorator.

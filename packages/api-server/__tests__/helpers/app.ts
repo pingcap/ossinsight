@@ -23,9 +23,7 @@ async function createApp () {
   const redis = getTestRedis();
 
   // Override process env
-  const playgroundDatabaseURL = db.url()
-      .replace('executoruser', 'webshelluser')
-      .replace('executorpassword', 'webshellpassword');
+  const playgroundDatabaseURL = db.analyticsUrl();
   const env: Partial<Env> = {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
     ADMIN_EMAIL: 'admin@testdomain.com',

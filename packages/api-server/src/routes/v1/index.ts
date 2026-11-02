@@ -1,5 +1,6 @@
 import {FastifyPluginAsync} from "fastify";
 import {APIError} from "../../utils/error";
+import {responseHeaders} from '../../utils/response-headers';
 
 const schema = {
   operationId: 'other-api',
@@ -25,7 +26,7 @@ const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
 
     reply
       .code(res.status)
-      .headers(res.headers)
+      .headers(responseHeaders(res.headers))
       .send(res.data);
   })
 }
