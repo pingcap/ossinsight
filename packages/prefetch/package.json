@@ -16,6 +16,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ossinsight/api-server": "workspace:^",
+    "@ossinsight/types": "workspace:^",
     "@sentry/node": "^7.57.0",
     "async": "^3.2.4",
     "commander": "^9.4.0",

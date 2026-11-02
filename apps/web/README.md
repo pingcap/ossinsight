@@ -23,3 +23,13 @@ Web API handlers emit structured `web_api_request` records with a generated
 These routes are public; caller-supplied identity headers never become audit
 principals. Request values and internal exception details are excluded. Collection
 API responses bypass browser/CDN caching so revoked visibility is checked again.
+
+Web documents receive a fresh CSP nonce from Proxy. The renderer, JSON-LD and
+analytics scripts use that nonce; production scripts cannot use arbitrary inline
+JavaScript or eval. The root layout reads request headers, so HTML uses dynamic
+rendering instead of sharing a cached nonce. Internal data caching remains
+available. Docs/blog rewrites receive the common object/frame/base/form restrictions
+and are rendered by their separate deployment. Remote SVG image optimization is
+disabled, and HTTPS responses include HSTS. Development permits eval for Next's
+local debugging runtime. Verify real preview page rendering and CSP console
+messages before promoting a deployment.

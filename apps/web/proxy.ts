@@ -1,7 +1,8 @@
+import {contentSecurityPolicy} from './lib/content-security';
 import { NextResponse, type NextRequest } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
-import { budgetFailure, publicBudgetKind, publicClientIdentity } from './lib/request-policy';
+import { budgetFailure, publicBudgetKind, publicClientIdentity, isPublicBudgetPath } from './lib/request-policy';
 
 const limiters = new Map<string, Ratelimit>();
 
@@ -24,7 +25,17 @@ function limiter(kind: 'query' | 'image') {
 }
 
 export async function proxy(request: NextRequest) {
-  if (request.method === 'OPTIONS' || process.env.NODE_ENV === 'development') return NextResponse.next();
+  const development = process.env.NODE_ENV === 'development';
+  const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString('base64');
+  const csp = contentSecurityPolicy(nonce, development);
+  const headers = new Headers(request.headers);
+  // Replace caller-supplied security metadata before the renderer sees it.
+  headers.set('x-nonce', nonce);
+  headers.set('Content-Security-Policy', csp);
+  const next = NextResponse.next({request: {headers}});
+  next.headers.set('Content-Security-Policy', csp);
+  if (!development) next.headers.set('Strict-Transport-Security', 'max-age=31536000');
+  if (request.method === 'OPTIONS' || development || !isPublicBudgetPath(request.nextUrl.pathname)) return next;
   const requestId = crypto.randomUUID();
   try {
     const kind = publicBudgetKind(request.nextUrl.pathname);
@@ -38,7 +49,7 @@ export async function proxy(request: NextRequest) {
         headers: {'Retry-After': String(failure.retryAfter), 'Cache-Control': 'no-store'},
       });
     }
-    const response = NextResponse.next();
+    const response = next;
     response.headers.set('X-RateLimit-Limit', String(result.limit));
     response.headers.set('X-RateLimit-Remaining', String(result.remaining));
     return response;
@@ -51,10 +62,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/api/:path*', '/q/:path*', '/gh/:path*', '/collections/api/:path*',
-    '/analyze/:path*', '/analyze-user/:path*', '/compare/:path*',
-    '/collections/:path*',
-    '/trending/ai/api',
-  ],
+  // Docs/blog are rewritten to the separate docs deployment. Static assets do
+  // not render a document; all other web routes receive a fresh nonce.
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|blog(?:/|$)|docs(?:/|$)|blog-assets(?:/|$)).*)'],
 };

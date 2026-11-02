@@ -18,3 +18,7 @@ export function budgetFailure(result: {success: boolean; reason?: string; reset:
   if (!result.success) return {status: 429, message: 'Request quota exceeded.', retryAfter: Math.max(1, Math.ceil((result.reset - now) / 1000))};
   return null;
 }
+
+export function isPublicBudgetPath(pathname: string): boolean {
+  return /^\/(?:api|q|gh|collections|analyze|analyze-user|compare)(?:\/|$)/.test(pathname) || /^\/trending\/ai\/api(?:\/|$)/.test(pathname);
+}

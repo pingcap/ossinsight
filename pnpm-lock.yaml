@@ -638,6 +638,9 @@ importers:
       '@fastify/schedule':
         specifier: ^4.1.1
         version: 4.1.1(fastify@4.29.1)(toad-scheduler@3.1.0)
+      '@ossinsight/types':
+        specifier: workspace:^
+        version: link:../types
       croner:
         specifier: ^6.0.7
         version: 6.0.7
@@ -696,6 +699,9 @@ importers:
       '@ossinsight/api-server':
         specifier: workspace:^
         version: link:../api-server
+      '@ossinsight/types':
+        specifier: workspace:^
+        version: link:../types
       '@sentry/node':
         specifier: ^7.57.0
         version: 7.120.4

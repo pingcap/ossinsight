@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest } from 'next/server';
 import { APIError } from '@/lib/data-service';
 import { explainQuery, getQueryName } from '@/lib/data-service/routes';

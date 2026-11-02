@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { listExplorerTags } from '@/lib/server/explorer-api';
 
 export const runtime = 'edge';

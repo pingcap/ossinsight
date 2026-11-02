@@ -171,3 +171,9 @@ location     | varchar     | [null]         |     |         |
 
 ### Realtime Fetch Hackernews Item
 * bundle exec rails runner 'HnRealtime.new.run'
+
+Database connections now require `VERIFY_IDENTITY` TLS by default. Set `DB_SSL_CA`
+to a trusted CA bundle path when the OpenSSL system trust store does not include
+your database CA; `DB_FORCE_SSL` is no longer an opt-in switch. Use a hostname
+present in the server certificate. Rails production also enables `force_ssl`;
+terminate TLS at the trusted ingress and correctly forward the HTTPS scheme.

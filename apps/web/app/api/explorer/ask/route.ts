@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject, streamObject } from "ai";
 import { z } from "zod";

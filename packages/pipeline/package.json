@@ -20,6 +20,7 @@
     "@fastify/env": "^4.1.0",
     "@fastify/mysql": "^4.1.0",
     "@fastify/schedule": "^4.1.1",
+    "@ossinsight/types": "workspace:^",
     "croner": "^6.0.7",
     "fastify": "^4.0.0",
     "fastify-cli": "^5.5.1",

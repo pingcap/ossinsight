@@ -77,7 +77,8 @@ const nextConfig = {
     },
   },
   images: {
-    dangerouslyAllowSVG: true,
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'none'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
         protocol: 'https',

@@ -1,5 +1,5 @@
 /** Edge-compatible audit boundary. Never infer a principal from request headers. */
-export function withRequestAudit<A extends unknown[]>(route: string, handler: (...args: A) => Promise<Response>) {
+export function withRequestAudit<A extends unknown[]>(route: string, handler: (...args: A) => Promise<Response>, rethrowControlFlow?: (error: unknown) => void) {
   return async (...args: A): Promise<Response> => {
     const requestId = crypto.randomUUID();
     const started = Date.now();
@@ -8,7 +8,8 @@ export function withRequestAudit<A extends unknown[]>(route: string, handler: (.
     const sourceIP = forwarded && /^[a-f0-9:.]{1,45}$/i.test(forwarded) ? forwarded : 'unavailable';
     let response: Response;
     try { response = await handler(...args); }
-    catch {
+    catch (error) {
+      rethrowControlFlow?.(error);
       response = Response.json({message: 'Internal Server Error', requestId}, {
         status: 500, headers: {'Cache-Control': 'no-store'},
       });

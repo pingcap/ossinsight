@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest } from 'next/server';
 import { listRecommendedExplorerQuestions } from '@/lib/server/explorer-api';
 

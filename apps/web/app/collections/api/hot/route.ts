@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { getHotCollections } from '@/lib/server/internal-api';
 import { createApiErrorResponse, jsonCachedResponse } from '@/lib/server/responses';
 

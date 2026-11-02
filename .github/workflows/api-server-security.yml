@@ -11,6 +11,11 @@ on:
       - 'apps/web/app/**'
       - 'configs/pipelines/**'
       - 'apps/web/lib/request-policy.ts'
+      - 'apps/web/lib/content-security.ts'
+      - 'apps/web/next.config.mjs'
+      - 'apps/web/vercel.json'
+      - 'etl/config/database.yml'
+      - 'etl/config/environments/production.rb'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
       - 'packages/sync-github-data/src/utils/email-hash.ts'
@@ -32,6 +37,11 @@ on:
       - 'apps/web/app/**'
       - 'configs/pipelines/**'
       - 'apps/web/lib/request-policy.ts'
+      - 'apps/web/lib/content-security.ts'
+      - 'apps/web/next.config.mjs'
+      - 'apps/web/vercel.json'
+      - 'etl/config/database.yml'
+      - 'etl/config/environments/production.rb'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
       - 'packages/sync-github-data/src/utils/email-hash.ts'
@@ -66,6 +76,9 @@ jobs:
         with:
           ruby-version: '3.3'
       - run: ruby etl/test/sample_importer_test.rb
+      - name: Verify ETL transport defaults
+        run: |
+          ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("etl/config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'
       - name: Verify TiDB execution and database grants
         working-directory: packages/api-server
         run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts

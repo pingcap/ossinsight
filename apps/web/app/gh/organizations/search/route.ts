@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { jsonDataResponse, searchUsers, corsPreflightResponse } from '@/lib/server/internal-api';
 
 export const runtime = 'edge';

@@ -1,4 +1,4 @@
-import {withRequestAudit} from '@/lib/server/request-audit';
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function handleGET(_req: NextRequest, { params }: { params: Promise<{ owner: string }> }) {

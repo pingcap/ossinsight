@@ -10,7 +10,7 @@ Create a `.env` file in the `/packages/api-server` directory and fill in the fol
 
 | Name                   | Description                              | Default                                                                    |
 |------------------------|------------------------------------------|----------------------------------------------------------------------------|
-| `DATABASE_URL`         | Database URL to connect TiDB/MySQL.      | `mysql://root@localhost:4000/gharchive_dev?timezone=Z&decimalNumbers=true` |
+| `DATABASE_URL`         | Database URL to connect TiDB/MySQL.      | Required; use a dedicated database account |
 | `REDIS_URL`            | URL to connect Redis.                    | `redis://localhost:6379/0`                                                 |
 | `GITHUB_ACCESS_TOKENS` | Personal access token of GitHub account. |                                                                            |
 
@@ -97,3 +97,16 @@ queries configured as `onlyFromCache`. Old keys are not reused. In-flight work i
 also isolated by backing cache provider. Queries listing multiple collections read
 fresh visibility, and responses cannot be pinned in browser/CDN caches after access
 is revoked.
+
+### Database transport defaults
+
+`DATABASE_URL` is required; no passwordless root default is supplied. API,
+pipeline and prefetch connections enable TLS with certificate and hostname
+verification for every non-loopback endpoint. Production also requires TLS on
+loopback and rejects root/tenant-root accounts. Development/test loopback databases
+may run without TLS. Supply a password and a dedicated least-privilege account;
+use the certificate's hostname rather than an uncertified alias or IP address.
+For a private CA, provide its PEM content in the URI's JSON `ssl.ca` option.
+Disabling `rejectUnauthorized` or `verifyIdentity` is rejected. Identity fields
+cannot be overridden through query options. Provision and verify the database
+certificate/account before deploying this enforcement.

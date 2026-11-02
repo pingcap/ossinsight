@@ -94,3 +94,9 @@ test('query responses cannot bypass later visibility checks through browser or C
     expect(response.headers.expires).toBeUndefined();
   } finally { await app.close(); }
 });
+
+test('framework control-flow exceptions are preserved instead of becoming cacheable 500 responses', async () => {
+  const signal = new Error('framework redirect');
+  const handler = withRequestAudit('GET /route', async () => {throw signal;}, error => {if (error === signal) throw error;});
+  await expect(handler()).rejects.toBe(signal);
+});
