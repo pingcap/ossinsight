@@ -2,6 +2,7 @@ import {join, relative} from "path";
 import {Chance} from "chance";
 import {createConnection} from 'mysql2/promise';
 import fs from "node:fs/promises";
+import {createHash} from 'node:crypto';
 
 let db: TiDBDatabase | undefined;
 
@@ -78,6 +79,14 @@ export class TiDBDatabase {
     return `mysql://executoruser:executorpassword@${this.host}:${this.port}/${this.database}`;
   }
 
+  get analyticsUser (): string {
+    return `reader_${createHash('sha256').update(this.database).digest('hex').slice(0, 20)}`;
+  }
+
+  analyticsUrl (): string {
+    return `mysql://${this.analyticsUser}:webshellpassword@${this.host}:${this.port}/${this.database}`;
+  }
+
   rootUrl (): string {
     return `mysql://root:@${this.host}:${this.port}`;
   }
@@ -111,6 +120,7 @@ export class TiDBDatabase {
 
     for await (const sql of sqls) {
       const finalSql = sql.replaceAll('gharchive_dev', this.database)
+          .replaceAll('webshelluser', this.analyticsUser);
       try {
         await conn.query(finalSql);
       } catch (err) {
@@ -124,6 +134,7 @@ export class TiDBDatabase {
   async stop () {
     const conn = await this.createRootConnection();
     await conn.query(`DROP DATABASE ${this.database};`);
+    await conn.query(`DROP USER IF EXISTS '${this.analyticsUser}'@'%';`);
     await conn.destroy();
     return this;
   }

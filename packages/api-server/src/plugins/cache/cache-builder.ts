@@ -1,5 +1,5 @@
 import {Pool} from "mysql2/promise";
-import {pino} from "pino";
+import pino from "pino";
 import CacheBuilder from "../../core/cache/CacheBuilder";
 import fp from "fastify-plugin";
 

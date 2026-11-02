@@ -1,0 +1,38 @@
+name: API server security
+
+on:
+  pull_request:
+    paths:
+      - 'packages/api-server/**'
+      - 'packages/types/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/api-server-security.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packages/api-server/**'
+      - 'packages/types/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/api-server-security.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - run: npm install --global pnpm@10.29.3
+      - run: pnpm install --filter @ossinsight/api-server... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
+      - run: pnpm --filter @ossinsight/api-server... --workspace-concurrency 12 -r build
+      - run: pnpm --filter @ossinsight/api-server test:security
+      - name: Verify TiDB execution and database grants
+        working-directory: packages/api-server
+        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts

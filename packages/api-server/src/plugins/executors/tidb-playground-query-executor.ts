@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import {Pool} from "mysql2/promise";
-import {pino} from "pino";
+import pino from "pino";
 import { TiDBPlaygroundQueryExecutor } from '../../core/executor/query-executor/TiDBPlaygroundQueryExecutor';
 import { getPlaygroundSessionLimits } from '../../core/playground/limitation';
 

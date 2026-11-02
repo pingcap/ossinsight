@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "sh -c 'PORT=\"${PORT:-3002}\"; rm -rf .next/dev; exec next dev -p \"$PORT\"'",
-    "build": "next build",
+    "build": "node scripts/check-content-secrets.mjs && next build",
+    "check:content-secrets": "node scripts/check-content-secrets.mjs",
     "start": "sh -c 'PORT=\"${PORT:-3002}\"; exec next start -p \"$PORT\"'",
     "lint": "next lint",
     "check-types": "tsc --noEmit"

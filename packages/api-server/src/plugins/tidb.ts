@@ -1,6 +1,7 @@
 import fp from "fastify-plugin";
 import fastifyMySQL, {MySQLPromisePool} from "@fastify/mysql";
 import {checkTiDBIfConnected, completeDatabaseURL} from "../utils/db";
+import {checkAnalyticsDatabase} from '../core/playground/database-policy';
 
 /**
  * @ossinsight/tidb plugin
@@ -49,10 +50,11 @@ export default fp(async (app) => {
         await app.register(fastifyMySQL, {
             name: 'playground',
             promise: true,
-            connectionString: completeDatabaseURL(app.config.PLAYGROUND_DATABASE_URL)
-        }).ready(async () => {
-            await checkTiDBIfConnected(app.log, app.mysql.playground, 'playground');
+            multipleStatements: false,
+            uri: completeDatabaseURL(app.config.PLAYGROUND_DATABASE_URL)
         });
+        await checkAnalyticsDatabase(app.mysql.playground!);
+        await checkTiDBIfConnected(app.log, app.mysql.playground, 'playground');
     }
 
     // Init playground shadow TiDB.
@@ -60,10 +62,11 @@ export default fp(async (app) => {
         await app.register(fastifyMySQL, {
             name: 'playgroundShadow',
             promise: true,
-            connectionString: completeDatabaseURL(app.config.PLAYGROUND_SHADOW_DATABASE_URL)
-        }).ready(async () => {
-            await checkTiDBIfConnected(app.log, app.mysql.playgroundShadow, 'playground shadow');
+            multipleStatements: false,
+            uri: completeDatabaseURL(app.config.PLAYGROUND_SHADOW_DATABASE_URL)
         });
+        await checkAnalyticsDatabase(app.mysql.playgroundShadow!);
+        await checkTiDBIfConnected(app.log, app.mysql.playgroundShadow, 'playground shadow');
     }
 }, {
     name: '@ossinsight/tidb',
