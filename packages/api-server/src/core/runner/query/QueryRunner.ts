@@ -1,3 +1,4 @@
+import {databaseCacheIdentity} from '../../cache/database-identity';
 import {createHash} from 'crypto';
 import mustache from "mustache";
 import {Logger} from "pino";
@@ -101,12 +102,13 @@ export class QueryRunner {
 
         const { cacheHours = -1, onlyFromCache = false, cacheProvider } = queryConfig;
         const queryKey = this.buildQueryKey(type, queryName);
-        const cacheKey = this.buildCacheKey(type, queryName, queryConfig, params);
+        const cacheKey = this.buildCacheKey(type, queryName, queryConfig, params, templateSQL);
+        const needsFreshVisibility = !collectionParameter && /\bcollections\b/i.test(templateSQL);
         const cache = this.cacheBuilder.build(
           cacheProvider,
           cacheKey,
-          cacheHours,
-          ignoreOnlyFromCache ? false : onlyFromCache,
+          needsFreshVisibility ? 0 : cacheHours,
+          needsFreshVisibility || ignoreOnlyFromCache ? false : onlyFromCache,
           refreshCache
         );
     
@@ -196,8 +198,10 @@ export class QueryRunner {
         return `${type}:${queryName}`;
     }
     
-    private buildCacheKey (type: QueryType, queryName: string, queryConfig: QuerySchema, params: Record<string, any>): string {
-        return `${this.buildQueryKey(type, queryName)}:v2:${this.serializeParams(queryConfig, params)}${params?.format === 'array' ? '_array' : ''}`;
+    private buildCacheKey (type: QueryType, queryName: string, queryConfig: QuerySchema, params: Record<string, any>, templateSQL = ''): string {
+        const source = databaseCacheIdentity(this.queryExecutor?.pool);
+        const context = createHash('sha256').update(JSON.stringify([process.env.NODE_ENV || 'development', source, type, queryName, queryConfig, templateSQL, this.serializeParams(queryConfig, params), params?.format === 'array'])).digest('hex');
+        return `ossinsight:query:v3:${context}`;
     }
     
     private serializeParams (queryConfig: QuerySchema, params: Record<string, any>): string {

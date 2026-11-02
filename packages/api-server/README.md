@@ -86,3 +86,14 @@ status and duration. Auth0 principals are recorded only after JWT verification;
 privileged operations additionally resolve the stored user ID. Operator access
 records a token fingerprint. These records omit tokens, bodies and query values.
 The existing request-statistics table remains a separate analytics sink.
+
+### Query cache rollout
+
+Version 3 query keys include the database endpoint, schema and account, environment,
+SQL/template configuration, normalized parameters and output format. They contain
+only a digest, never credentials. Deploy API and prefetch with matching analytics
+source credentials and `NODE_ENV`, and warm the new keys before routing traffic to
+queries configured as `onlyFromCache`. Old keys are not reused. In-flight work is
+also isolated by backing cache provider. Queries listing multiple collections read
+fresh visibility, and responses cannot be pinned in browser/CDN caches after access
+is revoked.

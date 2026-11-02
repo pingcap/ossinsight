@@ -83,3 +83,14 @@ test('audit principals are assigned only after real JWT signature verification',
     expect(accepted.json().actor).toBe('auth0:github|7');
   } finally { await app.close(); }
 });
+
+test('query responses cannot bypass later visibility checks through browser or CDN caching', async () => {
+  const app = Fastify();
+  registerRequestAudit(app);
+  app.get('/q/public', async (_request, reply) => reply.header('Expires', new Date(Date.now() + 3600000).toUTCString()).send({data: []}));
+  try {
+    const response = await app.inject({url: '/q/public'});
+    expect(response.headers['cache-control']).toBe('no-store');
+    expect(response.headers.expires).toBeUndefined();
+  } finally { await app.close(); }
+});

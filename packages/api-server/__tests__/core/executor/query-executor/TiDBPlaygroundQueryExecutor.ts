@@ -160,10 +160,19 @@ test('private collections remain inaccessible through named SQL and warmed cache
     const sql = await new QueryLegacyParser().parse(template!, config!, {repoId: 42});
     const [rows] = await pool.query<any[]>(sql);
     expect(rows.map(row => Number(row.id))).toEqual([90001]);
+    const {QueryRunner} = await import('../../../../src/core/runner/query/QueryRunner');
+    const {default: Cache} = await import('../../../../src/core/cache/Cache');
+    const values = new Map<string, any>();
+    const provider = {get: async (key: string) => values.get(key), set: async (key: string, value: string) => {values.set(key, JSON.parse(value));}};
+    const queryCache = {build: (_provider: string, key: string, hours: number, only: boolean, refresh: boolean) => new Cache(testLogger, provider, key, hours, only, refresh)};
+    const runner = new QueryRunner(testLogger, queryCache as any, new QueryLoader(testLogger), executor, pool);
+    expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data.map(row => Number(row.id))).toEqual([90001]);
     await pool.query('UPDATE collections SET public = 0 WHERE id = 90001');
     await expect(service.getCollectionRepos(90001)).rejects.toMatchObject({statusCode: 404});
     const [hidden] = await pool.query<any[]>(sql);
     expect(hidden).toHaveLength(0);
+    expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data).toHaveLength(0);
+    expect(values.size).toBe(0);
   } finally { await pool.end(); }
 });
 

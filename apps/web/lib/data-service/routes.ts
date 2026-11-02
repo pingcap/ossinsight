@@ -154,14 +154,14 @@ async function runTrendingReposQuery(
 
   signal?.throwIfAborted();
   if (cached && cached.expiresAt > Date.now()) {
-    return cached.value;
+    return refreshCollectionNames(cached.value, signal);
   }
 
   const inflight = inflightTrendingRepos.get(cacheKey);
   if (inflight) {
     const result = await inflight;
     signal?.throwIfAborted();
-    return result;
+    return refreshCollectionNames(result, signal);
   }
 
   const nextRequest = loadTrendingReposFromMaterializedView(params)
@@ -180,7 +180,20 @@ async function runTrendingReposQuery(
 
   const result = await nextRequest;
   signal?.throwIfAborted();
-  return result;
+  return refreshCollectionNames(result, signal);
+}
+
+async function refreshCollectionNames(result: QueryResult, signal?: AbortSignal): Promise<QueryResult> {
+  const ids = result.data.map(row => Number(row.repo_id)).filter(Number.isSafeInteger).slice(0, 100);
+  const names = new Map<string, string>();
+  if (ids.length) {
+    const {rows} = await executeRows(`SELECT ci.repo_id, GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ',') AS names
+      FROM collection_items ci JOIN collections c ON c.id = ci.collection_id AND c.public = 1
+      WHERE ci.deleted_at IS NULL AND ci.repo_id IN (${ids.map(() => '?').join(',')}) GROUP BY ci.repo_id`, ids, signal);
+    for (const row of rows) names.set(String(row.repo_id), String(row.names));
+  }
+  // Overwrite every cached collection projection, including when it is now private.
+  return {...result, data: result.data.map(row => ({...row, collection_names: names.get(String(row.repo_id)) || null}))};
 }
 
 function getTrendingReposCacheKey(params: Record<string, any>) {
