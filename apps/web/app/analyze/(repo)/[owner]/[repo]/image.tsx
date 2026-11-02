@@ -1,3 +1,4 @@
+import { OG_IMAGE_HEADERS } from '@/lib/og-image';
 import { OG_IMAGE_SIZE, OG_GRADIENT_STYLE } from '@/lib/og-image';
 import { getRepoByName } from '@/lib/server/internal-api';
 import { notFound } from 'next/navigation';
@@ -7,8 +8,8 @@ export const size = OG_IMAGE_SIZE;
 
 export default async function Image({ params }: { params: Promise<{ owner: string; repo: string }> }) {
   const { owner: rawOwner, repo: rawRepo } = await params;
-  const owner = decodeURIComponent(rawOwner);
-  const repo = decodeURIComponent(rawRepo);
+  const owner = rawOwner;
+  const repo = rawRepo;
   const repoInfo = await getRepoByName(owner, repo);
 
   if (!repoInfo) {
@@ -127,6 +128,7 @@ export default async function Image({ params }: { params: Promise<{ owner: strin
     ),
     {
       ...size,
+      headers: OG_IMAGE_HEADERS,
       fonts: [
         { name: 'Poppins', data: await poppinsMedium, style: 'normal' as const, weight: 500 as const },
         { name: 'Poppins', data: await poppinsSemiBold, style: 'normal' as const, weight: 600 as const },

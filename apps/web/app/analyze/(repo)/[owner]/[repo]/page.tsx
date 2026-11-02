@@ -29,8 +29,8 @@ async function fetchRepoInfo(owner: string, repo: string) {
 export default async function Page({ params, searchParams }: PageProps) {
   const { owner: rawOwner, repo: rawRepo } = await params;
   const { vs } = await searchParams;
-  const owner = decodeURIComponent(rawOwner);
-  const repo = decodeURIComponent(rawRepo);
+  const owner = rawOwner;
+  const repo = rawRepo;
   const repoInfo = await fetchRepoInfo(owner, repo);
 
   if (!repoInfo) {
@@ -103,8 +103,8 @@ export default async function Page({ params, searchParams }: PageProps) {
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { owner: rawOwner, repo: rawRepo } = await params;
   const { vs } = await searchParams;
-  const owner = decodeURIComponent(rawOwner);
-  const repo = decodeURIComponent(rawRepo);
+  const owner = rawOwner;
+  const repo = rawRepo;
   const name = `${owner}/${repo}`;
 
   const title = `Analyze ${name}`;

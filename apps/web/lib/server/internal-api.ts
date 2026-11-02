@@ -1,4 +1,5 @@
 import { corsHeaders } from '@/lib/cors';
+import { isGitHubOwner, isGitHubLogin, isGitHubRepository } from '@ossinsight/types';
 import orgsRecommendList from '@/lib/github-search/recommend/orgs-list.json';
 import reposRecommendList1 from '@/lib/github-search/recommend/repos-list-1.json';
 import reposRecommendList2 from '@/lib/github-search/recommend/repos-list-2.json';
@@ -125,6 +126,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal): Pr
 }
 
 export async function getRepoByName(owner: string, repo: string, signal?: AbortSignal): Promise<RepoDetail | null> {
+  if (!isGitHubOwner(owner) || !isGitHubRepository(repo)) return null;
   const row = await executeOneRow<{
     id: number;
     full_name: string;
@@ -203,6 +205,7 @@ export async function getUserById(id: number | string, signal?: AbortSignal) {
 }
 
 export async function getUserByLogin(username: string, signal?: AbortSignal) {
+  if (!isGitHubLogin(username)) return null;
   return executeOneRow<{
     id: number;
     login: string;

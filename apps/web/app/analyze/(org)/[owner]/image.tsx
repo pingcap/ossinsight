@@ -1,5 +1,6 @@
+import { OG_IMAGE_HEADERS } from '@/lib/og-image';
 import { size } from '@/app/analyze/(org)/[owner]/twitter-image';
-import { getOwnerInfo } from '@/components/Analyze/utils';
+import { getUserByLogin } from '@/lib/server/internal-api';
 import { INTERNAL_QUERY_API_SERVER } from '@/utils/api';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
@@ -8,9 +9,9 @@ import { FC, SVGAttributes } from 'react';
 
 export default async function Image ({ params }: { params: Promise<{ owner: string }> }) {
   const { owner: rawOwner } = await params;
-  const owner = decodeURIComponent(rawOwner);
-  const info = await getOwnerInfo(owner);
-  if (info.type !== 'Organization') {
+  const owner = rawOwner;
+  const info = await getUserByLogin(owner);
+  if (!info || info.type !== 'Organization') {
     notFound();
   }
 
@@ -98,6 +99,7 @@ export default async function Image ({ params }: { params: Promise<{ owner: stri
       // For convenience, we can re-use the exported opengraph-image
       // size config to also set the ImageResponse's width and height.
       ...size,
+      headers: OG_IMAGE_HEADERS,
       fonts: [
         {
           name: 'Poppins',

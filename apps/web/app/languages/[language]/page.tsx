@@ -34,7 +34,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { language: rawLang } = await params;
-  const language = decodeURIComponent(rawLang);
+  const language = rawLang;
 
   if (!isValidLanguage(language)) {
     return {};
@@ -63,7 +63,7 @@ const nf = new Intl.NumberFormat('en');
 
 export default async function LanguagePage({ params }: PageProps) {
   const { language: rawLang } = await params;
-  const language = decodeURIComponent(rawLang);
+  const language = rawLang;
 
   if (!isValidLanguage(language)) {
     notFound();

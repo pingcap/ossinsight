@@ -22,7 +22,7 @@ export function publicDataServiceTarget(template: string, query: Record<string, 
     search.set(key, String(value));
   }
   for (const [key, value] of Object.entries(params)) {
-    if (!/^[A-Za-z0-9_-][A-Za-z0-9_.-]{0,99}$/.test(String(value))) {
+    if (!/^[A-Za-z0-9_.-]{1,100}$/.test(String(value)) || value === '.' || value === '..') {
       throw new APIError(400, 'Invalid route parameter.');
     }
     search.set(key, String(value));

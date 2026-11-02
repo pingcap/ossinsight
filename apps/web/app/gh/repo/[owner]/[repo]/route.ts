@@ -7,7 +7,7 @@ export async function GET(
   ctx: { params: Promise<{ owner: string; repo: string }> },
 ) {
   const { owner, repo } = await ctx.params;
-  const data = await getRepoByName(decodeURIComponent(owner), decodeURIComponent(repo));
+  const data = await getRepoByName(owner, repo);
 
   if (!data) {
     return jsonDataResponse(null, { status: 404 });

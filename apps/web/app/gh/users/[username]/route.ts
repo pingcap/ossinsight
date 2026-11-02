@@ -7,7 +7,7 @@ export async function GET(
   ctx: { params: Promise<{ username: string }> },
 ) {
   const { username } = await ctx.params;
-  const data = await getUserByLogin(decodeURIComponent(username));
+  const data = await getUserByLogin(username);
 
   if (!data) {
     return jsonDataResponse(null, { status: 404 });
