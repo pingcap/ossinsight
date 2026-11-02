@@ -1,5 +1,15 @@
 # GH Archive for TiDB
 
+## Importing an approved sample
+
+`gh:load_sample` requires `SAMPLE_SQL_PATH` pointing to an already prepared local SQL file,
+`SAMPLE_SQL_SHA256` from an independently trusted release manifest, and an explicit `DATABASE_URL`.
+Use a dedicated database and a loader account restricted to that database. Automatic download
+and ZIP extraction from the old third-party CDN have been removed. The importer verifies the
+opened file before use, keeps credentials in a temporary mode-0600 option file, disables local
+file loading and mysql shell commands, and requires verified TLS. Set `SAMPLE_MYSQL_SSL_CA`
+when the server uses a private CA. Do not derive the expected digest from an untrusted download.
+
 
 ## github_events
 

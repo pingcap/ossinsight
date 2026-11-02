@@ -5,6 +5,13 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/site-shell/src/safe-json.ts'
+      - 'packages/sync-github-data/src/utils/email-hash.ts'
+      - 'scripts/load-collection.mjs'
+      - 'scripts/lib/**'
+      - 'etl/lib/sample_importer.rb'
+      - 'etl/lib/tasks/import.rake'
+      - 'etl/test/sample_importer_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
   push:
@@ -12,6 +19,13 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/site-shell/src/safe-json.ts'
+      - 'packages/sync-github-data/src/utils/email-hash.ts'
+      - 'scripts/load-collection.mjs'
+      - 'scripts/lib/**'
+      - 'etl/lib/sample_importer.rb'
+      - 'etl/lib/tasks/import.rake'
+      - 'etl/test/sample_importer_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
 
@@ -33,6 +47,11 @@ jobs:
       - run: pnpm install --filter @ossinsight/api-server... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
       - run: pnpm --filter @ossinsight/api-server... --workspace-concurrency 12 -r build
       - run: pnpm --filter @ossinsight/api-server test:security
+      - run: node --test scripts/lib/collection-store.test.mjs
+      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
+        with:
+          ruby-version: '3.3'
+      - run: ruby etl/test/sample_importer_test.rb
       - name: Verify TiDB execution and database grants
         working-directory: packages/api-server
         run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts

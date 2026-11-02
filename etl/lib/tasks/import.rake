@@ -6,6 +6,7 @@ require 'json'
 require 'uri'
 require 'yaml'
 require_relative '../importer'
+require_relative '../sample_importer'
 
 namespace :gh do 
   task :set_tiflash_replica => :environment do 
@@ -27,12 +28,10 @@ namespace :gh do
   end
 
   task :load_sample => :environment do 
-    # TODO use small sample dataset
-    `cd /app/tmp && wget https://cdn.hackershare.cn/sample1m.sql.zip && unzip sample1m.sql.zip`
-    uri = URI.parse(ENV['DATABASE_URL'])
-    cmd = "mysql -u #{uri.user} --port=#{uri.port} --password=#{uri.password} -h #{uri.host} #{uri.path.sub('/', '')} < /app/tmp/sample-100w.sql "
-    puts cmd
-    system(cmd)
+    SampleImporter.run(sql_path: ENV.fetch('SAMPLE_SQL_PATH'),
+                       sha256: ENV.fetch('SAMPLE_SQL_SHA256'),
+                       database_url: ENV.fetch('DATABASE_URL'),
+                       ssl_ca: ENV['SAMPLE_MYSQL_SSL_CA'])
   end
 
   task :load_collection => :environment do 
@@ -45,7 +44,9 @@ namespace :gh do
       else
         if ENV['ID'].present?
           puts "clean cache for collection #{ENV['ID']}"
-          ActiveRecord::Base.connection.execute("DELETE FROM cached_table_cache WHERE cache_key LIKE '%collection-%#{ENV['ID']}%'")
+          id = Integer(ENV.fetch('ID'), 10)
+          raise ArgumentError, 'Invalid collection ID' unless id.positive?
+          ActiveRecord::Base.connection.execute("DELETE FROM cached_table_cache WHERE cache_key LIKE '%collection-%#{id}%'")
         end
       end
       if collection && ENV['FORCE'].blank?
