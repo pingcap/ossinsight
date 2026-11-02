@@ -1,4 +1,4 @@
-import { isPublicQuery, validateQueryName } from '@ossinsight/types';
+import { isPublicQuery, validateQueryName, validateCollectionId } from '@ossinsight/types';
 import { DateTime } from 'luxon';
 import { Liquid } from 'liquidjs';
 import loadEndpoint, { hasEndpoint } from '@/lib/data-service/endpoints';
@@ -77,6 +77,7 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
   const endpoint = await loadEndpoint(queryName);
   if (!isPublicQuery(queryName, endpoint.config)) throw new APIError('Endpoint not found.', 404);
   const queryParams = getSearchParams(searchParams);
+  await authorizeCollectionQuery(endpoint.config, queryParams, signal);
   const result = queryName === 'trending-repos'
     ? await runTrendingReposQuery(endpoint.config, endpoint.sql, queryParams, signal)
     : await executeEndpoint(queryName, endpoint.config, endpoint.sql, queryParams, undefined, signal);
@@ -110,6 +111,7 @@ export async function explainQuery(queryName: string, searchParams: URLSearchPar
   const endpoint = await loadEndpoint(queryName);
   if (!isPublicQuery(queryName, endpoint.config)) throw new APIError('Endpoint not found.', 404);
   const queryParams = getSearchParams(searchParams);
+  await authorizeCollectionQuery(endpoint.config, queryParams, signal);
   const context = prepareQueryContext(endpoint.config, queryParams);
   const sql = await templateEngine.parseAndRender(applyLegacyQueryParameters(endpoint.config, endpoint.sql, context), context);
   // Note: EXPLAIN cannot use parameterized queries for the statement itself,
@@ -128,6 +130,16 @@ export async function explainQuery(queryName: string, searchParams: URLSearchPar
     requestedAt: DateTime.now().toISO(),
     finishedAt: DateTime.now().toISO(),
   };
+}
+
+async function authorizeCollectionQuery(config: Parameters<typeof prepareQueryContext>[0], params: Record<string, unknown>, signal?: AbortSignal) {
+  const parameter = config.params?.find(param => param.name === 'collectionId');
+  if (!parameter) return;
+  let id: number;
+  try { id = validateCollectionId(params.collectionId ?? parameter.default); }
+  catch { throw new APIError('Invalid collection ID.', 400); }
+  const {rows} = await executeRows('SELECT id FROM collections WHERE id = :id AND public = 1 LIMIT 1', {id}, signal);
+  if (rows.length !== 1) throw new APIError('Collection not found.', 404);
 }
 
 async function runTrendingReposQuery(

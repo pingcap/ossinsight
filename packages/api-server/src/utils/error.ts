@@ -1,3 +1,4 @@
+import {STAR_DATA_INCIDENT_MARKER} from './data-quality';
 import {Question, QuestionFeedbackType} from "../plugins/services/explorer-service/types";
 
 export class APIError extends Error {
@@ -105,5 +106,12 @@ export class ExplorerRecommendQuestionError extends APIError {
 export class ExplorerCancelRecommendQuestionError extends APIError {
     constructor(readonly statusCode: number, readonly message: string, cause?: Error) {
         super(statusCode, message, cause);
+    }
+}
+
+// This is an intentional public availability response, not an internal failure.
+export class QueryDataUnavailableError extends APIError {
+    constructor() {
+        super(503, 'This ranking is temporarily unavailable because its source data is degraded.', undefined, {data_quality: STAR_DATA_INCIDENT_MARKER});
     }
 }

@@ -51,6 +51,8 @@ export function proxyGet(
       // Derive the credentialed upstream route only from our registered template.
       const targetURL = publicDataServiceTarget(req.routeOptions.url || '', req.query as any, req.params as any);
       const pathname = targetURL.split('?')[0];
+      const collectionId = (req.params as Record<string, unknown>).collection_id;
+      if (collectionId !== undefined) await app.collectionService.assertPublicCollection(collectionId);
 
       // Star-data incident gate (see ./data-quality). proxyGet talks to TiDB
       // Data Service directly, so QueryRunner's gate never sees these routes;
@@ -83,6 +85,14 @@ export function proxyGet(
       // Retrieve query result from TiDB data service.
       const res = await app.tidbDataService.request(targetURL);
       delete res.headers['transfer-encoding'];
+      if (pathname === '/collections' || pathname === '/collections/hot') {
+        const visible = await app.collectionService.getCollections();
+        const ids = new Set(visible.data.map(collection => String(collection.id)));
+        if (!Array.isArray(res.data?.data?.rows)) throw new APIError(502, 'Invalid upstream response.');
+        const rows = res.data.data.rows.filter((row: any) => ids.has(String(row.id ?? row.collection_id)));
+        res.data = {...res.data, data: {...res.data.data, rows, result: {...res.data.data.result, row_count: rows.length}}};
+        delete res.headers['content-length'];
+      }
 
       if (dataQuality === 'tainted') {
         const body = typeof res.data === 'object' && res.data !== null

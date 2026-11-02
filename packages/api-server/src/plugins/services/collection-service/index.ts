@@ -1,3 +1,5 @@
+import {validateCollectionId} from '@ossinsight/types';
+import {APIError} from '../../../utils/error';
 import CacheBuilder, { CacheProviderTypes } from "../../../core/cache/CacheBuilder";
 
 import { CachedData } from "../../../core/cache/Cache";
@@ -91,61 +93,40 @@ export class CollectionService {
   }
 
   async getCollections(): Promise<CachedData<Collection[]>> {
-    const cacheKey = 'collection:list';
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, 0.1
-    );
+    // Visibility can change independently of cached analytical results.
+    const sql = 'SELECT id, name, public FROM collections WHERE public = 1';
+    const requestedAt = DateTime.now();
+    const [data, fields] = await this.executor.execute<any[]>('collection:public-list', sql);
+    const finishedAt = DateTime.now();
+    return {params: {}, requestedAt, finishedAt, spent: finishedAt.diff(requestedAt).as('seconds'), sql, fields, data};
+  }
 
-    return cache.load(async () => {
-      return await measure(presetQueryTimer, async () => {
-        const sql = "select id, name, public from collections;";
-
-        try {
-          const start = DateTime.now()
-          const [rows, fields] = await this.executor.execute(cacheKey, sql)
-          const end = DateTime.now()
-
-          return {
-            params: {},
-            requestedAt: start,
-            finishedAt: end,
-            spent: end.diff(start).as('seconds'),
-            sql,
-            fields: fields,
-            data: rows
-          }
-        } catch (e: any) {
-          e.sql = sql
-          throw e
-        }
-      })
-    });
+  async assertPublicCollection(value: unknown): Promise<number> {
+    let id: number;
+    try { id = validateCollectionId(value); } catch { throw new APIError(400, 'Invalid collection ID.'); }
+    const [rows] = await this.executor.execute<any[]>('collection:visibility', 'SELECT id FROM collections WHERE id = ? AND public = 1 LIMIT 1', [id]);
+    if (rows.length !== 1) throw new APIError(404, 'Collection not found.');
+    return id;
   }
 
   async getCollectionRepos(collectionId: number): Promise<CachedData<CollectionItem[]>> {
-    const cacheKey = `collection:items:${collectionId}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, 0.1
-    );
-
-    const collectionKey = collectionId.toString()
-    if (!/^[1-9]\d*$/.test(collectionKey)) {
-      throw new BadParamsError('collectionId', 'bad param: ' + collectionKey)
-    }
+    collectionId = await this.assertPublicCollection(collectionId);
+    const cacheKey = `collection:public-items-v2:${collectionId}`;
+    const cache = this.cacheBuilder.build(CacheProviderTypes.NORMAL_TABLE, cacheKey, 0.1);
 
     return cache.load(async () => {
       return await measure(presetQueryTimer, async () => {
         const sql = `
-          select id, collection_id, repo_id, repo_name 
-          from collection_items
-          where collection_id = ${collectionKey};
+          SELECT ci.id, ci.collection_id, ci.repo_id, ci.repo_name
+          FROM collection_items ci JOIN collections c ON c.id = ci.collection_id
+          WHERE ci.collection_id = ? AND c.public = 1;
         `;
 
         try {
           const start = DateTime.now()
           tidbQueryCounter.labels({ query: cacheKey, phase: 'start' }).inc()
 
-          const [rows, fields] = await this.executor.execute(cacheKey, sql)
+          const [rows, fields] = await this.executor.execute(cacheKey, sql, [collectionId])
 
           const end = DateTime.now()
           tidbQueryCounter.labels({ query: cacheKey, phase: 'success' }).inc()

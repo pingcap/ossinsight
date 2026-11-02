@@ -9,4 +9,4 @@ export {
 
 export { prepareQueryParameters, querySQLLiteral } from './query-parameters';
 
-export { validateQueryName, isPublicQuery } from './query-access';
+export { validateQueryName, isPublicQuery, validateCollectionId } from './query-access';

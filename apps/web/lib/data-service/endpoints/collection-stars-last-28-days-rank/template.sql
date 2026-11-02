@@ -1,4 +1,9 @@
-WITH stars_group_by_repo AS (
+WITH public_collection_items AS (
+    SELECT ci.* FROM collection_items ci
+    JOIN collections public_collection ON public_collection.id = ci.collection_id
+    WHERE public_collection.public = 1
+),
+stars_group_by_repo AS (
     SELECT
         repo_id,
         COUNT(DISTINCT actor_login) AS prs
@@ -6,7 +11,7 @@ WITH stars_group_by_repo AS (
     WHERE
         type = 'WatchEvent'
         AND action = 'started'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
+        AND repo_id IN (SELECT repo_id FROM public_collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     GROUP BY repo_id
 ), stars_group_by_period AS (
     SELECT
@@ -17,7 +22,7 @@ WITH stars_group_by_repo AS (
     WHERE
         type = 'WatchEvent'
         AND action = 'started'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
+        AND repo_id IN (SELECT repo_id FROM public_collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
         AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
     GROUP BY period, repo_id
 ), stars_last_period AS (
@@ -55,7 +60,7 @@ SELECT
     -- The total stars of repo.
     IFNULL(sgr.prs, 0)                                       AS total
 FROM stars_group_by_repo sgr
-JOIN collection_items ci ON ci.collection_id = 10001 AND sgr.repo_id = ci.repo_id
+JOIN public_collection_items ci ON ci.collection_id = 10001 AND sgr.repo_id = ci.repo_id
 JOIN stars_last_period slp ON sgr.repo_id = slp.repo_id
 LEFT JOIN stars_last_2nd_period sl2p ON sgr.repo_id = sl2p.repo_id
 ORDER BY last_period_rank;

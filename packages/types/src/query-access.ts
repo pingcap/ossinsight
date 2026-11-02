@@ -140,3 +140,10 @@ export function validateQueryName(name: string): string {
 export function isPublicQuery(name: string, config: { public?: boolean }): boolean {
   return config.public === true || (config.public !== false && PUBLIC_ANALYTICS.has(name));
 }
+
+export function validateCollectionId(value: unknown): number {
+  if (!['string', 'number'].includes(typeof value) || !/^[1-9][0-9]*$/.test(String(value)) || !Number.isSafeInteger(Number(value))) {
+    throw new Error('Invalid collection ID');
+  }
+  return Number(value);
+}

@@ -481,6 +481,7 @@ export async function listCollectionPreviewRepos(
             ORDER BY COALESCE(gr.stars, 0) DESC, ci.repo_name ASC
           ) AS repo_rank
         FROM collection_items ci
+        JOIN collections c ON c.id = ci.collection_id AND c.public = 1
         LEFT JOIN github_repos gr
           ON gr.repo_id = ci.repo_id
          AND gr.is_deleted = 0
@@ -492,6 +493,7 @@ export async function listCollectionPreviewRepos(
           ci.collection_id,
           COUNT(*) AS repo_count
         FROM collection_items ci
+        JOIN collections c ON c.id = ci.collection_id AND c.public = 1
         WHERE ci.deleted_at IS NULL
           AND ci.collection_id IN (${placeholders})
         GROUP BY ci.collection_id

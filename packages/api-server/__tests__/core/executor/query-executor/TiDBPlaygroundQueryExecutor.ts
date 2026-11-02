@@ -118,3 +118,35 @@ test('concurrent first requests reserve one shared daily quota before any LLM wo
     expect(await service.countTodayQuestionRequests(4242, false)).toBe(3);
   } finally { await pool.end(); }
 });
+
+
+test('private collections remain inaccessible through named SQL and warmed caches', async () => {
+  const {CollectionService} = await import('../../../../src/plugins/services/collection-service');
+  const {TiDBQueryExecutor} = await import('../../../../src/core/executor/query-executor/TiDBQueryExecutor');
+  const {QueryLoader} = await import('../../../../src/core/runner/query/QueryLoader');
+  const {QueryLegacyParser} = await import('../../../../src/core/runner/query/QueryLegacyParser');
+  const url = new URL(getTestDatabase().rootUrl());
+  url.pathname = getTestDatabase().database;
+  const pool = createPool(url.toString());
+  try {
+    await pool.query("INSERT INTO collections (id, name, public) VALUES (90001, 'public test', 1), (90002, 'private test', 0)");
+    await pool.query("INSERT INTO collection_items (collection_id, repo_name, repo_id) VALUES (90001, 'pingcap/tidb', 42), (90002, 'hidden/association', 42)");
+    let cached: any;
+    const cacheBuilder = {build: () => ({load: async (load: any) => cached ?? (cached = await load())})};
+    const executor = new TiDBQueryExecutor(pool, null, testLogger);
+    const service = new CollectionService(testLogger, executor, cacheBuilder as any);
+    const publicIds = (await service.getCollections()).data.map(row => Number(row.id));
+    expect(publicIds).toContain(90001);
+    expect(publicIds).not.toContain(90002);
+    await expect(service.getCollectionRepos(90002)).rejects.toMatchObject({statusCode: 404});
+    expect((await service.getCollectionRepos(90001)).data).toHaveLength(1);
+    const [config, template] = await new QueryLoader(testLogger).load('get-repo-collections');
+    const sql = await new QueryLegacyParser().parse(template!, config!, {repoId: 42});
+    const [rows] = await pool.query<any[]>(sql);
+    expect(rows.map(row => Number(row.id))).toEqual([90001]);
+    await pool.query('UPDATE collections SET public = 0 WHERE id = 90001');
+    await expect(service.getCollectionRepos(90001)).rejects.toMatchObject({statusCode: 404});
+    const [hidden] = await pool.query<any[]>(sql);
+    expect(hidden).toHaveLength(0);
+  } finally { await pool.end(); }
+});

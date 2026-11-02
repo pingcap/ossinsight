@@ -1,4 +1,9 @@
-WITH accumulative_prs_by_year AS (
+WITH public_collection_items AS (
+    SELECT ci.* FROM collection_items ci
+    JOIN collections public_collection ON public_collection.id = ci.collection_id
+    WHERE public_collection.public = 1
+),
+accumulative_prs_by_year AS (
     SELECT
         t_year,
         repo_id,
@@ -15,7 +20,7 @@ WITH accumulative_prs_by_year AS (
         WHERE
             type = 'PullRequestEvent'
             AND action = 'opened'
-            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
+            AND repo_id IN (SELECT repo_id FROM public_collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
         ) sub
     WHERE
         row_num_by_number = 1
@@ -28,7 +33,7 @@ SELECT
     -- The accumulative pull requests of repo.
     acc.total
 FROM accumulative_prs_by_year acc
-JOIN collection_items ci ON collection_id = 10001 AND ci.repo_id = acc.repo_id
+JOIN public_collection_items ci ON collection_id = 10001 AND ci.repo_id = acc.repo_id
 WHERE row_num_by_year = 1
 ORDER BY t_year
 ;
