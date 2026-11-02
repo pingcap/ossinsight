@@ -29,7 +29,7 @@ export const cancelRecommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = 
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Cancel recommend question.
-    await app.explorerService.cancelRecommendQuestion(questionId);
+    await app.explorerService.cancelRecommendQuestion(questionId, {userId, requestId: req.id});
     reply.status(200).send({
       message: "OK"
     });

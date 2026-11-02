@@ -13,6 +13,7 @@ export function registerRequestAudit(app: FastifyInstance, operationsToken?: str
     }
   });
   app.addHook('onSend', async (request, reply, payload) => {
+    reply.header('X-Request-ID', request.id);
     if (/^\/(?:q|queries|collections|v1)(?:\/|$)/.test(request.routeOptions.url || '')) {
       reply.header('Cache-Control', 'no-store');
       reply.header('CDN-Cache-Control', 'no-store');
