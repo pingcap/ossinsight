@@ -10,7 +10,7 @@ export const APIServerEnvSchema = {
     },
     DATABASE_URL: {
       type: 'string',
-      default: 'mysql://root@localhost:4000/gharchive_dev'
     },
+    PIPELINE_OPERATOR_TOKEN: {type: 'string', minLength: 32, maxLength: 256},
   },
 };

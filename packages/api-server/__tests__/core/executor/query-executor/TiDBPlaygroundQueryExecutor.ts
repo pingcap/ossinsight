@@ -166,3 +166,90 @@ test('private collections remain inaccessible through named SQL and warmed cache
     expect(hidden).toHaveLength(0);
   } finally { await pool.end(); }
 });
+
+// Real database tests: process SQL and its completion marker must share a transaction.
+describe('pipeline backfill transactions', () => {
+  const {PipelineJobRepository} = require('../../../../../pipeline/src/plugins/repositories/PipelineJobRepository');
+  const {DateTime} = require('luxon');
+  const from = DateTime.utc(2024, 1, 1);
+  const to = DateTime.utc(2024, 1, 2);
+  let pool: ReturnType<typeof createPool>;
+  beforeAll(async () => {
+    pool = createPool({uri: getTestDatabase().rootUrl(), database: getTestDatabase().database,
+      connectionLimit: 12, namedPlaceholders: true, timezone: 'Z'});
+    await pool.query(`CREATE TABLE sys_pipelines_jobs (
+      job_id BIGINT PRIMARY KEY AUTO_INCREMENT, pipeline_name VARCHAR(128) NOT NULL,
+      time_range_start DATETIME(3) NOT NULL, time_range_end DATETIME(3) NOT NULL,
+      status VARCHAR(16) NOT NULL, ended_at DATETIME, message TEXT, duration DOUBLE,
+      INDEX pipeline_range (pipeline_name, time_range_start, time_range_end, status))`);
+    const migration = require('fs').readFileSync(require('path').resolve(__dirname, '../../../../../pipeline/migrations/001_atomic_pipeline_jobs.sql'), 'utf8');
+    await pool.query(migration);
+    await pool.query('CREATE TABLE pipeline_test_effects (name VARCHAR(128) PRIMARY KEY, executions INT NOT NULL)');
+  });
+  afterAll(async () => { await pool?.end(); });
+
+  test('25 concurrent backfills commit exactly one effect and completion', async () => {
+    const repository = new PipelineJobRepository(pool);
+    const sql = "INSERT INTO pipeline_test_effects VALUES ('concurrent', 1) ON DUPLICATE KEY UPDATE executions = executions + 1";
+    const results = await Promise.all(Array.from({length: 25}, () => repository.executeRange('concurrent', from, to, sql)));
+    expect(results.filter(Boolean)).toHaveLength(1);
+    const [effects] = await pool.query<any[]>("SELECT executions FROM pipeline_test_effects WHERE name = 'concurrent'");
+    const [jobs] = await pool.query<any[]>("SELECT status FROM sys_pipelines_jobs WHERE pipeline_name = 'concurrent'");
+    expect(effects[0].executions).toBe(1);
+    expect(jobs).toEqual([{status: 'SUCCEED'}]);
+  });
+
+  test('failure after data writes rolls back, records a safe failure with a one-connection pool, and retries once', async () => {
+    const single = createPool({uri: getTestDatabase().rootUrl(), database: getTestDatabase().database,
+      connectionLimit: 1, namedPlaceholders: true, timezone: 'Z'});
+    try {
+      const [before] = await single.query<any[]>('SELECT @@SESSION.sql_mode AS mode');
+      let injected = false;
+      const faultPool = {execute: single.execute.bind(single), getConnection: async () => {
+        const connection = await single.getConnection();
+        return new Proxy(connection, {get(target, property) {
+          if (property === 'execute') return async (sql: string, params: any) => {
+            if (!injected && sql.startsWith('UPDATE sys_pipelines_jobs')) {
+              injected = true;
+              throw new Error('private SQL detail: simulated crash before completion');
+            }
+            return target.execute(sql, params);
+          };
+          const value = Reflect.get(target, property);
+          return typeof value === 'function' ? value.bind(target) : value;
+        }});
+      }};
+      const sql = "INSERT INTO pipeline_test_effects VALUES ('rollback', 1) ON DUPLICATE KEY UPDATE executions = executions + 1";
+      await expect(new PipelineJobRepository(faultPool).executeRange('rollback', from, to, sql)).rejects.toThrow('simulated crash');
+      const [effects] = await single.query<any[]>("SELECT * FROM pipeline_test_effects WHERE name = 'rollback'");
+      const [failed] = await single.query<any[]>("SELECT status, message FROM sys_pipelines_jobs WHERE pipeline_name = 'rollback'");
+      expect(effects).toEqual([]);
+      expect(failed).toHaveLength(1);
+      expect(failed[0].status).toBe('FAILED');
+      expect(failed[0].message).not.toContain('private SQL detail');
+      const repository = new PipelineJobRepository(single);
+      expect(await repository.executeRange('rollback', from, to, sql)).toBe(true);
+      expect(await repository.executeRange('rollback', from, to, sql)).toBe(false);
+      const [after] = await single.query<any[]>('SELECT @@SESSION.sql_mode AS mode');
+      expect(after[0].mode).toBe(before[0].mode);
+    } finally { await single.end(); }
+  });
+
+  test('periodic refreshes remain repeatable while historical backfill is deduplicated', async () => {
+    const repository = new PipelineJobRepository(pool);
+    const sql = "INSERT INTO pipeline_test_effects VALUES ('refresh', 1) ON DUPLICATE KEY UPDATE executions = executions + 1";
+    expect(await repository.executeRange('refresh', from, to, sql, false)).toBe(true);
+    expect(await repository.executeRange('refresh', from, to, sql, false)).toBe(true);
+    expect(await repository.executeRange('refresh', from, to, sql)).toBe(false);
+    const [effects] = await pool.query<any[]>("SELECT executions FROM pipeline_test_effects WHERE name = 'refresh'");
+    expect(effects[0].executions).toBe(2);
+  });
+
+  test('legacy running rows require reconciliation instead of silently replaying writes', async () => {
+    await pool.execute("INSERT INTO sys_pipelines_jobs (pipeline_name, time_range_start, time_range_end, status) VALUES ('legacy', '2024-01-01', '2024-01-02', 'RUNNING')");
+    const repository = new PipelineJobRepository(pool);
+    await expect(repository.executeRange('legacy', from, to, "INSERT INTO pipeline_test_effects VALUES ('legacy', 1)")).rejects.toMatchObject({statusCode: 409});
+    const [effects] = await pool.query<any[]>("SELECT * FROM pipeline_test_effects WHERE name = 'legacy'");
+    expect(effects).toEqual([]);
+  });
+});

@@ -9,7 +9,7 @@ JOIN github_users gu ON ge.actor_login = gu.login
 WHERE
     ge.type = 'PushEvent'
     AND ge.org_id != 0
-    AND ge.created_at BETWEEN :from AND :to
+    AND ge.created_at >= :from AND ge.created_at < :to
     AND gu.country_code NOT IN ('N/A', 'UND', '')
 GROUP BY ge.repo_id, gu.country_code
 ON DUPLICATE KEY UPDATE

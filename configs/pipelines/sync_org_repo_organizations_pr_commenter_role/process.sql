@@ -10,7 +10,7 @@ JOIN mv_repo_pull_requests rpr ON ge.repo_id = rpr.repo_id AND ge.number = rpr.n
 WHERE
     ge.type = 'IssueCommentEvent'
     AND ge.org_id != 0
-    AND ge.created_at BETWEEN :from AND :to
+    AND ge.created_at >= :from AND ge.created_at < :to
     AND gu.organization_formatted != ''
 GROUP BY ge.repo_id, org_name
 ON DUPLICATE KEY UPDATE

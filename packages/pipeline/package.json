@@ -38,6 +38,6 @@
     "@types/node": "^18.0.0",
     "@types/node-schedule": "^2.1.0",
     "fastify-tsconfig": "^1.0.1",
-    "typescript": "^4.5.4"
+    "typescript": "^5.9.3"
   }
 }

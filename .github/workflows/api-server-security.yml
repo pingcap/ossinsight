@@ -5,6 +5,8 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/pipeline/**'
+      - 'configs/pipelines/**'
       - 'apps/web/lib/request-policy.ts'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
@@ -21,6 +23,8 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/pipeline/**'
+      - 'configs/pipelines/**'
       - 'apps/web/lib/request-policy.ts'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
@@ -48,8 +52,8 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --global pnpm@10.29.3
-      - run: pnpm install --filter @ossinsight/api-server... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
-      - run: pnpm --filter @ossinsight/api-server... --workspace-concurrency 12 -r build
+      - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
+      - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --workspace-concurrency 12 -r build
       - run: pnpm --filter @ossinsight/api-server test:security
       - run: node --test scripts/lib/collection-store.test.mjs
       - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1

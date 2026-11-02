@@ -10,7 +10,7 @@ WHERE
     ge.type = 'PullRequestEvent'
     AND ge.action = 'opened'
     AND ge.org_id != 0
-    AND ge.created_at BETWEEN :from AND :to
+    AND ge.created_at >= :from AND ge.created_at < :to
     AND gu.organization_formatted != ''
 GROUP BY ge.repo_id, org_name
 ON DUPLICATE KEY UPDATE
