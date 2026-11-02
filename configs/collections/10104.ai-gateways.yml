@@ -18,3 +18,4 @@ items:
   - alibaba/higress
   - apache/apisix
   - Kong/kong
+  - Tuskira/ai-agent-gateway
