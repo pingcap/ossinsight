@@ -30,6 +30,8 @@ test('query aliases and cache-busting paths cannot acquire separate budgets', ()
   expect(publicBudgetKind('/api/q/two')).toBe('query');
   expect(publicBudgetKind('/analyze/a/b/opengraph-image')).toBe('image');
   expect(publicBudgetKind('/collections/foo/twitter-image')).toBe('image');
+  expect(publicBudgetKind('/analyze/a/b/opengraph-image-1k31zp')).toBe('image');
+  expect(publicBudgetKind('/collections/foo/twitter-image-1k31zp')).toBe('image');
 });
 
 test('a fail-open Redis timeout is rejected even when the SDK says success', () => {

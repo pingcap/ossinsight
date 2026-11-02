@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/request-audit';
 import {
   jsonDataResponse,
   listCollections,
@@ -8,7 +9,7 @@ import { createApiErrorResponse, jsonCachedResponse } from '@/lib/server/respons
 
 export const runtime = 'edge';
 
-export async function GET(req: Request) {
+async function handleGET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const keyword = searchParams.get('q') ?? searchParams.get('keyword') ?? '';
@@ -45,3 +46,5 @@ export async function GET(req: Request) {
     return createApiErrorResponse(error);
   }
 }
+
+export const GET = withRequestAudit('GET /collections/api', handleGET);

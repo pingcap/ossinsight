@@ -1,8 +1,9 @@
+import {withRequestAudit} from '@/lib/server/request-audit';
 import { getUserById, jsonDataResponse } from '@/lib/server/internal-api';
 
 export const runtime = 'edge';
 
-export async function GET(
+async function handleGET(
   _req: Request,
   ctx: { params: Promise<{ id: string }> },
 ) {
@@ -15,3 +16,5 @@ export async function GET(
 
   return jsonDataResponse(data);
 }
+
+export const GET = withRequestAudit('GET /gh/user/[id]', handleGET);

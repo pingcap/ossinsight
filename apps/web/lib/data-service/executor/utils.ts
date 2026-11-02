@@ -23,6 +23,7 @@ export function applyLegacyQueryParameters(queryConfig: EndpointConfig, sqlTempl
 }
 
 export class APIError extends Error {
+  get publicMessage() { return this.statusCode >= 500 ? 'Internal Server Error' : this.message; }
   constructor(message: string, public statusCode: number = 400) {
     super(message);
   }

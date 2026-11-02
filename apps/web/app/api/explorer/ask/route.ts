@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/request-audit';
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject, streamObject } from "ai";
 import { z } from "zod";
@@ -53,7 +54,7 @@ const openai = createOpenAI({
   apiKey: openaiApiKey,
 });
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   if (isExplorerUnderMaintenance()) {
     return Response.json(maintenanceResponse, {
       status: 503,
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
 
     if (!openaiApiKey) {
       return Response.json(
-        { error: "Missing OPENAI_API_TOKEN (or OPENAI_API_KEY) for Data Explorer." },
+        { error: "Explorer is temporarily unavailable." },
         { status: 500, headers: { "Cache-Control": "no-store" } },
       );
     }
@@ -117,7 +118,7 @@ export async function POST(request: Request) {
           : 500;
 
     return Response.json(
-      { error: message },
+      { error: status === 400 ? "Invalid explorer request." : "Explorer is temporarily unavailable." },
       { status, headers: { "Cache-Control": "no-store" } },
     );
   }
@@ -270,8 +271,7 @@ function streamExplorerAnswer(question: string, startedAt: number) {
           send({ type: "done" });
           controller.close();
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Unknown explorer error";
-          send({ type: "error", error: message });
+          send({ type: "error", error: "Explorer is temporarily unavailable." });
           controller.close();
         }
       },
@@ -366,3 +366,5 @@ function assertReadonlySql(sql: string) {
     throw new Error("Data Explorer rejected unsafe SQL.");
   }
 }
+
+export const POST = withRequestAudit('POST /api/explorer/ask', handlePOST);

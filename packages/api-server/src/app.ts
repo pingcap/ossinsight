@@ -5,6 +5,7 @@ import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {isProdDatabaseURL} from "./utils/db";
+import {registerRequestAudit} from './utils/http/request-audit';
 import {errorHandler} from './utils/http/error-handler';
 
 export type AppOptions = {
@@ -19,6 +20,7 @@ const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
 export interface AppConfig {
   CONFIGS_PATH: string;
   ADMIN_EMAIL: string;
+  OPERATIONS_TOKEN?: string;
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
   REDIS_URL: string;
@@ -73,6 +75,8 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   )) {
     throw new Error('DO NOT use production database in test env.');
   }
+
+  registerRequestAudit(fastify, fastify.config.OPERATIONS_TOKEN);
 
   // Init error handler.
   fastify.setErrorHandler(errorHandler);

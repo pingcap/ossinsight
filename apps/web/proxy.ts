@@ -54,7 +54,7 @@ export const config = {
   matcher: [
     '/api/:path*', '/q/:path*', '/gh/:path*', '/collections/api/:path*',
     '/analyze/:path*', '/analyze-user/:path*', '/compare/:path*',
-    '/collections/:slug/opengraph-image', '/collections/:slug/twitter-image',
+    '/collections/:path*',
     '/trending/ai/api',
   ],
 };

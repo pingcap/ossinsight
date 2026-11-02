@@ -9,7 +9,7 @@ export function publicClientIdentity(headers: Pick<Headers, 'get'>, onVercel: bo
 }
 
 export function publicBudgetKind(pathname: string): 'image' | 'query' {
-  return /\/(?:opengraph|twitter)-image(?:\/|$)/.test(pathname) ? 'image' : 'query';
+  return /\/(?:opengraph|twitter)-image(?:-[a-zA-Z0-9]+)?(?:\/|$)/.test(pathname) ? 'image' : 'query';
 }
 
 export function budgetFailure(result: {success: boolean; reason?: string; reset: number}, now = Date.now()) {

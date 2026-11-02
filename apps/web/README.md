@@ -17,3 +17,9 @@ client-supplied forwarding headers are never trusted. Development mode skips Red
 Repository/user image inputs are bounded and must resolve to an existing entity.
 Public repository images have a one-hour CDN cache; collection images remain uncached
 so changing collection visibility takes effect on the next request.
+
+Web API handlers emit structured `web_api_request` records with a generated
+`X-Request-ID`, route pattern, status, duration and Vercel's trusted source IP.
+These routes are public; caller-supplied identity headers never become audit
+principals. Request values and internal exception details are excluded. Collection
+API responses bypass browser/CDN caching so revoked visibility is checked again.

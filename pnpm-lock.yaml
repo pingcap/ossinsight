@@ -719,7 +719,7 @@ importers:
         version: 3.7.2
       mysql2:
         specifier: ^3.11.5
-        version: 3.20.0(@types/node@14.18.63)
+        version: 3.20.0(@types/node@18.19.130)
       node-schedule:
         specifier: ^2.1.1
         version: 2.1.1
@@ -746,8 +746,8 @@ importers:
         specifier: ^3.3.0
         version: 3.7.1
       '@types/node':
-        specifier: ^14.14.31
-        version: 14.18.63
+        specifier: ^18.19.130
+        version: 18.19.130
       '@types/node-schedule':
         specifier: ^2.1.0
         version: 2.1.8
@@ -755,8 +755,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       typescript:
-        specifier: ^4.1.3
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/site-shell:
     dependencies:
@@ -4104,9 +4104,6 @@ packages:
 
   '@types/node-schedule@2.1.8':
     resolution: {integrity: sha512-k00g6Yj/oUg/CDC+MeLHUzu0+OFxWbIqrFfDiLi6OPKxTujvpv29mHGM8GtKr7B+9Vv92FcK/8mRqi1DK5f3hA==}
-
-  '@types/node@14.18.63':
-    resolution: {integrity: sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ==}
 
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
@@ -14031,8 +14028,6 @@ snapshots:
     dependencies:
       '@types/node': 18.19.130
 
-  '@types/node@14.18.63': {}
-
   '@types/node@18.19.130':
     dependencies:
       undici-types: 5.26.5
@@ -19399,18 +19394,6 @@ snapshots:
   mustache@4.2.0: {}
 
   mute-stream@2.0.0: {}
-
-  mysql2@3.20.0(@types/node@14.18.63):
-    dependencies:
-      '@types/node': 14.18.63
-      aws-ssl-profiles: 1.1.2
-      denque: 2.1.0
-      generate-function: 2.3.1
-      iconv-lite: 0.7.2
-      long: 5.3.2
-      lru.min: 1.1.4
-      named-placeholders: 1.1.6
-      sql-escaper: 1.3.3
 
   mysql2@3.20.0(@types/node@18.19.130):
     dependencies:

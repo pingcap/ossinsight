@@ -70,3 +70,19 @@ access. Localhost is enabled only in development. For a trusted preview, explici
 set its exact origin in `CORS_PRIVATE_ORIGINS`; broad hosting-provider patterns are
 not accepted. WebSocket handshakes require a configured Origin, including for CLI
 clients. Socket errors and audit events omit raw requests, SQL and internal errors.
+
+### Operations access and audit records
+
+Set a private `OPERATIONS_TOKEN` (32–256 characters with at least 32 random bytes)
+for the API and prefetch deployments, and configure the Prometheus scraper to send
+`Authorization: Bearer <token>`. `/metrics` and `/docs/json` deny unauthenticated
+requests; an unconfigured token disables these endpoints with 503. Health checks
+remain available. The prefetch metrics listener defaults to `127.0.0.1`; changing
+`METRICS_HOST` does not remove token authentication. Apply scraper configuration
+before deploying these endpoint restrictions to avoid a monitoring gap.
+
+API audit records include request ID, verified actor, route pattern, source IP,
+status and duration. Auth0 principals are recorded only after JWT verification;
+privileged operations additionally resolve the stored user ID. Operator access
+records a token fingerprint. These records omit tokens, bodies and query values.
+The existing request-statistics table remains a separate analytics sink.

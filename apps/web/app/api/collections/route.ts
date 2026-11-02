@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/request-audit';
 import {
   jsonDataResponse,
   normalizeCollectionSort,
@@ -8,7 +9,7 @@ import {
 
 export const runtime = 'edge';
 
-export async function GET(req: Request) {
+async function handleGET(req: Request) {
   const { searchParams } = new URL(req.url);
   const keyword = searchParams.get('q') ?? searchParams.get('keyword') ?? '';
   const sort = normalizeCollectionSort(searchParams.get('sort'));
@@ -33,3 +34,5 @@ export async function GET(req: Request) {
 
   return jsonResponse(result);
 }
+
+export const GET = withRequestAudit('GET /api/collections', handleGET);

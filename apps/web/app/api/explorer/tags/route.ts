@@ -1,8 +1,9 @@
+import {withRequestAudit} from '@/lib/server/request-audit';
 import { listExplorerTags } from '@/lib/server/explorer-api';
 
 export const runtime = 'edge';
 
-export async function GET() {
+async function handleGET() {
   try {
     const tags = await listExplorerTags();
 
@@ -16,7 +17,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error(error);
+
 
     return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
       status: 500,
@@ -26,3 +27,5 @@ export async function GET() {
     });
   }
 }
+
+export const GET = withRequestAudit('GET /api/explorer/tags', handleGET);

@@ -33,3 +33,4 @@ export {
   openaiAPITimer,
   openaiAPICounter
 } from './metrics';
+export {authenticateOperatorToken} from './utils/http/operator-auth';
