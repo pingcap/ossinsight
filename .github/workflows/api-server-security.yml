@@ -31,7 +31,7 @@ jobs:
           node-version: '22'
       - run: npm install --global pnpm@10.29.3
       - run: pnpm install --filter @ossinsight/api-server... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
-      - run: pnpm --filter @ossinsight/api-server build
+      - run: pnpm --filter @ossinsight/api-server... --workspace-concurrency 12 -r build
       - run: pnpm --filter @ossinsight/api-server test:security
       - name: Verify TiDB execution and database grants
         working-directory: packages/api-server
