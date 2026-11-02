@@ -1,4 +1,4 @@
-import {MySQLPromisePool} from "@fastify/mysql";
+import {Pool} from "mysql2/promise";
 import fp from "fastify-plugin";
 import {ResultSetHeader} from 'mysql2';
 import {withTransaction} from '../../../utils/db';
@@ -32,7 +32,7 @@ export interface QuestionRecord {
 
 export class PlaygroundService {
 
-  constructor(readonly tidb: MySQLPromisePool) {
+  constructor(readonly tidb: Pick<Pool, 'query' | 'getConnection'>) {
   }
 
   normalizeQuestion(question: string): string {
