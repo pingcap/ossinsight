@@ -100,7 +100,9 @@ export const APIServerEnvSchema = {
       type: 'string'
     },
     PUBLIC_API_HOURLY_RATE_LIMIT: {
-      type: 'number',
+      type: 'integer',
+      minimum: 1,
+      maximum: 100000,
       default: 600
     }
   },

@@ -8,8 +8,8 @@ const limiters = new Map<string, Ratelimit>();
 function limiter(kind: 'query' | 'image') {
   const existing = limiters.get(kind);
   if (existing) return existing;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) throw new Error('Public request quota is not configured');
   const configured = Number(kind === 'image' ? process.env.PUBLIC_IMAGE_HOURLY_RATE_LIMIT : process.env.PUBLIC_API_HOURLY_RATE_LIMIT);
   const maximum = Number.isSafeInteger(configured) && configured > 0 && configured <= 100000 ? configured : kind === 'image' ? 60 : 600;

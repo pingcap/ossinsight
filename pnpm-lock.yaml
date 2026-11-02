@@ -541,6 +541,9 @@ importers:
       promised-sqlite3:
         specifier: ^2.1.0
         version: 2.1.0(sqlite3@5.1.7)
+      proxy-addr:
+        specifier: 2.0.7
+        version: 2.0.7
       socket.io:
         specifier: ^4.5.3
         version: 4.8.3
@@ -575,6 +578,9 @@ importers:
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.130
+      '@types/proxy-addr':
+        specifier: 2.0.3
+        version: 2.0.3
       ajv-cli:
         specifier: ^5.0.0
         version: 5.0.0(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.9.3))
@@ -4116,6 +4122,9 @@ packages:
 
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
+
+  '@types/proxy-addr@2.0.3':
+    resolution: {integrity: sha512-TgAHHO4tNG3HgLTUhB+hM4iwW6JUNeQHCLnF1DjaDA9c69PN+IasoFu2MYDhubFc+ZIw5c5t9DMtjvrD6R3Egg==}
 
   '@types/react-dom@18.3.7':
     resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
@@ -14036,6 +14045,10 @@ snapshots:
 
   '@types/prop-types@15.7.15':
     optional: true
+
+  '@types/proxy-addr@2.0.3':
+    dependencies:
+      '@types/node': 18.19.130
 
   '@types/react-dom@18.3.7(@types/react@18.3.28)':
     dependencies:

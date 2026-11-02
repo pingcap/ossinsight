@@ -8,6 +8,9 @@ import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../..
 import {testLogger} from "../../../helpers/log";
 import {checkAnalyticsDatabase} from '../../../../src/core/playground/database-policy';
 import {querySQLLiteral} from '@ossinsight/types';
+import Redis from 'ioredis';
+import {randomUUID} from 'crypto';
+import {consumePublicQuota} from '../../../../src/utils/public-quota';
 
 beforeAll(bootstrapTestDatabase);
 beforeAll(async () => {
@@ -25,6 +28,17 @@ beforeAll(async () => {
 afterAll(releaseTestDatabase);
 
 describe('connection limits', () => {
+  test('concurrent public requests reserve one shared Redis quota atomically', async () => {
+    const redis = new Redis({host: process.env.__REDIS_HOST, port: Number(process.env.__REDIS_PORT)});
+    try {
+      const identity = `test-${randomUUID()}`;
+      const results = await Promise.allSettled(Array.from({length: 60}, () => consumePublicQuota(redis, identity, 25)));
+      expect(results.filter(result => result.status === 'fulfilled')).toHaveLength(25);
+      const rejected = results.filter(result => result.status === 'rejected') as PromiseRejectedResult[];
+      expect(rejected).toHaveLength(35);
+      expect(rejected.every(result => result.reason.statusCode === 429)).toBe(true);
+    } finally { await redis.quit(); }
+  });
   test('named-query array literals preserve text in either SQL escaping mode', async () => {
     const conn = await createConnection({uri: getTestDatabase().rootUrl()});
     try {
@@ -33,6 +47,8 @@ describe('connection limits', () => {
         await conn.query('SET SESSION sql_mode = ?', [mode]);
         const [rows] = await conn.query<any[]>(`SELECT ${querySQLLiteral(value)} AS value`);
         expect(rows[0].value).toBe(value);
+        const [bound] = await conn.query<any[]>('SELECT CONVERT(UNHEX(?) USING utf8mb4) AS value', [Buffer.from(value, 'utf8').toString('hex')]);
+        expect(bound[0].value).toBe(value);
       }
     } finally {
       await conn.end();

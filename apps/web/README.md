@@ -4,6 +4,7 @@
 
 Production deployments require `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
 (the service already used for explorer quotas) before rolling out `proxy.ts`.
+The Vercel integration aliases `KV_REST_API_URL` and `KV_REST_API_TOKEN` are also supported.
 Named-query aliases, public APIs and dynamic analytics pages share a 600-request/hour
 client budget; OpenGraph/Twitter rendering has a separate 60-request/hour budget.
 `PUBLIC_API_HOURLY_RATE_LIMIT` and `PUBLIC_IMAGE_HOURLY_RATE_LIMIT` adjust these positive
