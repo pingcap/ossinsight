@@ -1,133 +1,75 @@
-import fp from "fastify-plugin";
-import fs from "node:fs";
-import mustache from "mustache";
-import path from "node:path";
-import pino from "pino";
-import { ContextProvider } from "./context/context-provider";
+import fp from 'fastify-plugin';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+import { positiveId } from '../../../../core/playground/sql-policy';
+import { APIError } from '../../../../utils/error';
 
 declare module 'fastify' {
-    interface FastifyInstance {
-        promptTemplateManager: PromptManager;
-    }
+  interface FastifyInstance { promptTemplateManager: PromptManager; }
 }
 
-export default fp(async (fastify) => {
-    const log = fastify.log as pino.Logger;
-    const promptTemplateDir = fastify.config.CONFIGS_PATH + "/prompts";
-    fastify.decorate('promptTemplateManager', new PromptManager(log, promptTemplateDir, fastify.embeddingContextProvider));
-}, {
-    name: '@ossinsight/prompt-template-manager',
-    dependencies: [
-        '@fastify/env',
-        '@ossinsight/embedding-context-provider',
-    ],
-});
+export default fp(async app => {
+  app.decorate('promptTemplateManager', new PromptManager(
+    path.join(app.config.CONFIGS_PATH, 'prompts'),
+  ));
+}, { name: '@ossinsight/prompt-template-manager', dependencies: ['@fastify/env'] });
 
 export interface PromptConfig {
-    model: string;
-    stop: string[];
-    max_tokens: number;
-    temperature: number;
-    top_p: number;
-    n: number;
+  model: string;
+  stop?: string[];
+  max_tokens: number;
+  temperature: number;
+  top_p: number;
+  n: number;
 }
 
-const defaultPromptConfig: PromptConfig = {
-    model: "gpt-4o",
-    stop: [],
-    max_tokens: 500,
-    temperature: 0,
-    top_p: 1,
-    n: 1,
-};
+function boundedText(value: unknown, name: string, max: number): string {
+  if (typeof value !== 'string' || value.length > max || (name === 'question' && !value.trim())) {
+    throw new APIError(400, `Invalid ${name}`);
+  }
+  return value;
+}
 
 export class PromptManager {
-    private readonly logger: pino.Logger;
-    private readonly promptConfigs: Map<string, PromptConfig> = new Map();
-    private readonly promptTemplates: Map<string, string> = new Map();
-    private readonly promptConfigBaseDir: string;
-    private readonly loadingPromise: Promise<void>;
+  constructor(private readonly directory: string) {}
 
-    constructor(logger: pino.Logger, promptTemplateDir: string, contextProvider: ContextProvider | null = null) {
-        this.logger = logger;
-        this.promptConfigBaseDir = promptTemplateDir;
-        this.loadingPromise = this.loadPromptConfigs();
+  public async getPrompt(name: string, context: Record<string, any>): Promise<[ChatCompletionMessageParam[], PromptConfig]> {
+    if (!/^[a-z0-9-]+$/.test(name)) throw new Error('Invalid prompt name');
+    // Resolve a release symlink once so the config and instructions come from the
+    // same release. Read per request: deletion/disablement cannot leave stale policy.
+    const directory = fs.realpathSync(path.join(this.directory, name));
+    const raw = JSON.parse(fs.readFileSync(path.join(directory, 'config.json'), 'utf8'));
+    if (raw.input_format !== 'messages-v1' || raw.enabled !== true) {
+      throw new APIError(503, 'This prompt is unavailable');
     }
-
-    ready(): Promise<void> {
-        return this.loadingPromise
+    const instructions = fs.readFileSync(path.join(directory, 'template.mustache'), 'utf8');
+    if (!instructions.trim() || instructions.includes('{{')) {
+      throw new Error('System instructions must not interpolate request or retrieval data');
     }
-
-    public async loadPromptConfigs(): Promise<void> {
-        const promptConfigBaseDir = this.promptConfigBaseDir;
-        const promptNames = fs.readdirSync(promptConfigBaseDir);
-        for (const promptName of promptNames) {
-            // Check if a prompt config directory exists.
-            const promptConfigDir = path.join(promptConfigBaseDir, promptName);
-            const isDir = fs.lstatSync(promptConfigDir).isDirectory();
-            if (!isDir) {
-                continue;
-            }
-
-            // Load prompt config and template from files.
-            await this.loadConfigFromFile(promptName, promptConfigDir);
-            await this.loadTemplateFromFile(promptName, promptConfigDir);
-            fs.watch(promptConfigDir, async () => {
-                await this.loadConfigFromFile(promptName, promptConfigDir);
-                await this.loadTemplateFromFile(promptName, promptConfigDir);
-            });
-        }
+    const { model, stop, max_tokens, temperature, top_p, n } = raw;
+    if (typeof model !== 'string' || !model || !Array.isArray(stop) ||
+        !stop.every((s: unknown) => typeof s === 'string') ||
+        !Number.isInteger(max_tokens) || max_tokens < 1 || max_tokens > 4096 ||
+        temperature !== 0 || top_p !== 1 || n !== 1) {
+      throw new Error('Invalid prompt configuration');
     }
-
-    private async loadConfigFromFile(name: string, promptConfigDir: string) {
-        const configPath = path.join(promptConfigDir, "config.json");
-        if (fs.existsSync(configPath)) {
-            this.logger.info(`Loading prompt <${name}> config from file ${configPath}.`);
-            try {
-                const overrideConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-                const config = {
-                    ...defaultPromptConfig,
-                    ...overrideConfig
-                };
-                this.promptConfigs.set(name, config);
-                this.logger.info({ config }, `Prompt <${name}> config loaded.`);
-            } catch (err: any) {
-                throw new Error(`Failed to parse prompt config file ${configPath}: ${err.message}`, {
-                    cause: err
-                });
-            }
-        } else {
-            this.logger.info(`Prompt <${name}> config file ${configPath} not found, using default config.`);
-            this.promptConfigs.set(name, defaultPromptConfig);
-        }
+    const data: Record<string, unknown> = {
+      question: boundedText(context.question, 'question', 4000),
+    };
+    if (name === 'playground-generate-sql') {
+      data.repo_id = positiveId(context.repo_id);
+      // Identity is bound locally to named SQL parameters after generation.
+      // Neither session identifiers nor caller-supplied identity leave the service.
+      data.authenticated_github_identity_available = context.github_id != null;
     }
-
-    private async loadTemplateFromFile(name: string, promptConfigDir: string) {
-        const templatePath = path.join(promptConfigDir, "template.mustache");
-        this.logger.info(`Loading prompt <${name}> template from file ${templatePath}.`);
-        if (!fs.existsSync(templatePath)) {
-            throw new Error(`Prompt template file ${templatePath} not found.`);
-        }
-        const template = fs.readFileSync(templatePath, "utf-8");
-        this.promptTemplates.set(name, template);
+    for (const key of name === 'embedding-explorer-generate-answer' ? ['entities', 'examples'] : []) {
+      if (context[key] != null) data[key] = boundedText(context[key], key, 24000);
     }
-
-    public async getPrompt(promptName: string, context: Record<string, any>): Promise<[string, PromptConfig]> {
-        await this.ready();
-
-        const promptConfig = this.promptConfigs.get(promptName);
-        if (!promptConfig) {
-            throw new Error(`The config of prompt ${promptName} not found.`);
-        }
-
-        const promptTemplate = this.promptTemplates.get(promptName);
-        if (!promptTemplate) {
-            throw new Error(`The template of prompt ${promptName} not found.`);
-        }
-
-        const prompt = mustache.render(promptTemplate, context, {}, {
-            escape: (text) => text
-        });
-        return [prompt, promptConfig];
-    }
+    // An empty stop array is not a valid OpenAI request value; omit it instead.
+    return [[
+      { role: 'system', content: instructions },
+      { role: 'user', content: JSON.stringify(data) },
+    ], { model, max_tokens, temperature, top_p, n, ...(stop.length ? { stop } : {}) }];
+  }
 }

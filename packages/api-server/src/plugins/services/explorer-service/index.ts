@@ -7,8 +7,9 @@ import fp from "fastify-plugin";
 import {DateTime} from "luxon";
 import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
-import {pino} from "pino";
+import pino from "pino";
 import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
+import {enforceSQLPolicy} from '../../../core/playground/sql-policy';
 import {withConnection, withTransaction} from "../../../utils/db";
 import {
     APIError,
@@ -21,7 +22,6 @@ import {
     ExplorerResolveQuestionError,
     ExplorerSetQuestionTagsError,
     ExplorerTooManyRequestError,
-    SQLUnsupportedFunctionError,
     ValidateSQLError
 } from "../../../utils/error";
 import sleep from "../../../utils/sleep";
@@ -235,7 +235,6 @@ export class ExplorerService {
 
             // Update question status.
             question.status = QuestionStatus.SQLValidating;
-            question.queryHash = this.getQueryHash(question.querySQL);
             await this.updateQuestion(question);
 
             // Validate the generated SQL.
@@ -243,6 +242,8 @@ export class ExplorerService {
             try {
                 logger.info({ querySQL: question.querySQL }, "Validating the generated SQL.");
                 const res = this.validateSQL(question.querySQL!);
+                question.querySQL = res.sql;
+                question.queryHash = this.getQueryHash(res.sql);
                 statementType = res.statementType;
             } catch (err: any) {
                 if (err instanceof ValidateSQLError) {
@@ -452,30 +453,14 @@ export class ExplorerService {
     }
 
     private validateSQL(sql: string): ValidateSQLResult {
-        // Notice: node-sql-parser doesn't support `SHOW INDEXES FROM` syntax.
-        if (/^show\s+indexes\s+from\s+\S+/igm.test(sql)) {
-            return {
-                sql: sql,
-                statementType: 'show',
-            };
-        }
-
-        if (/rand\(.*\)/ig.test(sql)) {
-            throw new SQLUnsupportedFunctionError( 'Didn\'t support SQL contains `rand()` function');
-        }
-
-        if (/sleep\(.*\)/ig.test(sql)) {
-            throw new SQLUnsupportedFunctionError( 'Didn\'t support SQL contains `sleep()` function');
-        }
-
         return {
-            sql: sql,
+            sql: enforceSQLPolicy(sql),
             statementType: 'select'
         };
     }
 
     async getSQLExecutionPlan(sql: string) {
-        const [rows] = await this.tidb.query<any[]>('explain format = "brief" ' + sql);
+        const [rows] = await this.playgroundQueryExecutor.execute<any[]>('explain:explorer', sql);
         return rows;
     }
 

@@ -1,8 +1,8 @@
-import {ProviderType} from "../../../../plugins/services/user-service";
+import {buildPlaygroundContext} from "../../../../plugins/services/bot-service/playground-context";
 import {APIError} from "../../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import { GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT } from "./quota";
-import { Auth0User, parseAuth0User } from "../../../../plugins/auth/auth0";
+import { Auth0User } from "../../../../plugins/auth/auth0";
 
 export interface IBody {
   question: string;
@@ -12,16 +12,20 @@ export interface IBody {
 const schema = {
   body: {
     type: 'object',
+    required: ['question', 'context'],
+    additionalProperties: false,
     properties: {
-      question: { type: 'string' },
+      question: { type: 'string', minLength: 1, maxLength: 4000 },
       context: {
         type: 'object',
+        required: ['repo_id'],
+        additionalProperties: false,
         properties: {
           repo_id: {
-            type: 'number'
+            type: 'integer', minimum: 1, maximum: Number.MAX_SAFE_INTEGER
           },
           repo_name: {
-            type: 'string',
+            type: 'string', maxLength: 200,
           }
         }
       }
@@ -38,22 +42,9 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
   }, async function (req, reply) {
     const { playgroundService } = app;
     const { question } = req.body;
-    const { metadata } = parseAuth0User(req.user as Auth0User);
     const userId = await app.userService.getUserIdOrCreate(req);
 
-    // Prepare Context.
-    const context: {
-      repo_id?: number;
-      repo_name?: string;
-      github_id?: number;
-      github_login?: string;
-    } = {
-      ...req.body.context,
-    };
-    if (metadata.provider === ProviderType.GITHUB && metadata.github_id) {
-      context.github_id = parseInt(metadata.github_id, 10);
-      context.github_login = metadata.github_login;
-    }
+    const context = buildPlaygroundContext(req.body.context, req.user as Auth0User);
 
     // Get the limit and used.
     const used = await playgroundService.countTodayQuestionRequests(userId, false);
