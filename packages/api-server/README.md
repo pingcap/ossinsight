@@ -110,3 +110,9 @@ For a private CA, provide its PEM content in the URI's JSON `ssl.ca` option.
 Disabling `rejectUnauthorized` or `verifyIdentity` is rejected. Identity fields
 cannot be overridden through query options. Provision and verify the database
 certificate/account before deploying this enforcement.
+
+Privileged recommendation, tag replacement and batch refresh operations also emit
+service-level audit events with the verified numeric user ID, request ID, target,
+action and outcome. Background refresh items retain the same actor/request
+context and a batch ID; partial failures are recorded as failures. Tag audit
+records contain bounded numeric tag IDs, never question text or raw exceptions.
