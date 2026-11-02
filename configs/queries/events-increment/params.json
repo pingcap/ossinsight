@@ -4,7 +4,9 @@
   "params": [
     {
       "name": "ts",
-      "replaces": "1653944647"
+      "replaces": "1653944647",
+      "type": "integer",
+      "pattern": "^[0-9]{1,10}$"
     }
   ]
 }

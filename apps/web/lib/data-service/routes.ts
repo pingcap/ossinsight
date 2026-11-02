@@ -1,3 +1,4 @@
+import { isPublicQuery, validateQueryName } from '@ossinsight/types';
 import { DateTime } from 'luxon';
 import { Liquid } from 'liquidjs';
 import loadEndpoint, { hasEndpoint } from '@/lib/data-service/endpoints';
@@ -37,14 +38,13 @@ const cachedTrendingRepos = new Map<string, CachedQueryEntry>();
 const inflightTrendingRepos = new Map<string, Promise<QueryResult>>();
 
 export function getQueryName(query: string | string[]) {
-  if (typeof query === 'string') {
-    return decodeURIComponent(query);
-  }
-  return query.map(decodeURIComponent).join('/');
+  // Next has already decoded route parameters. Decode exactly once at the router.
+  try { return validateQueryName(Array.isArray(query) ? query.join('/') : query); }
+  catch { throw new APIError('Invalid query name.', 400); }
 }
 
 export function getSearchParams(searchParams: URLSearchParams) {
-  const queryParams: Record<string, string | string[]> = {};
+  const queryParams: Record<string, string | string[]> = Object.create(null);
   for (const [name, value] of searchParams.entries()) {
     const previous = queryParams[name];
     if (previous == null) {
@@ -61,6 +61,7 @@ export function getSearchParams(searchParams: URLSearchParams) {
 }
 
 export async function runQuery(queryName: string, searchParams: URLSearchParams, signal?: AbortSignal) {
+  queryName = getQueryName(queryName);
   if (!hasEndpoint(queryName)) {
     throw new APIError('Endpoint not found.', 404);
   }
@@ -74,6 +75,7 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
   }
 
   const endpoint = await loadEndpoint(queryName);
+  if (!isPublicQuery(queryName, endpoint.config)) throw new APIError('Endpoint not found.', 404);
   const queryParams = getSearchParams(searchParams);
   const result = queryName === 'trending-repos'
     ? await runTrendingReposQuery(endpoint.config, endpoint.sql, queryParams, signal)
@@ -100,11 +102,13 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
 }
 
 export async function explainQuery(queryName: string, searchParams: URLSearchParams, signal?: AbortSignal) {
+  queryName = getQueryName(queryName);
   if (!hasEndpoint(queryName)) {
     throw new APIError('Endpoint not found.', 404);
   }
 
   const endpoint = await loadEndpoint(queryName);
+  if (!isPublicQuery(queryName, endpoint.config)) throw new APIError('Endpoint not found.', 404);
   const queryParams = getSearchParams(searchParams);
   const context = prepareQueryContext(endpoint.config, queryParams);
   const sql = await templateEngine.parseAndRender(applyLegacyQueryParameters(endpoint.config, endpoint.sql, context), context);

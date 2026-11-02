@@ -147,6 +147,9 @@ importers:
       '@next/mdx':
         specifier: 16.1.6
         version: 16.1.6(@mdx-js/loader@2.3.0(webpack@5.105.4))(@mdx-js/react@2.3.0(react@19.2.4))
+      '@ossinsight/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@primer/octicons-react':
         specifier: ^19.7.0
         version: 19.22.0(react@19.2.4)
@@ -665,7 +668,7 @@ importers:
     devDependencies:
       '@fastify/type-provider-json-schema-to-ts':
         specifier: ^2.1.1
-        version: 2.2.2(fastify@4.29.1)(json-schema-to-ts@2.12.0)
+        version: 2.2.2(fastify@4.29.1)(json-schema-to-ts@3.1.1)
       '@types/luxon':
         specifier: ^3.3.1
         version: 3.7.1
@@ -11587,10 +11590,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fastify/type-provider-json-schema-to-ts@2.2.2(fastify@4.29.1)(json-schema-to-ts@2.12.0)':
+  '@fastify/type-provider-json-schema-to-ts@2.2.2(fastify@4.29.1)(json-schema-to-ts@3.1.1)':
     dependencies:
       fastify: 4.29.1
-      json-schema-to-ts: 2.12.0
+      json-schema-to-ts: 3.1.1
 
   '@fastify/type-provider-json-schema-to-ts@3.0.0(fastify@4.29.1)(json-schema-to-ts@3.1.1)':
     dependencies:

@@ -1,18 +1,19 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-import { FastifyPluginAsync, RawServerDefault } from 'fastify';
+import { FastifyPluginAsync, FastifyServerOptions, RawServerDefault } from 'fastify';
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {isProdDatabaseURL} from "./utils/db";
-import {APIError} from "./utils/error";
+import {errorHandler} from './utils/http/error-handler';
 
 export type AppOptions = {
   // Place your custom options for app below here.
 } & Partial<AutoloadPluginOptions>;
 
 // Pass --options via CLI arguments in command to enable these options.
-const options: AppOptions = {
+const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
+  trustProxy: process.env.TRUSTED_PROXY_CIDRS?.split(',').map(value => value.trim()).filter(Boolean) || false,
 }
 
 export interface AppConfig {
@@ -74,20 +75,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   }
 
   // Init error handler.
-  fastify.setErrorHandler(function (error: Error, request, reply) {
-    this.log.error(error);
-
-    if (error instanceof APIError) {
-      reply.status(error.statusCode).send({
-        message: error.message,
-        payload: error.payload
-      });
-    } else {
-      reply.status(500).send({
-        message: error.message || 'Internal Server Error'
-      });
-    }
-  });
+  fastify.setErrorHandler(errorHandler);
 
   // Loads all plugins defined in ./plugins directory.
   void fastify.register(AutoLoad, {

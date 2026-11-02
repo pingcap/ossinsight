@@ -21,6 +21,7 @@ export class JobExecutor {
     const histogram = await prefetchQueryHistogram.labels({query: queryName, queue: refreshQueue});
     try {
       const {spent} = await this.queryRunner.query<any>(queryName, params, {
+        allowPrivate: true,
         refreshCache: true,
         ignoreOnlyFromCache: true,
         queryOptions: {

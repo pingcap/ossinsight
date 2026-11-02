@@ -138,7 +138,7 @@ export class ExplorerService {
         }
 
         // Prepare the new question.
-        logger.info("Creating a new question: %s", normalizedQuestion);
+        logger.info({event: 'answer_create', actorId: userId}, 'Creating question');
         const questionHash = this.getQuestionHash(normalizedQuestion);
 
         // Check if the question is cached.
@@ -177,7 +177,9 @@ export class ExplorerService {
         }
         await withTransaction(this.tidb, async (conn: Connection) => {
           if (!ignoreRateLimit) {
-            // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
+            const [users] = await conn.query<any[]>('SELECT id FROM sys_users WHERE id = ? FOR UPDATE', [userId]);
+            if (users.length !== 1) throw new APIError(401, 'User account unavailable.');
+            // Locking the stable user row also serializes the first-ever requests.
             const previousQuestions = await this.getUserPastHourQuestionsWithLock(conn, userId);
             if (previousQuestions.length >= limit) {
               const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
@@ -215,6 +217,7 @@ export class ExplorerService {
     }
 
     async prepareQuestion(question: Question, outputAnswerInStream?: boolean): Promise<Question> {
+        if (question.hitCache) return question;
         const { id: questionId } = question;
         const logger = this.logger.child({ questionId: questionId });
 

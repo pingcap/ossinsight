@@ -7,7 +7,7 @@ import {QueryLegacyParser} from "./QueryLegacyParser";
 import {QueryLiquidParser} from "./QueryLiquidParser";
 import { QueryLoader } from "./QueryLoader";
 import {Pool, QueryOptions} from "mysql2/promise";
-import {PersistConfig, QuerySchema} from "@ossinsight/types";
+import {PersistConfig, QuerySchema, isPublicQuery, validateQueryName} from "@ossinsight/types";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 import {getQueryDataQuality, STAR_DATA_INCIDENT_MARKER} from "../../../utils/data-quality";
@@ -19,6 +19,7 @@ export const enum QueryType {
 }
 
 export interface Options {
+  allowPrivate?: boolean;
   refreshCache?: boolean;
   ignoreOnlyFromCache?: boolean;
   queryOptions?: Partial<QueryOptions>;
@@ -65,9 +66,14 @@ export class QueryRunner {
       options: Options = {}
     ) {
         const { ignoreOnlyFromCache = false, refreshCache = false, queryOptions } = options;
+        try { validateQueryName(queryName); } catch { throw new APIError(400, 'Invalid query name.'); }
         const [queryConfig, templateSQL] = await this.queryLoader.load(queryName);
         if (!queryConfig || !templateSQL) {
           throw new Error(`Query config ${queryName} not found.`);
+        }
+
+        if (!options.allowPrivate && !isPublicQuery(queryName, queryConfig)) {
+          throw new APIError(404, 'Query not found.');
         }
 
         // Star-data incident gate (see src/utils/data-quality.ts): rankings

@@ -7,6 +7,29 @@ import {
   getPublicApiDataQuality,
 } from "./data-quality";
 
+export function publicDataServiceTarget(template: string, query: Record<string, unknown>, params: Record<string, unknown>): string {
+  if (!/^\/(?:v1|public)\//.test(template) || template.includes('*')) {
+    throw new APIError(500, 'Invalid public route configuration.');
+  }
+  const pathname = template.split('/').filter(part => part && !part.startsWith(':')).slice(1).join('/');
+  const search = new URLSearchParams();
+  if (Object.keys(query).length > 50) throw new APIError(400, 'Too many query parameters.');
+  for (const [key, value] of Object.entries(query)) {
+    const values = Array.isArray(value) ? value : [value];
+    if (values.length > 100 || values.some(item => !['string', 'number', 'boolean'].includes(typeof item)) || String(value).length > 2000) {
+      throw new APIError(400, 'Invalid query parameter.');
+    }
+    search.set(key, String(value));
+  }
+  for (const [key, value] of Object.entries(params)) {
+    if (!/^[A-Za-z0-9_-][A-Za-z0-9_.-]{0,99}$/.test(String(value))) {
+      throw new APIError(400, 'Invalid route parameter.');
+    }
+    search.set(key, String(value));
+  }
+  return `/${pathname}?${search}`;
+}
+
 export function proxyGet(
   app: FastifyInstance,
   opts: Record<any, any>,
@@ -25,39 +48,9 @@ export function proxyGet(
         throw new APIError(500, 'TiDB data service is not initialized.');
       }
 
-      // Remove prefix and query string from url.
-      const url = new URL(req.url, 'http://localhost');
-      let pathname = url.pathname.replace(/^\/(public|v1)/, '');
-      
-
-      // Map query params to query strings.
-      const query = req.query as any;
-      const queryKeys = Object.keys(query);
-      const queryStrings = [];
-      queryStrings.push(...queryKeys.map((queryKey) => {
-        return `${queryKey}=${encodeURIComponent(query[queryKey])}`;
-      }));
-
-      // Remove path params from url.
-      const params = req.params as any;
-      const paramKeys = Object.keys(params);
-      for (const paramKey of paramKeys) {
-        pathname = pathname.replace(`/${params[paramKey]}`, '');
-      }
-
-      // TODO: remove it after TiDB data service supports path params.
-      // Map path params to query strings.
-      queryStrings.push(...paramKeys.map((paramKey) => {
-        return `${paramKey}=${encodeURIComponent(params[paramKey])}`;
-      }));
-
-      // Remove trailing slash from url.
-      //
-      // Notice: Data Service is strict in path routing.
-      // If there is / at the end of the path, the route cannot be matched correctly.
-      if (pathname.endsWith('/')) {
-        pathname = pathname.slice(0, -1);
-      }
+      // Derive the credentialed upstream route only from our registered template.
+      const targetURL = publicDataServiceTarget(req.routeOptions.url || '', req.query as any, req.params as any);
+      const pathname = targetURL.split('?')[0];
 
       // Star-data incident gate (see ./data-quality). proxyGet talks to TiDB
       // Data Service directly, so QueryRunner's gate never sees these routes;
@@ -88,7 +81,6 @@ export function proxyGet(
       }
 
       // Retrieve query result from TiDB data service.
-      const targetURL = `${pathname}?${queryStrings.join('&')}`;     
       const res = await app.tidbDataService.request(targetURL);
       delete res.headers['transfer-encoding'];
 

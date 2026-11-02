@@ -1,11 +1,13 @@
 
 import {TiDBPlaygroundQueryExecutor} from '../../../../src/core/executor/query-executor/TiDBPlaygroundQueryExecutor';
 import {SqlParser} from '../../../../src/core/playground/playground';
-import {createConnection} from 'mysql2/promise';
+import {createConnection, createPool} from 'mysql2/promise';
+import {PlaygroundService} from '../../../../src/plugins/services/playground-service';
 import {createTiDBPool} from "../../../../src/utils/db";
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../../../helpers/db';
 import {testLogger} from "../../../helpers/log";
 import {checkAnalyticsDatabase} from '../../../../src/core/playground/database-policy';
+import {querySQLLiteral} from '@ossinsight/types';
 
 beforeAll(bootstrapTestDatabase);
 beforeAll(async () => {
@@ -23,6 +25,19 @@ beforeAll(async () => {
 afterAll(releaseTestDatabase);
 
 describe('connection limits', () => {
+  test('named-query array literals preserve text in either SQL escaping mode', async () => {
+    const conn = await createConnection({uri: getTestDatabase().rootUrl()});
+    try {
+      const value = "unsafe\\' OR 1=1 -- 中文";
+      for (const mode of ['', 'NO_BACKSLASH_ESCAPES']) {
+        await conn.query('SET SESSION sql_mode = ?', [mode]);
+        const [rows] = await conn.query<any[]>(`SELECT ${querySQLLiteral(value)} AS value`);
+        expect(rows[0].value).toBe(value);
+      }
+    } finally {
+      await conn.end();
+    }
+  });
   test('should be executed', async () => {
     const tidbPool = createTiDBPool(getTestDatabase().analyticsUrl());
     const executor = new TiDBPlaygroundQueryExecutor(tidbPool, null, testLogger, [
@@ -72,4 +87,34 @@ describe('connection limits', () => {
       await pool.end();
     }
   });
+});
+
+
+test('concurrent first requests reserve one shared daily quota before any LLM work', async () => {
+  const url = new URL(getTestDatabase().rootUrl());
+  url.pathname = getTestDatabase().database;
+  const pool = createPool({uri: url.toString(), connectionLimit: 8});
+  try {
+    await pool.query("INSERT INTO sys_users (id, name, email_address) VALUES (4242, 'quota test', 'test@example.invalid')");
+    await pool.query(`CREATE TABLE playground_question_records (
+      id BIGINT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, context JSON,
+      question TEXT, \`sql\` TEXT, success BOOLEAN NOT NULL, preset BOOLEAN NOT NULL,
+      requested_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX user_requests (user_id, requested_at)
+    )`);
+    // An upgraded cluster may still default to optimistic transactions.
+    const connections = await Promise.all(Array.from({length: 8}, () => pool.getConnection()));
+    await Promise.all(connections.map(async conn => {
+      await conn.query("SET SESSION tidb_txn_mode = 'optimistic'");
+      conn.release();
+    }));
+    const service = new PlaygroundService(pool);
+    const results = await Promise.allSettled(Array.from({length: 20}, () => service.reserveQuestion(4242, {repo_id: 42}, 'stats', 3)));
+    const accepted = results.filter(result => result.status === 'fulfilled');
+    const denied = results.filter(result => result.status === 'rejected') as PromiseRejectedResult[];
+    expect(accepted).toHaveLength(3);
+    expect(denied).toHaveLength(17);
+    expect(denied.every(result => result.reason.statusCode === 429)).toBe(true);
+    expect(await service.countTodayQuestionRequests(4242, false)).toBe(3);
+  } finally { await pool.end(); }
 });
