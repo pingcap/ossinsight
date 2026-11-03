@@ -7,7 +7,6 @@ const schema = {
   method: 'GET',
   description: `List collections.`,
   tags: ['Collections'],
-  params: {},
   response: {
     200: getSuccessResponse([
       {

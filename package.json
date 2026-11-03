@@ -15,16 +15,40 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "turbo": "^2.7.1",
-    "typescript": "^5.2.2"
+    "turbo": "^2.11.10",
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.29.3",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=24.9.0 <25"
   },
   "pnpm": {
     "overrides": {
-      "@tanstack/react-query": "^5.90.21"
-    }
+      "@tanstack/react-query": "^5.90.21",
+      "axios@<1.0.0": "^0.34.0",
+      "axios@>=1.0.0 <1.20.0": "^1.21.0",
+      "proxy-addr@<2.0.8": "2.0.8",
+      "@goparrot/geocoder>class-validator": "^0.15.1",
+      "promised-sqlite3>sqlite3": "^6.0.1",
+      "openai>zod": "^4.6.7",
+      "jsonpath>underscore": "^1.13.8",
+      "ansi-to-react>linkify-it": "^5.0.2",
+      "bullmq>uuid": "^11.1.1",
+      "react": "19.2.4",
+      "react-dom": "19.2.4",
+      "@types/react": "19.2.14",
+      "@types/react-dom": "19.2.3",
+      "glob@8.1.0>minimatch": "^11.0.1",
+      "katex@<0.18.2": "^0.18.2"
+    },
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "msgpackr-extract",
+      "prisma",
+      "sharp",
+      "sqlite3"
+    ]
   }
 }

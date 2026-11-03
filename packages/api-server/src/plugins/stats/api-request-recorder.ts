@@ -32,7 +32,7 @@ export default fp(async (app) => {
     const { path } = req.urlData();
     const isDev = process.env.NODE_ENV === 'development';
     void this.apiRequestRecorder.insert([
-      clientIP, clientOrigin, method, path, JSON.stringify(query), false, reply.statusCode, reply.getResponseTime(), isDev
+      clientIP, clientOrigin, method, path, JSON.stringify(query), false, reply.statusCode, reply.elapsedTime, isDev
     ]);
     done();
   });
@@ -45,7 +45,7 @@ export default fp(async (app) => {
     const { path } = req.urlData();
     const isDev = process.env.NODE_ENV === 'development';
     void this.apiRequestRecorder.insert([
-      clientIP, clientOrigin, method, path, JSON.stringify(query), true, reply.statusCode, reply.getResponseTime(), isDev
+      clientIP, clientOrigin, method, path, JSON.stringify(query), true, reply.statusCode, reply.elapsedTime, isDev
     ]);
     done();
   });

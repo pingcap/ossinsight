@@ -1,4 +1,5 @@
-import type { SiteBannerConfig, SiteHeaderConfig } from '@/components/ui/types/ui-config';
+import type { SiteBannerConfig } from '@/components/ui/types/ui-config';
+import type { SiteHeaderConfig } from '@repo/site-shell';
 
 export interface ImageSizeConfig {
   width: number;
