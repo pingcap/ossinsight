@@ -26,6 +26,14 @@ Install Node.js dependencies with the following command:
 pnpm install --filter @ossinsight/api-server... --frozen-lockfile
 ```
 
+On Linux images with an older glibc, including Ubuntu 22.04, compile SQLite
+against the host libraries. This requires Python, make, and a C++ compiler:
+
+```bash
+npm_config_build_from_source=true pnpm --filter @ossinsight/api-server rebuild sqlite3
+pnpm --filter @ossinsight/api-server test:runtime
+```
+
 ### Initialize the Database Schema
 
 TODO

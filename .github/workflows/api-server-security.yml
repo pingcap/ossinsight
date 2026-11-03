@@ -69,7 +69,10 @@ jobs:
           node-version: '24'
       - run: npm install --global pnpm@10.29.3
       - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --filter web... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
-      - run: pnpm rebuild sqlite3
+      - name: Build native SQLite for the runner
+        run: pnpm --filter @ossinsight/api-server rebuild sqlite3
+        env:
+          npm_config_build_from_source: 'true'
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level=high
       - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --workspace-concurrency 12 -r build
