@@ -45,6 +45,33 @@ async function emails() {
   return rows;
 }
 
+test('a separately bootstrapped migration runs without granting CREATE to the maintenance account', async () => {
+  await initializeEmailRekey(connection, options);
+  await connection.query('DELETE FROM sys_email_rekey_state');
+  const username = `email_rekey_${randomBytes(6).toString('hex')}`;
+  const password = randomBytes(24).toString('base64');
+  const database = getTestDatabase().database;
+  let limited: Awaited<ReturnType<typeof getConnection>> | undefined;
+  await connection.query("CREATE USER ?@'%' IDENTIFIED BY ?", [username, password]);
+  try {
+    await connection.query("GRANT SELECT, UPDATE ON ?? TO ?@'%'", [`${database}.github_users`, username]);
+    await connection.query("GRANT SELECT, INSERT, UPDATE ON ?? TO ?@'%'", [`${database}.sys_email_rekey_state`, username]);
+    const url = new URL(maintenanceUrl);
+    url.username = username;
+    url.password = password;
+    limited = await getConnection({uri: url.toString()});
+    await expect(limited.query('CREATE TABLE denied_migration_fixture (id INT)')).rejects.toThrow(/denied/i);
+    await initializeEmailRekey(limited, options);
+    await runEmailRekeyBatch(limited, options);
+    const state = await runEmailRekeyBatch(limited, options);
+    expect(Number(state.complete)).toBe(1);
+    expect(Number(state.changed)).toBe(3);
+  } finally {
+    await limited?.end();
+    await connection.query("DROP USER IF EXISTS ?@'%'", [username]);
+  }
+});
+
 test('bounded batches preserve domains/equality, resume exactly once, and retain recoverable backups', async () => {
   const original = await emails();
   await initializeEmailRekey(connection, options);

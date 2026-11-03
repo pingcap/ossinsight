@@ -130,20 +130,14 @@ export async function initializeEmailRekey(connection: Connection, options: Emai
   validateOptions(options);
   await privateDirectory(options.backupDirectory);
   await bindBackupDirectory(options);
-  await connection.query(`CREATE TABLE IF NOT EXISTS sys_email_rekey_state (
-    migration_id VARCHAR(64) PRIMARY KEY,
-    output_key_sha256 CHAR(64) NOT NULL,
-    legacy_key_sha256 CHAR(64) NOT NULL,
-    backup_key_sha256 CHAR(64) NOT NULL,
-    database_sha256 CHAR(64) NOT NULL,
-    backup_directory_sha256 CHAR(64) NOT NULL,
-    max_id BIGINT UNSIGNED NOT NULL,
-    last_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
-    scanned BIGINT UNSIGNED NOT NULL DEFAULT 0,
-    changed BIGINT UNSIGNED NOT NULL DEFAULT 0,
-    complete TINYINT NOT NULL DEFAULT 0,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-  )`);
+  // An administrator can bootstrap the schema separately. Resuming a migration
+  // with an existing checkpoint table must not require CREATE privileges.
+  try {
+    await connection.query('SELECT migration_id FROM sys_email_rekey_state LIMIT 0');
+  } catch (error: any) {
+    if (error.code !== 'ER_NO_SUCH_TABLE') throw error;
+    await connection.query(await fs.readFile(join(__dirname, '../../migrations/001_email_rekey_state.sql'), 'utf8'));
+  }
   const [last] = await connection.query<RowDataPacket[]>('SELECT /*+ MAX_EXECUTION_TIME(5000) */ id FROM github_users FORCE INDEX (PRIMARY) ORDER BY id DESC LIMIT 1');
   const [first] = await connection.query<RowDataPacket[]>('SELECT /*+ MAX_EXECUTION_TIME(5000) */ id FROM github_users FORCE INDEX (PRIMARY) ORDER BY id LIMIT 1');
   const maximum = Number(last[0]?.id ?? 0);

@@ -116,6 +116,14 @@ and deploy the matching importer before allowing it to restart. The importer
 checks migration completion and key fingerprints before contacting GitHub or
 writing profiles. Back up the current deployment configuration separately.
 
+An administrator can apply `migrations/001_email_rekey_state.sql` before the
+rollout. With this table present, the migration account needs only `SELECT,
+UPDATE` on `github_users` and `SELECT, INSERT, UPDATE` on `sys_email_rekey_state`;
+it does not need DDL privileges. Initialization creates the table automatically
+only when it is absent and the connection is authorized to create it. The normal
+importer needs read access to the checkpoint in addition to its profile-writing
+permissions.
+
 Prepare a private `0600` environment file containing `DATABASE_URL`, the fresh
 `ENCODE_EMAIL_SECRET_KEY`, the explicitly configured
 `ENCODE_EMAIL_LEGACY_ENCODING_KEY`, and an independent 32-byte, base64-encoded
