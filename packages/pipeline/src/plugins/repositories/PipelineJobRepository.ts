@@ -42,8 +42,13 @@ export class PipelineJobRepository {
   async executeRange(pipelineName: string, tFrom: DateTime, tTo: DateTime, sql: string, skipCompleted = true): Promise<boolean> {
     const from = tFrom.toUTC().toSQL({includeOffset: false});
     const to = tTo.toUTC().toSQL({includeOffset: false});
-    // Ensure a stable row exists before the transaction, including a pipeline's first run.
-    await this.tidb.execute('INSERT IGNORE INTO sys_pipeline_locks (pipeline_name) VALUES (?)', [pipelineName]);
+    // Administrators can provision these rows so workers need only SELECT on the
+    // lock table. The transaction below still acquires and verifies the row lock.
+    const [existingLock] = await this.tidb.execute<any[]>(
+      'SELECT pipeline_name FROM sys_pipeline_locks WHERE pipeline_name = ?', [pipelineName]);
+    if (existingLock.length === 0) {
+      await this.tidb.execute('INSERT IGNORE INTO sys_pipeline_locks (pipeline_name) VALUES (?)', [pipelineName]);
+    }
     const connection = await this.tidb.getConnection();
     let originalMode: string | undefined;
     let started = false;

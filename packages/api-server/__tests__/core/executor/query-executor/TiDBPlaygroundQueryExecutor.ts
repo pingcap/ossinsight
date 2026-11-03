@@ -9,7 +9,7 @@ import {testLogger} from "../../../helpers/log";
 import {checkAnalyticsDatabase} from '../../../../src/core/playground/database-policy';
 import {querySQLLiteral} from '@ossinsight/types';
 import Redis from 'ioredis';
-import {randomUUID} from 'crypto';
+import {randomBytes, randomUUID} from 'crypto';
 import {consumePublicQuota} from '../../../../src/utils/public-quota';
 
 beforeAll(bootstrapTestDatabase);
@@ -207,6 +207,43 @@ describe('pipeline backfill transactions', () => {
     const [jobs] = await pool.query<any[]>("SELECT status FROM sys_pipelines_jobs WHERE pipeline_name = 'concurrent'");
     expect(effects[0].executions).toBe(1);
     expect(jobs).toEqual([{status: 'SUCCEED'}]);
+  });
+
+  test('preprovisioned locks serialize workers with SELECT-only lock access and missing locks fail closed', async () => {
+    const username = `pipeline_lock_${randomBytes(6).toString('hex')}`;
+    const password = randomBytes(32).toString('base64');
+    const database = getTestDatabase().database;
+    let limited: ReturnType<typeof createPool> | undefined;
+    await pool.query("CREATE USER ?@'%' IDENTIFIED BY ?", [username, password]);
+    try {
+      await pool.query("GRANT SELECT ON ?? TO ?@'%'", [`${database}.sys_pipeline_locks`, username]);
+      for (const table of ['sys_pipelines_jobs', 'pipeline_test_effects']) {
+        await pool.query("GRANT SELECT, INSERT, UPDATE ON ?? TO ?@'%'", [`${database}.${table}`, username]);
+      }
+      await pool.execute('INSERT INTO sys_pipeline_locks (pipeline_name) VALUES (?)', ['readonly-concurrent']);
+      const url = new URL(getTestDatabase().rootUrl());
+      url.username = username;
+      url.password = password;
+      limited = createPool({uri: url.toString(), database, connectionLimit: 12, namedPlaceholders: true, timezone: 'Z'});
+      await expect(limited.execute("INSERT INTO sys_pipeline_locks VALUES ('denied')")).rejects.toThrow(/denied/i);
+      await expect(limited.execute('UPDATE sys_pipeline_locks SET pipeline_name = pipeline_name')).rejects.toThrow(/denied|privilege check for 'Update' fail/i);
+
+      const workers = [new PipelineJobRepository(limited), new PipelineJobRepository(limited)];
+      await Promise.all(workers.map(worker => worker.assertReady()));
+      const sql = "INSERT INTO pipeline_test_effects VALUES ('readonly-concurrent', 1) ON DUPLICATE KEY UPDATE executions = executions + 1";
+      const results = await Promise.all(Array.from({length: 25}, (_, index) =>
+        workers[index % workers.length].executeRange('readonly-concurrent', from, to, sql)));
+      expect(results.filter(Boolean)).toHaveLength(1);
+      await expect(workers[0].executeRange('readonly-missing', from, to,
+        "INSERT INTO pipeline_test_effects VALUES ('readonly-missing', 1)")).rejects.toThrow(/denied/i);
+      const [effects] = await pool.query<any[]>("SELECT name, executions FROM pipeline_test_effects WHERE name LIKE 'readonly-%'");
+      const [jobs] = await pool.query<any[]>("SELECT pipeline_name, status FROM sys_pipelines_jobs WHERE pipeline_name LIKE 'readonly-%'");
+      expect(effects).toEqual([{name: 'readonly-concurrent', executions: 1}]);
+      expect(jobs).toEqual([{pipeline_name: 'readonly-concurrent', status: 'SUCCEED'}]);
+    } finally {
+      await limited?.end();
+      await pool.query("DROP USER IF EXISTS ?@'%'", [username]);
+    }
   });
 
   test('failure after data writes rolls back, records a safe failure with a one-connection pool, and retries once', async () => {
