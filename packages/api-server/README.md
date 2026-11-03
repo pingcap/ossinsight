@@ -126,7 +126,7 @@ The API still produces the two `explorer_*_concurrent_queue` queues. Run their
 consumer from this package using Node 24 LTS and `pnpm worker`; old deployments
 may have a `packages/job-server` checkout that is no longer in this repository.
 The new worker needs only `DATABASE_URL`, `PLAYGROUND_DATABASE_URL`, `REDIS_URL`
-and `OPERATIONS_TOKEN` in its private `.env`. It does not need an OpenAI key,
+and `OPERATIONS_TOKEN` in its private `.env.worker` (separate from the API’s `.env`). It does not need an OpenAI key,
 GitHub tokens, Auth0 secrets or Data Service keys, and cannot generate prompts.
 
 Use a metadata account with access to the Explorer records and a separate
