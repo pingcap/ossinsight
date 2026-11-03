@@ -103,7 +103,7 @@ For a large legacy dataset, an alternative migration is available. It produces
 `HMAC(newPrivateKey, oldPseudonymLocalPart)` and retains the domain. Set
 `ENCODE_EMAIL_LEGACY_ENCODING_KEY` explicitly to the retired deployment's actual
 encoding key. Subsequent imports first apply that legacy encoding, then the
-mandatory private output key, so they produce exactly the migrated value. There
+mandatory private output key, so valid addresses produce exactly the migrated value. There
 is no built-in legacy key and it can never replace `ENCODE_EMAIL_SECRET_KEY`.
 The legacy encoding key is only a compatibility input; security relies on the
 fresh private output key. Keep both settings after this migration. Removing or
@@ -141,7 +141,8 @@ directory must be owned by the service user with mode `0700`; files use `0600`.
 The tool reserves at least 10 GiB of free disk space and bounds batches to 5,000
 rows. It scans by primary key rather than offsets, pauses between batches, and
 logs only counts, IDs, elapsed time and safe error codes. Unknown encodings stop
-the batch without deleting a value. The legacy empty-domain form is preserved.
+the batch without deleting a value. The legacy empty-domain form is preserved;
+invalid fresh addresses still follow the importer's existing empty-value policy.
 
 The data changes and `sys_email_rekey_state` checkpoint commit together in a
 pessimistic transaction. Compare-and-swap predicates reject concurrent profile

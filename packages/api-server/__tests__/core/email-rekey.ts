@@ -2,21 +2,28 @@ import {createHmac, randomBytes} from 'crypto';
 import {promises as fs} from 'fs';
 import {tmpdir} from 'os';
 import {join} from 'path';
-import {Connection, RowDataPacket} from 'mysql2/promise';
+import {RowDataPacket} from 'mysql2/promise';
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
 import {decodeEmailBackup, EmailRekeyOptions, initializeEmailRekey, readEmailRekeyState, runEmailRekeyBatch} from '../../../sync-github-data/src/utils/email-rekey';
 import {hashGitHubEmail} from '../../../sync-github-data/src/utils/email-hash';
 import {assertEmailImportReady} from '../../../sync-github-data/src/utils/email-key-policy';
 import {createSecurePrismaClient} from '../../../sync-github-data/src/libs/db/prisma';
+import {getConnection} from '../../../sync-github-data/src/libs/db/new';
 
-let connection: Connection;
+let connection: Awaited<ReturnType<typeof getConnection>>;
+let maintenanceUrl: string;
 let options: EmailRekeyOptions;
 const legacyEncodingKey = 'public-integration-test-encoding';
 const oldEmail = (local: string) => `${createHmac('sha256', legacyEncodingKey).update(local).digest('hex')}@example.invalid`;
 
 beforeAll(async () => {
   const database = await bootstrapTestDatabase();
-  connection = await database.createConnection();
+  // Maintenance DDL needs the isolated container administrator. Keep the API
+  // executor/analytics roles unchanged so their denial tests remain meaningful.
+  const url = new URL(database.rootUrl());
+  url.pathname = `/${database.database}`;
+  maintenanceUrl = url.toString();
+  connection = await getConnection({uri: maintenanceUrl});
 });
 
 beforeEach(async () => {
@@ -30,7 +37,7 @@ beforeEach(async () => {
   }
 });
 
-afterEach(async () => {await fs.rm(options.backupDirectory, {recursive: true, force: true});});
+afterEach(async () => {if (options?.backupDirectory) await fs.rm(options.backupDirectory, {recursive: true, force: true});});
 afterAll(async () => {await connection?.end(); await releaseTestDatabase();});
 
 async function emails() {
@@ -81,7 +88,7 @@ test('failure after writes rolls back both data and checkpoint; durable backup c
 
 test('concurrent migrators serialize checkpoint access without double wrapping', async () => {
   await initializeEmailRekey(connection, options);
-  const other = await getTestDatabase().createConnection();
+  const other = await getConnection({uri: maintenanceUrl});
   try {await Promise.all([runEmailRekeyBatch(connection, options), runEmailRekeyBatch(other, options)]);}
   finally {await other.end();}
   const state = await readEmailRekeyState(connection);
@@ -94,7 +101,7 @@ test('concurrent migrators serialize checkpoint access without double wrapping',
 test('connection loss before commit leaves data recoverable and the cursor unchanged', async () => {
   const original = await emails();
   await initializeEmailRekey(connection, options);
-  const interrupted = await getTestDatabase().createConnection();
+  const interrupted = await getConnection({uri: maintenanceUrl});
   await expect(runEmailRekeyBatch(interrupted, options, async () => {
     interrupted.destroy();
     throw new Error('Injected connection loss');
