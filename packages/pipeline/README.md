@@ -16,8 +16,13 @@ Before deploying this version:
    do not need schema-management privileges.
 3. Reconcile legacy `RUNNING` jobs against their actual data before retrying their
    windows. The new worker refuses these ambiguous windows rather than replaying them.
-4. Configure the worker's explicit `DATABASE_URL` and grant its database account
-   access to the lock/job tables and the configured destination tables.
+4. Configure the worker's explicit `DATABASE_URL`. The lock table needs only
+   `SELECT` if an administrator first inserts one row for every configured
+   pipeline, for example `INSERT IGNORE INTO sys_pipeline_locks (pipeline_name)
+   VALUES ('calc_events_total_hourly');`. Accounts with `INSERT` can also create
+   missing lock rows automatically; workers never need `UPDATE` on this table.
+   A missing row without provisioning permission fails before processing SQL.
+   Keep the required permissions on job and configured destination tables.
 5. Set a private `PIPELINE_OPERATOR_TOKEN` of at least 32 random bytes (maximum
    256 characters) in the deployment secret manager. Send it using
    `Authorization: Bearer <token>` over HTTPS; never include it in a URL or logs.
