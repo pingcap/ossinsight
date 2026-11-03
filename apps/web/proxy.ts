@@ -2,18 +2,19 @@ import {contentSecurityPolicy} from './lib/content-security';
 import { NextResponse, type NextRequest } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
-import { budgetFailure, publicBudgetKind, publicClientIdentity, isPublicBudgetPath } from './lib/request-policy';
+import { budgetFailure, publicBudgetKind, publicClientIdentity, isPublicBudgetPath, type PublicBudgetKind } from './lib/request-policy';
 
 const limiters = new Map<string, Ratelimit>();
 
-function limiter(kind: 'query' | 'image') {
+function limiter(kind: PublicBudgetKind) {
   const existing = limiters.get(kind);
   if (existing) return existing;
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) throw new Error('Public request quota is not configured');
-  const configured = Number(kind === 'image' ? process.env.PUBLIC_IMAGE_HOURLY_RATE_LIMIT : process.env.PUBLIC_API_HOURLY_RATE_LIMIT);
-  const maximum = Number.isSafeInteger(configured) && configured > 0 && configured <= 100000 ? configured : kind === 'image' ? 60 : 600;
+  const configured = Number(kind === 'image' ? process.env.PUBLIC_IMAGE_HOURLY_RATE_LIMIT : kind === 'realtime' ? process.env.PUBLIC_REALTIME_HOURLY_RATE_LIMIT : process.env.PUBLIC_API_HOURLY_RATE_LIMIT);
+  const defaults: Record<PublicBudgetKind, number> = {query: 600, image: 60, realtime: 3600};
+  const maximum = Number.isSafeInteger(configured) && configured > 0 && configured <= 100000 ? configured : defaults[kind];
   const value = new Ratelimit({
     redis: new Redis({url, token}),
     limiter: Ratelimit.slidingWindow(maximum, '1 h'),

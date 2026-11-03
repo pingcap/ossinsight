@@ -39,3 +39,15 @@ test('a fail-open Redis timeout is rejected even when the SDK says success', () 
   expect(budgetFailure({success: false, reset: 4000}, 1000)).toMatchObject({status: 429, retryAfter: 3});
   expect(budgetFailure({success: true, reset: 4000})).toBeNull();
 });
+
+test('homepage polling shares a separate bounded budget across aliases without widening other queries', () => {
+  for (const query of ['events-total', 'events-increment', 'events-increment-intervals']) {
+    expect(publicBudgetKind(`/api/q/${query}`)).toBe('realtime');
+    expect(publicBudgetKind(`/q/${query}`)).toBe('realtime');
+    expect(publicBudgetKind(`/api/q/${query}/`)).toBe('realtime');
+    expect(publicBudgetKind(`/api/q/${query}/other`)).toBe('query');
+    expect(publicBudgetKind(`/api/q/${query}-other`)).toBe('query');
+  }
+  expect(publicBudgetKind('/api/q/analyze-repo-stars')).toBe('query');
+  expect(publicBudgetKind('/api/q/explain/events-total')).toBe('query');
+});

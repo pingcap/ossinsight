@@ -62,7 +62,7 @@ export default async function Image({ params }: { params: Promise<{ owner1: stri
               style={{ borderRadius: 32, border: '2px solid rgba(255,255,255,0.3)' }}
             />
             <div style={{ fontSize: 22, fontWeight: 600, color: 'white', marginTop: 12, textAlign: 'center' }}>
-              {owner1}/{repo1}
+              {`${owner1}/${repo1}`}
             </div>
             {repoInfo.language && (
               <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>
@@ -93,7 +93,7 @@ export default async function Image({ params }: { params: Promise<{ owner1: stri
               style={{ borderRadius: 32, border: '2px solid rgba(255,255,255,0.3)' }}
             />
             <div style={{ fontSize: 22, fontWeight: 600, color: 'white', marginTop: 12, textAlign: 'center' }}>
-              {owner2}/{repo2}
+              {`${owner2}/${repo2}`}
             </div>
             {vsRepoInfo.language && (
               <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>

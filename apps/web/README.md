@@ -7,7 +7,13 @@ Production deployments require `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_
 The Vercel integration aliases `KV_REST_API_URL` and `KV_REST_API_TOKEN` are also supported.
 Named-query aliases, public APIs and dynamic analytics pages share a 600-request/hour
 client budget; OpenGraph/Twitter rendering has a separate 60-request/hour budget.
-`PUBLIC_API_HOURLY_RATE_LIMIT` and `PUBLIC_IMAGE_HOURLY_RATE_LIMIT` adjust these positive
+The three homepage counters (`events-total`, `events-increment`, and
+`events-increment-intervals`) share a separate 3600-request/hour realtime budget,
+including their `/q/` aliases. This accommodates the homepage's two five-second
+polls without spending its analytics budget; other named queries retain the
+600-request/hour limit.
+`PUBLIC_API_HOURLY_RATE_LIMIT`, `PUBLIC_IMAGE_HOURLY_RATE_LIMIT`, and
+`PUBLIC_REALTIME_HOURLY_RATE_LIMIT` adjust these positive
 integer limits up to 100000. Missing Redis configuration, Redis failures and SDK timeouts
 return 503; exhausted budgets return 429 with `Retry-After`.
 

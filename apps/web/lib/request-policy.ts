@@ -8,7 +8,12 @@ export function publicClientIdentity(headers: Pick<Headers, 'get'>, onVercel: bo
   return isIP(value) ? value.toLowerCase() : 'unknown-client';
 }
 
-export function publicBudgetKind(pathname: string): 'image' | 'query' {
+export type PublicBudgetKind = 'image' | 'query' | 'realtime';
+
+export function publicBudgetKind(pathname: string): PublicBudgetKind {
+  // The homepage polls these named queries every five seconds. Give only this
+  // fixed set its own budget so normal polling cannot exhaust analytics access.
+  if (/^\/(?:api\/)?q\/(?:events-total|events-increment|events-increment-intervals)\/?$/.test(pathname)) return 'realtime';
   return /\/(?:opengraph|twitter)-image(?:-[a-zA-Z0-9]+)?(?:\/|$)/.test(pathname) ? 'image' : 'query';
 }
 

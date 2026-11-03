@@ -59,7 +59,7 @@ export default async function Image({ params }: { params: Promise<{ owner: strin
           />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ fontSize: 36, fontWeight: 600, color: 'white', lineHeight: '42px' }}>
-              {owner}/{repo}
+              {`${owner}/${repo}`}
             </div>
             {repoInfo.language && (
               <div style={{ fontSize: 16, fontWeight: 500, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>
@@ -80,7 +80,7 @@ export default async function Image({ params }: { params: Promise<{ owner: strin
             marginRight: 40,
             lineHeight: '22px',
             overflow: 'hidden',
-            display: '-webkit-box',
+            display: 'flex',
             maxHeight: 44,
           }}>
             {repoInfo.description.length > 120
