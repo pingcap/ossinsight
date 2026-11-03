@@ -39,7 +39,7 @@ export class GitHubHelper {
   // TODO: Add metrics for rate limit and cost time.
   async queryWithGQL<R>(gql: any, variables?: Record<string, any>): Promise<R | null> {
     return await this.octokitPool.use(async (octokit) => {
-      this.logger.debug({variables}, `Executing graphql query.`);
+      this.logger.debug({variableCount: Object.keys(variables ?? {}).length}, `Executing graphql query.`);
       const start = DateTime.now();
       const res = await octokit.graphql(gql, variables) as any;
       const end = DateTime.now();
@@ -47,7 +47,7 @@ export class GitHubHelper {
       const costPoints = res.rateLimit?.cost || null;
       const remainPoints = res.rateLimit?.remaining || null;
       this.logger.debug({
-        variables,
+        variableCount: Object.keys(variables ?? {}).length,
         costPoints,
         remainPoints,
         costTime
@@ -108,7 +108,7 @@ export class GitHubHelper {
       fetchedNodes += search?.nodes.length;
       searchResult.push(...search?.nodes);
 
-      this.logger.debug({variables}, `Fetched ${fetchedNodes}/${foundNodes} nodes.`);
+      this.logger.debug({variableCount: Object.keys(variables ?? {}).length}, `Fetched ${fetchedNodes}/${foundNodes} nodes.`);
 
       if (foundNodes > GITHUB_MAX_SEARCH_NODES) {
         return [true, searchResult];
@@ -429,7 +429,7 @@ export class GitHubHelper {
     repoNames.forEach((repoName, index) => {
       const parts = repoName.split('/');
       if (parts.length !== 2 || !parts[0] || !parts[1]) {
-        this.logger.warn(`⭐ Skip malformed repo name: ${repoName}.`);
+        this.logger.warn('Skip malformed repository name.');
         missing.push(repoName);
         return;
       }
@@ -468,7 +468,7 @@ export class GitHubHelper {
       if (err?.data) {
         // Partial response: keep what resolved, the unresolved aliases fall through
         // to the `missing` list below.
-        this.logger.warn(`⭐ Some repos in the batch could not be resolved: ${err.message}`);
+        this.logger.warn('Some repositories in the batch could not be resolved.');
         res = err.data;
       } else {
         throw err;

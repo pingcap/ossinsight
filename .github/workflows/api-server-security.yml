@@ -18,7 +18,7 @@ on:
       - 'etl/config/environments/production.rb'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
-      - 'packages/sync-github-data/src/utils/email-hash.ts'
+      - 'packages/sync-github-data/**'
       - 'scripts/load-collection.mjs'
       - 'scripts/lib/**'
       - 'etl/lib/sample_importer.rb'
@@ -44,7 +44,7 @@ on:
       - 'etl/config/environments/production.rb'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
-      - 'packages/sync-github-data/src/utils/email-hash.ts'
+      - 'packages/sync-github-data/**'
       - 'scripts/load-collection.mjs'
       - 'scripts/lib/**'
       - 'etl/lib/sample_importer.rb'
@@ -68,8 +68,9 @@ jobs:
         with:
           node-version: '24'
       - run: npm install --global pnpm@10.29.3
-      - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
-      - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --workspace-concurrency 12 -r build
+      - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
+      - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --workspace-concurrency 12 -r build
+      - run: pnpm --filter @ossinsight/sync-github-data test:security
       - run: pnpm --filter @ossinsight/api-server test:security
       - run: node --test scripts/lib/collection-store.test.mjs
       - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
@@ -81,4 +82,4 @@ jobs:
           ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("etl/config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'
       - name: Verify TiDB execution and database grants
         working-directory: packages/api-server
-        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts __tests__/worker/queue-worker.ts
+        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts __tests__/worker/queue-worker.ts __tests__/core/email-rekey.ts
