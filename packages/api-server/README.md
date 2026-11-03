@@ -64,6 +64,9 @@ HTTP named-query, metadata and public-proxy routes, WebSocket handshakes and Web
 queries. Redis reservations are atomic, failures deny requests, and sockets allow at
 most two concurrent queries and 16 KiB messages. Configure `TRUSTED_PROXY_CIDRS` with
 only the actual reverse-proxy networks; HTTP and sockets use the same trust boundary.
+Export this setting in the process manager environment before starting the API;
+the server options are read before the application loads its `.env` file.
+The production start command passes `--options` to apply this trust policy.
 
 CORS configuration now lists exact origins. Public consumers receive no credentialed
 access. Localhost is enabled only in development. For a trusted preview, explicitly

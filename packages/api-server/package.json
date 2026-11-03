@@ -12,7 +12,7 @@
     "build:ts": "tsc",
     "dev": "NODE_ENV=development fastify start --options -p ${API_SERVER_PORT:-3450} -P --ignore-watch=.ts$ -L dist/logger.js -l info -w dist/app.js",
     "build": "rm -rf dist && npm run build:ts",
-    "start": "fastify start --options -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/app.js",
+    "start": "fastify start --options --options -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/app.js",
     "gen:dev-public-api-docs": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/cmd/gen-docs.js",
     "gen:public-api-docs": "rm -f ../../configs/public_api/openapi.yaml && API_BASE_URL=https://api.ossinsight.io fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/cmd/gen-docs.js",
     "test": "jest",
