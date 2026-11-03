@@ -105,8 +105,8 @@ export class ExplorerService {
 
     constructor(
       private readonly logger: FastifyBaseLogger,
-      private readonly tidb: MySQLPromisePool,
-      private readonly botService: BotService,
+      private readonly tidb: Pick<MySQLPromisePool, 'query' | 'getConnection'>,
+      private readonly botService: Pick<BotService, "questionToAnswerInStream" | "questionToAnswerInNonStream">,
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
       private readonly highConcurrentQueue: Queue,
@@ -435,13 +435,13 @@ export class ExplorerService {
         switch (question.queueName) {
             case QuestionQueueNames.Low:
                 log.info("Pushing the question to the low concurrent queue.");
-                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
+                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, {id: question.id}, {
                     jobId: question.queueJobId
                 });
                 break;
             case QuestionQueueNames.High:
                 log.info("Pushing the question to the high concurrent queue.");
-                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
+                await this.highConcurrentQueue.add(QuestionQueueNames.High, {id: question.id}, {
                     jobId: question.queueJobId
                 });
                 break;
@@ -614,7 +614,8 @@ export class ExplorerService {
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear, 
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, 
-                result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache, 
+                result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
+                batch_job_id AS batchJobId, need_review AS needReview,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, 
                 spent, error_type AS errorType, error
             FROM explorer_questions
@@ -732,6 +733,7 @@ export class ExplorerService {
             ...row,
             sqlCanAnswer: row.sqlCanAnswer === 1,
             recommended: row.recommended === 1,
+            needReview: row.needReview === 1,
             hitCache: row.hitCache === 1,
             createdAt: row.createdAt instanceof Date ? DateTime.fromJSDate(row.createdAt) : undefined,
             requestedAt: row.createdAt instanceof Date ? DateTime.fromJSDate(row.requestedAt) : undefined,

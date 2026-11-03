@@ -18,7 +18,9 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "watch:ts": "tsc -w",
-    "test:security": "jest --config jest.security.config.js --maxWorkers=12"
+    "test:security": "jest --config jest.security.config.js --maxWorkers=12",
+    "worker": "NODE_ENV=production node --env-file=.env dist/worker/main.js",
+    "worker:check": "NODE_ENV=production node --env-file=.env dist/worker/main.js --check"
   },
   "dependencies": {
     "@fastify/autoload": "^5.0.0",

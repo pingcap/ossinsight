@@ -125,8 +125,8 @@ export const STAR_DATA_UNAVAILABLE_MARKER = {
     'fell to roughly 0.3% of baseline, so the ordering would be noise. An empty result here means ' +
     'the metric cannot be computed, not that there are no matching repositories.',
   alternative:
-    'Current totals synced directly from GitHub remain accurate: use /v1/repos/{owner}/{repo} for ' +
-    'star and fork counts, or /v1/collections/{id} for collection membership.',
+    'Current totals synced directly from GitHub remain accurate: use /gh/repos/{owner}/{repo} for ' +
+    'star and fork counts, or /v1/collections/{id}/repos for collection membership.',
   docs: 'https://ossinsight.io/docs/data-quality',
 } as const;
 

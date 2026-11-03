@@ -63,7 +63,17 @@ export class TiDBDataService {
     return await countAPIRequest(counter, endpointName, async () => {
       return await measure(timer, async () => {
         const startTime = DateTime.now();
-        const res = await this.client.get(targetURL);
+        let res;
+        try {
+          res = await this.client.get(targetURL);
+        } catch (error) {
+          // Preserve the production distinction between an absent upstream
+          // endpoint (404) and a valid endpoint with no matching rows (200).
+          if (Axios.isAxiosError(error) && error.response?.status === 404) {
+            throw new APIError(404, 'API endpoint not found.');
+          }
+          throw error;
+        }
         const endTime = DateTime.now();
         const duration = endTime.diff(startTime, 'seconds').seconds;
         this.logger.info({
