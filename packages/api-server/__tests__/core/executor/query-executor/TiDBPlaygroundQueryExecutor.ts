@@ -189,10 +189,11 @@ describe('pipeline backfill transactions', () => {
     await pool.query(`CREATE TABLE sys_pipelines_jobs (
       job_id BIGINT PRIMARY KEY AUTO_INCREMENT, pipeline_name VARCHAR(128) NOT NULL,
       time_range_start DATETIME(3) NOT NULL, time_range_end DATETIME(3) NOT NULL,
-      status VARCHAR(16) NOT NULL, ended_at DATETIME, message TEXT, duration DOUBLE,
-      INDEX pipeline_range (pipeline_name, time_range_start, time_range_end, status))`);
-    const migration = require('fs').readFileSync(require('path').resolve(__dirname, '../../../../../pipeline/migrations/001_atomic_pipeline_jobs.sql'), 'utf8');
-    await pool.query(migration);
+      status VARCHAR(16) NOT NULL, ended_at DATETIME, message TEXT, duration DOUBLE)`);
+    for (const name of ['001_atomic_pipeline_jobs.sql', '002_pipeline_job_lookup_index.sql']) {
+      const migration = require('fs').readFileSync(require('path').resolve(__dirname, '../../../../../pipeline/migrations', name), 'utf8');
+      await pool.query(migration);
+    }
     await pool.query('CREATE TABLE pipeline_test_effects (name VARCHAR(128) PRIMARY KEY, executions INT NOT NULL)');
   });
   afterAll(async () => { await pool?.end(); });
