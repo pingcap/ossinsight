@@ -188,9 +188,11 @@ export async function runEmailRekeyBatch(connection: Connection, options: EmailR
     if (!state) throw failure('ERR_EMAIL_REKEY_NOT_INITIALIZED', 'Migration must be initialized before applying a batch.');
     validateState(state, options);
     if (state.complete) {await connection.commit(); return state;}
+    // mysql2 sends JavaScript numbers as DOUBLE, which TiDB rejects for a
+    // prepared LIMIT. validateOptions restricts this literal to integers 1-5000.
     const [rows] = await connection.execute<EmailRow[]>(
-      'SELECT /*+ MAX_EXECUTION_TIME(5000) */ id, email FROM github_users FORCE INDEX (PRIMARY) WHERE id > ? AND id <= ? ORDER BY id LIMIT ?',
-      [state.last_id, state.max_id, options.batchSize]);
+      `SELECT /*+ MAX_EXECUTION_TIME(5000) */ id, email FROM github_users FORCE INDEX (PRIMARY) WHERE id > ? AND id <= ? ORDER BY id LIMIT ${options.batchSize}`,
+      [state.last_id, state.max_id]);
     const changes = planEmailChanges(rows, options.outputKey);
     const end = rows.length ? Number(rows[rows.length - 1].id) : Number(state.max_id);
     if (changes.length) {

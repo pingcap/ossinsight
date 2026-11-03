@@ -31,7 +31,9 @@ async function main() {
       return;
     }
     if (!args.apply) {
-      const [rows] = await connection.execute<RowDataPacket[]>('SELECT /*+ MAX_EXECUTION_TIME(5000) */ id, email FROM github_users ORDER BY id LIMIT ?', [args.batchSize]);
+      // The CLI validation above bounds this integer; TiDB rejects DOUBLE-typed
+      // prepared LIMIT parameters emitted by mysql2 for JavaScript numbers.
+      const [rows] = await connection.query<RowDataPacket[]>(`SELECT /*+ MAX_EXECUTION_TIME(5000) */ id, email FROM github_users ORDER BY id LIMIT ${args.batchSize}`);
       console.log(JSON.stringify({dryRun: true, sampled: rows.length,
         empty: rows.filter(row => row.email === null || row.email === '').length,
         legacy: rows.filter(row => /^[0-9a-f]{64}@[^@]*$/.test(row.email || '')).length,
