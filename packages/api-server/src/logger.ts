@@ -1,5 +1,4 @@
-import pino from "pino";
-import LoggerOptions = pino.LoggerOptions;
+import type {LoggerOptions} from 'pino';
 
 const opts: LoggerOptions = {
   base: {
@@ -31,4 +30,5 @@ const opts: LoggerOptions = {
   },
 };
 
-module.exports = pino(opts);
+// fastify-cli passes this module as Fastify's logger configuration.
+module.exports = opts;
