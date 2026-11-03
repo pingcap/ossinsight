@@ -226,7 +226,7 @@ describe('pipeline backfill transactions', () => {
       url.password = password;
       limited = createPool({uri: url.toString(), database, connectionLimit: 12, namedPlaceholders: true, timezone: 'Z'});
       await expect(limited.execute("INSERT INTO sys_pipeline_locks VALUES ('denied')")).rejects.toThrow(/denied/i);
-      await expect(limited.execute('UPDATE sys_pipeline_locks SET pipeline_name = pipeline_name')).rejects.toThrow(/denied/i);
+      await expect(limited.execute('UPDATE sys_pipeline_locks SET pipeline_name = pipeline_name')).rejects.toThrow(/denied|privilege check for 'Update' fail/i);
 
       const workers = [new PipelineJobRepository(limited), new PipelineJobRepository(limited)];
       await Promise.all(workers.map(worker => worker.assertReady()));
