@@ -1566,16 +1566,12 @@ servers:
 ```
 
 ##### API Key
-When config this action, you should input the following encoded api key in `Authentication` -> `API Key` -> `Auth Type(Basic)`
 
-```
-QzBTQ0VRNzA6MmJjNjAwYzUtODA0Mi00Yzg4LTkxNTgtMTNiNzdkMDY0OGM5
-```
-
-> **Warning**
->
-> - Make sure using this key for GPT's learning, thanks~
-> - We will revoke this key after a period of time
+Create a dedicated, read-only Data API key for your own TiDB Cloud Data App.
+Configure your own credential in the GPT action under `Authentication` → `API Key`
+→ `Auth Type (Basic)`. Keep the private key and its Base64-encoded form out of
+public documentation, schemas, and prompts. Revoke the key when it is no longer
+needed.
 
 ##### Privacy policy
 ```
