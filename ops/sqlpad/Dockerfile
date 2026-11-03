@@ -20,6 +20,8 @@ FROM ${NODE_IMAGE} AS runtime
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/app
 COPY --from=build /src/server ./
+# Private build contexts may supply mode-0600 manifests; runtime code is public.
+RUN chmod -R a+rX /usr/app
 COPY --from=build /src/LICENSE.md /usr/share/doc/sqlpad/LICENSE
 COPY --from=build /src/server-audit.json /src/client-audit.json /usr/share/doc/sqlpad/
 ENV NODE_ENV=production SQLPAD_DB_PATH=/var/lib/sqlpad SQLPAD_PORT=3000

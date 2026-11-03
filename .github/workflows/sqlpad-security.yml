@@ -19,11 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build, test, and audit immutable runtime
-        run: docker build --progress=plain -t ossinsight-sqlpad:security ops/sqlpad
+        run: |
+          chmod 600 ops/sqlpad/{server,client}/package*.json
+          docker build --progress=plain -t ossinsight-sqlpad:security ops/sqlpad
       - name: Check unprivileged runtime and native SQLite
         run: |
           test "$(docker image inspect --format '{{.Config.User}}' ossinsight-sqlpad:security)" = node
-          docker run --rm --network none --read-only --entrypoint node ossinsight-sqlpad:security -e "const s=require('sqlite3');const d=new s.Database(':memory:');d.get('SELECT sqlite_version() AS v',(e,r)=>{if(e)throw e;if(!r.v.startsWith('3.52.'))throw Error('Unexpected SQLite version');console.log(r);d.close()})"
+          docker run --rm --network none --read-only --entrypoint node ossinsight-sqlpad:security -e "require('fs').accessSync('/usr/app/package.json',require('fs').constants.R_OK);const s=require('sqlite3');const d=new s.Database(':memory:');d.get('SELECT sqlite_version() AS v',(e,r)=>{if(e)throw e;if(!r.v.startsWith('3.52.'))throw Error('Unexpected SQLite version');console.log(r);d.close()})"
       - name: Test offline connection-key migration and rollback
         run: |
           docker run --rm --network none --read-only --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 --mount "type=bind,src=${{ github.workspace }}/ops/sqlpad,dst=/usr/app/maintenance,readonly" --entrypoint node ossinsight-sqlpad:security --test /usr/app/maintenance/rekey-connections.test.mjs
