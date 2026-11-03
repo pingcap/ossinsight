@@ -1,9 +1,8 @@
-import {Socket} from 'socket.io';
+import {Server, Socket} from 'socket.io';
 import {randomUUID} from 'crypto';
 import {FastifyBaseLogger, FastifyPluginAsync} from 'fastify';
 import {validateQueryName} from '@ossinsight/types';
 import {QueryRunner} from '../../core/runner/query/QueryRunner';
-import fastifyWebsocket from 'fastify-socket.io';
 import {toCompactFormat} from '../../utils/compact';
 import {APIError, QueryDataUnavailableError} from '../../utils/error';
 import {BadParamsError} from '../../core/runner/query/QueryParser';
@@ -36,7 +35,7 @@ export function validateSocketQuery(value: unknown): WsQueryRequest {
 }
 
 const root: FastifyPluginAsync = async app => {
-  await app.register(fastifyWebsocket, {
+  const io = new Server(app.server, {
     path: '/socket.io',
     maxHttpBufferSize: 16 * 1024,
     cors: {origin: (origin, callback) => callback(null, isAllowedSocketOrigin(origin, app.allowedOrigins) ? origin : false), credentials: false},
@@ -50,9 +49,16 @@ const root: FastifyPluginAsync = async app => {
     },
     transports: ['websocket'],
   });
-  app.ready(error => {
-    if (error) throw error;
-    app.io.on('connection', socket => {
+  app.addHook('preClose', async () => {
+    io.disconnectSockets(true);
+    // Also close transports which have not joined a Socket.IO namespace yet.
+    io.engine.close();
+  });
+  app.addHook('onClose', async () => {
+    await new Promise<void>(resolve => io.close(() => resolve()));
+  });
+  app.addHook('onReady', async () => {
+    io.on('connection', socket => {
       const identity = getSocketClientIP(socket.request);
       socketServerRoutes(app.log, socket, app.queryRunner,
         () => consumePublicQuota(app.redis, identity, app.config.PUBLIC_API_HOURLY_RATE_LIMIT));

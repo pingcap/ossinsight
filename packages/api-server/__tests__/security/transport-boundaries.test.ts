@@ -71,7 +71,7 @@ test('HTTP query, metadata and proxy aliases consume one shared identity budget'
   const app = await baseApp({PUBLIC_API_HOURLY_RATE_LIMIT: 2});
   let count = 0;
   const evalCommand = jest.fn(async () => [++count, 3600000]);
-  app.decorate('redis', {eval: evalCommand});
+  app.decorate('redis', {eval: evalCommand, defineCommand: jest.fn()});
   await app.register(fp(async () => {}, {name: '@ossinsight/redis'}));
   await app.register(rateLimit);
   for (const route of ['/q/one', '/queries/two', '/v1/three']) app.get(route, () => ({ok: true}));

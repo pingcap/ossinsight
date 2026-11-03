@@ -7,7 +7,6 @@ import fp from "fastify-plugin";
 import {DateTime} from "luxon";
 import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
-import pino from "pino";
 import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
 import {enforceSQLPolicy} from '../../../core/playground/sql-policy';
 import {withConnection, withTransaction} from "../../../utils/db";
@@ -52,7 +51,6 @@ import {
     QuestionStatus,
     ValidateSQLResult
 } from "./types";
-import BaseLogger = pino.BaseLogger;
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -316,7 +314,7 @@ export class ExplorerService {
     }
 
     // TODO: refactor it, make it more readable.
-    async generateAnswer(logger: BaseLogger, question: Question, outputInStream: boolean): Promise<string | null> {
+    async generateAnswer(logger: FastifyBaseLogger, question: Question, outputInStream: boolean): Promise<string | null> {
         let responseText: string | null = null;
         const { id: questionId, title } = question;
         for (let i = 1; i <= 3; i++) {
@@ -397,7 +395,7 @@ export class ExplorerService {
         return responseText;
     }
 
-    async getSQLExecutionPlanAndEngines(logger: BaseLogger, querySQL: string): Promise<[string[], Record<string, string>[]]> {
+    async getSQLExecutionPlanAndEngines(logger: FastifyBaseLogger, querySQL: string): Promise<[string[], Record<string, string>[]]> {
         try {
             logger.info({ querySQL }, "Getting the execution plan and storage engines for the SQL.");
             const plan = await this.getSQLExecutionPlan(querySQL);
@@ -419,7 +417,7 @@ export class ExplorerService {
         }
     }
 
-    async pushJobToQueue(logger: BaseLogger, question: Question) {
+    async pushJobToQueue(logger: FastifyBaseLogger, question: Question) {
         if (!question.queueJobId) {
             logger.warn("No job id provided, the question will not be executed.");
             return;

@@ -18,10 +18,12 @@ If you need to see the complete env file configuration instructions, please see 
 
 ### Install Dependencies
 
+Use Node.js 24 LTS (24.9 or newer) and pnpm 10.29.3. The test commands enable
+Node's VM modules so Jest can load the same ESM dependencies as the server.
 Install Node.js dependencies with the following command:
 
 ```shell
-pnpm install --filter @ossinsight/api-server
+pnpm install --filter @ossinsight/api-server... --frozen-lockfile
 ```
 
 ### Initialize the Database Schema
@@ -119,6 +121,26 @@ service-level audit events with the verified numeric user ID, request ID, target
 action and outcome. Background refresh items retain the same actor/request
 context and a batch ID; partial failures are recorded as failures. Tag audit
 records contain bounded numeric tag IDs, never question text or raw exceptions.
+
+### Runtime dependency maintenance
+
+The API and pipeline use Fastify 5. Socket.IO attaches directly to the HTTP server
+and closes both established sockets and unfinished transports during shutdown.
+`@fastify/redis` stays on its Fastify 5-compatible 8.x line so the API and BullMQ
+share the same ioredis 5 client. Keep the queue names and existing credentials when
+rolling out dependency updates, and verify both authenticated metrics and the
+worker drain procedure below.
+
+`AUTH0_SECRET` accepts a symmetric client secret. Public-key JWT verification uses
+`AUTH0_DOMAIN`; PEM keys and certificates cannot be configured as HMAC secrets.
+Unsupported signing algorithms and critical JWT header extensions are rejected
+before key lookup, and the signature must still verify before an actor is assigned.
+
+`pnpm test:security` covers the authentication and transport boundaries.
+`pnpm test:runtime` verifies native SQLite exports and OpenAI response parsing using
+synthetic data. The real Redis integration test exercises BullMQ script discovery,
+job completion and graceful drain, including the scoped minimatch and UUID updates.
+The repository's production dependency audit runs in the security workflow.
 
 ### SQL queue worker
 

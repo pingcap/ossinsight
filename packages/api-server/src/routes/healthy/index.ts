@@ -11,32 +11,32 @@ import Logger = pino.Logger;
 //   latest_timestamp: string;
 // }
 
+const healthResponseSchema = {
+  type: 'object',
+  description: 'Service health',
+  properties: {
+    healthy: {
+      type: 'boolean',
+    },
+    isTiDBHealthy: {
+      type: 'boolean',
+    },
+    isRedisHealthy: {
+      type: 'boolean',
+    },
+    isShadowTiDBHealthy: {
+      type: 'boolean',
+    },
+    // prefetchLatency: {
+    //   type: 'number',
+    // },
+  }
+};
+
 const schema = {
   description: 'Check if the API server is healthy.',
   tags: ['system'],
-  response: {
-    200: {
-      type: 'object',
-      description: 'OK',
-      properties: {
-        healthy: {
-          type: 'boolean',
-        },
-        isTiDBHealthy: {
-          type: 'boolean',
-        },
-        isRedisHealthy: {
-          type: 'boolean',
-        },
-        isShadowTiDBHealthy: {
-          type: 'boolean',
-        },
-        // prefetchLatency: {
-        //   type: 'number',
-        // },
-      }
-    }
-  }
+  response: {200: healthResponseSchema, 500: healthResponseSchema},
 };
 
 const root: FastifyPluginAsync = async (app, opts): Promise<void> => {

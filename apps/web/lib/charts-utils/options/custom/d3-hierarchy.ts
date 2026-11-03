@@ -1,11 +1,11 @@
 /* eslint-disable */
 import * as d3 from 'd3-hierarchy';
-import type { CustomSeriesOption } from 'echarts';
-import {
+import type {
+  CustomSeriesOption,
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
   CustomSeriesRenderItemReturn,
-} from 'echarts/types/dist/echarts';
+} from 'echarts';
 
 export interface D3HierarchyItem {
   id: string;

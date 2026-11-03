@@ -43,12 +43,33 @@ export function parseAuth0User(user: Auth0User) {
 }
 
 export default fp(async (app) => {
+    const secret = app.config.AUTH0_SECRET;
+    if (secret && /-----BEGIN [A-Z ]*(?:KEY|CERTIFICATE)-----/.test(secret)) {
+        throw new Error('AUTH0_SECRET must be a symmetric client secret; use AUTH0_DOMAIN for public-key verification.');
+    }
+    const algorithms = new Set([
+        ...(app.config.AUTH0_DOMAIN ? ['RS256', 'EdDSA'] : []),
+        ...(secret ? ['HS256'] : []),
+    ]);
     await app.register(FastifyAuth0, {
         domain: app.config.AUTH0_DOMAIN,
         secret: app.config.AUTH0_SECRET,
     });
     const verify = app.authenticate.bind(app);
     app.authenticate = async (request, reply) => {
+        // Reject unsupported algorithms/extensions before the verifier chooses a
+        // key source. This is only a rejection gate; signature verification below
+        // remains mandatory before assigning an authenticated identity.
+        let header: {alg?: unknown; crit?: unknown};
+        try {
+            const token = /^Bearer\s+(\S+)$/i.exec(request.headers.authorization || '')?.[1];
+            if (!token || token.split('.').length !== 3) throw new Error();
+            header = JSON.parse(Buffer.from(token.split('.')[0], 'base64url').toString('utf8'));
+            if (!header || typeof header !== 'object' || Array.isArray(header) ||
+                typeof header.alg !== 'string' || !algorithms.has(header.alg) || 'crit' in header) throw new Error();
+        } catch {
+            throw new APIError(401, 'Invalid authorization token.');
+        }
         await verify(request, reply);
         const sub = (request.user as {sub?: unknown})?.sub;
         if (typeof sub !== 'string' || !sub || sub.length > 256) throw new APIError(401, 'Invalid authenticated identity.');

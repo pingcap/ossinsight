@@ -1,5 +1,4 @@
 import createMDX from "@next/mdx";
-import withSvgr from "next-plugin-svgr";
 import { fileURLToPath } from "url";
 import { createRequire } from "module";
 import path from "path";
@@ -7,6 +6,11 @@ import path from "path";
 const require = createRequire(import.meta.url);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const svgrOptions = {
+  ref: true,
+  svgo: false,
+  replaceAttrValues: {fill: 'currentColor'},
+};
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -45,7 +49,7 @@ const nextConfig = {
     },
     rules: {
       '*.svg': {
-        loaders: ['@svgr/webpack'],
+        loaders: [{loader: '@svgr/webpack', options: svgrOptions}],
         as: '*.js',
       },
       '*.sql': {
@@ -55,6 +59,10 @@ const nextConfig = {
     },
   },
   webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [{loader: require.resolve('@svgr/webpack'), options: svgrOptions}],
+    });
     config.module.rules.push({
         test: /\.sql$/,
         use: 'raw-loader',
@@ -68,13 +76,6 @@ const nextConfig = {
     };
 
     return config;
-  },
-  svgrOptions: {
-    ref: true,
-    svgo: false,
-    replaceAttrValues: {
-      fill: 'currentColor',
-    },
   },
   images: {
     dangerouslyAllowSVG: false,
@@ -103,4 +104,4 @@ const withMDX = createMDX({
   }
 });
 
-export default withSvgr(withMDX(nextConfig));
+export default withMDX(nextConfig);
