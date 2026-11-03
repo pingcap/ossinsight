@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {withConnection, withTransaction} from "../../../../../utils/db";
+import {withConnection} from "../../../../../utils/db";
 
 const getQuestionTagsSchema = {
   summary: 'Get tags of question',
@@ -24,7 +24,7 @@ const setQuestionTagsSchema = {
   body: {
     type: 'object',
     properties: {
-      tagIds: { type: 'array', items: { type: 'number' } }
+      tagIds: { type: 'array', maxItems: 100, items: { type: 'integer', minimum: 1 } }
     }
   }
 };
@@ -48,7 +48,6 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     schema: getQuestionTagsSchema
   }, async function (req, reply) {
     const { questionId } = req.params;
-    this.mysql.getConnection()
     const questionTags = await withConnection(this.mysql, async (conn) => {
       return await app.explorerService.getQuestionTags(conn, questionId);
     });
@@ -70,9 +69,7 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Set tags.
-    await withTransaction(app.mysql, async (conn) => {
-      return await app.explorerService.setQuestionTags(conn, questionId, tagIds);
-    });
+    await app.explorerService.updateQuestionTags(questionId, tagIds, {userId, requestId: req.id});
 
     reply.status(200).send({
       message: "OK"

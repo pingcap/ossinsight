@@ -11,10 +11,10 @@ interface PageProps {
 
 export default async function ComparePage({ params }: PageProps) {
   const { owner1: rawOwner1, repo1: rawRepo1, owner2: rawOwner2, repo2: rawRepo2 } = await params;
-  const owner1 = decodeURIComponent(rawOwner1);
-  const repo1 = decodeURIComponent(rawRepo1);
-  const owner2 = decodeURIComponent(rawOwner2);
-  const repo2 = decodeURIComponent(rawRepo2);
+  const owner1 = rawOwner1;
+  const repo1 = rawRepo1;
+  const owner2 = rawOwner2;
+  const repo2 = rawRepo2;
 
   const [repoInfo, vsRepoInfo] = await Promise.all([
     getRepoByName(owner1, repo1),
@@ -80,10 +80,10 @@ export default async function ComparePage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { owner1: rawOwner1, repo1: rawRepo1, owner2: rawOwner2, repo2: rawRepo2 } = await params;
-  const owner1 = decodeURIComponent(rawOwner1);
-  const repo1 = decodeURIComponent(rawRepo1);
-  const owner2 = decodeURIComponent(rawOwner2);
-  const repo2 = decodeURIComponent(rawRepo2);
+  const owner1 = rawOwner1;
+  const repo1 = rawRepo1;
+  const owner2 = rawOwner2;
+  const repo2 = rawRepo2;
 
   const name1 = `${owner1}/${repo1}`;
   const name2 = `${owner2}/${repo2}`;

@@ -1,18 +1,19 @@
+# Credentialed requests are allowed only from these exact first-party origins.
+# Add an individually verified preview URL through CORS_PRIVATE_ORIGINS; never a wildcard.
 private_origins:
-  # Develop.
-  - ^http://localhost:\d+$
-  # Preview.
-  - ^https://pingcap-ossinsight-preview-pr-.+\.surge\.sh$
-  - ^https*://.+\.preview\.app\.github\.dev/*$
-  # Production.
-  - ^https://ossinsight\.io$
-  - ^https://next\.ossinsight\.io$
-  - ^https://live\.ossinsight\.io$
-  # Next
-  - ^https://ossinsight-next\.vercel\.app$
-  - ^https://ossinsight-next-.+-pingcap\.vercel\.app$
-  - ^https://ossinsight-next-ui\.vercel\.app$
+  - https://ossinsight.io
+  - https://www.ossinsight.io
+  - https://next.ossinsight.io
+  - https://live.ossinsight.io
+  - https://ossinsight-next.vercel.app
+  - https://ossinsight-next-ui.vercel.app
 public_origins:
-  # External Users.
-  - ^https://github1s\.com$
-  - ^https://github\.com$
+  # These origins may read public data without credentials.
+  - https://github1s.com
+  - https://github.com
+development_origins:
+  - http://localhost:3000
+  - http://localhost:3001
+  - http://localhost:3002
+  - http://127.0.0.1:3000
+  - http://127.0.0.1:3001

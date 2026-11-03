@@ -138,7 +138,7 @@ export class ExplorerService {
         }
 
         // Prepare the new question.
-        logger.info("Creating a new question: %s", normalizedQuestion);
+        logger.info({event: 'answer_create', actorId: userId}, 'Creating question');
         const questionHash = this.getQuestionHash(normalizedQuestion);
 
         // Check if the question is cached.
@@ -177,7 +177,9 @@ export class ExplorerService {
         }
         await withTransaction(this.tidb, async (conn: Connection) => {
           if (!ignoreRateLimit) {
-            // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
+            const [users] = await conn.query<any[]>('SELECT id FROM sys_users WHERE id = ? FOR UPDATE', [userId]);
+            if (users.length !== 1) throw new APIError(401, 'User account unavailable.');
+            // Locking the stable user row also serializes the first-ever requests.
             const previousQuestions = await this.getUserPastHourQuestionsWithLock(conn, userId);
             if (previousQuestions.length >= limit) {
               const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
@@ -215,6 +217,7 @@ export class ExplorerService {
     }
 
     async prepareQuestion(question: Question, outputAnswerInStream?: boolean): Promise<Question> {
+        if (question.hitCache) return question;
         const { id: questionId } = question;
         const logger = this.logger.child({ questionId: questionId });
 
@@ -1127,7 +1130,45 @@ export class ExplorerService {
         }
     }
 
-    async recommendQuestion(questionId: string): Promise<void> {
+    private async auditPrivilegedOperation(action: string, resource: string, audit: {userId: number; requestId: string}, run: () => Promise<void>, changes?: {tagIds: number[]}): Promise<void> {
+        if (!audit || !Number.isSafeInteger(audit.userId) || audit.userId <= 0 || !audit.requestId) {
+            throw new APIError(401, 'A verified operator identity is required.');
+        }
+        const record = {event: 'explorer_privileged_operation', actor: `user:${audit.userId}`, userId: audit.userId,
+            requestId: audit.requestId, action, resource, ...changes};
+        this.logger.info({...record, outcome: 'started'});
+        try {
+            await run();
+            this.logger.info({...record, outcome: 'completed'});
+        } catch (error) {
+            this.logger.error({...record, outcome: 'failed'});
+            throw error;
+        }
+    }
+
+    async recommendQuestion(questionId: string, audit: {userId: number; requestId: string}): Promise<void> {
+        return this.auditPrivilegedOperation('recommend', `question:${questionId}`, audit, () => this.recommendQuestionInternal(questionId));
+    }
+
+    async cancelRecommendQuestion(questionId: string, audit: {userId: number; requestId: string}): Promise<void> {
+        return this.auditPrivilegedOperation('cancel_recommendation', `question:${questionId}`, audit, () => this.cancelRecommendQuestionInternal(questionId));
+    }
+
+    async updateQuestionTags(questionId: string, tagIds: number[], audit: {userId: number; requestId: string}): Promise<void> {
+        if (!Array.isArray(tagIds) || tagIds.length > 100 || tagIds.some(id => !Number.isSafeInteger(id) || id <= 0)) {
+            throw new APIError(400, 'Invalid tag IDs.');
+        }
+        return this.auditPrivilegedOperation('replace_tags', `question:${questionId}`, audit, async () => {
+            await withTransaction(this.tidb, conn => this.setQuestionTags(conn, questionId, tagIds));
+        }, {tagIds});
+    }
+
+    async refreshRecommendQuestions(audit: {userId: number; requestId: string}): Promise<void> {
+        return this.auditPrivilegedOperation('refresh_recommendations', 'all_recommended_questions', audit,
+            () => this.refreshRecommendQuestionsInternal(audit));
+    }
+
+    private async recommendQuestionInternal(questionId: string): Promise<void> {
         const question = await this.getQuestionByIdOrError(questionId);
 
         await withTransaction(this.tidb, async (conn) => {
@@ -1184,14 +1225,14 @@ export class ExplorerService {
               throw err;
             } else {
               const message = `Failed to recommended question.`;
-              this.logger.error({questionId, err}, message);
+              this.logger.error({questionId}, message);
               throw new ExplorerRecommendQuestionError(500, message, err);
             }
           }
         });
     }
 
-    async cancelRecommendQuestion(questionId: string): Promise<void> {
+    private async cancelRecommendQuestionInternal(questionId: string): Promise<void> {
         await withConnection(this.tidb, async (conn) => {
           const question = await this.getQuestionByIdOrError(questionId);
           await conn.query(`
@@ -1205,52 +1246,36 @@ export class ExplorerService {
               throw new ExplorerCancelRecommendQuestionError(err.statusCode, err.message, err.cause);
             } else {
               const message = `Failed to cancel recommended question.`;
-              this.logger.error({questionId, err}, message);
+              this.logger.error({questionId}, message);
               throw new ExplorerCancelRecommendQuestionError(500, message, err);
             }
           }
         });
     }
 
-    async refreshRecommendQuestions(): Promise<void> {
-        try {
-            // TODO: remove the hard code 1000.
-            const recommendQuestions = await this.getRecommendQuestionsByTag(1000);
-            const batchJobId = randomUUID();
-            const queue = async.queue<RecommendQuestion>((oldQuestion, callback) => {
-                this.refreshRecommendQuestion(oldQuestion, batchJobId).then(() => {
-                    callback();
-                }).catch((err: any) => {
-                    callback(err);
-                });
-            }, 3);
-
-            await queue.push(recommendQuestions);
-            await queue.drain();
-
-            this.logger.info("Refresh %d recommended questions done.", recommendQuestions.length);
-        } catch (err: any) {
-            const message = `Failed to refresh recommended questions.`;
-            this.logger.error({err}, message);
-        }
+    private async refreshRecommendQuestionsInternal(audit: {userId: number; requestId: string}): Promise<void> {
+        const recommendQuestions = await this.getRecommendQuestionsByTag(1000);
+        const batchJobId = randomUUID();
+        const queue = async.queue<RecommendQuestion>((oldQuestion, callback) => {
+            this.refreshRecommendQuestion(oldQuestion, batchJobId, audit).then(() => callback(), callback);
+        }, 3);
+        const results = await Promise.allSettled(recommendQuestions.map(question => queue.pushAsync(question)));
+        const failed = results.filter(result => result.status === 'rejected').length;
+        this.logger.info({event: 'explorer_privileged_batch', actor: `user:${audit.userId}`, requestId: audit.requestId,
+            batchJobId, total: results.length, failed, outcome: failed ? 'failed' : 'completed'});
+        if (failed) throw new Error('Some recommended questions could not be refreshed.');
     }
 
-    async refreshRecommendQuestion(oldQuestion: RecommendQuestion, batchJobID: string): Promise<void> {
+    private async refreshRecommendQuestion(oldQuestion: RecommendQuestion, batchJobId: string, audit: {userId: number; requestId: string}): Promise<void> {
+        const record = {event: 'explorer_privileged_refresh', actor: `user:${audit.userId}`, requestId: audit.requestId,
+            batchJobId, questionId: oldQuestion.questionId};
         try {
-            this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
-            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID);
-
-            // Prepare question async.
-            if (newQuestion && !newQuestion.hitCache) {
-                try {
-                    await this.prepareQuestion(newQuestion);
-                } catch (err: any) {
-                    this.logger.error(err, `Failed to prepare question ${newQuestion.id}: ${err.message}`);
-                }
-            }
-        } catch (err: any) {
-            const message = `Failed to refresh recommended question: ${oldQuestion.title}`;
-            this.logger.error({questionId: oldQuestion.questionId, err}, message);
+            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobId);
+            if (newQuestion && !newQuestion.hitCache) await this.prepareQuestion(newQuestion);
+            this.logger.info({...record, newQuestionId: newQuestion?.id, outcome: 'submitted'});
+        } catch (error) {
+            this.logger.error({...record, outcome: 'failed'});
+            throw error;
         }
     }
 

@@ -6,9 +6,9 @@ interface IParams {
 
 const schema = {
     params: {
-        type: 'object',
+        type: 'object', required: ['id'],
         properties: {
-            collectionId: { type: 'number' }
+            id: { type: 'integer', minimum: 1, maximum: Number.MAX_SAFE_INTEGER }
         }
     }
 };

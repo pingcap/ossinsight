@@ -1,23 +1,26 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-import { FastifyPluginAsync, RawServerDefault } from 'fastify';
+import { FastifyPluginAsync, FastifyServerOptions, RawServerDefault } from 'fastify';
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {isProdDatabaseURL} from "./utils/db";
-import {APIError} from "./utils/error";
+import {registerRequestAudit} from './utils/http/request-audit';
+import {errorHandler} from './utils/http/error-handler';
 
 export type AppOptions = {
   // Place your custom options for app below here.
 } & Partial<AutoloadPluginOptions>;
 
 // Pass --options via CLI arguments in command to enable these options.
-const options: AppOptions = {
+const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
+  trustProxy: process.env.TRUSTED_PROXY_CIDRS?.split(',').map(value => value.trim()).filter(Boolean) || false,
 }
 
 export interface AppConfig {
   CONFIGS_PATH: string;
   ADMIN_EMAIL: string;
+  OPERATIONS_TOKEN?: string;
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
   REDIS_URL: string;
@@ -73,21 +76,10 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     throw new Error('DO NOT use production database in test env.');
   }
 
-  // Init error handler.
-  fastify.setErrorHandler(function (error: Error, request, reply) {
-    this.log.error(error);
+  registerRequestAudit(fastify, fastify.config.OPERATIONS_TOKEN);
 
-    if (error instanceof APIError) {
-      reply.status(error.statusCode).send({
-        message: error.message,
-        payload: error.payload
-      });
-    } else {
-      reply.status(500).send({
-        message: error.message || 'Internal Server Error'
-      });
-    }
-  });
+  // Init error handler.
+  fastify.setErrorHandler(errorHandler);
 
   // Loads all plugins defined in ./plugins directory.
   void fastify.register(AutoLoad, {

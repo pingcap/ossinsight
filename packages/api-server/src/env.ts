@@ -6,6 +6,7 @@ export const APIServerEnvSchema = {
   type: 'object',
   required: [ 'DATABASE_URL', 'REDIS_URL', 'GITHUB_ACCESS_TOKENS' ],
   properties: {
+    OPERATIONS_TOKEN: {type: 'string', minLength: 32, maxLength: 256},
     CONFIGS_PATH: {
       type: 'string',
       default: resolve(__dirname, '..', '..', '..', 'configs')
@@ -15,8 +16,7 @@ export const APIServerEnvSchema = {
       default: 'ossinsight@pingcap.com'
     },
     DATABASE_URL: {
-      type: 'string',
-      default: 'mysql://root@localhost:4000/gharchive_dev?timezone=Z&decimalNumbers=true'
+      type: 'string'
     },
     SHADOW_DATABASE_URL: {
       type: 'string'
@@ -100,7 +100,9 @@ export const APIServerEnvSchema = {
       type: 'string'
     },
     PUBLIC_API_HOURLY_RATE_LIMIT: {
-      type: 'number',
+      type: 'integer',
+      minimum: 1,
+      maximum: 100000,
       default: 600
     }
   },

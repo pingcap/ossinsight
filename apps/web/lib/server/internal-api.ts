@@ -1,4 +1,5 @@
 import { corsHeaders } from '@/lib/cors';
+import { isGitHubOwner, isGitHubLogin, isGitHubRepository } from '@ossinsight/types';
 import orgsRecommendList from '@/lib/github-search/recommend/orgs-list.json';
 import reposRecommendList1 from '@/lib/github-search/recommend/repos-list-1.json';
 import reposRecommendList2 from '@/lib/github-search/recommend/repos-list-2.json';
@@ -125,6 +126,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal): Pr
 }
 
 export async function getRepoByName(owner: string, repo: string, signal?: AbortSignal): Promise<RepoDetail | null> {
+  if (!isGitHubOwner(owner) || !isGitHubRepository(repo)) return null;
   const row = await executeOneRow<{
     id: number;
     full_name: string;
@@ -203,6 +205,7 @@ export async function getUserById(id: number | string, signal?: AbortSignal) {
 }
 
 export async function getUserByLogin(username: string, signal?: AbortSignal) {
+  if (!isGitHubLogin(username)) return null;
   return executeOneRow<{
     id: number;
     login: string;
@@ -481,6 +484,7 @@ export async function listCollectionPreviewRepos(
             ORDER BY COALESCE(gr.stars, 0) DESC, ci.repo_name ASC
           ) AS repo_rank
         FROM collection_items ci
+        JOIN collections c ON c.id = ci.collection_id AND c.public = 1
         LEFT JOIN github_repos gr
           ON gr.repo_id = ci.repo_id
          AND gr.is_deleted = 0
@@ -492,6 +496,7 @@ export async function listCollectionPreviewRepos(
           ci.collection_id,
           COUNT(*) AS repo_count
         FROM collection_items ci
+        JOIN collections c ON c.id = ci.collection_id AND c.public = 1
         WHERE ci.deleted_at IS NULL
           AND ci.collection_id IN (${placeholders})
         GROUP BY ci.collection_id

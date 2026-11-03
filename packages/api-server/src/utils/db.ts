@@ -1,3 +1,4 @@
+import {secureDatabaseURL} from '@ossinsight/types';
 
 import {FastifyBaseLogger} from "fastify";
 import {Connection, createConnection, createPool, PoolConnection} from 'mysql2/promise';
@@ -6,7 +7,7 @@ import {MySQLPromisePool} from "@fastify/mysql";
 // Connection.
 
 export function completeDatabaseURL(originalURL: string, usedInPool: boolean = true): string {
-  const url = new URL(originalURL);
+  const url = new URL(secureDatabaseURL(originalURL, process.env.NODE_ENV === 'production'));
 
   // Notice: If you provide connection information via `option.uri`, the options provided in uri
   // **cannot** override the default options below
@@ -127,7 +128,13 @@ export function withTransaction<R> (
   action: (conn: Connection) => Promise<R>,
   options?: WithConnectionOptions<R>
 ): Promise<R | undefined> {
-  return withConnection(pool, action, {
+  return withConnection(pool, async conn => {
+    // TiDB feature comment also works as BEGIN in MySQL. A commit alone does
+    // not start a transaction, and autocommit FOR UPDATE cannot protect quotas.
+    // https://docs.pingcap.com/tidb/stable/pessimistic-transaction/
+    await conn.query('BEGIN /*T! PESSIMISTIC */');
+    return action(conn);
+  }, {
     onError: async (conn, err) => {
       await conn.rollback();
       if (options?.onError) {

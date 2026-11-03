@@ -147,6 +147,9 @@ importers:
       '@next/mdx':
         specifier: 16.1.6
         version: 16.1.6(@mdx-js/loader@2.3.0(webpack@5.105.4))(@mdx-js/react@2.3.0(react@19.2.4))
+      '@ossinsight/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@primer/octicons-react':
         specifier: ^19.7.0
         version: 19.22.0(react@19.2.4)
@@ -538,6 +541,9 @@ importers:
       promised-sqlite3:
         specifier: ^2.1.0
         version: 2.1.0(sqlite3@5.1.7)
+      proxy-addr:
+        specifier: 2.0.7
+        version: 2.0.7
       socket.io:
         specifier: ^4.5.3
         version: 4.8.3
@@ -572,6 +578,9 @@ importers:
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.130
+      '@types/proxy-addr':
+        specifier: 2.0.3
+        version: 2.0.3
       ajv-cli:
         specifier: ^5.0.0
         version: 5.0.0(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.9.3))
@@ -629,6 +638,9 @@ importers:
       '@fastify/schedule':
         specifier: ^4.1.1
         version: 4.1.1(fastify@4.29.1)(toad-scheduler@3.1.0)
+      '@ossinsight/types':
+        specifier: workspace:^
+        version: link:../types
       croner:
         specifier: ^6.0.7
         version: 6.0.7
@@ -665,7 +677,7 @@ importers:
     devDependencies:
       '@fastify/type-provider-json-schema-to-ts':
         specifier: ^2.1.1
-        version: 2.2.2(fastify@4.29.1)(json-schema-to-ts@2.12.0)
+        version: 2.2.2(fastify@4.29.1)(json-schema-to-ts@3.1.1)
       '@types/luxon':
         specifier: ^3.3.1
         version: 3.7.1
@@ -679,14 +691,17 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       typescript:
-        specifier: ^4.5.4
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/prefetch:
     dependencies:
       '@ossinsight/api-server':
         specifier: workspace:^
         version: link:../api-server
+      '@ossinsight/types':
+        specifier: workspace:^
+        version: link:../types
       '@sentry/node':
         specifier: ^7.57.0
         version: 7.120.4
@@ -710,7 +725,7 @@ importers:
         version: 3.7.2
       mysql2:
         specifier: ^3.11.5
-        version: 3.20.0(@types/node@14.18.63)
+        version: 3.20.0(@types/node@18.19.130)
       node-schedule:
         specifier: ^2.1.1
         version: 2.1.1
@@ -737,8 +752,8 @@ importers:
         specifier: ^3.3.0
         version: 3.7.1
       '@types/node':
-        specifier: ^14.14.31
-        version: 14.18.63
+        specifier: ^18.19.130
+        version: 18.19.130
       '@types/node-schedule':
         specifier: ^2.1.0
         version: 2.1.8
@@ -746,8 +761,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       typescript:
-        specifier: ^4.1.3
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/site-shell:
     dependencies:
@@ -4096,9 +4111,6 @@ packages:
   '@types/node-schedule@2.1.8':
     resolution: {integrity: sha512-k00g6Yj/oUg/CDC+MeLHUzu0+OFxWbIqrFfDiLi6OPKxTujvpv29mHGM8GtKr7B+9Vv92FcK/8mRqi1DK5f3hA==}
 
-  '@types/node@14.18.63':
-    resolution: {integrity: sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ==}
-
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
 
@@ -4113,6 +4125,9 @@ packages:
 
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
+
+  '@types/proxy-addr@2.0.3':
+    resolution: {integrity: sha512-TgAHHO4tNG3HgLTUhB+hM4iwW6JUNeQHCLnF1DjaDA9c69PN+IasoFu2MYDhubFc+ZIw5c5t9DMtjvrD6R3Egg==}
 
   '@types/react-dom@18.3.7':
     resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
@@ -11587,10 +11602,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fastify/type-provider-json-schema-to-ts@2.2.2(fastify@4.29.1)(json-schema-to-ts@2.12.0)':
+  '@fastify/type-provider-json-schema-to-ts@2.2.2(fastify@4.29.1)(json-schema-to-ts@3.1.1)':
     dependencies:
       fastify: 4.29.1
-      json-schema-to-ts: 2.12.0
+      json-schema-to-ts: 3.1.1
 
   '@fastify/type-provider-json-schema-to-ts@3.0.0(fastify@4.29.1)(json-schema-to-ts@3.1.1)':
     dependencies:
@@ -14019,8 +14034,6 @@ snapshots:
     dependencies:
       '@types/node': 18.19.130
 
-  '@types/node@14.18.63': {}
-
   '@types/node@18.19.130':
     dependencies:
       undici-types: 5.26.5
@@ -14033,6 +14046,10 @@ snapshots:
 
   '@types/prop-types@15.7.15':
     optional: true
+
+  '@types/proxy-addr@2.0.3':
+    dependencies:
+      '@types/node': 18.19.130
 
   '@types/react-dom@18.3.7(@types/react@18.3.28)':
     dependencies:
@@ -19383,18 +19400,6 @@ snapshots:
   mustache@4.2.0: {}
 
   mute-stream@2.0.0: {}
-
-  mysql2@3.20.0(@types/node@14.18.63):
-    dependencies:
-      '@types/node': 14.18.63
-      aws-ssl-profiles: 1.1.2
-      denque: 2.1.0
-      generate-function: 2.3.1
-      iconv-lite: 0.7.2
-      long: 5.3.2
-      lru.min: 1.1.4
-      named-placeholders: 1.1.6
-      sql-escaper: 1.3.3
 
   mysql2@3.20.0(@types/node@18.19.130):
     dependencies:

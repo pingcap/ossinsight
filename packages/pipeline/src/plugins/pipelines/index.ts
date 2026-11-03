@@ -2,8 +2,7 @@ import fp from "fastify-plugin";
 import * as fs from "fs";
 import {DateTime} from "luxon";
 import path from "path";
-import {CronJob, Task} from "toad-scheduler";
-import {PipelineJobStatus} from "../repositories/PipelineJobRepository";
+import {CronJob, AsyncTask} from "toad-scheduler";
 
 export const PIPELINE_PROCESS_FILE = 'process.sql';
 export const PIPELINE_CONFIG_FILE = 'config.json';
@@ -45,7 +44,7 @@ export const timezone = 'UTC';
 export default fp(async (app) => {
   const dir = path.join(app.config.CONFIGS_PATH, 'pipelines');
   const names = fs.readdirSync(dir);
-  app.decorate('pipelines', {});
+  app.decorate('pipelines', Object.create(null));
 
   // Load all pipelines config.
   names
@@ -65,35 +64,16 @@ export default fp(async (app) => {
       // Add a cron job for task.
       if (config.cron) {
         // Define a task.
-        const task = new Task(name, async (taskId) => {
+        const task = new AsyncTask(name, async taskId => {
           const pipeline = app.pipelines[name];
-
-          // Notice: The default time range is yesterday.
-          const { from, to } = resolveTimeRange(config.incremental?.timeRange);
-
-          app.log.info(`⚡️ Start to execute query for pipeline <%s>, from: %s, to: %s.`, name, from.toISO(), to.toISO());
-          const jobId = await app.pipelineJobRepository.createProcessedTimeRange(name, from, to, PipelineJobStatus.RUNNING);
-          const start = DateTime.now();
-
-          try {
-            await app.mysql.execute(pipeline.processSQL, {
-              from: from.toSQL(),
-              to: to.toSQL()
-            });
-          } catch (err: any) {
-            const end = DateTime.now();
-            const duration = end.diff(start, 'seconds').seconds;
-            await app.pipelineJobRepository.finishProcessedTimeRange(jobId, PipelineJobStatus.FAILED, err.message, duration);
-            app.log.error(err, `❌  Failed to execute query for pipeline ${name}, from: ${from.toISO()}, to: ${to.toISO()}, duration: ${duration}s.`);
-            return;
-          }
-
-          const end = DateTime.now();
-          const duration = end.diff(start, 'seconds').seconds;
-          await app.pipelineJobRepository.finishProcessedTimeRange(jobId, PipelineJobStatus.SUCCEED, 'Query OK!', duration);
-          app.log.info(`✅  Finished the execute query for pipeline <%s>, from: %s, to: %s, duration: ${duration}s.`, name, from.toISO(), to.toISO(), duration);
-        }, (err) => {
-          app.log.error(err, `❌  Failed to execute the scheduled task of pipeline ${name}, error: ${err.message}.`);
+          const {from, to} = resolveTimeRange(config.incremental?.timeRange);
+          // Scheduled refreshes retain their periodic semantics. They share the same
+          // per-pipeline lock and atomic data/status transaction as manual backfills.
+          await app.pipelineJobRepository.executeRange(name, from, to, pipeline.processSQL, false);
+          app.log.info({event: 'pipeline_refresh_completed', actor: 'scheduler', taskId,
+            pipelineName: name, from: from.toISO(), to: to.toISO()});
+        }, () => {
+          app.log.error({event: 'pipeline_refresh_failed', actor: 'scheduler', pipelineName: name});
         });
 
         app.scheduler.addCronJob(new CronJob({
@@ -121,7 +101,7 @@ export interface TimeRange {
 }
 
 export function resolveTimeRange(timeRange: PresetIncrementalTimeRange = PresetIncrementalTimeRange.YESTERDAY): TimeRange {
-  const now = DateTime.now();
+  const now = DateTime.utc().startOf('second');
   switch (timeRange) {
     case PresetIncrementalTimeRange.PAST_MONTH:
       return {

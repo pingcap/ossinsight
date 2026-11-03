@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import {
   listCollections,
   searchCollections,
@@ -150,7 +151,7 @@ async function handleCompare(params: URLSearchParams) {
   return ok({ repo1: r1, repo2: r2 });
 }
 
-export async function GET(req: Request) {
+async function handleGET(req: Request) {
   const { searchParams } = new URL(req.url);
   const action = searchParams.get('action');
 
@@ -188,11 +189,15 @@ export async function GET(req: Request) {
     if (error instanceof DegradedDataError) {
       return degraded(error.message);
     }
-    console.error(`[MCP API] Error handling action=${action}:`, error);
+
     return err('Internal server error', 500);
   }
 }
 
-export async function OPTIONS() {
+async function handleOPTIONS() {
   return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
+
+export const GET = withRequestAudit('GET /api/mcp', handleGET);
+
+export const OPTIONS = withRequestAudit('OPTIONS /api/mcp', handleOPTIONS);

@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest } from 'next/server';
 import {
   explainCollectionRanking,
@@ -13,7 +14,7 @@ interface Params {
 
 export const runtime = 'edge';
 
-export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> }) {
+async function handleGET(req: NextRequest, reqCtx: { params: Promise<Params> }) {
   try {
     const { collectionId } = await reqCtx.params;
     const metric = parseCollectionRankingMetric(req.nextUrl.searchParams.get('metric') ?? 'stars');
@@ -24,3 +25,5 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
     return createApiErrorResponse(error);
   }
 }
+
+export const GET = withRequestAudit('GET /collections/api/[collectionId]/ranking/explain', handleGET);

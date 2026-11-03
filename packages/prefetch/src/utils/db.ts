@@ -1,9 +1,10 @@
+import {secureDatabaseURL} from '@ossinsight/types';
 import {createPool} from 'mysql2/promise';
 
 // Connection.
 
 export function completeDatabaseURL(originalURL: string, usedInPool: boolean = true): string {
-  const url = new URL(originalURL);
+  const url = new URL(secureDatabaseURL(originalURL, process.env.NODE_ENV === 'production'));
 
   // Notice: If you provide connection information via `option.uri`, the options provided in uri
   // **cannot** override the default options below

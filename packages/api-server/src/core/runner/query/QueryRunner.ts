@@ -1,3 +1,5 @@
+import {databaseCacheIdentity} from '../../cache/database-identity';
+import {createHash} from 'crypto';
 import mustache from "mustache";
 import {Logger} from "pino";
 import CacheBuilder from "../../cache/CacheBuilder";
@@ -7,11 +9,11 @@ import {QueryLegacyParser} from "./QueryLegacyParser";
 import {QueryLiquidParser} from "./QueryLiquidParser";
 import { QueryLoader } from "./QueryLoader";
 import {Pool, QueryOptions} from "mysql2/promise";
-import {PersistConfig, QuerySchema} from "@ossinsight/types";
+import {PersistConfig, QuerySchema, isPublicQuery, validateQueryName, validateCollectionId, prepareQueryParameters} from "@ossinsight/types";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 import {getQueryDataQuality, STAR_DATA_INCIDENT_MARKER} from "../../../utils/data-quality";
-import {APIError} from "../../../utils/error";
+import {APIError, QueryDataUnavailableError} from "../../../utils/error";
 
 export const enum QueryType {
   QUERY = 'query',
@@ -19,6 +21,7 @@ export const enum QueryType {
 }
 
 export interface Options {
+  allowPrivate?: boolean;
   refreshCache?: boolean;
   ignoreOnlyFromCache?: boolean;
   queryOptions?: Partial<QueryOptions>;
@@ -65,9 +68,25 @@ export class QueryRunner {
       options: Options = {}
     ) {
         const { ignoreOnlyFromCache = false, refreshCache = false, queryOptions } = options;
+        try { validateQueryName(queryName); } catch { throw new APIError(400, 'Invalid query name.'); }
         const [queryConfig, templateSQL] = await this.queryLoader.load(queryName);
         if (!queryConfig || !templateSQL) {
           throw new Error(`Query config ${queryName} not found.`);
+        }
+
+        if (!options.allowPrivate && !isPublicQuery(queryName, queryConfig)) {
+          throw new APIError(404, 'Query not found.');
+        }
+
+        try { prepareQueryParameters(queryConfig.params || [], params); }
+        catch { throw new APIError(400, 'Invalid query parameters.'); }
+        const collectionParameter = queryConfig.params?.find((param: {name: string; default?: unknown}) => param.name === 'collectionId');
+        if (collectionParameter && !options.allowPrivate) {
+          let collectionId: number;
+          try { collectionId = validateCollectionId(params.collectionId ?? collectionParameter.default); }
+          catch { throw new APIError(400, 'Invalid collection ID.'); }
+          const [collections] = await this.tidb.execute<any[]>('SELECT id FROM collections WHERE id = ? AND public = 1 LIMIT 1', [collectionId]);
+          if (collections.length !== 1) throw new APIError(404, 'Collection not found.');
         }
 
         // Star-data incident gate (see src/utils/data-quality.ts): rankings
@@ -76,26 +95,20 @@ export class QueryRunner {
         // a machine-readable data_quality marker. EXPLAIN stays functional.
         const dataQuality = type === QueryType.QUERY ? getQueryDataQuality(queryName) : 'ok';
         if (dataQuality === 'blocked') {
-          throw new APIError(
-            503,
-            `Query "${queryName}" is temporarily unavailable: it ranks repositories by star events, ` +
-            `and GitHub's public events firehose has been degraded since ${STAR_DATA_INCIDENT_MARKER.suspect_since}. ` +
-            'See the payload.data_quality field for details.',
-            undefined,
-            { data_quality: STAR_DATA_INCIDENT_MARKER }
-          );
+          throw new QueryDataUnavailableError();
         }
 
         presetQueryCounter.inc();
 
         const { cacheHours = -1, onlyFromCache = false, cacheProvider } = queryConfig;
         const queryKey = this.buildQueryKey(type, queryName);
-        const cacheKey = this.buildCacheKey(type, queryName, queryConfig, params);
+        const cacheKey = this.buildCacheKey(type, queryName, queryConfig, params, templateSQL);
+        const needsFreshVisibility = !collectionParameter && /\bcollections\b/i.test(templateSQL);
         const cache = this.cacheBuilder.build(
           cacheProvider,
           cacheKey,
-          cacheHours,
-          ignoreOnlyFromCache ? false : onlyFromCache,
+          needsFreshVisibility ? 0 : cacheHours,
+          needsFreshVisibility || ignoreOnlyFromCache ? false : onlyFromCache,
           refreshCache
         );
     
@@ -185,12 +198,15 @@ export class QueryRunner {
         return `${type}:${queryName}`;
     }
     
-    private buildCacheKey (type: QueryType, queryName: string, queryConfig: QuerySchema, params: Record<string, any>): string {
-        return `${this.buildQueryKey(type, queryName)}:${this.serializeParams(queryConfig, params)}${params?.format === 'array' ? '_array' : ''}`;
+    private buildCacheKey (type: QueryType, queryName: string, queryConfig: QuerySchema, params: Record<string, any>, templateSQL = ''): string {
+        const source = databaseCacheIdentity(this.queryExecutor?.pool);
+        const context = createHash('sha256').update(JSON.stringify([process.env.NODE_ENV || 'development', source, type, queryName, queryConfig, templateSQL, this.serializeParams(queryConfig, params), params?.format === 'array'])).digest('hex');
+        return `ossinsight:query:v3:${context}`;
     }
     
     private serializeParams (queryConfig: QuerySchema, params: Record<string, any>): string {
-        return queryConfig.params.map((p: any) => params[p.name]).join('_');
+        const normalized = prepareQueryParameters(queryConfig.params || [], params);
+        return createHash('sha256').update(JSON.stringify(normalized)).digest('hex');
     }
 
 }

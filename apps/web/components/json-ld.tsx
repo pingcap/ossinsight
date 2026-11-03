@@ -1,8 +1,12 @@
-export function JsonLd({ data }: { data: Record<string, unknown> }) {
+import {headers} from 'next/headers';
+import {serializeScriptJSON} from '@repo/site-shell/src/safe-json';
+export async function JsonLd({ data }: { data: Record<string, unknown> }) {
+  const nonce = (await headers()).get('x-nonce') || undefined;
   return (
     <script
+      nonce={nonce}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: serializeScriptJSON(data) }}
     />
   );
 }

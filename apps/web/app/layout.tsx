@@ -1,3 +1,4 @@
+import {headers} from 'next/headers';
 import siteConfig from '@/site.config';
 import type { Metadata } from 'next';
 import './globals.css';
@@ -43,11 +44,12 @@ export const metadata: Metadata = {
 
 const GTAG_ID = siteConfig.ga.tag;
 
-export default function RootLayout ({
+export default async function RootLayout ({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const nonce = (await headers()).get('x-nonce') || undefined;
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
     <head>
@@ -70,8 +72,8 @@ export default function RootLayout ({
     <WebSiteJsonLd />
     <SiteNavigationJsonLd />
     <QueryProvider>
-    <Script id="google-analytics" src={`https://www.googletagmanager.com/gtag/js?id=${GTAG_ID}`} />
-    <Script id="google-analytics-config">
+    <Script nonce={nonce} id="google-analytics" src={`https://www.googletagmanager.com/gtag/js?id=${GTAG_ID}`} />
+    <Script nonce={nonce} id="google-analytics-config">
       {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}

@@ -11,7 +11,7 @@ describe.each([['playground',playground],['legacy bot',legacy]])('%s generation 
     app.decorate('userService',{getUserIdOrCreate:async()=>1});
     app.decorate('config',{});
     app.decorate('playgroundService',{
-      countTodayQuestionRequests:async()=>0,checkIfTrustedUser:async()=>false,recordQuestion:async()=>{},
+      reserveQuestion:async()=>({id:1,used:1}),checkIfTrustedUser:async()=>false,finishQuestion:async()=>{},
     });
     const generate = jest.fn().mockResolvedValue('SELECT 1 LIMIT 100');
     app.decorate('botService',{questionToSQL:generate});

@@ -10,7 +10,7 @@ Create a `.env` file in the `/packages/api-server` directory and fill in the fol
 
 | Name                   | Description                              | Default                                                                    |
 |------------------------|------------------------------------------|----------------------------------------------------------------------------|
-| `DATABASE_URL`         | Database URL to connect TiDB/MySQL.      | `mysql://root@localhost:4000/gharchive_dev?timezone=Z&decimalNumbers=true` |
+| `DATABASE_URL`         | Database URL to connect TiDB/MySQL.      | Required; use a dedicated database account |
 | `REDIS_URL`            | URL to connect Redis.                    | `redis://localhost:6379/0`                                                 |
 | `GITHUB_ACCESS_TOKENS` | Personal access token of GitHub account. |                                                                            |
 
@@ -37,3 +37,82 @@ npm run dev
 ```
 
 Open [http://localhost:3450](http://localhost:3450) to view it in the browser.
+
+
+## Security boundaries
+
+Public named queries use the reviewed analytics catalog in `@ossinsight/types`.
+New queries default to private; explicitly set `public: true` only after reviewing
+both the returned data and parameter constraints. `public: false` always overrides
+the compatibility catalog. The internal prefetch job opts into private queries.
+
+`/q/playground` and `/explorer/answer` require an authenticated bearer session.
+LLM generation reserves the user's daily quota transactionally before calling the
+provider, including failed attempts. Cache hits never re-prepare existing answers.
+Only registered `/v1` routes can forward requests using Data Service credentials.
+
+Client identity defaults to the socket peer. When deploying behind a reverse
+proxy, set `TRUSTED_PROXY_CIDRS` to its exact network ranges (comma separated) and
+use the package start command, which enables the exported Fastify options.
+The proxy must replace untrusted forwarding headers; never configure all networks
+as trusted. Public clients cannot choose their quota identity with IP headers.
+
+### Public query transport limits
+
+`PUBLIC_API_HOURLY_RATE_LIMIT` (default 600) now caps one client's total queries across
+HTTP named-query, metadata and public-proxy routes, WebSocket handshakes and WebSocket
+queries. Redis reservations are atomic, failures deny requests, and sockets allow at
+most two concurrent queries and 16 KiB messages. Configure `TRUSTED_PROXY_CIDRS` with
+only the actual reverse-proxy networks; HTTP and sockets use the same trust boundary.
+
+CORS configuration now lists exact origins. Public consumers receive no credentialed
+access. Localhost is enabled only in development. For a trusted preview, explicitly
+set its exact origin in `CORS_PRIVATE_ORIGINS`; broad hosting-provider patterns are
+not accepted. WebSocket handshakes require a configured Origin, including for CLI
+clients. Socket errors and audit events omit raw requests, SQL and internal errors.
+
+### Operations access and audit records
+
+Set a private `OPERATIONS_TOKEN` (32–256 characters with at least 32 random bytes)
+for the API and prefetch deployments, and configure the Prometheus scraper to send
+`Authorization: Bearer <token>`. `/metrics` and `/docs/json` deny unauthenticated
+requests; an unconfigured token disables these endpoints with 503. Health checks
+remain available. The prefetch metrics listener defaults to `127.0.0.1`; changing
+`METRICS_HOST` does not remove token authentication. Apply scraper configuration
+before deploying these endpoint restrictions to avoid a monitoring gap.
+
+API audit records include request ID, verified actor, route pattern, source IP,
+status and duration. Auth0 principals are recorded only after JWT verification;
+privileged operations additionally resolve the stored user ID. Operator access
+records a token fingerprint. These records omit tokens, bodies and query values.
+The existing request-statistics table remains a separate analytics sink.
+
+### Query cache rollout
+
+Version 3 query keys include the database endpoint, schema and account, environment,
+SQL/template configuration, normalized parameters and output format. They contain
+only a digest, never credentials. Deploy API and prefetch with matching analytics
+source credentials and `NODE_ENV`, and warm the new keys before routing traffic to
+queries configured as `onlyFromCache`. Old keys are not reused. In-flight work is
+also isolated by backing cache provider. Queries listing multiple collections read
+fresh visibility, and responses cannot be pinned in browser/CDN caches after access
+is revoked.
+
+### Database transport defaults
+
+`DATABASE_URL` is required; no passwordless root default is supplied. API,
+pipeline and prefetch connections enable TLS with certificate and hostname
+verification for every non-loopback endpoint. Production also requires TLS on
+loopback and rejects root/tenant-root accounts. Development/test loopback databases
+may run without TLS. Supply a password and a dedicated least-privilege account;
+use the certificate's hostname rather than an uncertified alias or IP address.
+For a private CA, provide its PEM content in the URI's JSON `ssl.ca` option.
+Disabling `rejectUnauthorized` or `verifyIdentity` is rejected. Identity fields
+cannot be overridden through query options. Provision and verify the database
+certificate/account before deploying this enforcement.
+
+Privileged recommendation, tag replacement and batch refresh operations also emit
+service-level audit events with the verified numeric user ID, request ID, target,
+action and outcome. Background refresh items retain the same actor/request
+context and a batch ID; partial failures are recorded as failures. Tag audit
+records contain bounded numeric tag IDs, never question text or raw exceptions.

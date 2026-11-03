@@ -11,6 +11,7 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import {collectionStore, validateCollection, parseCollectionYaml} from './lib/collection-store.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -25,20 +26,6 @@ function loadEnv(filePath) {
   } catch {}
 }
 loadEnv(join(__dirname, '.env.local'));
-
-// Simple YAML parser for our collection format
-function parseCollectionYaml(text) {
-  const lines = text.split('\n');
-  const result = { items: [] };
-  let inItems = false;
-  for (const line of lines) {
-    if (line.startsWith('id:')) result.id = parseInt(line.slice(3).trim());
-    else if (line.startsWith('name:')) result.name = line.slice(5).trim();
-    else if (line.trim() === 'items:') inItems = true;
-    else if (inItems && line.trim().startsWith('- ')) result.items.push(line.trim().slice(2).trim());
-  }
-  return result;
-}
 
 const dryRun = process.argv.includes('--dry-run');
 const targetId = process.argv.find(a => /^\d+$/.test(a));
@@ -58,6 +45,7 @@ if (!file) {
 }
 
 const yml = parseCollectionYaml(readFileSync(join(collectionsDir, file), 'utf-8'));
+validateCollection(yml, targetId);
 console.log(`\nCollection: ${yml.name} (id: ${yml.id})`);
 console.log(`YAML items: ${yml.items.length}`);
 yml.items.forEach(n => console.log(`  ${n}`));
@@ -85,11 +73,11 @@ const db = connect({
   database: process.env.OSSINSIGHT_DATABASE || 'gharchive_dev',
 });
 
+const store = collectionStore(db);
+
 // Current state
-const existing = await db.execute(`SELECT id, name FROM collections WHERE id = ${yml.id}`);
-const currentItems = await db.execute(
-  `SELECT repo_id, repo_name FROM collection_items WHERE collection_id = ${yml.id} ORDER BY repo_name`
-);
+const existing = await store.get(yml.id);
+const currentItems = await store.items(yml.id);
 
 console.log(`\n--- Before ---`);
 console.log(existing.length ? `Collection: ${existing[0].name}` : `Collection ${yml.id} NOT in DB (will create)`);
@@ -111,28 +99,26 @@ if (dryRun) { console.log(`\n[DRY RUN] No DB writes.`); process.exit(0); }
 
 // Create collection if needed
 if (!existing.length) {
-  await db.execute(`INSERT INTO collections (id, name) VALUES (${yml.id}, '${yml.name.replace(/'/g, "''")}')`);
+  await store.create(yml.id, yml.name);
   console.log(`\nCreated collection ${yml.id}`);
 }
 
 // Remove
 for (const r of toRemove) {
-  await db.execute(`DELETE FROM collection_items WHERE collection_id = ${yml.id} AND repo_name = '${r.repo_name.replace(/'/g, "''")}'`);
+  await store.remove(yml.id, r.repo_name);
   console.log(`Removed: ${r.repo_name}`);
 }
 
 // Add
 for (const name of toAdd) {
-  const rows = await db.execute(`SELECT repo_id FROM github_events WHERE repo_name = '${name.replace(/'/g, "''")}' AND repo_id IS NOT NULL AND repo_id != 0 ORDER BY id DESC LIMIT 1`);
+  const rows = await store.lookup(name);
   if (!rows.length) { console.log(`Skipped (no repo_id): ${name}`); continue; }
-  await db.execute(`INSERT INTO collection_items (collection_id, repo_name, repo_id) VALUES (${yml.id}, '${name.replace(/'/g, "''")}', ${rows[0].repo_id})`);
+  await store.add(yml.id, name, rows[0].repo_id);
   console.log(`Added: ${name} (repo_id: ${rows[0].repo_id})`);
 }
 
 // After
-const afterItems = await db.execute(
-  `SELECT repo_id, repo_name FROM collection_items WHERE collection_id = ${yml.id} ORDER BY repo_name`
-);
+const afterItems = await store.items(yml.id);
 console.log(`\n--- After ---`);
 console.log(`DB items: ${afterItems.length}`);
 afterItems.forEach(r => console.log(`  ${r.repo_name} (repo_id: ${r.repo_id})`));

@@ -3,7 +3,9 @@
   "params": [
     {
       "name": "offset",
-      "replaces": "1663636555"
+      "replaces": "1663636555",
+      "type": "integer",
+      "pattern": "^[0-9]{1,10}$"
     }
   ]
 }

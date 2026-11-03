@@ -1,3 +1,4 @@
+import {serializeScriptJSON} from '@repo/site-shell/src/safe-json';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -33,7 +34,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { language: rawLang } = await params;
-  const language = decodeURIComponent(rawLang);
+  const language = rawLang;
 
   if (!isValidLanguage(language)) {
     return {};
@@ -62,7 +63,7 @@ const nf = new Intl.NumberFormat('en');
 
 export default async function LanguagePage({ params }: PageProps) {
   const { language: rawLang } = await params;
-  const language = decodeURIComponent(rawLang);
+  const language = rawLang;
 
   if (!isValidLanguage(language)) {
     notFound();
@@ -118,7 +119,7 @@ export default async function LanguagePage({ params }: PageProps) {
       ]} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeScriptJSON(jsonLd) }}
       />
       {!degraded && repos.length > 0 && (
         <ItemListJsonLd

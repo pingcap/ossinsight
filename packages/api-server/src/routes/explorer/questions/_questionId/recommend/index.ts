@@ -29,7 +29,7 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Recommend question.
-    await app.explorerService.recommendQuestion(questionId);
+    await app.explorerService.recommendQuestion(questionId, {userId, requestId: req.id});
     reply.status(200).send({
       message: "OK"
     });

@@ -86,3 +86,16 @@ skipped and counted — a dead repo never fails the run. A summary line
 Note: `DATABASE_URL` is validated per command instead of at CLI start-up, so the
 credential-free dry-run above works; commands that do touch the database fail with a clear
 error when it is missing. `GITHUB_ACCESS_TOKENS` is always required.
+
+### Email pseudonymization key
+
+Set `ENCODE_EMAIL_SECRET_KEY` to a securely generated secret of at least 32 bytes
+before importing user email addresses. The importer fails closed without it; no
+shared fallback key is available. Keep this value in the deployment secret store,
+separate from source and logs. For example, generate a value with `openssl rand
+-base64 32` and provision it through your normal secret-management process.
+
+When replacing the former default key, re-import original profiles to replace old
+pseudonyms. Existing hashes cannot be migrated to a new HMAC key without the
+original input. Coordinate any consumers that match these pseudonyms before
+rotation, and remove the old key once the re-import is complete.

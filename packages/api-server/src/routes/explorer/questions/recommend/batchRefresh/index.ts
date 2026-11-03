@@ -16,10 +16,10 @@ export const refreshRecommendQuestionsHandler: FastifyPluginAsyncJsonSchemaToTs 
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Trigger refresh.
-    app.explorerService.refreshRecommendQuestions().then(() => {
-      app.log.info('Refresh recommend questions success.')
-    }).catch((err: any) => {
-      app.log.error(err, `Failed to refresh recommend questions: ${err.message}`);
+    app.explorerService.refreshRecommendQuestions({userId, requestId: req.id}).then(() => {
+      app.log.info({event: 'explorer_batch_completed', actor: `user:${userId}`, requestId: req.id})
+    }).catch(() => {
+      app.log.error({event: 'explorer_batch_failed', actor: `user:${userId}`, requestId: req.id});
     });
     reply.status(200).send({
       message: 'Trigger success.'

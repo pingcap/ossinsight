@@ -1,4 +1,6 @@
 import fp from "fastify-plugin";
+import {APIError} from '../../utils/error';
+import '../../utils/http/request-audit';
 import FastifyAuth0 from "fastify-auth0-verify";
 
 export interface Auth0UserInfo {
@@ -41,10 +43,18 @@ export function parseAuth0User(user: Auth0User) {
 }
 
 export default fp(async (app) => {
-    app.register(FastifyAuth0, {
+    await app.register(FastifyAuth0, {
         domain: app.config.AUTH0_DOMAIN,
         secret: app.config.AUTH0_SECRET,
     });
+    const verify = app.authenticate.bind(app);
+    app.authenticate = async (request, reply) => {
+        await verify(request, reply);
+        const sub = (request.user as {sub?: unknown})?.sub;
+        if (typeof sub !== 'string' || !sub || sub.length > 256) throw new APIError(401, 'Invalid authenticated identity.');
+        // Only assign an audit actor after signature verification succeeds.
+        request.securityActor = `auth0:${sub}`;
+    };
 }, {
     name: '@ossinsight/auth0',
     dependencies: [

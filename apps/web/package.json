@@ -84,7 +84,8 @@
     "unified": "^10.1.2",
     "url-template": "^3.1.0",
     "use-stick-to-bottom": "^1.1.3",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@ossinsight/types": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

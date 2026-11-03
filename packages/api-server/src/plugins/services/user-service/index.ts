@@ -136,10 +136,12 @@ export class UserService {
 
   async getUserIdOrCreate(req: FastifyRequest<any>): Promise<number> {
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
-    return await this.findOrCreateUserByAccount(
+    const userId = await this.findOrCreateUserByAccount(
       { ...metadata, sub },
       req.headers.authorization,
     );
+    req.securityActor = `user:${userId}`;
+    return userId;
   }
 
   async findOrCreateUserByAccount(user: Auth0UserMetadata & { sub: string }, token?: string): Promise<number> {
