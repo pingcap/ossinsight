@@ -1,0 +1,26 @@
+name: SQLPad security runtime
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ops/sqlpad/**'
+      - '.github/workflows/sqlpad-security.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ops/sqlpad/**'
+      - '.github/workflows/sqlpad-security.yml'
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test, and audit immutable runtime
+        run: docker build --progress=plain -t ossinsight-sqlpad:security ops/sqlpad
+      - name: Check unprivileged runtime and native SQLite
+        run: |
+          test "$(docker image inspect --format '{{.Config.User}}' ossinsight-sqlpad:security)" = node
+          docker run --rm --network none --read-only --entrypoint node ossinsight-sqlpad:security -e "const s=require('sqlite3');const d=new s.Database(':memory:');d.get('SELECT sqlite_version() AS v',(e,r)=>{if(e)throw e;if(!r.v.startsWith('3.52.'))throw Error('Unexpected SQLite version');console.log(r);d.close()})"
