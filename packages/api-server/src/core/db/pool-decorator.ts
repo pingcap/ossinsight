@@ -27,8 +27,12 @@ export function decoratePoolConnections(logger: pino.Logger, pool: Pool, { initi
 
         if (!internalConn[INITIALIZED]) {
             logger.info({ initialSql }, "⏳ Initializing session variables for the connection.", )
-            for (const sql of initialSql) {
-                await poolConn.execute(sql);
+            try {
+                for (const sql of initialSql) await poolConn.execute(sql);
+            } catch (error) {
+                // A partially initialized session must never return to the pool.
+                poolConn.destroy();
+                throw error;
             }
             logger.info("✅ Finished to init session variables successfully.")
 

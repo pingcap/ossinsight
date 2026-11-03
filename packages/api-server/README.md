@@ -64,6 +64,9 @@ HTTP named-query, metadata and public-proxy routes, WebSocket handshakes and Web
 queries. Redis reservations are atomic, failures deny requests, and sockets allow at
 most two concurrent queries and 16 KiB messages. Configure `TRUSTED_PROXY_CIDRS` with
 only the actual reverse-proxy networks; HTTP and sockets use the same trust boundary.
+Export this setting in the process manager environment before starting the API;
+the server options are read before the application loads its `.env` file.
+The production start command passes `--options` to apply this trust policy.
 
 CORS configuration now lists exact origins. Public consumers receive no credentialed
 access. Localhost is enabled only in development. For a trusted preview, explicitly
@@ -116,3 +119,39 @@ service-level audit events with the verified numeric user ID, request ID, target
 action and outcome. Background refresh items retain the same actor/request
 context and a batch ID; partial failures are recorded as failures. Tag audit
 records contain bounded numeric tag IDs, never question text or raw exceptions.
+
+### SQL queue worker
+
+The API still produces the two `explorer_*_concurrent_queue` queues. Run their
+consumer from this package using Node 24 LTS and `pnpm worker`; old deployments
+may have a `packages/job-server` checkout that is no longer in this repository.
+The new worker needs only `DATABASE_URL`, `PLAYGROUND_DATABASE_URL`, `REDIS_URL`
+and `OPERATIONS_TOKEN` in its private `.env.worker` (separate from the API’s `.env`). It does not need an OpenAI key,
+GitHub tokens, Auth0 secrets or Data Service keys, and cannot generate prompts.
+
+Use a metadata account with access to the Explorer records and a separate
+analytics account with direct SELECT grants on approved public tables. The
+worker checks grants and verified TLS before consuming any jobs. `pnpm
+worker:check` validates connectivity, grants and SQL session initialization
+without creating queues, consuming jobs or writing application data.
+The worker exposes only `/healthy` and authenticated `/metrics` on
+`127.0.0.1:30001`. Forward the operations bearer token from any metrics scraper.
+
+Deploy the new worker before this API version: the producer now sends only a
+question ID, whereas the old worker expects SQL in the queue payload. Pause
+both queues, wait for active jobs to drain, replace the old worker, then deploy
+the API and resume the queues. Keep a source/configuration and process-manager
+backup; use a shutdown grace period of at least 120 seconds. A rollback must
+restore both producer and worker together. Do not restart an old worker against
+reference-only jobs; recover these using their authoritative database records.
+
+The worker loads the persisted question, validates its queue job ID, ownership
+and status, and executes it through the same SQL policy as the API. An operator
+review batch must have its persisted batch ID and review flag. Failed tasks
+become failed BullMQ jobs with a generic error; private results remain in the
+database. Logs retain task IDs and outcomes, not SQL, titles or driver errors.
+Completed queue records expire after one day (maximum 1,000), failures after
+seven days (maximum 1,000); BullMQ applies these limits as jobs finish.
+Default concurrency is four high/two low, bounded at 20/10 respectively by
+`EXPLORER_HIGH_QUEUE_CONCURRENT` and `EXPLORER_LOW_QUEUE_CONCURRENT`.
+`EXPLORER_QUERY_SQL_TIMEOUT` defaults to 30,000 ms and cannot exceed 60,000 ms.
