@@ -9,7 +9,8 @@
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "start": "TS_NODE_BASEURL=./dist node -r tsconfig-paths/register dist/index.js",
-    "dev:start": "ts-node -r tsconfig-paths/register src/index.ts"
+    "dev:start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "test:security": "TS_NODE_BASEURL=./dist node -r tsconfig-paths/register --test tests/security.test.cjs"
   },
   "keywords": [],
   "author": "",
@@ -20,13 +21,13 @@
     "@types/node": "^18.16.3",
     "fastify-tsconfig": "^1.0.1",
     "pino-pretty": "^9.4.0",
-    "prisma": "^5.3.1",
+    "prisma": "5.22.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^4.5.4"
   },
   "dependencies": {
     "@goparrot/geocoder": "^4.4.0",
-    "@prisma/client": "4.13.0",
+    "@prisma/client": "5.22.0",
     "@sentry/node": "^7.57.0",
     "async": "^3.2.4",
     "axios": "^0.27.2",

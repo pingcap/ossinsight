@@ -69,7 +69,7 @@ export class GithubUserDao {
   }
 
   encodeEmail(email?: string | null): string {
-    return hashGitHubEmail(email, process.env.ENCODE_EMAIL_SECRET_KEY);
+    return hashGitHubEmail(email, process.env.ENCODE_EMAIL_SECRET_KEY, process.env.ENCODE_EMAIL_LEGACY_ENCODING_KEY);
   }
 
   async updateUserLocationByAddress(address: string, location: LocationCacheItem) {
