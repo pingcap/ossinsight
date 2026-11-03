@@ -8,8 +8,12 @@ run again to incorporate late-arriving events. SQL windows are `[from, to)` in U
 Before deploying this version:
 
 1. Stop and drain old pipeline workers. Do not run old and new workers together.
-2. Apply `migrations/001_atomic_pipeline_jobs.sql` to the existing pipeline database.
-   It adds only `sys_pipeline_locks`; it does not rewrite historical jobs.
+2. Apply `migrations/001_atomic_pipeline_jobs.sql`, then
+   `migrations/002_pipeline_job_lookup_index.sql` to the existing pipeline database.
+   They add `sys_pipeline_locks` and a covering index for job reconciliation and
+   completed-range lookups. Historical job records are preserved. Apply these
+   schema changes with an existing administrative connection; runtime workers
+   do not need schema-management privileges.
 3. Reconcile legacy `RUNNING` jobs against their actual data before retrying their
    windows. The new worker refuses these ambiguous windows rather than replaying them.
 4. Configure the worker's explicit `DATABASE_URL` and grant its database account
