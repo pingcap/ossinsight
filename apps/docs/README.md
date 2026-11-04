@@ -40,7 +40,7 @@ not cached by browsers or CDNs. Static assets, feeds, search and Markdown export
 retain their existing cache behavior. These docs routes do not query TiDB.
 
 The policy permits the owned production asset origin, local media and YouTube
-frames. The web app's rewrites must preserve the docs deployment's CSP. Verify
+frames. The web app's rewrites preserve the docs deployment's CSP. Verify
 both the direct docs origin and `/blog`/`/docs` on ossinsight.io after deployment,
 including theme initialization, navigation, anchors and media.
 
