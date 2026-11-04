@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import fp from 'fastify-plugin';
 import urlData from '@fastify/url-data';
+import mysqlPlugin from '@fastify/mysql';
 import {createPool, Pool} from 'mysql2/promise';
 import pino from 'pino';
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
@@ -30,7 +31,8 @@ test('strict TiDB preserves 99 good audit rows when one oversized origin poisons
 });
 
 test('real recorder writes bounded inputs and one final error row into the production-shaped schema', async () => {
-  const app = Fastify();app.decorate('mysql', pool);
+  const app = Fastify();
+  await app.register(mysqlPlugin, {promise: true, uri: getTestDatabase().url(), connectionLimit: 2});
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   await app.register(fp(async () => {}, {name: '@ossinsight/tidb'}));
   await app.register(urlData);await app.register(recorder);
