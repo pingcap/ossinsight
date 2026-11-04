@@ -74,6 +74,6 @@ test.each(['/', '/llms-full.txt', '/sitemap.xml', '/trending', '/trending/ai',
   expect(isPublicBudgetPath(pathname)).toBe(true);
 });
 
-test.each(['/favicon.ico', '/seo-widgets-homepage.jpeg', '/_next/static/chunk.js', '/docs/api', '/blog/post'])('static content %s remains independent of database quota', pathname => {
+test.each(['/favicon.ico', '/seo-widgets-homepage.jpeg', '/_next/static/chunk.js', '/docs/api', '/blog/post'])('content without database work at %s remains independent of database quota', pathname => {
   expect(isPublicBudgetPath(pathname)).toBe(false);
 });

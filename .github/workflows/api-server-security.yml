@@ -9,8 +9,13 @@ on:
       - 'packages/prefetch/**'
       - 'apps/web/lib/server/**'
       - 'apps/web/app/**'
-      - 'apps/docs/lib/content-files.ts'
-      - 'apps/docs/lib/content.tsx'
+      - 'apps/docs/lib/**'
+      - 'apps/docs/components/**'
+      - 'apps/docs/app/**'
+      - 'apps/docs/proxy.ts'
+      - 'apps/docs/next.config.mjs'
+      - 'apps/docs/scripts/**'
+      - 'apps/docs/package.json'
       - 'apps/docs/content/blog/**'
       - 'apps/docs/legacy-content/docs/**'
       - 'configs/pipelines/**'
@@ -49,8 +54,13 @@ on:
       - 'packages/prefetch/**'
       - 'apps/web/lib/server/**'
       - 'apps/web/app/**'
-      - 'apps/docs/lib/content-files.ts'
-      - 'apps/docs/lib/content.tsx'
+      - 'apps/docs/lib/**'
+      - 'apps/docs/components/**'
+      - 'apps/docs/app/**'
+      - 'apps/docs/proxy.ts'
+      - 'apps/docs/next.config.mjs'
+      - 'apps/docs/scripts/**'
+      - 'apps/docs/package.json'
       - 'apps/docs/content/blog/**'
       - 'apps/docs/legacy-content/docs/**'
       - 'configs/pipelines/**'
@@ -96,7 +106,7 @@ jobs:
         with:
           node-version: '24'
       - run: npm install --global pnpm@10.29.3
-      - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --filter web... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
+      - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --filter web... --filter docs... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
       - name: Build native SQLite for the runner
         run: pnpm --filter @ossinsight/api-server rebuild sqlite3
         env:
@@ -106,6 +116,7 @@ jobs:
       - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --workspace-concurrency 12 -r build
       - run: pnpm --filter @ossinsight/sync-github-data test:security
       - run: pnpm --filter @ossinsight/api-server test:security
+      - run: pnpm --filter docs test:security
       - run: pnpm --filter @ossinsight/api-server test:runtime
       - run: node --test scripts/lib/collection-store.test.mjs
       - name: Verify isolated collection sync dependencies
