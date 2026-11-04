@@ -1,0 +1,45 @@
+name: SQLPad security runtime
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ops/sqlpad/**'
+      - '.github/workflows/sqlpad-security.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ops/sqlpad/**'
+      - '.github/workflows/sqlpad-security.yml'
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test, and audit immutable runtime
+        run: |
+          chmod 600 ops/sqlpad/{server,client}/package*.json
+          docker build --progress=plain -t ossinsight-sqlpad:security ops/sqlpad
+      - name: Check unprivileged runtime and native SQLite
+        run: |
+          test "$(docker image inspect --format '{{.Config.User}}' ossinsight-sqlpad:security)" = node
+          docker run --rm --network none --read-only --entrypoint node ossinsight-sqlpad:security -e "require('fs').accessSync('/usr/app/package.json',require('fs').constants.R_OK);const s=require('sqlite3');const d=new s.Database(':memory:');d.get('SELECT sqlite_version() AS v',(e,r)=>{if(e)throw e;if(!r.v.startsWith('3.52.'))throw Error('Unexpected SQLite version');console.log(r);d.close()})"
+      - name: Test offline connection-key migration and rollback
+        run: |
+          docker run --rm --network none --read-only --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 --mount "type=bind,src=${{ github.workspace }}/ops/sqlpad,dst=/usr/app/maintenance,readonly" --entrypoint node ossinsight-sqlpad:security --test /usr/app/maintenance/rekey-connections.test.mjs
+      - name: Boot the actual server with a read-only root filesystem
+        run: |
+          name=sqlpad-security-smoke
+          trap 'docker logs "$name"; docker rm -f "$name"' EXIT
+          docker run -d --name "$name" --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 --tmpfs /var/lib/sqlpad:rw,nosuid,nodev,size=64m,mode=0700,uid=1000,gid=1000 ossinsight-sqlpad:security
+          ready=false
+          for attempt in $(seq 1 30); do
+            if docker exec "$name" node -e "(async()=>{const r=await fetch('http://127.0.0.1:3000/');if(r.status!==200||!(await r.text()).includes('SQLPad'))process.exit(1);const q=await fetch('http://127.0.0.1:3000/api/queries');if(![401,403].includes(q.status))process.exit(1)})().catch(()=>process.exit(1))"; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true
