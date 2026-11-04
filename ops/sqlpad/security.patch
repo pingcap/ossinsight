@@ -30,6 +30,13 @@ index f728af9..4acac49 100644
 -    AWS.config.update({ region: connection.awsRegion });
 -  }
 +  configureAWS(connection);
+diff --git a/server/drivers/mysql2/index.js b/server/drivers/mysql2/index.js
+index 71f52d3..287848e 100644
+--- a/server/drivers/mysql2/index.js
++++ b/server/drivers/mysql2/index.js
+@@ -92,0 +93,2 @@ class Client {
++      // mysql2 requires an explicit opt-in to verify the certificate hostname.
++      myConfig.ssl['verifyIdentity'] = !connection.mysqlSkipValidateServerCert;
 diff --git a/server/lib/aws-region.js b/server/lib/aws-region.js
 new file mode 100644
 index 0000000..369dfbd
@@ -49,6 +56,48 @@ index 0000000..369dfbd
 +  }
 +  return region;
 +}
+diff --git a/server/test/drivers/mysql2-tls.js b/server/test/drivers/mysql2-tls.js
+new file mode 100644
+index 0000000..8c1d36a
+--- /dev/null
++++ b/server/test/drivers/mysql2-tls.js
+@@ -0,0 +1,36 @@
++import assert from 'node:assert/strict';
++import mysql from 'mysql2/promise';
++import driver from '../../drivers/mysql2/index.js';
++
++describe('MySQL2 TLS hostname verification', function () {
++  for (const scenario of [
++    { ssl: true, skip: false, identity: true },
++    { ssl: true, skip: true, identity: false },
++    { ssl: false, skip: false, identity: undefined },
++  ]) {
++    it(`passes the expected identity policy for ${JSON.stringify(
++      scenario
++    )}`, async function () {
++      const original = mysql.createConnection;
++      let options;
++      mysql.createConnection = async (value) => {
++        options = value;
++        return { on() {}, destroy() {} };
++      };
++      try {
++        const client = new driver.Client({
++          host: 'database.invalid',
++          username: 'fixture-user',
++          mysqlSsl: scenario.ssl,
++          mysqlSkipValidateServerCert: scenario.skip,
++        });
++        await client.connect();
++        assert.equal(options.ssl?.verifyIdentity, scenario.identity);
++        if (!scenario.ssl) assert.equal(options.ssl, undefined);
++        await client.disconnect();
++      } finally {
++        mysql.createConnection = original;
++      }
++    });
++  }
++});
 diff --git a/server/test/lib/aws-region.js b/server/test/lib/aws-region.js
 new file mode 100644
 index 0000000..f4579ad

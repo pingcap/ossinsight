@@ -33,3 +33,5 @@ Run it only against an offline data copy, with the original database retained fo
 - `SQLPAD_REKEY_MODE=check` for validation, then `apply` for the copied database
 
 Use `node /usr/app/maintenance/rekey-connections.mjs` as the container entry point. The replacement service must retain the new `SQLPAD_PASSPHRASE`; keep a separate private key backup. Never use that key with the original rollback database. Give the new service its own random `SQLPAD_COOKIE_SECRET` as well; changing this signing key requires users to sign in again but does not change their passwords.
+
+MySQL2 connections now explicitly verify the certificate hostname when server-certificate validation is enabled. Production connections must enable TLS and leave “Do not validate server certificate” unchecked; retain the trusted CA and require TLS 1.2 or newer.
