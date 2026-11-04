@@ -1,3 +1,4 @@
+import {withSitemapAudit} from '@/lib/server/route-audit';
 import type { MetadataRoute } from 'next';
 import { readdirSync } from 'fs';
 import { join } from 'path';
@@ -8,7 +9,7 @@ const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
 
 export const dynamic = 'force-dynamic';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages — canonical URLs without trailing slash for /explore and /collections
@@ -51,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
   } catch (error) {
-    console.warn('[sitemap] Failed to fetch collections for sitemap:', error);
+    console.warn('[sitemap] Failed to fetch collections for sitemap:');
   }
 
   // Blog posts (read slugs from docs content directory)
@@ -76,7 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
   } catch (error) {
-    console.warn('[sitemap] Failed to read blog posts for sitemap:', error);
+    console.warn('[sitemap] Failed to read blog posts for sitemap:');
   }
 
   // Repo comparisons generated from collections (top repos in each collection, pairwise)
@@ -110,8 +111,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
   } catch (error) {
-    console.warn('[sitemap] Failed to fetch comparison repos for sitemap:', error);
+    console.warn('[sitemap] Failed to fetch comparison repos for sitemap:');
   }
 
   return entries;
 }
+
+export default withSitemapAudit('GET /sitemap.xml', sitemap);

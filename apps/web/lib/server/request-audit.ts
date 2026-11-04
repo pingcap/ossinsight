@@ -1,4 +1,38 @@
 import {corsHeaders} from '../cors';
+import {canonicalAuditIP, requestAuditContext} from '@ossinsight/types';
+
+export function auditClientAddress(headers?: Pick<Headers, 'get'>) {
+  if (process.env.VERCEL === '1') {
+    return {sourceIP: canonicalAuditIP(headers?.get('x-forwarded-for')?.split(',')[0].trim()) || 'unavailable', sourceIPSource: 'vercel'};
+  }
+  // Self-hosted origins must be private to a gateway that overwrites this
+  // explicitly configured header. Never fall back to arbitrary forwarded headers.
+  const header = process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER;
+  if (header && /^x-[a-z0-9-]{1,60}$/.test(header)) {
+    return {sourceIP: canonicalAuditIP(headers?.get(header)) || 'unavailable', sourceIPSource: 'trusted-proxy'};
+  }
+  return {sourceIP: 'unavailable', sourceIPSource: 'unconfigured'};
+}
+
+function auditRecord(route: string, request: Request | undefined, requestId: string, started: number, statusCode: number) {
+  console.info(JSON.stringify({event: 'web_api_request', requestId, actor: 'public', route,
+    method: request?.method || route.split(' ')[0], ...auditClientAddress(request?.headers),
+    ...requestAuditContext(route, request?.url), statusCode, durationMs: Date.now() - started}));
+}
+
+/** Metadata handlers return data, not Response; preserve their result and errors. */
+export async function auditSitemap<T>(route: string, headers: Pick<Headers, 'get'>, handler: () => Promise<T> | T): Promise<T> {
+  const requestId = crypto.randomUUID(), started = Date.now();
+  let statusCode = 200;
+  try {
+    if (process.env.NODE_ENV === 'production' && auditClientAddress(headers).sourceIP === 'unavailable') throw new Error('Trusted audit client address is unavailable.');
+    return await handler();
+  } catch (error) { statusCode = 500; throw error; }
+  finally {
+    console.info(JSON.stringify({event: 'web_api_request', requestId, actor: 'public', route, method: 'GET',
+      ...auditClientAddress(headers), ...requestAuditContext(route), statusCode, durationMs: Date.now() - started}));
+  }
+}
 
 /** Edge-compatible audit boundary. Never infer a principal from request headers. */
 export function withRequestAudit<A extends unknown[]>(route: string, handler: (...args: A) => Promise<Response>, rethrowControlFlow?: (error: unknown) => void) {
@@ -6,14 +40,14 @@ export function withRequestAudit<A extends unknown[]>(route: string, handler: (.
     const requestId = crypto.randomUUID();
     const started = Date.now();
     const request = args[0] instanceof Request ? args[0] : undefined;
-    const forwarded = process.env.VERCEL === '1' ? request?.headers.get('x-forwarded-for')?.split(',')[0].trim() : undefined;
-    const sourceIP = forwarded && /^[a-f0-9:.]{1,45}$/i.test(forwarded) ? forwarded : 'unavailable';
     let response: Response;
     let cors: Record<string, string> = {Vary: 'Origin'};
     try {
       // Validate configuration before invoking a potentially expensive handler.
       cors = corsHeaders(request?.headers.get('origin'));
-      response = await handler(...args);
+      response = process.env.NODE_ENV === 'production' && auditClientAddress(request?.headers).sourceIP === 'unavailable'
+        ? Response.json({message: 'Request audit temporarily unavailable.', requestId}, {status: 503, headers: {'Cache-Control': 'no-store'}})
+        : await handler(...args);
     }
     catch (error) {
       rethrowControlFlow?.(error);
@@ -41,9 +75,7 @@ export function withRequestAudit<A extends unknown[]>(route: string, handler: (.
       for (const name of ['Cache-Control', 'CDN-Cache-Control', 'Vercel-CDN-Cache-Control']) headers.set(name, 'no-store');
       headers.delete('Expires');
     }
-    console.info(JSON.stringify({event: 'web_api_request', requestId, actor: 'public', route,
-      method: request?.method || route.split(' ')[0], sourceIP, statusCode: response.status,
-      durationMs: Date.now() - started}));
+    auditRecord(route, request, requestId, started, response.status);
     // Rewrap rather than mutate immutable headers (e.g. Response.redirect), and
     // preserve streaming bodies without buffering them.
     return new Response(response.body, {status: response.status, statusText: response.statusText, headers});

@@ -47,9 +47,25 @@ Public repository images have a one-hour CDN cache; collection images remain unc
 so changing collection visibility takes effect on the next request.
 
 Web API handlers emit structured `web_api_request` records with a generated
-`X-Request-ID`, route pattern, status, duration and Vercel's trusted source IP.
+`X-Request-ID`, route pattern, concrete resource, status, duration and trusted source IP.
+Named queries are identified from the reviewed public catalog; resource IDs and
+GitHub identifiers are validated before logging. Only bounded numeric and enum
+query parameters are retained. Duplicate, unknown and free-text values are omitted
+and counted; raw URLs, bodies, credentials and exception details are never copied
+into this record. `/llms-full.txt` and all four sitemap handlers cross the same
+audit boundary. Sitemaps run dynamically so audit events describe requests rather
+than build-time generation, and preserve the original result/error without buffering it.
 These routes are public; caller-supplied identity headers never become audit
-principals. Request values and internal exception details are excluded. Collection
+principals. Vercel supplies its [overwritten forwarding header](https://vercel.com/docs/headers/request-headers).
+For self-hosted production, isolate the origin behind a trusted gateway that
+**overwrites** a dedicated single-address header, then set
+`AUDIT_TRUSTED_CLIENT_IP_HEADER` to that header's lowercase name (for example,
+`x-ossinsight-client-ip`). Do not configure it on an origin reachable directly by
+untrusted clients. There is no automatic trust of forwarded headers off Vercel.
+Missing or invalid trusted addresses prevent production handlers from performing
+database work; local development and tests can run without a gateway. This setting
+does not change the shared-origin rate-limit bucket for self-hosted deployments.
+Collection
 API responses, named queries (`/q`, `/api/q`, `/api/queries`) and their explain
 variants bypass browser/CDN caching so revoked visibility is checked again.
 This applies even without an explicit collection parameter: defaults and query

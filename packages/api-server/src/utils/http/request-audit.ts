@@ -1,4 +1,5 @@
 import {FastifyInstance} from 'fastify';
+import {requestAuditContext} from '@ossinsight/types';
 import {authenticateOperatorToken} from './operator-auth';
 
 declare module 'fastify' {
@@ -24,6 +25,7 @@ export function registerRequestAudit(app: FastifyInstance, operationsToken?: str
   app.addHook('onResponse', async (request, reply) => {
     app.log.info({event: 'api_request', requestId: request.id, actor: request.securityActor || 'anonymous',
       method: request.method, route: request.routeOptions.url || 'unmatched',
+      ...requestAuditContext(request.routeOptions.url || 'unmatched', request.raw.url),
       sourceIP: request.ip, statusCode: reply.statusCode, durationMs: reply.elapsedTime});
   });
 }
