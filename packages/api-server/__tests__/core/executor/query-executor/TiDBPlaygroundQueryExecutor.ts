@@ -64,10 +64,19 @@ describe('connection limits', () => {
     try {
       // Inspect trusted connection initialization directly. Generated SQL may
       // not read session variables, including ones initialized by the server.
-      const [res] = await conn.query<any[]>('SELECT @abc AS abc, @@sql_mode AS mode');
+      const [res] = await conn.query<any[]>('SELECT @abc AS abc, @@sql_mode AS mode, @@max_execution_time AS budget');
       expect(res[0].abc).toBe(1);
       expect(res[0].mode).toContain('STRICT_TRANS_TABLES');
       expect(res[0].mode).not.toContain('NO_BACKSLASH_ESCAPES');
+      expect(Number(res[0].budget)).toBe(30000);
+      await executor.executeWithConn(conn, 'timeout-regression', {
+        sql: 'SELECT /*+ MAX_EXECUTION_TIME(0) SET_VAR(max_execution_time=0) */ 1', timeout: 1000,
+      });
+      const [limited] = await conn.query<any[]>('SELECT @@max_execution_time AS budget');
+      expect(Number(limited[0].budget)).toBe(1000);
+      await executor.executeWithConn(conn, 'timeout-regression', 'SELECT 1');
+      const [restored] = await conn.query<any[]>('SELECT @@max_execution_time AS budget');
+      expect(Number(restored[0].budget)).toBe(30000);
       await expect(executor.executeWithConn(conn, '', 'SELECT @abc')).rejects.toThrow();
     } finally {
       conn.release();
@@ -166,13 +175,20 @@ test('private collections remain inaccessible through named SQL and warmed cache
     const provider = {get: async (key: string) => values.get(key), set: async (key: string, value: string) => {values.set(key, JSON.parse(value));}};
     const queryCache = {build: (_provider: string, key: string, hours: number, only: boolean, refresh: boolean) => new Cache(testLogger, provider, key, hours, only, refresh)};
     const runner = new QueryRunner(testLogger, queryCache as any, new QueryLoader(testLogger), executor, pool);
+    const executed = jest.spyOn(executor, 'execute');
     expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data.map(row => Number(row.id))).toEqual([90001]);
+    await pool.query("UPDATE collections SET name = 'renamed public collection' WHERE id = 90001");
+    expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data[0].name).toBe('renamed public collection');
+    await pool.query('UPDATE collection_items SET deleted_at = NOW() WHERE collection_id = 90001');
+    expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data).toEqual([]);
+    await pool.query('UPDATE collection_items SET deleted_at = NULL WHERE collection_id = 90001');
     await pool.query('UPDATE collections SET public = 0 WHERE id = 90001');
     await expect(service.getCollectionRepos(90001)).rejects.toMatchObject({statusCode: 404});
     const [hidden] = await pool.query<any[]>(sql);
     expect(hidden).toHaveLength(0);
     expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data).toHaveLength(0);
-    expect(values.size).toBe(0);
+    expect(values.size).toBe(1);
+    expect(executed.mock.calls.filter(([key]) => key === 'query:get-repo-collections')).toHaveLength(1);
   } finally { await pool.end(); }
 });
 
