@@ -50,7 +50,12 @@ Web API handlers emit structured `web_api_request` records with a generated
 `X-Request-ID`, route pattern, status, duration and Vercel's trusted source IP.
 These routes are public; caller-supplied identity headers never become audit
 principals. Request values and internal exception details are excluded. Collection
-API responses bypass browser/CDN caching so revoked visibility is checked again.
+API responses, named queries (`/q`, `/api/q`, `/api/queries`) and their explain
+variants bypass browser/CDN caching so revoked visibility is checked again.
+This applies even without an explicit collection parameter: defaults and query
+projections can also expose collections. The boundary overrides all three cache
+headers on successes and errors. Server-side result caches remain behind the
+fresh visibility check; public repository image caching is unaffected.
 
 Web documents receive a fresh CSP nonce from Proxy. The renderer, JSON-LD and
 analytics scripts use that nonce; production scripts cannot use arbitrary inline
