@@ -141,8 +141,8 @@ export class ExplorerService {
 
         // Check if the question is cached.
         if (!ignoreCache) {
-          const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL);
-          if (cachedQuestion) {
+          const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL, userId);
+          if (cachedQuestion && cachedQuestion.userId === userId) {
             logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
 
             return {
@@ -633,7 +633,7 @@ export class ExplorerService {
         return question;
     }
 
-    async getLatestQuestionByHash(questionHash: string, ttl: number): Promise<Question | null> {
+    async getLatestQuestionByHash(questionHash: string, ttl: number, userId: number): Promise<Question | null> {
         const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
@@ -645,11 +645,12 @@ export class ExplorerService {
             FROM explorer_questions
             WHERE
                 hash = ?
+                AND user_id = ?
                 AND status IN (?)
                 AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
             ORDER BY created_at DESC
             LIMIT 1
-        `, [questionHash, QuestionStatus.Success, ttl]);
+        `, [questionHash, userId, QuestionStatus.Success, ttl]);
         if (rows.length !== 1) {
             return null;
         }

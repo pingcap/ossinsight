@@ -48,7 +48,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     // Create question.
     const userId = await app.userService.getUserIdOrCreate(req);
     const question = await app.explorerService.newQuestion(userId, questionTitle, ignoreCache);
-    if (!question) {
+    if (!question || question.userId !== userId) {
       throw new APIError(500, 'Failed to create question.');
     }
 

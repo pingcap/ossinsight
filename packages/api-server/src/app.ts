@@ -42,6 +42,8 @@ export interface AppConfig {
   OPENAI_API_KEY: string;
   AUTH0_DOMAIN: string;
   AUTH0_SECRET: string;
+  AUTH0_AUDIENCE?: string;
+  AUTH0_ALLOWED_CLIENT_IDS?: string[];
   TIDB_CLOUD_DATA_SERVICE_APP_ID: string;
   TIDB_CLOUD_DATA_SERVICE_PUBLIC_KEY: string;
   TIDB_CLOUD_DATA_SERVICE_PRIVATE_KEY: string;

@@ -54,8 +54,9 @@ yml.items.forEach(n => console.log(`  ${n}`));
 import { createRequire } from 'module';
 let connect;
 const searchPaths = [
+  join(root, 'ops', 'collection-sync', 'node_modules', '@tidbcloud', 'serverless', 'package.json'),
   join(root, 'node_modules', '@tidbcloud', 'serverless', 'package.json'),
-  join(root, 'apps', 'web', 'node_modules', '.pnpm', '@tidbcloud+serverless@0.0.6', 'node_modules', '@tidbcloud', 'serverless', 'package.json'),
+  join(root, 'apps', 'web', 'node_modules', '@tidbcloud', 'serverless', 'package.json'),
 ];
 for (const p of searchPaths) {
   try {
@@ -65,7 +66,7 @@ for (const p of searchPaths) {
   } catch {}
 }
 if (!connect) {
-  console.error('Cannot find @tidbcloud/serverless. Run: npm install @tidbcloud/serverless');
+  console.error('Cannot find @tidbcloud/serverless. Run: npm ci --prefix ops/collection-sync --ignore-scripts');
   process.exit(1);
 }
 const db = connect({

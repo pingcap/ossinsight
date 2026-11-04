@@ -1,4 +1,6 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
+import {questionResponse} from '../../../utils/explorer-access';
+import {APIError} from '../../../utils/error';
 
 const schema = {
   summary: 'Answer new a question',
@@ -30,8 +32,8 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     const userId = await app.userService.getUserIdOrCreate(req);
     const question = await app.explorerService.newQuestion(userId, questionTitle, ignoreCache);
 
-    if (!question) {
-      throw new Error('Failed to create question.');
+    if (!question || question.userId !== userId) {
+      throw new APIError(500, 'Failed to create question.');
     }
 
     // Prepare question async.
@@ -41,7 +43,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       });
     }
 
-    reply.status(200).send(question);
+    reply.status(200).send(questionResponse(question, question.preceding));
   });
 }
 

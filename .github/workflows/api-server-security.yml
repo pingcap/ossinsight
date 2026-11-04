@@ -26,6 +26,10 @@ on:
       - 'etl/test/sample_importer_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
+      - '.github/workflows/sync-collection-configs.yml'
+      - '.github/workflows/verify-collection-configs.yml'
+      - '.github/workflows/daily-star-snapshots.yml'
+      - 'ops/collection-sync/**'
   push:
     branches: [main]
     paths:
@@ -52,6 +56,10 @@ on:
       - 'etl/test/sample_importer_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
+      - '.github/workflows/sync-collection-configs.yml'
+      - '.github/workflows/verify-collection-configs.yml'
+      - '.github/workflows/daily-star-snapshots.yml'
+      - 'ops/collection-sync/**'
 
 permissions:
   contents: read
@@ -80,6 +88,12 @@ jobs:
       - run: pnpm --filter @ossinsight/api-server test:security
       - run: pnpm --filter @ossinsight/api-server test:runtime
       - run: node --test scripts/lib/collection-store.test.mjs
+      - name: Verify isolated collection sync dependencies
+        run: |
+          npm ci --prefix ops/collection-sync --ignore-scripts --no-fund
+          npm audit --prefix ops/collection-sync --omit=dev --audit-level=high
+          cd ops/collection-sync
+          node -e "if (typeof require('@tidbcloud/serverless').connect !== 'function') process.exit(1)"
       - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
         with:
           ruby-version: '3.3'
