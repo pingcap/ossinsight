@@ -4,10 +4,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypePrettyCode from 'rehype-pretty-code';
-import rehypeRaw from 'rehype-raw';
-import rehypeSlug from 'rehype-slug';
+import {markdownRehypePlugins, normalizeMarkdownSource as normalizeSource, toPublicAssetPath} from './markdown-security.mjs';
+import {LegacyMarkdownAnchors} from '@/components/legacy-markdown-anchors';
 import {findContentFile, resolveApiSourceFile, resolveBlogSourceFile, resolveDocsSourceFile} from './content-files';
 import { MarkdownAsync } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -17,21 +15,6 @@ import { docsMdxComponents } from '@/lib/mdx-components';
 const CONTENT_ROOT = path.join(process.cwd(), 'content');
 const BLOG_ROOT = path.join(CONTENT_ROOT, 'blog');
 const DOCS_ROOT = path.join(process.cwd(), 'legacy-content', 'docs');
-
-const prettyCodeOptions = {
-  theme: 'one-dark-pro',
-  keepBackground: false,
-  bypassInlineCode: true,
-  defaultLang: {
-    block: 'plaintext',
-    inline: 'plaintext',
-  },
-  onVisitLine(node: { children: Array<unknown> }) {
-    if (node.children.length === 0) {
-      node.children = [{ type: 'text', value: ' ' }];
-    }
-  },
-};
 
 type AuthorRecord = {
   image_url?: string;
@@ -181,87 +164,18 @@ function normalizeTitle(filePath: string) {
   return path.basename(filePath, path.extname(filePath)).replace(/[-_]/g, ' ');
 }
 
-function toPublicAssetPath(assetPath: string, assetBasePath: string) {
-  if (assetPath.startsWith('./')) {
-    return `${assetBasePath}/${assetPath.slice(2)}`;
-  }
-
-  if (assetPath.startsWith('@site/blog/')) {
-    return `/blog-assets/${assetPath.slice('@site/blog/'.length)}`;
-  }
-
-  return assetPath;
-}
-
-function quoteMarkdownBlock(text: string) {
-  return text
-    .trim()
-    .split('\n')
-    .map((line) => (line ? `> ${line}` : '>'))
-    .join('\n');
-}
-
-function normalizeAdmonitions(source: string) {
-  return source.replace(/^:::(\w+)\s*\n([\s\S]*?)^:::\s*$/gm, (_match, rawType: string, body: string) => {
-    const type = rawType.toLowerCase();
-    const labelMap: Record<string, string> = {
-      danger: 'Caution',
-      info: 'Note',
-      note: 'Note',
-      tip: 'Tip',
-      warning: 'Warning',
-    };
-    const label = labelMap[type] ?? 'Note';
-
-    return `> **${label}**\n>\n${quoteMarkdownBlock(body)}`;
-  });
-}
-
-function normalizeSource(source: string, assetBasePath?: string) {
-  let nextSource = source.replace(/<!--truncate-->/g, '');
-  nextSource = normalizeAdmonitions(nextSource);
-
-  if (!assetBasePath) {
-    return nextSource;
-  }
-
-  nextSource = nextSource.replace(/src=\{require\((['"])(\.\/[^'"]+|@site\/blog\/[^'"]+)\1\)\.default\}/g, (_match, _quote, assetPath: string) => {
-    return `src="${toPublicAssetPath(assetPath, assetBasePath)}"`;
-  });
-
-  nextSource = nextSource.replace(/!\[([^\]]*)\]\(\.\/([^)]+)\)/g, (_match, altText: string, assetPath: string) => {
-    return `![${altText}](${toPublicAssetPath(`./${assetPath}`, assetBasePath)})`;
-  });
-
-  nextSource = nextSource.replace(/<img([^>]*?)src=["']\.\/([^"']+)["']([^>]*)>/g, (_match, before: string, assetPath: string, after: string) => {
-    return `<img${before}src="${toPublicAssetPath(`./${assetPath}`, assetBasePath)}"${after}>`;
-  });
-
-  return nextSource;
-}
-
 async function renderMarkdown(source: string, assetBasePath?: string) {
   const normalizedSource = normalizeSource(source, assetBasePath);
-  return (
+  return (<>
     <MarkdownAsync
       components={docsMdxComponents}
-      rehypePlugins={[
-        rehypeRaw,
-        [rehypePrettyCode, prettyCodeOptions],
-        rehypeSlug,
-        [rehypeAutolinkHeadings, {
-          behavior: 'append',
-          properties: {
-            ariaLabel: 'Permalink',
-            className: ['anchor-link'],
-          },
-        }],
-      ]}
+      rehypePlugins={markdownRehypePlugins}
       remarkPlugins={[remarkGfm]}
     >
       {normalizedSource}
     </MarkdownAsync>
-  );
+    <LegacyMarkdownAnchors />
+  </>);
 }
 
 const loadAuthors = cache(async () => {

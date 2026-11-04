@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { Geist } from 'next/font/google';
+import {headers} from 'next/headers';
 import { SharedSiteHeader } from '@/components/shared-site-header';
 import { QueryProvider } from '@/components/query-provider';
 import './globals.css';
@@ -28,11 +29,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     <html
       lang="en"
@@ -55,6 +57,7 @@ export default function RootLayout({
               enabled: true,
             }}
             theme={{
+              nonce,
               defaultTheme: 'dark',
               enableSystem: false,
               enabled: true,

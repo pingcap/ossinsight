@@ -61,8 +61,9 @@ Web documents receive a fresh CSP nonce from Proxy. The renderer, JSON-LD and
 analytics scripts use that nonce; production scripts cannot use arbitrary inline
 JavaScript or eval. The root layout reads request headers, so HTML uses dynamic
 rendering instead of sharing a cached nonce. Internal data caching remains
-available. Docs/blog rewrites receive the common object/frame/base/form restrictions
-and are rendered by their separate deployment. Remote SVG image optimization is
+available. Docs/blog are rendered by their separate deployment with its own strict
+nonce CSP; verify that policy through the primary-domain rewrites too. Docs HTML also renders dynamically,
+while non-HTML exports and assets retain caching. Remote SVG image optimization is
 disabled, and HTTPS responses include HSTS. Development permits eval for Next's
 local debugging runtime. Verify real preview page rendering and CSP console
 messages before promoting a deployment.
