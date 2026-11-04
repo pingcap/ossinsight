@@ -2,7 +2,7 @@ import fp from 'fastify-plugin';
 import {Pool} from "mysql2/promise";
 import pino from "pino";
 import { TiDBPlaygroundQueryExecutor } from '../../core/executor/query-executor/TiDBPlaygroundQueryExecutor';
-import { getPlaygroundSessionLimits } from '../../core/playground/limitation';
+import { getPlaygroundSessionLimits, getPlaygroundQueryTimeout } from '../../core/playground/limitation';
 
 export default fp(async (app) => {
   // TODO: make playground connection config is optional.
@@ -10,7 +10,8 @@ export default fp(async (app) => {
     app.mysql.playground as unknown as Pool,
     app.mysql.playgroundShadow as unknown as Pool,
     app.log as pino.Logger,
-    getPlaygroundSessionLimits()
+    getPlaygroundSessionLimits(),
+    getPlaygroundQueryTimeout(),
   );
   app.decorate('playgroundQueryExecutor', playgroundQueryExecutor);
 }, {

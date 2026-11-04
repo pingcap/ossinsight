@@ -69,6 +69,26 @@ as trusted. Public clients cannot choose their quota identity with IP headers.
 
 ### Public query transport limits
 
+Collection-bearing catalog results retain their configured cache and prefetch-only
+policy. Before returning cached trending/collection results, the API refreshes
+public collection names and memberships with bounded metadata lookups; revoked
+or deleted memberships are not served. Metadata failures deny the response.
+The source-data incident gate still takes precedence over prefetch and cache access.
+
+SQL Playground uses a 30,000 ms default server statement limit and client timeout.
+`PLAYGROUND_QUERY_SQL_TIMEOUT` accepts an integer from 1 to 60,000 milliseconds;
+invalid or zero values prevent startup. The legacy
+`PLAYGROUND_SESSION_max_execution_time` is accepted when the new setting is absent,
+with the same bounds. Other `PLAYGROUND_SESSION_*` values cannot disable the limit.
+Explorer workers keep their bounded `EXPLORER_QUERY_SQL_TIMEOUT` setting. Smaller
+per-query timeouts apply to the server and client, including shadow connections;
+timed-out client connections are destroyed. TiDB enforces server deadlines with
+approximately 100 ms precision, as described in its
+[max_execution_time documentation](https://docs.pingcap.com/tidb/stable/system-variables/#max_execution_time).
+User SQL is parsed and serialized before execution, removing optimizer hints that
+could override the session limit. Explorer metrics use one `explorer-sql` label;
+question IDs remain in existing diagnostic records instead of metric series.
+
 `PUBLIC_API_HOURLY_RATE_LIMIT` (default 600) now caps one client's total queries across
 HTTP named-query, metadata and public-proxy routes, WebSocket handshakes and WebSocket
 queries. Redis reservations are atomic, failures deny requests, and sockets allow at

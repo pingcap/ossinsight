@@ -38,7 +38,7 @@ export async function main(checkOnly = false) {
     const analytics = createPool(config.playground);
     pools.push(metadata, analytics);
     const executor = new TiDBPlaygroundQueryExecutor(analytics, null, log,
-      [`SET SESSION max_execution_time = ${config.timeout}`]);
+      [], config.timeout);
     await Promise.all([redis.connect(), metadata.query('SELECT 1'), analytics.query('SELECT 1')]);
     await checkAnalyticsDatabase(analytics);
     const session = await analytics.getConnection();

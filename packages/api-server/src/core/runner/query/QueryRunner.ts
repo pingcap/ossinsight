@@ -14,6 +14,7 @@ import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecut
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 import {getQueryDataQuality, STAR_DATA_INCIDENT_MARKER} from "../../../utils/data-quality";
 import {APIError, QueryDataUnavailableError} from "../../../utils/error";
+import {hasCollectionProjection, refreshCollectionProjection} from './collection-projection';
 
 export const enum QueryType {
   QUERY = 'query',
@@ -105,11 +106,12 @@ export class QueryRunner {
         const queryKey = this.buildQueryKey(type, queryName);
         const cacheKey = this.buildCacheKey(type, queryName, queryConfig, params, templateSQL);
         const needsFreshVisibility = !collectionParameter && /\bcollections\b/i.test(templateSQL);
+        const refreshProjection = type === QueryType.QUERY && needsFreshVisibility && hasCollectionProjection(queryName);
         const cache = this.cacheBuilder.build(
           cacheProvider,
           cacheKey,
-          needsFreshVisibility ? 0 : cacheHours,
-          needsFreshVisibility || ignoreOnlyFromCache ? false : onlyFromCache,
+          needsFreshVisibility && !refreshProjection ? 0 : cacheHours,
+          ignoreOnlyFromCache ? false : onlyFromCache,
           refreshCache
         );
     
@@ -133,7 +135,10 @@ export class QueryRunner {
 
             // Persist the query result.
             if (type === QueryType.QUERY && queryConfig.persist) {
-              await this.persistResult(`persist:${queryKey}`, queryConfig.persist, params, rows);
+              const persistedRows = params?.format === 'array'
+                ? rows.map(row => Object.fromEntries(fields.map((field, index) => [field.name, row[index]])))
+                : rows;
+              await this.persistResult(`persist:${queryKey}`, queryConfig.persist, params, persistedRows);
             }
 
             return {
@@ -150,7 +155,10 @@ export class QueryRunner {
 
         // Rebuild metadata from the same declared values used by the cache key.
         // This also protects old persisted entries and coalesced in-flight hits.
-        const response = {...result, params: normalizedParams};
+        const visibleResult = refreshProjection
+          ? await refreshCollectionProjection(this.tidb, queryName, result, normalizedParams)
+          : result;
+        const response = {...visibleResult, params: normalizedParams};
         if (dataQuality === 'tainted') {
           // Attached after cache.load so the marker is never baked into the
           // cache and disappears as soon as the incident switch is turned off.
