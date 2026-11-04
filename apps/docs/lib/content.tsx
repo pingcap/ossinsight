@@ -8,6 +8,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
+import {findContentFile, resolveApiSourceFile, resolveBlogSourceFile, resolveDocsSourceFile} from './content-files';
 import { MarkdownAsync } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import YAML from 'yaml';
@@ -263,47 +264,6 @@ async function renderMarkdown(source: string, assetBasePath?: string) {
   );
 }
 
-async function pathExists(filePath: string) {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function findFirstExistingFile(candidates: string[]) {
-  for (const candidate of candidates) {
-    if (await pathExists(candidate)) {
-      return candidate;
-    }
-  }
-
-  return null;
-}
-
-async function resolveBlogSourceFile(slug: string) {
-  const blogDir = path.join(BLOG_ROOT, slug);
-  return findFirstExistingFile([
-    path.join(blogDir, 'index.mdx'),
-    path.join(blogDir, 'index.md'),
-  ]);
-}
-
-async function resolveDocsSourceFile(slugPath: string) {
-  const segments = slugPath.split('/').filter(Boolean);
-  const absoluteBase = path.join(DOCS_ROOT, ...segments);
-
-  return findFirstExistingFile([
-    `${absoluteBase}.mdx`,
-    `${absoluteBase}.md`,
-    path.join(absoluteBase, 'index.mdx'),
-    path.join(absoluteBase, 'index.md'),
-    path.join(absoluteBase, 'overview.mdx'),
-    path.join(absoluteBase, 'overview.md'),
-  ]);
-}
-
 const loadAuthors = cache(async () => {
   const authorsSource = await fs.readFile(path.join(process.cwd(), 'legacy-content', 'blog-authors.yml'), 'utf8');
   return YAML.parse(authorsSource) as Record<string, AuthorRecord>;
@@ -345,7 +305,7 @@ export const getBlogPosts = cache(async () => {
   const posts = await Promise.all(entries
     .filter((entry) => entry.isDirectory())
     .map(async (entry) => {
-      const filePath = await resolveBlogSourceFile(entry.name);
+      const filePath = await resolveBlogSourceFile(BLOG_ROOT, entry.name);
 
       if (!filePath) {
         return null;
@@ -367,7 +327,7 @@ export const getBlogPosts = cache(async () => {
 });
 
 export const getBlogPost = cache(async (slug: string) => {
-  const filePath = await resolveBlogSourceFile(slug);
+  const filePath = await resolveBlogSourceFile(BLOG_ROOT, slug);
 
   if (!filePath) {
     return null;
@@ -391,7 +351,7 @@ export const getBlogSummaryBySlug = cache(async (slug: string) => {
 });
 
 export const getDocsPage = cache(async (slugPath: string) => {
-  const filePath = await resolveDocsSourceFile(slugPath);
+  const filePath = await resolveDocsSourceFile(DOCS_ROOT, slugPath);
 
   if (!filePath) {
     return null;
@@ -463,10 +423,7 @@ export const getApiDocs = cache(async () => {
 
 export const getApiDoc = cache(async (slug: string) => {
   const apiRoot = path.join(DOCS_ROOT, 'api');
-  const filePath = await findFirstExistingFile([
-    path.join(apiRoot, `${slug}.api.mdx`),
-    path.join(apiRoot, `${slug}.api.md`),
-  ]);
+  const filePath = await resolveApiSourceFile(apiRoot, slug);
 
   if (!filePath) {
     return null;
@@ -494,9 +451,9 @@ export const getApiDoc = cache(async (slug: string) => {
 
 export const getApiOverview = cache(async () => {
   const apiRoot = path.join(DOCS_ROOT, 'api');
-  const filePath = await findFirstExistingFile([
-    path.join(apiRoot, 'ossinsight-public-api.info.mdx'),
-    path.join(apiRoot, 'ossinsight-public-api.info.md'),
+  const filePath = await findContentFile(apiRoot, [
+    'ossinsight-public-api.info.mdx',
+    'ossinsight-public-api.info.md',
   ]);
 
   if (!filePath) {
