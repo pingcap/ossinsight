@@ -37,6 +37,12 @@ export function questionResponse(question: Question, queuePreceding = 0) {
     sqlCanAnswer: question.sqlCanAnswer, querySQL: question.querySQL,
     engines: question.engines, recommendedQuestions: question.recommendedQuestions,
     result: question.result, chart: question.chart, answerSummary: question.answerSummary,
+    answer: question.answer && {
+      revisedTitle: question.answer.revisedTitle, sqlCanAnswer: question.answer.sqlCanAnswer,
+      notClear: question.answer.notClear, assumption: question.answer.assumption,
+      combinedTitle: question.answer.combinedTitle, querySQL: question.answer.querySQL,
+      chart: question.answer.chart,
+    },
     recommended: question.recommended, createdAt: question.createdAt,
     requestedAt: question.requestedAt, executedAt: question.executedAt,
     finishedAt: question.finishedAt, spent: question.spent,

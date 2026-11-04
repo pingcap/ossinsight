@@ -13,6 +13,7 @@ function fixture(): Question {
     status: QuestionStatus.Success, querySQL: 'SELECT 1', result: {fields: [], rows: [[1]]},
     recommended: false, createdAt: DateTime.utc(), hitCache: false, preceding: 0,
     batchJobId: 'internal-batch', needReview: false, plan: [{task: 'internal-db-host'}],
+    answer: {revisedTitle: 'A cleaned answer', internalMetadata: 'private-value'} as any,
     error: 'synthetic raw database credentials/error', unexpectedFuturePrivateField: 'private-value'};
 }
 
@@ -60,9 +61,11 @@ test.each(['', '/tags'])('owner can read their own question %s', async suffix =>
     if (!suffix) {
       expect(response.json().querySQL).toBe('SELECT 1');
       expect(response.json().result.rows).toEqual([[1]]);
+      expect(response.json().answer.revisedTitle).toBe('A cleaned answer');
       expect(response.json().error).toBe('Answer unavailable.');
       for (const key of ['userId', 'hash', 'plan', 'batchJobId', 'unexpectedFuturePrivateField']) expect(response.json()).not.toHaveProperty(key);
       expect(response.body).not.toContain('raw database');
+      expect(response.body).not.toContain('private-value');
     }
   } finally {await app.close();}
 });
