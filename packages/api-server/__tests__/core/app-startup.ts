@@ -43,6 +43,10 @@ test('the production CLI boots every API plugin and route with protected operati
       expect((await fetch(base + path, {headers: {authorization: `Bearer ${token}`}})).status).toBe(200);
     }
     expect((await fetch(base + '/explorer/answer', {method: 'POST'})).status).toBe(401);
+    const missing = await fetch(base + '/security-test-not-found');
+    expect(missing.status).toBe(404);
+    expect(missing.headers.get('x-ratelimit-limit')).toBe('600');
+    expect(missing.headers.get('x-request-id')).toBeTruthy();
   } finally {
     if (child.exitCode === null && child.signalCode === null) child.kill('SIGTERM');
     const forced = setTimeout(() => child.kill('SIGKILL'), 5000);

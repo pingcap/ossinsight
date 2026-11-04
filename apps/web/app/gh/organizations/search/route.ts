@@ -1,6 +1,8 @@
 import {withRequestAudit} from '@/lib/server/route-audit';
 import { jsonDataResponse, searchUsers, corsPreflightResponse } from '@/lib/server/internal-api';
 
+import {normalizeSearchKeyword, invalidSearchResponse} from '@/lib/server/search-keyword';
+
 export const runtime = 'edge';
 
 async function handleOPTIONS() {
@@ -9,7 +11,8 @@ async function handleOPTIONS() {
 
 async function handleGET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const keyword = searchParams.get('keyword') ?? '';
+  const keyword = normalizeSearchKeyword(searchParams.get('keyword') ?? '');
+  if (keyword === null || searchParams.getAll('keyword').length > 1) return invalidSearchResponse();
   const data = await searchUsers(keyword, 'org');
   return jsonDataResponse(data);
 }

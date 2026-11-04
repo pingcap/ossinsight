@@ -6,6 +6,17 @@ import {BatchLoader} from "../../core/db/batch-loader";
 import {getRealClientIP} from "../../utils/http/forwared";
 import Logger = pino.Logger;
 
+// Bound bytes as well as characters, without cutting a UTF-8 code point.
+export function boundedAuditText(value: string, maximum: number): string {
+  let result = '', bytes = 0;
+  for (const character of value) {
+    const size = Buffer.byteLength(character);
+    if (bytes + size > maximum) break;
+    result += character; bytes += size;
+  }
+  return result;
+}
+
 declare module 'fastify' {
   interface FastifyInstance {
     apiRequestRecorder: BatchLoader;
@@ -25,27 +36,15 @@ export default fp(async (app) => {
       return;
     }
 
-    // Save the success request.
-    const clientIP = getRealClientIP(req);
-    const clientOrigin = req.headers.origin ?? '';
+    // Record the final response once, including errors and their final status.
+    const clientIP = boundedAuditText(getRealClientIP(req), 128);
+    const clientOrigin = boundedAuditText(req.headers.origin ?? '', 255);
     const { method, query } = req;
     const { path } = req.urlData();
     const isDev = process.env.NODE_ENV === 'development';
     void this.apiRequestRecorder.insert([
-      clientIP, clientOrigin, method, path, JSON.stringify(query), false, reply.statusCode, reply.elapsedTime, isDev
-    ]);
-    done();
-  });
-
-  app.addHook('onError', function (req, reply, error, done) {
-    // Save the failed request.
-    const clientIP = getRealClientIP(req);
-    const clientOrigin = req.headers.origin ?? '';
-    const { method, query } = req;
-    const { path } = req.urlData();
-    const isDev = process.env.NODE_ENV === 'development';
-    void this.apiRequestRecorder.insert([
-      clientIP, clientOrigin, method, path, JSON.stringify(query), true, reply.statusCode, reply.elapsedTime, isDev
+      clientIP, clientOrigin, method, boundedAuditText(path ?? '', 255), JSON.stringify(query),
+      reply.statusCode >= 400, reply.statusCode, reply.elapsedTime, isDev
     ]);
     done();
   });

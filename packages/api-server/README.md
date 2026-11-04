@@ -89,9 +89,11 @@ User SQL is parsed and serialized before execution, removing optimizer hints tha
 could override the session limit. Explorer metrics use one `explorer-sql` label;
 question IDs remain in existing diagnostic records instead of metric series.
 
-`PUBLIC_API_HOURLY_RATE_LIMIT` (default 600) now caps one client's total queries across
-HTTP named-query, metadata and public-proxy routes, WebSocket handshakes and WebSocket
-queries. Redis reservations are atomic, failures deny requests, and sockets allow at
+`PUBLIC_API_HOURLY_RATE_LIMIT` (default 600) caps one client's total requests across
+all HTTP routes (including health, Explorer, feedback, new routes and 404s),
+WebSocket handshakes and WebSocket queries. CORS preflights and authenticated
+`/metrics` and `/docs/json` requests are exempt. Redis reservations are atomic,
+failures deny requests, and sockets allow at
 most two concurrent queries and 16 KiB messages. Configure `TRUSTED_PROXY_CIDRS` with
 only the actual reverse-proxy networks; HTTP and sockets use the same trust boundary.
 Export this setting in the process manager environment before starting the API;
@@ -119,6 +121,23 @@ status and duration. Auth0 principals are recorded only after JWT verification;
 privileged operations additionally resolve the stored user ID. Operator access
 records a token fingerprint. These records omit tokens, bodies and query values.
 The existing request-statistics table remains a separate analytics sink.
+Its Origin/path fields are capped at 255 UTF-8 bytes and IP fields at 128 bytes.
+Responses produce one statistics row with the final status, including failures.
+Deterministic row-validation errors isolate the bad row without discarding its
+neighbors; connection failures retain the bounded whole-batch retry policy.
+Failed inserts log counts/error numbers without SQL or buffered request values.
+Shutdown waits for outstanding flushes. This sink remains best effort during
+database outages; the structured request audit remains independent of it.
+
+The API health route shares one dependency probe per process and caches its result
+for five seconds. An HTTP probe waits at most three seconds; a stuck backend probe
+is not replaced by further requests. Health HTTP responses remain `no-store`.
+
+Web GitHub searches accept bounded plain terms (at most 100 characters). Invalid
+or repeated keywords return an uncached 400 before SQL. All prefix predicates use
+bound, escaped parameters with explicit `ESCAPE '!'`; equality comparisons retain
+the original term. Empty terms and existing recommendation keywords retain their
+database-free responses.
 
 ### Query cache rollout
 
