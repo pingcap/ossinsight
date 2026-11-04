@@ -10,6 +10,21 @@ opened file before use, keeps credentials in a temporary mode-0600 option file, 
 file loading and mysql shell commands, and requires verified TLS. Set `SAMPLE_MYSQL_SSL_CA`
 when the server uses a private CA. Do not derive the expected digest from an untrusted download.
 
+## Repository seeds and archive transport
+
+`rails db:seed` uses the same private option-file importer and verified TLS, even
+when `DB_FORCE_SSL` is unset. Its default CA bundle is `/etc/ssl/cert.pem`; set
+`DB_SSL_CA` to your trusted bundle when needed. The reviewed `db/seed.sql` is pinned
+by SHA-256 in `db/seeds.rb`. When intentionally updating seed data, review the SQL
+and update that pin in the same change. Never compute the expected digest from
+the input during seeding.
+
+Hourly archives use the [official GH Archive HTTPS endpoint](https://www.gharchive.org/).
+Only hourly archive filenames are accepted. Downloads verify the server certificate,
+reject redirects, and use bounded connection/read timeouts. A missing archive may
+be skipped; certificate, redirect and server failures stop the import instead of
+being reported as missing data.
+
 
 ## github_events
 
