@@ -2,7 +2,7 @@ import {GithubRepoDao} from "@dao/github-repo-dao";
 import {AppConfig} from "@env";
 import {GitHubHelper} from "@libs/github/helper";
 import {createOctokitPool} from "@libs/github/octokit";
-import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient} from "@libs/db/prisma";
 
 import async from "async";
 import {Command} from "commander";
@@ -25,13 +25,14 @@ export async function markDeletedRepos(logger: Logger, config: AppConfig) {
   const octokitPool = createOctokitPool(logger, config.GITHUB_ACCESS_TOKENS);
   const concurrent = octokitPool.max;
   const gitHubHelper = new GitHubHelper(logger, octokitPool);
-  const prisma = new PrismaClient();
+  const prisma = createSecurePrismaClient(config.DATABASE_URL);
   const githubRepoDao = new GithubRepoDao(logger, prisma);
   const publicReposLimit = 20000;
 
   // Prepare workers.
   const queue = async.queue<any>(async (user) => {
-    console.log(githubRepoDao, publicReposLimit)
+    // A DAO/Prisma object can contain the datasource credentials.
+    logger.debug({component: githubRepoDao.constructor.name, publicReposLimit}, 'Repository deletion scan worker scheduled');
   }, concurrent);
 
   // Generate jobs.

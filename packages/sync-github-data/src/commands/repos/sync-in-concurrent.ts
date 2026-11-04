@@ -2,7 +2,7 @@ import {GithubRepoDao} from "@dao/github-repo-dao";
 import {AppConfig} from "@env";
 import {GitHubHelper} from "@libs/github/helper";
 import {createOctokitPool} from "@libs/github/octokit";
-import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient} from "@libs/db/prisma";
 import async from "async";
 import {Command} from "commander";
 import {Logger} from "pino";
@@ -50,7 +50,7 @@ export async function syncReposInConcurrent(
   const githubHelper = new GitHubHelper(rootLogger, octokitPool);
 
   // Init GitHub Repo Dao.
-  const prisma = new PrismaClient();
+  const prisma = createSecurePrismaClient(config.DATABASE_URL);
   const githubRepoDao = new GithubRepoDao(rootLogger, prisma);
 
 

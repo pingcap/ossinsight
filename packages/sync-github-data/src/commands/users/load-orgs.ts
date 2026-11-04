@@ -1,9 +1,10 @@
 import {AppConfig} from "@env";
+import {getPool} from "@libs/db/new";
 import {Organization, OrganizationType} from "@typings/github";
 import async from "async";
 import {Command} from "commander";
 import {existsSync, readFileSync} from "fs";
-import {createPool, Pool, ResultSetHeader} from "mysql2/promise";
+import {Pool, ResultSetHeader} from "mysql2/promise";
 import path from "path";
 import {Logger} from "pino";
 import YAML from "yaml";
@@ -20,7 +21,7 @@ export function initLoadOrgsCommand(command: Command, config: AppConfig, logger:
       const {concurrent} = options;
 
       // Init TiDB client.
-      const pool = createPool({
+      const pool = getPool({
         uri: config.DATABASE_URL
       });
 

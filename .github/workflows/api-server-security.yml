@@ -22,8 +22,13 @@ on:
       - 'scripts/load-collection.mjs'
       - 'scripts/lib/**'
       - 'etl/lib/sample_importer.rb'
+      - 'etl/lib/importer.rb'
+      - 'etl/db/seeds.rb'
+      - 'etl/db/seed.sql'
       - 'etl/lib/tasks/import.rake'
       - 'etl/test/sample_importer_test.rb'
+      - 'etl/test/seeds_test.rb'
+      - 'etl/test/archive_transport_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
       - '.github/workflows/sync-collection-configs.yml'
@@ -52,8 +57,13 @@ on:
       - 'scripts/load-collection.mjs'
       - 'scripts/lib/**'
       - 'etl/lib/sample_importer.rb'
+      - 'etl/lib/importer.rb'
+      - 'etl/db/seeds.rb'
+      - 'etl/db/seed.sql'
       - 'etl/lib/tasks/import.rake'
       - 'etl/test/sample_importer_test.rb'
+      - 'etl/test/seeds_test.rb'
+      - 'etl/test/archive_transport_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
       - '.github/workflows/sync-collection-configs.yml'
@@ -98,6 +108,8 @@ jobs:
         with:
           ruby-version: '3.3'
       - run: ruby etl/test/sample_importer_test.rb
+      - run: ruby etl/test/seeds_test.rb
+      - run: ruby etl/test/archive_transport_test.rb
       - name: Verify ETL transport defaults
         run: |
           ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("etl/config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'

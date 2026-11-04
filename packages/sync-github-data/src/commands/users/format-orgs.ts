@@ -1,6 +1,6 @@
 import {AppConfig} from "@env";
+import {getPool} from "@libs/db/new";
 import {Command} from "commander";
-import {createPool} from "mysql2/promise";
 import {Logger} from "pino";
 
 /**
@@ -12,7 +12,7 @@ export function initFormatOrgsCommand(command: Command, config: AppConfig, logge
     .description('Format organization name of users in batch.')
     .action(async (options) => {
       // Init TiDB client.
-      const pool = createPool({
+      const pool = getPool({
         uri: config.DATABASE_URL
       });
 

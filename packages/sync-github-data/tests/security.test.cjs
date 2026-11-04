@@ -1,4 +1,5 @@
 const {test} = require('node:test');
+require('reflect-metadata');
 const assert = require('node:assert/strict');
 const {createHmac, randomBytes} = require('node:crypto');
 const pino = require('pino');
@@ -45,6 +46,68 @@ test('mysql2 ignores DSN transport overrides and cannot disable certificate or h
     process.env.NODE_ENV = 'test';
     assert.throws(() => getConnectionOptions({uri: 'mysql://localhost:fixture@db.example.invalid/db'}), /local database/);
   } finally {if (previous === undefined) delete process.env.NODE_ENV; else process.env.NODE_ENV = previous;}
+});
+
+test('all auxiliary CLI entry points apply transport policy before opening a database', async t => {
+  const {Command} = require('commander');
+  const mysql = require('mysql2/promise');
+  const prisma = require('@prisma/client');
+  const github = require('../dist/libs/github/octokit');
+  const previous = {pool: mysql.createPool, prisma: prisma.PrismaClient, github: github.createOctokitPool,
+    environment: process.env.NODE_ENV, database: process.env.DATABASE_URL, ca: process.env.DB_SSL_CA};
+  const stopped = new Error('Test stops before any network or database operation');
+  const config = {DATABASE_URL: 'mysql://fixture:fixture@db.example.invalid/fixture?ssl=false&sslaccept=accept_invalid_certs&connection_limit=999', GITHUB_ACCESS_TOKENS: []};
+  const logger = pino({enabled: false});
+  let captured;
+  try {
+    process.env.NODE_ENV = 'production';
+    process.env.DATABASE_URL = 'mysql://ambient:unused@wrong.example.invalid/wrong';
+    delete process.env.DB_SSL_CA;
+    mysql.createPool = options => {captured = options; throw stopped;};
+    prisma.PrismaClient = function (options) {captured = options; throw stopped;};
+    github.createOctokitPool = () => ({max: 1});
+    for (const [module, init, name, driver] of [
+      ['users/load-orgs', 'initLoadOrgsCommand', 'load-orgs', 'mysql'],
+      ['users/format-orgs', 'initFormatOrgsCommand', 'format-orgs', 'mysql'],
+      ['users/mark-bots', 'initMarkBotsCommand', 'mark-bots', 'mysql'],
+      ['users/format-address', 'initFormatAddressCommand', 'format-address', 'prisma'],
+      ['repos/pull', 'InitPullReposCommand', 'pull', 'prisma'],
+      ['repos/mark-deleted', 'initMarkDeletedReposCommand', 'mark-deleted', 'prisma'],
+      ['repos/sync-in-concurrent', 'initSyncReposInConcurrentCommand', 'sync-in-concurrent', 'prisma'],
+    ]) {
+      await t.test(module, async () => {
+        captured = undefined;
+        const command = new Command();
+        require('../dist/commands/' + module)[init](command, config, logger);
+        await assert.rejects(command.parseAsync([name], {from: 'user'}), error => error === stopped);
+        assert.ok(captured, 'The command must pass explicit secured connection options');
+        if (driver === 'mysql') {
+          assert.equal(captured.host, 'db.example.invalid');
+          assert.equal(captured.uri, undefined);
+          assert.equal(captured.ssl.rejectUnauthorized, true);
+          assert.equal(captured.ssl.verifyIdentity, true);
+          assert.equal(captured.multipleStatements, false);
+          assert.equal(captured.connectionLimit, 4);
+          assert.equal(captured.connectTimeout, 10000);
+          assert.throws(captured.infileStreamFactory, /disabled/);
+        } else {
+          const url = new URL(captured.datasources.db.url);
+          assert.equal(url.hostname, 'db.example.invalid');
+          assert.deepEqual(url.searchParams.getAll('sslaccept'), ['strict']);
+          assert.equal(url.searchParams.get('connection_limit'), '4');
+          assert.equal(url.searchParams.get('connect_timeout'), '10');
+          assert.equal(url.searchParams.get('socket_timeout'), '30');
+        }
+      });
+    }
+  } finally {
+    mysql.createPool = previous.pool;
+    prisma.PrismaClient = previous.prisma;
+    github.createOctokitPool = previous.github;
+    for (const [key, value] of Object.entries({NODE_ENV: previous.environment, DATABASE_URL: previous.database, DB_SSL_CA: previous.ca})) {
+      if (value === undefined) delete process.env[key]; else process.env[key] = value;
+    }
+  }
 });
 
 test('migrated pseudonyms exactly match fresh imports without retaining plaintext local parts', () => {
