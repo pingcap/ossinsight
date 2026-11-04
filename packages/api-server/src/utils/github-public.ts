@@ -3,6 +3,7 @@ import type {CachedData} from '../core/cache/Cache';
 
 // Search terms, never caller-supplied GitHub qualifiers or boolean expressions.
 export const githubSearchKeywordSchema = {type: 'string', minLength: 1, maxLength: 100};
+export const GITHUB_RESOURCE_NOT_FOUND = 'GitHub resource not found.';
 
 export function normalizeGithubSearchTerm(input: unknown): string {
   if (typeof input !== 'string' || input.length > 100) throw new APIError(400, 'Invalid search term.');
@@ -26,7 +27,7 @@ export function publicGithubProfile(input: any) {
 }
 
 export function publicGithubRepository(input: any) {
-  if (input?.private !== false || input?.visibility !== 'public') throw new APIError(404, 'Repository not found.');
+  if (input?.private !== false || input?.visibility !== 'public') throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
   const result = pick(input, ['id', 'node_id', 'name', 'full_name', 'private', 'html_url', 'description', 'fork',
     'url', 'created_at', 'updated_at', 'pushed_at', 'homepage', 'size', 'stargazers_count', 'watchers_count',
     'language', 'has_issues', 'has_projects', 'has_downloads', 'has_wiki', 'has_pages', 'has_discussions',

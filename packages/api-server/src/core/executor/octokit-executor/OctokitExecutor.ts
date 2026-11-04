@@ -5,6 +5,8 @@ import {countAPIRequest, githubAPICounter, githubAPITimer, measure} from "../../
 import {DateTime} from "luxon";
 import {Octokit} from "octokit";
 import pino from 'pino';
+import {APIError} from '../../../utils/error';
+import {GITHUB_RESOURCE_NOT_FOUND} from '../../../utils/github-public';
 
 export default class OctokitExecutor {
   private octokitPool: Pool<Octokit>
@@ -45,6 +47,11 @@ export default class OctokitExecutor {
         data: data,
       }
     } catch (err: any) {
+      // A missing repository and one visible only to the server credential must
+      // produce the same public response, rather than becoming a 500/404 oracle.
+      if (err?.status === 404 || err?.response?.status === 404) {
+        throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
+      }
       throw new Error(`Failed to request GitHub API (api: ${label}): ${err.message}`, {
         cause: err,
       });

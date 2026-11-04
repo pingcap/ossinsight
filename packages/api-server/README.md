@@ -169,6 +169,7 @@ The `/gh/*` API exposes public metadata only. Search accepts a plain term of up 
 100 characters; caller-supplied GitHub qualifiers, quotes and wildcards are
 rejected. Repository searches apply `in:name is:public` and verify result
 visibility. Repository lookups by ID or name reject private/internal results.
+Private and nonexistent repositories return the same 404 response.
 Responses use public field allowlists and omit viewer permissions, private
 profile fields and credential identifiers. Provision GitHub tokens with only the
 public metadata access needed for these endpoints.

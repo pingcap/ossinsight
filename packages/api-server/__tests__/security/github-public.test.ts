@@ -9,6 +9,8 @@ import organizationsRoute from '../../src/routes/gh/organizations/search';
 import OctokitExecutor from '../../src/core/executor/octokit-executor/OctokitExecutor';
 import {eraseToken} from '../../src/utils/octokit';
 import {registerRequestAudit} from '../../src/utils/http/request-audit';
+import repositoryRoute from '../../src/routes/gh/repos/_owner/_repo';
+import {errorHandler} from '../../src/utils/http/error-handler';
 
 const log = pino({level: 'silent'});
 const suffix = 'fixture-secret-suffix';
@@ -86,6 +88,29 @@ test('public metadata preserves display fields but drops viewer permissions, pri
   expect(JSON.stringify(result)).not.toMatch(/permissions|temp_clone_token|fixture-secret|private@example/);
   executor.request.mockResolvedValueOnce(envelope({id: 2, login: 'owner', public_repos: 10, total_private_repos: 99, email: 'private@example.invalid', plan: {name: 'secret'}}));
   expect((await service.getUserByID(2)).data).toEqual({id: 2, login: 'owner', public_repos: 10});
+});
+
+test('private and nonexistent repositories have indistinguishable HTTP responses', async () => {
+  const responses = [];
+  for (const failure of [null, {status: 404}, {response: {status: 404}}]) {
+    const {builder, entries} = harness();
+    const executor = new OctokitExecutor(log, [suffix]);
+    const client = {log, rest: {repos: {get: async () => {
+      if (failure) throw Object.assign(new Error('private upstream details'), failure);
+      return {data: {...publicRepo, private: true, visibility: 'private'}};
+    }}}};
+    (executor as any).octokitPool = {acquire: async () => client, release: jest.fn()};
+    const app = Fastify();
+    app.setErrorHandler(errorHandler);
+    app.decorate('githubService', new GithubService(log, executor, builder as any, path.resolve(__dirname, '../../../../configs')));
+    await app.register(repositoryRoute, {prefix: '/:owner/:repo'});
+    try {
+      const response = await app.inject('/owner/hidden/');
+      responses.push({status: response.statusCode, body: response.json()});
+      expect(entries.size).toBe(0);
+    } finally { await app.close(); }
+  }
+  expect(responses).toEqual(Array(3).fill({status: 404, body: {message: 'GitHub resource not found.'}}));
 });
 
 test('curated repository recommendations continue to work without GitHub requests', async () => {
