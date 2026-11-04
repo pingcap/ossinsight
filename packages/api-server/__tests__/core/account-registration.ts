@@ -1,5 +1,6 @@
 import Fastify, {FastifyInstance} from 'fastify';
 import mysqlPlugin from '@fastify/mysql';
+import {createConnection} from 'mysql2/promise';
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
 import {UserService} from '../../src/plugins/services/user-service';
 
@@ -72,11 +73,19 @@ test('missing production identity constraint blocks new registration before any 
   const {service, identity} = serviceFor('900000003');
   const before = await userCount();
   const fetch = jest.spyOn(service, 'fetchAuth0UserInfo');
-  await app.mysql.query('ALTER TABLE sys_accounts DROP INDEX index_sa_on_provider_account_id');
+  // Only the isolated test fixture's administrator changes schema. The service
+  // retains the same restricted application account used by the other tests.
+  const administrator = await createConnection(getTestDatabase().rootUrl());
+  let dropped = false;
   try {
+    await administrator.query('USE ??', [getTestDatabase().database]);
+    await administrator.query('ALTER TABLE sys_accounts DROP INDEX index_sa_on_provider_account_id');
+    dropped = true;
     await expect(service.findOrCreateUserByAccount(identity, 'synthetic-token')).rejects.toMatchObject({statusCode: 503});
     expect(fetch).not.toHaveBeenCalled();expect(await userCount()).toBe(before);
   } finally {
-    await app.mysql.query('ALTER TABLE sys_accounts ADD UNIQUE KEY index_sa_on_provider_account_id(provider,provider_account_id)');
+    try {
+      if (dropped) await administrator.query('ALTER TABLE sys_accounts ADD UNIQUE KEY index_sa_on_provider_account_id(provider,provider_account_id)');
+    } finally {await administrator.end();}
   }
 });
