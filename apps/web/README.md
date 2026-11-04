@@ -17,6 +17,28 @@ polls without spending its analytics budget; other named queries retain the
 integer limits up to 100000. Missing Redis configuration, Redis failures and SDK timeouts
 return 503; exhausted budgets return 429 with `Retry-After`.
 
+This budget also covers the database-backed homepage, trending and language pages,
+`/llms-full.txt`, and `/sitemap.xml`, including RSC navigation and metadata requests.
+The quota decision runs before rendering or database access: those pages also return
+429/503 when the budget is exhausted/unavailable. Static assets and the separately
+generated docs/blog remain accessible independently of the database quota.
+
+## Public API origins
+
+`CORS_ALLOWED_ORIGINS` accepts comma-separated exact HTTPS origins; the default is
+`https://ossinsight.io,https://www.ossinsight.io`. Wildcards, credentials, paths,
+queries and fragments are rejected before an audited API handler runs. Development
+also permits explicitly configured loopback HTTP origins. Invalid configuration
+returns a generic error without executing the handler.
+
+All audited API responses, including MCP and avatars, apply this policy after the
+handler returns. Only an exact match receives a read-only CORS permission; responses
+always vary on Origin while preserving other Vary fields. Credentialed CORS is
+disabled. Server clients without an Origin header remain supported, and public
+request budgets apply independently.
+
+## Request auditing and document security
+
 Only Vercel's overwritten forwarding header supplies a client identity. Self-hosted
 instances share one origin bucket and must size that aggregate budget for their traffic;
 client-supplied forwarding headers are never trusted. Development mode skips Redis.
