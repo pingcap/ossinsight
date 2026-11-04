@@ -19,9 +19,7 @@ async function handleGET(req: NextRequest, reqCtx: { params: Promise<Params> }) 
       status: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'max-age=60',
-        'CDN-Cache-Control': 'max-age=300',
-        'Vercel-CDN-Cache-Control': 'max-age=3600',
+        'Cache-Control': 'no-store',
       },
     });
   } catch (err) {
@@ -30,7 +28,7 @@ async function handleGET(req: NextRequest, reqCtx: { params: Promise<Params> }) 
         status: err.statusCode,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          // Never let CDNs pin the incident body on this otherwise-cached route.
+          // Incident responses follow the same no-store policy as query results.
           'Cache-Control': 'no-store',
         },
       });
