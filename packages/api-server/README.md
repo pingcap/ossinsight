@@ -116,10 +116,14 @@ remain available. The prefetch metrics listener defaults to `127.0.0.1`; changin
 `METRICS_HOST` does not remove token authentication. Apply scraper configuration
 before deploying these endpoint restrictions to avoid a monitoring gap.
 
-API audit records include request ID, verified actor, route pattern, source IP,
+API audit records include request ID, verified actor, route pattern, concrete resource, source IP,
 status and duration. Auth0 principals are recorded only after JWT verification;
 privileged operations additionally resolve the stored user ID. Operator access
-records a token fingerprint. These records omit tokens, bodies and query values.
+records a token fingerprint. Reviewed public query names and validated resource
+IDs identify the accessed resource. Numeric/enum query parameters are allowlisted;
+duplicate, invalid, unknown and free-text parameters are omitted and counted.
+These records omit tokens, bodies and raw URLs/querystrings. Unknown query names
+and malformed resource segments are redacted rather than copied into logs.
 The existing request-statistics table remains a separate analytics sink.
 Its Origin/path fields are capped at 255 UTF-8 bytes and IP fields at 128 bytes.
 Responses produce one statistics row with the final status, including failures.

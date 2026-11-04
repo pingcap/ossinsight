@@ -40,6 +40,7 @@ test('explicit exact origins and development-only loopback remain available', ()
 });
 
 test.each(['GET /api/mcp', 'GET /api/avatar/[owner]', 'GET /api/q/[...query]'])('audited %s cannot restore wildcard or credentialed access', async route => {
+  process.env.VERCEL = '1';
   jest.spyOn(console, 'info').mockImplementation(() => {});
   const handler = withRequestAudit(route, async (_request: Request) => new Response('public', {
     headers: {'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true',
@@ -47,7 +48,8 @@ test.each(['GET /api/mcp', 'GET /api/avatar/[owner]', 'GET /api/q/[...query]'])(
       'Access-Control-Max-Age': '86400', Vary: 'Accept-Encoding, RSC'},
   }));
   for (const origin of ['https://ossinsight.io', 'https://www.ossinsight.io', 'https://evil.test']) {
-    const response = await handler(new Request('https://ossinsight.io/api/test', {headers: {origin}}));
+    const response = await handler(new Request('https://ossinsight.io/api/test', {headers: {origin, 'x-forwarded-for': '203.0.113.4'}}));
+    expect(response.status).toBe(200);
     expect(response.headers.get('Access-Control-Allow-Origin')).toBe(origin === 'https://evil.test' ? null : origin);
     expect(response.headers.get('Access-Control-Allow-Credentials')).toBeNull();
     expect(response.headers.get('Access-Control-Max-Age')).toBeNull();

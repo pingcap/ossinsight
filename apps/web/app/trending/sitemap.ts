@@ -1,8 +1,10 @@
+export const dynamic = 'force-dynamic';
+import {withSitemapAudit} from '@/lib/server/route-audit';
 import type { MetadataRoute } from 'next';
 
 const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: `${SITE_URL}/trending`,
@@ -11,3 +13,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 }
+
+export default withSitemapAudit('GET /trending/sitemap.xml', sitemap);
