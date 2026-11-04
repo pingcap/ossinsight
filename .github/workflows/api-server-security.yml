@@ -138,4 +138,4 @@ jobs:
         env:
           NODE_OPTIONS: --experimental-vm-modules
         working-directory: packages/api-server
-        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts __tests__/worker/queue-worker.ts __tests__/core/email-rekey.ts __tests__/core/app-startup.ts __tests__/core/public-abuse.ts
+        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts __tests__/worker/queue-worker.ts __tests__/core/email-rekey.ts __tests__/core/app-startup.ts __tests__/core/public-abuse.ts __tests__/core/account-registration.ts

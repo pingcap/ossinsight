@@ -106,6 +106,24 @@ set its exact origin in `CORS_PRIVATE_ORIGINS`; broad hosting-provider patterns 
 not accepted. WebSocket handshakes require a configured Origin, including for CLI
 clients. Socket errors and audit events omit raw requests, SQL and internal errors.
 
+### Account registration
+
+Account registration requires a unique, full-column index on
+`sys_accounts(provider, provider_account_id)`. The production index is
+`index_sa_on_provider_account_id`; the integration-test schema mirrors it.
+Each process verifies this invariant before its first new registration, before
+fetching a profile or inserting a user. A legacy deployment missing the index must check existing bindings before
+adding it; no automated deletion, merge or reassignment of identities is performed.
+Existing ambiguous or orphaned account links return a conflict for administrator
+review instead of recreating a missing user.
+
+Concurrent first logins insert the user and account in one transaction. A unique
+key conflict rolls back the provisional user and reads the committed winner;
+deadlock/write-conflict retries are bounded to three attempts. The external
+UserInfo request runs outside the transaction, has a five-second deadline, cannot
+redirect its bearer token, and must return the authenticated subject. Existing
+bindings do not require a UserInfo request.
+
 ### Operations access and audit records
 
 Set a private `OPERATIONS_TOKEN` (32–256 characters with at least 32 random bytes)
