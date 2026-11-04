@@ -1,4 +1,3 @@
-import {eraseToken, getOctokitToken} from "../../../utils/octokit";
 import {CachedData} from "../../cache/Cache";
 import { OctokitFactory } from "./OctokitFactory";
 import {Pool, createPool} from "generic-pool";
@@ -44,7 +43,6 @@ export default class OctokitExecutor {
         requestedAt: start,
         finishedAt: end,
         data: data,
-        with: eraseToken(getOctokitToken(octokit))
       }
     } catch (err: any) {
       throw new Error(`Failed to request GitHub API (api: ${label}): ${err.message}`, {
@@ -70,7 +68,6 @@ export default class OctokitExecutor {
         requestedAt: start,
         finishedAt: end,
         data: getter(res),
-        with: eraseToken(getOctokitToken(octokit))
       }
     } catch (err: any) {
       githubAPICounter.inc({ api: label, statusCode: err?.response?.statusCode || 500 });

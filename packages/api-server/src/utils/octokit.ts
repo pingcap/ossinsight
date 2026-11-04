@@ -4,7 +4,7 @@ import pino from "pino";
 export const SYMBOL_TOKEN = Symbol('GITHUB_ACCESS_TOKEN');
 
 export function eraseToken (value: string | undefined): string {
-    return value ? `****${value.substring(value.length - 8)}` : 'anonymous';
+    return value ? 'authenticated' : 'anonymous';
 }
 
 export function createOctokitClient(parentLogger: pino.Logger, token: string | undefined): Octokit {

@@ -162,6 +162,20 @@ Explorer responses disable browser/CDN caching. Cached question reuse is scoped
 to the creator; identical text from another user creates a separate question.
 
 `pnpm test:security` covers the authentication and transport boundaries.
+
+### Public GitHub metadata
+
+The `/gh/*` API exposes public metadata only. Search accepts a plain term of up to
+100 characters; caller-supplied GitHub qualifiers, quotes and wildcards are
+rejected. Repository searches apply `in:name is:public` and verify result
+visibility. Repository lookups by ID or name reject private/internal results.
+Responses use public field allowlists and omit viewer permissions, private
+profile fields and credential identifiers. Provision GitHub tokens with only the
+public metadata access needed for these endpoints.
+
+GitHub cache keys use the `gh:public:v2:` namespace, so historical privileged
+responses and token fragments are not reused. Fresh values and cache hits are
+projected to the same public response fields; HTTP responses use `no-store`.
 `pnpm test:runtime` verifies native SQLite exports and OpenAI response parsing using
 synthetic data. The real Redis integration test exercises BullMQ script discovery,
 job completion and graceful drain, including the scoped minimatch and UUID updates.
