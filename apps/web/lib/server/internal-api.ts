@@ -17,6 +17,7 @@ import {
 } from '@/lib/collections';
 import { explainQuery, runQuery } from '@/lib/data-service/routes';
 import { executeOneRow, executeRows } from '@/lib/data-service/query';
+import {normalizeSearchKeyword, literalLikePrefix} from './search-keyword';
 
 type RepoRecommendItem = {
   id: number;
@@ -237,7 +238,8 @@ export async function getUserByLogin(username: string, signal?: AbortSignal) {
 }
 
 export async function searchRepos(keyword: string, signal?: AbortSignal) {
-  const normalizedKeyword = keyword.trim().replaceAll(/\s+/g, ' ');
+  const normalizedKeyword = normalizeSearchKeyword(keyword);
+  if (normalizedKeyword === null) throw new APIError('Invalid search term.', 400);
   if (!normalizedKeyword) {
     return [];
   }
@@ -257,13 +259,13 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
       WHERE gr.is_deleted = 0
         AND (
           LOWER(gr.repo_name) = LOWER(:keyword)
-          OR LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keyword), '%')
-          OR gr.owner_login LIKE CONCAT(:keyword, '%')
+          OR LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keywordPrefix), '%') ESCAPE '!'
+          OR gr.owner_login LIKE CONCAT(:keywordPrefix, '%') ESCAPE '!'
         )
       ORDER BY
         CASE
           WHEN LOWER(gr.repo_name) = LOWER(:keyword) THEN 0
-          WHEN LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keyword), '/%') THEN 1
+          WHEN LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keywordPrefix), '/%') ESCAPE '!' THEN 1
           WHEN gr.owner_login = :keyword THEN 2
           ELSE 3
         END,
@@ -271,7 +273,7 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
         gr.last_event_at DESC
       LIMIT 10
     `,
-    { keyword: normalizedKeyword },
+    { keyword: normalizedKeyword, keywordPrefix: literalLikePrefix(normalizedKeyword) },
     signal,
   );
 
@@ -283,7 +285,8 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
 }
 
 export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?: AbortSignal) {
-  const normalizedKeyword = keyword.trim().replaceAll(/\s+/g, ' ');
+  const normalizedKeyword = normalizeSearchKeyword(keyword);
+  if (normalizedKeyword === null) throw new APIError('Invalid search term.', 400);
   if (!normalizedKeyword) {
     return [];
   }
@@ -303,7 +306,7 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
       WHERE gu.is_deleted = 0
         AND (
           LOWER(gu.login) = LOWER(:keyword)
-          OR LOWER(gu.login) LIKE CONCAT(LOWER(:keyword), '%')
+          OR LOWER(gu.login) LIKE CONCAT(LOWER(:keywordPrefix), '%') ESCAPE '!'
         )
         AND (
           (:kind = 'org' AND gu.type = 'ORG')
@@ -312,7 +315,7 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
       ORDER BY
         CASE
           WHEN LOWER(gu.login) = LOWER(:keyword) THEN 0
-          WHEN LOWER(gu.login) LIKE CONCAT(LOWER(:keyword), '%') THEN 1
+          WHEN LOWER(gu.login) LIKE CONCAT(LOWER(:keywordPrefix), '%') ESCAPE '!' THEN 1
           ELSE 2
         END,
         gu.followers DESC,
@@ -320,7 +323,7 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
         gu.last_event_at DESC
       LIMIT 10
     `,
-    { keyword: normalizedKeyword, kind },
+    { keyword: normalizedKeyword, keywordPrefix: literalLikePrefix(normalizedKeyword), kind },
     signal,
   );
 
