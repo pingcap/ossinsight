@@ -29,3 +29,17 @@ jobs:
       - name: Test offline connection-key migration and rollback
         run: |
           docker run --rm --network none --read-only --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 --mount "type=bind,src=${{ github.workspace }}/ops/sqlpad,dst=/usr/app/maintenance,readonly" --entrypoint node ossinsight-sqlpad:security --test /usr/app/maintenance/rekey-connections.test.mjs
+      - name: Boot the actual server with a read-only root filesystem
+        run: |
+          name=sqlpad-security-smoke
+          trap 'docker logs "$name"; docker rm -f "$name"' EXIT
+          docker run -d --name "$name" --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 --tmpfs /var/lib/sqlpad:rw,nosuid,nodev,size=64m,mode=0700,uid=1000,gid=1000 ossinsight-sqlpad:security
+          ready=false
+          for attempt in $(seq 1 30); do
+            if docker exec "$name" node -e "(async()=>{const r=await fetch('http://127.0.0.1:3000/');if(r.status!==200||!(await r.text()).includes('SQLPad'))process.exit(1);const q=await fetch('http://127.0.0.1:3000/api/queries');if(![401,403].includes(q.status))process.exit(1)})().catch(()=>process.exit(1))"; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true
