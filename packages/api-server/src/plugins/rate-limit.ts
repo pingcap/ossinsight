@@ -38,7 +38,11 @@ export default fp(async (app) => {
       'x-ratelimit-reset': true,
       'retry-after': true
     },
-  })
+  });
+  // fastify-cli registers the application in a child scope. Without a local
+  // 404 handler, unmatched URLs use the parent CLI scope and skip this quota
+  // and the application's audit hooks entirely.
+  app.setNotFoundHandler(async (_request, reply) => reply.code(404).send({message: 'Not found.'}));
 }, {
   name: '@ossinsight/rate-limit',
   dependencies: [

@@ -39,6 +39,28 @@ test('new public routes, health, Explorer and query aliases share one quota', as
   } finally {await app.close();}
 });
 
+test('unmatched routes inside Fastify CLI encapsulation retain quota and audit hooks', async () => {
+  const app = Fastify();
+  let count = 0;
+  await app.register(async child => {
+    child.decorate('config', {PUBLIC_API_HOURLY_RATE_LIMIT: 1});
+    child.decorate('redis', {defineCommand: jest.fn(), eval: jest.fn(async () => [++count, 3600000])});
+    await child.register(fp(async () => {}, {name: '@fastify/env'}));
+    await child.register(fp(async () => {}, {name: '@ossinsight/redis'}));
+    child.addHook('onSend', async (_request, reply, payload) => {reply.header('X-Audit-Hook', 'ran');return payload;});
+    await child.register(rateLimit);
+    child.get('/registered', async () => 'ok');
+  });
+  try {
+    const first = await app.inject('/missing-one');
+    expect(first.statusCode).toBe(404);
+    expect(first.headers['x-ratelimit-limit']).toBe('1');
+    expect(first.headers['x-audit-hook']).toBe('ran');
+    expect((await app.inject('/missing-two')).statusCode).toBe(429);
+    expect((await app.inject('/registered')).statusCode).toBe(429);
+  } finally {await app.close();}
+});
+
 test('feedback writes cannot bypass exhausted quota, and Redis failure prevents work', async () => {
   const {app, redis} = await quotaApp(1);
   const write = jest.fn(async () => ({ok: true}));
