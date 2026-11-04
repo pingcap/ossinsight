@@ -78,7 +78,8 @@ export class QueryRunner {
           throw new APIError(404, 'Query not found.');
         }
 
-        try { prepareQueryParameters(queryConfig.params || [], params); }
+        let normalizedParams: Record<string, any>;
+        try { normalizedParams = prepareQueryParameters(queryConfig.params || [], params); }
         catch { throw new APIError(400, 'Invalid query parameters.'); }
         const collectionParameter = queryConfig.params?.find((param: {name: string; default?: unknown}) => param.name === 'collectionId');
         if (collectionParameter && !options.allowPrivate) {
@@ -136,7 +137,7 @@ export class QueryRunner {
             }
 
             return {
-              params: params,
+              params: normalizedParams,
               requestedAt: start,
               finishedAt: end,
               spent: end.diff(start).as('seconds'),
@@ -147,16 +148,19 @@ export class QueryRunner {
           })
         });
 
+        // Rebuild metadata from the same declared values used by the cache key.
+        // This also protects old persisted entries and coalesced in-flight hits.
+        const response = {...result, params: normalizedParams};
         if (dataQuality === 'tainted') {
           // Attached after cache.load so the marker is never baked into the
           // cache and disappears as soon as the incident switch is turned off.
           return {
-            ...result,
+            ...response,
             data_quality: STAR_DATA_INCIDENT_MARKER,
           };
         }
 
-        return result;
+        return response;
     }
 
     async persistResult(key: string, cfg: PersistConfig, params: Record<string, any>, rows: any[]) {
