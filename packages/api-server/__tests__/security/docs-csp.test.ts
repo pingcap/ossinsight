@@ -1,3 +1,4 @@
+import vercel from '../../../../apps/web/vercel.json';
 import {docsContentSecurityPolicy, isDocsHtmlPath} from '../../../../apps/docs/lib/content-security';
 import {proxy} from '../../../../apps/docs/proxy';
 const {NextRequest} = require('../../../../apps/docs/node_modules/next/server');
@@ -46,3 +47,15 @@ test('production CSP supports the owned asset origin and published media without
   expect(() => docsContentSecurityPolicy("injected'; script-src *")).toThrow();
 });
 
+test('the web rewrite configuration preserves the destination docs CSP', () => {
+  const headersFor = (pathname: string) => vercel.headers
+    .filter(rule => new RegExp(`^${rule.source}$`).test(pathname)).flatMap(rule => rule.headers);
+  for (const pathname of ['/blog', '/blog/example', '/docs', '/docs/about', '/docs/nested/page', '/docs/about.mdx', '/blog/feed.xml']) {
+    const headers = headersFor(pathname);
+    expect(headers.some(header => header.key === 'Content-Security-Policy')).toBe(false);
+    expect(headers.some(header => header.key === 'X-Content-Type-Options' && header.value === 'nosniff')).toBe(true);
+  }
+  for (const pathname of ['/', '/api/q/example', '/blog-assets/cover.png', '/blogger', '/docsify']) {
+    expect(headersFor(pathname).some(header => header.key === 'Content-Security-Policy')).toBe(true);
+  }
+});
