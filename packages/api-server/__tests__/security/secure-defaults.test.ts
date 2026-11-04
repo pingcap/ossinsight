@@ -28,8 +28,8 @@ test('production script policy uses a nonce and denies arbitrary inline scripts 
   expect(policy).toContain("object-src 'none'");
   expect(() => contentSecurityPolicy("attacker'; script-src *")).toThrow();
 });
-test('HTML security coverage does not make homepage rendering depend on the query Redis backend', () => {
-  expect(isPublicBudgetPath('/')).toBe(false);
+test('database-backed homepage rendering shares the public request budget', () => {
+  expect(isPublicBudgetPath('/')).toBe(true);
   expect(isPublicBudgetPath('/collections/foo/opengraph-image-1k31zp')).toBe(true);
   expect(isPublicBudgetPath('/api/q/one')).toBe(true);
   expect(isPublicBudgetPath('/analyze/a/b')).toBe(true);

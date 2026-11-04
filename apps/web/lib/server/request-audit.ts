@@ -1,3 +1,5 @@
+import {corsHeaders} from '../cors';
+
 /** Edge-compatible audit boundary. Never infer a principal from request headers. */
 export function withRequestAudit<A extends unknown[]>(route: string, handler: (...args: A) => Promise<Response>, rethrowControlFlow?: (error: unknown) => void) {
   return async (...args: A): Promise<Response> => {
@@ -7,7 +9,12 @@ export function withRequestAudit<A extends unknown[]>(route: string, handler: (.
     const forwarded = process.env.VERCEL === '1' ? request?.headers.get('x-forwarded-for')?.split(',')[0].trim() : undefined;
     const sourceIP = forwarded && /^[a-f0-9:.]{1,45}$/i.test(forwarded) ? forwarded : 'unavailable';
     let response: Response;
-    try { response = await handler(...args); }
+    let cors: Record<string, string> = {Vary: 'Origin'};
+    try {
+      // Validate configuration before invoking a potentially expensive handler.
+      cors = corsHeaders(request?.headers.get('origin'));
+      response = await handler(...args);
+    }
     catch (error) {
       rethrowControlFlow?.(error);
       response = Response.json({message: 'Internal Server Error', requestId}, {
@@ -15,6 +22,16 @@ export function withRequestAudit<A extends unknown[]>(route: string, handler: (.
       });
     }
     const headers = new Headers(response.headers);
+    // Every audited route, including MCP and avatars, shares this policy.
+    // Discard permissive headers returned by an upstream or an older handler.
+    for (const name of ['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials',
+      'Access-Control-Allow-Methods', 'Access-Control-Allow-Headers', 'Access-Control-Max-Age']) headers.delete(name);
+    for (const [name, value] of Object.entries(cors)) {
+      if (name !== 'Vary') headers.set(name, value);
+    }
+    const vary = (headers.get('Vary') || '').split(',').map(value => value.trim()).filter(Boolean);
+    if (!vary.some(value => value === '*' || value.toLowerCase() === 'origin')) vary.push('Origin');
+    headers.set('Vary', vary.join(', '));
     headers.set('X-Request-ID', requestId);
     // Collection visibility can be revoked independently of a deployment. Neither
     // browsers nor CDNs may reuse a previously public collection response.

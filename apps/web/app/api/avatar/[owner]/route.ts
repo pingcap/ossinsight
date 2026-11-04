@@ -14,7 +14,6 @@ async function handleGET(_req: NextRequest, { params }: { params: Promise<{ owne
       headers: {
         'Content-Type': res.headers.get('content-type') || 'image/png',
         'Cache-Control': 'public, max-age=86400, s-maxage=86400',
-        'Access-Control-Allow-Origin': '*',
       },
     });
   } catch {
