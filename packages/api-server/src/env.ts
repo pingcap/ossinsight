@@ -90,6 +90,8 @@ export const APIServerEnvSchema = {
     AUTH0_SECRET: {
       type: 'string'
     },
+    AUTH0_AUDIENCE: {type: 'string', minLength: 1, maxLength: 2048},
+    AUTH0_ALLOWED_CLIENT_IDS: {type: 'string', separator: ',', default: ''},
     TIDB_CLOUD_DATA_SERVICE_APP_ID: {
       type: 'string'
     },

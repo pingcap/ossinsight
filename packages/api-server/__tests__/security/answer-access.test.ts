@@ -7,7 +7,7 @@ import {Question, QuestionStatus} from '../../src/plugins/services/explorer-serv
 import {APIError} from '../../src/utils/error';
 import {waitForAnswer} from '../../src/utils/answer-wait';
 
-const cached = {id: 'existing-question', userId: 7, title: 'stats', recommended: true, hitCache: true, status: QuestionStatus.Success} as Question;
+const cached = {id: 'existing-question', userId: 42, title: 'stats', recommended: true, hitCache: true, status: QuestionStatus.Success} as Question;
 
 async function answerApp() {
   const app = Fastify();
@@ -31,16 +31,27 @@ test('anonymous answer requests cannot create questions or spend LLM quota', asy
   } finally { await app.close(); }
 });
 
-test('authenticated cache hits preserve the original owner, recommendation and prepared result', async () => {
+test('authenticated own-question cache hits preserve the recommendation and prepared result', async () => {
   const {app, newQuestion, prepareQuestion} = await answerApp();
   try {
     const response = await app.inject({method: 'POST', url: '/', headers: {authorization: 'Bearer test'}, payload: {question: 'stats'}});
     expect(response.statusCode).toBe(200);
     expect(newQuestion).toHaveBeenCalledWith(42, 'stats', false);
     expect(prepareQuestion).not.toHaveBeenCalled();
-    expect(cached).toMatchObject({userId: 7, recommended: true, status: QuestionStatus.Success});
+    expect(cached).toMatchObject({userId: 42, recommended: true, status: QuestionStatus.Success});
     await expect(ExplorerService.prototype.prepareQuestion.call({} as any, cached)).resolves.toBe(cached);
   } finally { await app.close(); }
+});
+
+test('an inconsistent cache cannot expose a different users answer', async () => {
+  const {app, newQuestion, prepareQuestion} = await answerApp();
+  newQuestion.mockResolvedValue({...cached, userId: 7, title: 'private other-user question'});
+  try {
+    const response = await app.inject({method: 'POST', url: '/', headers: {authorization: 'Bearer test'}, payload: {question: 'stats'}});
+    expect(response.statusCode).toBe(500);
+    expect(response.body).not.toContain('private other-user question');
+    expect(prepareQuestion).not.toHaveBeenCalled();
+  } finally {await app.close();}
 });
 
 test('unbounded questions fail before allocating work', async () => {

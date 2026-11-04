@@ -63,7 +63,7 @@ test('audit principals are assigned only after real JWT signature verification',
   const fp = require('fastify-plugin');
   const auth0 = require('../../src/plugins/auth/auth0').default;
   const app = Fastify();
-  app.decorate('config', {AUTH0_SECRET: secret});
+  app.decorate('config', {AUTH0_SECRET: secret, AUTH0_AUDIENCE: 'synthetic-api-audience'});
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   registerRequestAudit(app);
   await app.register(auth0);
@@ -71,7 +71,7 @@ test('audit principals are assigned only after real JWT signature verification',
   app.addHook('onResponse', async request => { actors.push(request.securityActor); });
   app.get('/privileged', {preValidation: app.authenticate}, async request => ({actor: request.securityActor}));
   const header = Buffer.from(JSON.stringify({alg: 'HS256', typ: 'JWT'})).toString('base64url');
-  const claims = Buffer.from(JSON.stringify({sub: 'github|7', exp: Math.floor(Date.now() / 1000) + 60})).toString('base64url');
+  const claims = Buffer.from(JSON.stringify({sub: 'github|7', aud: 'synthetic-api-audience', exp: Math.floor(Date.now() / 1000) + 60})).toString('base64url');
   const unsigned = `${header}.${claims}`;
   const signature = createHmac('sha256', secret).update(unsigned).digest('base64url');
   try {

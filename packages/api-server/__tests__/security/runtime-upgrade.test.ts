@@ -11,11 +11,12 @@ import {registerRequestAudit} from '../../src/utils/http/request-audit';
 
 const secret = 'synthetic-runtime-upgrade-secret-'.repeat(2);
 const origin = 'https://ossinsight.io';
+const audience = 'https://api.example.test/ossinsight';
 const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
 
 async function authenticationApp(key?: string, domain?: string) {
   const app = Fastify();
-  app.decorate('config', {AUTH0_SECRET: key, AUTH0_DOMAIN: domain});
+  app.decorate('config', {AUTH0_SECRET: key, AUTH0_DOMAIN: domain, AUTH0_AUDIENCE: audience});
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   registerRequestAudit(app);
   await app.register(auth0);
@@ -25,7 +26,7 @@ async function authenticationApp(key?: string, domain?: string) {
 
 test('JWT verification rejects unsigned, expired and unsupported critical-header tokens', async () => {
   const app = await authenticationApp(secret);
-  const claims = {sub: 'github|7', exp: Math.floor(Date.now() / 1000) + 60};
+  const claims = {sub: 'github|7', aud: audience, exp: Math.floor(Date.now() / 1000) + 60};
   const token = (header: object, payload = claims) => {
     const data = `${encode(header)}.${encode(payload)}`;
     return `${data}.${createHmac('sha256', secret).update(data).digest('base64url')}`;
@@ -53,7 +54,7 @@ test('a public RSA verification key cannot be reused as an HMAC signing secret',
     return Response.json({keys: [{...publicKey.export({format: 'jwk'}), kid: 'test-key', alg: 'RS256', use: 'sig'}]});
   });
   const app = await authenticationApp(undefined, issuer);
-  const payload = encode({sub: 'github|7', iss: issuer, exp: Math.floor(Date.now() / 1000) + 60});
+  const payload = encode({sub: 'github|7', aud: audience, iss: issuer, exp: Math.floor(Date.now() / 1000) + 60});
   const forgedData = `${encode({alg: 'HS256'})}.${payload}`;
   const forged = `${forgedData}.${createHmac('sha256', pem).update(forgedData).digest('base64url')}`;
   const validData = `${encode({alg: 'RS256', kid: 'test-key'})}.${payload}`;

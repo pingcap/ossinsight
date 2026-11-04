@@ -144,6 +144,23 @@ worker drain procedure below.
 Unsupported signing algorithms and critical JWT header extensions are rejected
 before key lookup, and the signature must still verify before an actor is assigned.
 
+Protected user routes also require `AUTH0_AUDIENCE`, the Identifier of the
+OSSInsight API registered in Auth0. The configured issuer and exact audience are
+verified, tokens must expire, and `AUTH0_ALLOWED_CLIENT_IDS` can restrict `azp` to
+a comma-separated list of approved clients. Do not use the Auth0 Management API
+or `/userinfo` audience for OSSInsight. The historical website requested a
+Management API audience; a client migrating from that website must request the
+dedicated OSSInsight audience instead. With no audience configured, protected
+routes reject tokens; anonymous analytics and operator authentication continue to
+work. Configure and test the client and API audience before enabling user login.
+
+Explorer questions are private to their creator unless a trusted curator
+explicitly recommends them. Public reads of recommended questions use a limited
+response format without ownership, execution plans, job metadata or raw database
+errors. Unpublishing a question immediately removes anonymous access, and all
+Explorer responses disable browser/CDN caching. Cached question reuse is scoped
+to the creator; identical text from another user creates a separate question.
+
 `pnpm test:security` covers the authentication and transport boundaries.
 `pnpm test:runtime` verifies native SQLite exports and OpenAI response parsing using
 synthetic data. The real Redis integration test exercises BullMQ script discovery,

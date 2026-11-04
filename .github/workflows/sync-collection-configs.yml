@@ -7,27 +7,40 @@ on:
       - 'configs/collections/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   sync:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version: '24.22.2'
+          package-manager-cache: false
 
       - name: Install dependencies
-        run: npm install @tidbcloud/serverless@0.0.6
+        run: npm ci --prefix ops/collection-sync --ignore-scripts --no-fund
 
       - name: Sync all collections
         run: |
+          failed=0
           for f in configs/collections/*.yml; do
             id=$(basename "$f" | cut -d. -f1)
             echo "=== Syncing collection $id ==="
-            node scripts/load-collection.mjs "$id" || echo "⚠ Failed to sync $id, continuing..."
+            if ! node scripts/load-collection.mjs "$id"; then
+              echo "Failed to sync collection $id"
+              failed=1
+            fi
           done
+          exit "$failed"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

@@ -1,6 +1,6 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
-import {APIError} from "../../../../utils/error";
 import {QuestionStatus} from "../../../../plugins/services/explorer-service/types";
+import {authenticateQuestionReader, getReadableQuestion, questionIdSchema, questionResponse} from '../../../../utils/explorer-access';
 
 export const schema: FastifySchema = {
     summary: 'Get Question Result',
@@ -10,9 +10,7 @@ export const schema: FastifySchema = {
         type: 'object',
         required: ['questionId'],
         properties: {
-            questionId: {
-                type: 'string',
-            },
+            questionId: questionIdSchema,
         }
     }
 };
@@ -25,30 +23,14 @@ const root: FastifyPluginAsync = async (app) => {
     app.get<{
         Params: IParams
     }>('/', {
-        schema
+        schema,
+        preValidation: authenticateQuestionReader(app),
     },async (req, reply) => {
         const { questionId } = req.params;
-        const question = await app.explorerService.getQuestionById(questionId);
-        if (!question) {
-            throw new APIError(404, 'Question not found');
-        }
-
-        if (question.status === QuestionStatus.Error) {
-            question.error = app.explorerService.wrapperTheErrorMessage(question.error!);
-        }
-
-        if (question.status === QuestionStatus.Waiting) {
-            const preceding = await app.explorerService.countPrecedingQuestions(questionId);
-            reply.status(200).send({
-                queuePreceding: preceding,
-                ...question
-            });
-        } else {
-            reply.status(200).send({
-                queuePreceding: 0,
-                ...question
-            });
-        }
+        const question = await getReadableQuestion(app, req, questionId);
+        const preceding = question.status === QuestionStatus.Waiting
+            ? await app.explorerService.countPrecedingQuestions(questionId) : 0;
+        reply.status(200).send(questionResponse(question, preceding));
     });
 };
 

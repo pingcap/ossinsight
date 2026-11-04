@@ -22,13 +22,13 @@ test.each(cases)('%p forwards the verified actor rather than client supplied ide
   app.decorate('explorerService', {[method]: mutate, checkIfTrustedUsersOrError: authorize});
   await app.register(plugin as any, {prefix: '/questions/:questionId'});
   try {
-    const response = await app.inject({method: 'POST', url: '/questions/question-1/',
+    const response = await app.inject({method: 'POST', url: '/questions/9bb94d62-1abe-4a6d-b05e-e871713ed721/',
       payload: {tagIds: [1, 2], userId: 999, requestId: 'forged'}});
     expect(response.statusCode).toBe(200);
     expect(authorize).toHaveBeenCalledWith(42);
     expect(mutate.mock.calls[0].at(-1)).toEqual(audit);
     authorize.mockRejectedValueOnce(new APIError(403, 'Forbidden'));
-    expect((await app.inject({method: 'POST', url: '/questions/question-1/', payload: {tagIds: []}})).statusCode).toBe(403);
+    expect((await app.inject({method: 'POST', url: '/questions/9bb94d62-1abe-4a6d-b05e-e871713ed721/', payload: {tagIds: []}})).statusCode).toBe(403);
     expect(mutate).toHaveBeenCalledTimes(1);
   } finally { await app.close(); }
 });
