@@ -1,4 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
+import {githubSearchKeywordSchema} from '../../../../utils/github-public';
 import {UserType} from "../../../../plugins/services/github-service";
 
 interface IQueryString {
@@ -11,7 +12,7 @@ export const schema = {
     required: ['keyword'],
     properties: {
       keyword: {
-        type: 'string',
+        ...githubSearchKeywordSchema,
         description: 'The keyword to search users.',
       }
     }
