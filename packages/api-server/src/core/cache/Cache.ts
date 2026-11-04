@@ -79,6 +79,9 @@ export default class Cache<T> {
 
     // If cacheHours is 0, it means disable cache for this query.
     if (this.cacheHours === 0) {
+      if (this.onlyFromCache) {
+        throw new NeedPreFetchError(`Query <${this.key}> requires prefetching but its cache is disabled.`);
+      }
       this.log.info(`🔄 No cache for key: <${this.key}>.`);
       return await this.fetchDataFromDB(fallback);
     }

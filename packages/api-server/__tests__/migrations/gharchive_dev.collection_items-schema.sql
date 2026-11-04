@@ -6,6 +6,7 @@ CREATE TABLE `collection_items` (
   `repo_id` bigint(20) NOT NULL,
   `last_month_rank` int(11) DEFAULT NULL,
   `last_2nd_month_rank` int(11) DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
   KEY `index_collection_items_on_collection_id` (`collection_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=810018;

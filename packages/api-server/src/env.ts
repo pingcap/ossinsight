@@ -45,6 +45,7 @@ export const APIServerEnvSchema = {
       type: 'number',
       default: 30
     },
+    PLAYGROUND_QUERY_SQL_TIMEOUT: {type: 'integer', minimum: 1, maximum: 60000, default: 30000},
     PLAYGROUND_TRUSTED_GITHUB_LOGINS: {
       type: 'string',
       separator: ',',

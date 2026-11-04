@@ -806,7 +806,7 @@ export class ExplorerService {
                 const connectionId = connections[0].connectionId;
 
                 try {
-                    return await this.playgroundQueryExecutor.executeWithConn(conn, `explorer-sql-${questionId}`, {
+                    return await this.playgroundQueryExecutor.executeWithConn(conn, 'explorer-sql', {
                         sql: markedSQL,
                         timeout: this.options.querySQLTimeout
                     }) as [any[], any[]];

@@ -29,9 +29,9 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
     try {
       if (typeof sqlOrOptions === 'string') {
-        return this.executeWithConn(conn, queryKey, sqlOrOptions, values);
+        return await this.executeWithConn(conn, queryKey, sqlOrOptions, values);
       } else {
-        return this.executeWithConn(conn, queryKey, sqlOrOptions);
+        return await this.executeWithConn(conn, queryKey, sqlOrOptions);
       }
     } finally {
       conn.release();
@@ -73,7 +73,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
       if (typeof sqlOrOptions === 'string') {
         sqlOrOptions = `EXPLAIN ${sqlOrOptions}`;
       } else {
-        sqlOrOptions.sql = `EXPLAIN ${sqlOrOptions.sql}`;
+        sqlOrOptions = {...sqlOrOptions, sql: `EXPLAIN ${sqlOrOptions.sql}`};
       }
     }
 
