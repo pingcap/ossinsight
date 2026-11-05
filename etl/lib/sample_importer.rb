@@ -5,7 +5,13 @@ require 'uri'
 
 # Import only an operator-approved local SQL file, never an unverified archive.
 module SampleImporter
-  def self.run(sql_path:, sha256:, database_url:, ssl_ca: nil, runner: Kernel.method(:system))
+  def self.run(sql_path:, sha256:, database_url:, ssl_ca: nil, runner: Kernel.method(:system),
+               client_flavor: ENV.fetch('SAMPLE_MYSQL_CLIENT_FLAVOR', 'mysql'))
+    tls_options = case client_flavor
+                  when 'mysql' then ['--ssl-mode=VERIFY_IDENTITY']
+                  when 'mariadb' then ['--ssl', '--ssl-verify-server-cert']
+                  else raise ArgumentError, 'Unsupported sample import client'
+                  end
     raise ArgumentError, 'SAMPLE_SQL_SHA256 must be an independently verified SHA-256 digest' unless /\A[0-9a-f]{64}\z/i.match?(sha256.to_s)
     uri = URI.parse(database_url)
     database = uri.path.sub(%r{\A/}, '')
@@ -33,7 +39,7 @@ module SampleImporter
           values.each { |key, value| options.write("#{key}=#{option_value(value)}\n") }
           options.flush
           args = ['mysql', "--defaults-file=#{options.path}", '--protocol=TCP',
-                  '--ssl-mode=VERIFY_IDENTITY', '--local-infile=0', '--binary-mode=1', '--connect-timeout=10']
+                  *tls_options, '--local-infile=0', '--binary-mode=1', '--connect-timeout=10']
           args << "--ssl-ca=#{ssl_ca}" if ssl_ca && !ssl_ca.empty?
           raise 'Sample import failed' unless runner.call({ 'MYSQL_TEST_LOGIN_FILE' => File.join(client_dir, 'unused-login.cnf'),
                         'MYSQL_PWD' => nil, 'DATABASE_URL' => nil }, *args, in: sql)

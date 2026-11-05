@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+require_relative '../lib/worker_heartbeat'
+exit(WorkerHeartbeat.healthy? ? 0 : 1)

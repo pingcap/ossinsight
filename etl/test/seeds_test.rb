@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'minitest/mock'
 require 'pathname'
 require_relative '../lib/sample_importer'
 

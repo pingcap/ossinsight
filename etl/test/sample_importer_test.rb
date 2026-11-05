@@ -43,6 +43,27 @@ class SampleImporterTest < Minitest::Test
     end
   end
 
+  def test_mariadb_client_requires_certificate_and_hostname_verification
+    with_sample do |path, digest|
+      runner = lambda do |*args, **_|
+        assert_includes args, '--ssl'
+        assert_includes args, '--ssl-verify-server-cert'
+        assert_includes args, '--ssl-ca=/test/ca.pem'
+        refute_includes args, '--ssl-mode=VERIFY_IDENTITY'
+        true
+      end
+      SampleImporter.run(sql_path: path, sha256: digest, database_url: 'mysql2://loader:pass@db.example/test',
+                         client_flavor: 'mariadb', ssl_ca: '/test/ca.pem', runner: runner)
+    end
+  end
+
+  def test_unknown_client_flavor_cannot_disable_tls
+    assert_raises(ArgumentError) do
+      SampleImporter.run(sql_path: '/unused', sha256: '0' * 64, database_url: 'mysql2://loader:pass@db.example/test',
+                         client_flavor: 'insecure', runner: ->(*) { flunk 'must not execute client' })
+    end
+  end
+
   def test_private_file_is_removed_when_mysql_fails
     with_sample do |path, digest|
       option_path = nil

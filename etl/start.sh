@@ -1,10 +1,8 @@
 #!/bin/sh
 
-set -x
+set -eu
+umask 077
 
-bundle install
-bundle exec rails db:create
-bundle exec rails db:migrate
-bundle exec rake  db:seed
-bundle exec rake gh:set_tiflash_replica
-bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].to_s.split(","), 100).run'
+# Dependencies are installed at image build time. Schema/seed maintenance is
+# explicit: starting an ingestion worker must never mutate database structure.
+exec bundle exec rails runner 'Realtime.new(ENV.fetch("GITHUB_TOKEN").split(",").reject(&:empty?), 100).run'
