@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'minitest/mock'
 require 'pathname'
 require 'stringio'
 require 'open-uri'

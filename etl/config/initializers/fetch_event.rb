@@ -29,7 +29,7 @@ class FetchEvent
   # gone, leaving room for the other pages and for Realtime to rotate tokens.
   RATE_LIMIT_FLOOR = 50
 
-  attr_reader :per_page, :token, :rate_limit_remaining, :rate_limit_reset_at
+  attr_reader :per_page, :token, :rate_limit_remaining, :rate_limit_reset_at, :completed_poll
 
   # The per_page argument is kept for call-site compatibility (Realtime passes
   # start.sh's value through) but is pinned to PER_PAGE regardless — see the
@@ -40,6 +40,7 @@ class FetchEvent
     @rate_limit_remaining = nil
     @rate_limit_reset_at = nil
     @token_rejected = false
+    @completed_poll = false
   end
 
   # True when GitHub refused the credential itself rather than throttling it:
@@ -125,6 +126,7 @@ class FetchEvent
   end
 
   def run
+    @completed_poll = false
     new_events = []
     fetched_pages = []
     (1..MAX_PAGES).each do |page|
@@ -163,6 +165,7 @@ class FetchEvent
       EventLog.insert_all(es.map{|e| {id: e['id'], created_at: Time.now}})
       GithubEvent.insert_all(es)
     end
+    @completed_poll = true
   end
 
   def parse_event(event)

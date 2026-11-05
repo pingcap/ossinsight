@@ -10,7 +10,7 @@
 #   https://dev.mysql.com/doc/refman/5.7/en/password-hashing.html
 #
 default: &default
-  adapter: tidb
+  adapter: mysql2
   encoding: utf8mb4
   collation: utf8mb4_bin
   variables:

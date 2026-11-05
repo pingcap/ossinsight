@@ -5,6 +5,9 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'etl/**'
+      - '.dockerignore'
+      - 'ops/container-security/**'
       - 'packages/pipeline/**'
       - 'packages/prefetch/**'
       - 'apps/web/lib/server/**'
@@ -24,21 +27,11 @@ on:
       - 'apps/web/lib/content-security.ts'
       - 'apps/web/next.config.mjs'
       - 'apps/web/vercel.json'
-      - 'etl/config/database.yml'
-      - 'etl/config/environments/production.rb'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
       - 'packages/sync-github-data/**'
       - 'scripts/load-collection.mjs'
       - 'scripts/lib/**'
-      - 'etl/lib/sample_importer.rb'
-      - 'etl/lib/importer.rb'
-      - 'etl/db/seeds.rb'
-      - 'etl/db/seed.sql'
-      - 'etl/lib/tasks/import.rake'
-      - 'etl/test/sample_importer_test.rb'
-      - 'etl/test/seeds_test.rb'
-      - 'etl/test/archive_transport_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
       - '.github/workflows/sync-collection-configs.yml'
@@ -50,6 +43,9 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'etl/**'
+      - '.dockerignore'
+      - 'ops/container-security/**'
       - 'packages/pipeline/**'
       - 'packages/prefetch/**'
       - 'apps/web/lib/server/**'
@@ -69,21 +65,11 @@ on:
       - 'apps/web/lib/content-security.ts'
       - 'apps/web/next.config.mjs'
       - 'apps/web/vercel.json'
-      - 'etl/config/database.yml'
-      - 'etl/config/environments/production.rb'
       - 'apps/web/proxy.ts'
       - 'packages/site-shell/src/safe-json.ts'
       - 'packages/sync-github-data/**'
       - 'scripts/load-collection.mjs'
       - 'scripts/lib/**'
-      - 'etl/lib/sample_importer.rb'
-      - 'etl/lib/importer.rb'
-      - 'etl/db/seeds.rb'
-      - 'etl/db/seed.sql'
-      - 'etl/lib/tasks/import.rake'
-      - 'etl/test/sample_importer_test.rb'
-      - 'etl/test/seeds_test.rb'
-      - 'etl/test/archive_transport_test.rb'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
       - '.github/workflows/sync-collection-configs.yml'
@@ -125,17 +111,40 @@ jobs:
           npm audit --prefix ops/collection-sync --omit=dev --audit-level=high
           cd ops/collection-sync
           node -e "if (typeof require('@tidbcloud/serverless').connect !== 'function') process.exit(1)"
-      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
-        with:
-          ruby-version: '3.3'
-      - run: ruby etl/test/sample_importer_test.rb
-      - run: ruby etl/test/seeds_test.rb
-      - run: ruby etl/test/archive_transport_test.rb
-      - name: Verify ETL transport defaults
-        run: |
-          ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("etl/config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'
       - name: Verify TiDB execution and database grants
         env:
           NODE_OPTIONS: --experimental-vm-modules
         working-directory: packages/api-server
         run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts __tests__/worker/queue-worker.ts __tests__/core/email-rekey.ts __tests__/core/app-startup.ts __tests__/core/public-abuse.ts __tests__/core/account-registration.ts
+
+  containers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install native Ruby build prerequisites
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends default-libmysqlclient-dev pkg-config
+      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
+        with:
+          ruby-version: '3.4.12'
+          bundler: '4.0.23'
+          bundler-cache: true
+          working-directory: etl
+      - name: Audit locked Ruby dependencies
+        working-directory: etl
+        run: |
+          gem install bundler-audit -v 0.9.3 --no-document
+          bundler-audit check --update
+      - name: Verify Ruby security behavior and transport defaults
+        working-directory: etl
+        run: |
+          bundle exec ruby -e 'ARGV.each { |file| require_relative file }' ./test/sample_importer_test.rb ./test/seeds_test.rb ./test/archive_transport_test.rb ./test/worker_heartbeat_test.rb
+          ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'
+      - name: Build production images
+        run: |
+          docker build -f packages/api-server/Dockerfile -t ossinsight-api-security:test .
+          docker build -f etl/Dockerfile -t ossinsight-etl-security:test etl
+      - name: Verify read-only containers, native SQLite, verified TLS and real TiDB ingestion
+        run: python3 ops/container-security/check.py
