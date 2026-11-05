@@ -16,6 +16,9 @@ RUN cd /runtime/node_modules/sqlite3 && npm_config_nodedir=/usr/local npm run re
 
 FROM ${NODE_IMAGE} AS runtime
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+# Runtime only needs node; package-manager bundles have a separate CVE lifecycle.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* /usr/local/include/node \
+    && rm -f /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/yarn /usr/local/bin/yarnpkg /usr/local/bin/corepack /usr/local/bin/pnpm /usr/local/bin/pnpx
 ENV NODE_ENV=production CONFIGS_PATH=/app/configs
 WORKDIR /app/packages/api-server
 COPY --from=builder /runtime ./

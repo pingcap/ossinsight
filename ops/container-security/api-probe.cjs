@@ -10,6 +10,7 @@ const sqlite = require('/app/packages/api-server/node_modules/sqlite3');
     assert.throws(() => fs.accessSync(path, fs.constants.W_OK));
   }
   for (const name of ['gcc', 'g++', 'make', 'python3']) assert.equal(fs.existsSync('/usr/bin/' + name), false);
+  for (const name of ['npm', 'npx', 'yarn', 'corepack', 'pnpm']) assert.equal(fs.existsSync('/usr/local/bin/' + name), false);
   assert.equal(fs.existsSync('/app/.env'), false);
   assert.equal(typeof require('/app/packages/api-server/node_modules/@ossinsight/types').secureDatabaseURL, 'function');
   const version = await new Promise((resolve, reject) => {

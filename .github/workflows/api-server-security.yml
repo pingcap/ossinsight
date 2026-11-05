@@ -148,3 +148,13 @@ jobs:
           docker build -f etl/Dockerfile -t ossinsight-etl-security:test etl
       - name: Verify read-only containers, native SQLite, verified TLS and real TiDB ingestion
         run: python3 ops/container-security/check.py
+      - name: Scan runtime images for fixable high and critical vulnerabilities
+        env:
+          TRIVY_CACHE_DIR: ${{ runner.temp }}/trivy-cache
+        run: |
+          curl --fail --location --retry 3 https://github.com/aquasecurity/trivy/releases/download/v0.76.1/trivy_0.76.1_Linux-64bit.tar.gz --output "$RUNNER_TEMP/trivy.tar.gz"
+          echo "c7cbe3137fb8a48a17574bede3dd6beb16742d1e9772929940fc90082c39d9c0  $RUNNER_TEMP/trivy.tar.gz" | sha256sum --check --status
+          tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
+          for image in ossinsight-api-security:test ossinsight-etl-security:test; do
+            "$RUNNER_TEMP/trivy" image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --timeout 5m "$image"
+          done
