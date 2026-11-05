@@ -1,5 +1,20 @@
 # OSSInsight web
 
+## Database configuration
+
+Both `DATABASE_URL` and `EXPLORER_DATABASE_URL` pass the shared
+`secureDatabaseURL` validation before a connection is created. Use a `mysql:` URL
+with an explicit database and a dedicated non-root production account; remote
+access requires a password. Identity overrides in query options and options that
+disable certificate or hostname verification are rejected without contacting the
+database. Configuration errors do not include the supplied URL or credentials.
+
+The TiDB Serverless SDK sends SQL over HTTPS. It ignores MySQL URI TLS options;
+the shared validator enforces configuration policy, while the HTTP runtime
+performs certificate verification. Production and preview configuration must pass
+the same guard. Browser-facing API user/explorer responses retain `no-store` on
+successes and errors, and the public `/v1` proxy discards upstream session cookies.
+
 ## Public request budgets
 
 Production deployments require `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`

@@ -1,4 +1,5 @@
 import { connect } from '@tidbcloud/serverless';
+import { secureDatabaseURL } from '@ossinsight/types';
 
 let cachedTiDBConnection: ReturnType<typeof connect> | undefined;
 
@@ -12,16 +13,7 @@ export function getDatabaseUrl() {
     throw new Error('Missing DATABASE_URL for OSSInsight TiDB connection.');
   }
 
-  try {
-    const parsed = new URL(url);
-    if (!parsed.hostname) {
-      throw new TypeError('DATABASE_URL must include a host.');
-    }
-  } catch {
-    throw new Error('Invalid DATABASE_URL for OSSInsight TiDB connection.');
-  }
-
-  return url;
+  return secureDatabaseURL(url, process.env.NODE_ENV === 'production');
 }
 
 export function getTiDBConnection() {

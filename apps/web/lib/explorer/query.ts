@@ -1,10 +1,13 @@
 import { connect } from "@tidbcloud/serverless";
 import type { ExecuteArgs, FullResult } from "@tidbcloud/serverless";
+import { secureDatabaseURL } from '@ossinsight/types';
 
 import { BIG_NUMBER_TYPES } from "@/lib/data-service/executor/utils";
 
 export function getExplorerDatabaseUrl() {
-  return process.env.EXPLORER_DATABASE_URL || "";
+  const url = process.env.EXPLORER_DATABASE_URL?.trim();
+  if (!url) throw new Error('Missing EXPLORER_DATABASE_URL for Data Explorer.');
+  return secureDatabaseURL(url, process.env.NODE_ENV === 'production');
 }
 
 export function getExplorerDatabase() {
@@ -13,12 +16,6 @@ export function getExplorerDatabase() {
 
 function createExplorerConnection() {
   const url = getExplorerDatabaseUrl();
-  if (!url) {
-    throw new Error(
-      "Missing EXPLORER_DATABASE_URL for Data Explorer.",
-    );
-  }
-
   return connect({
     url,
     database: getExplorerDatabase(),
