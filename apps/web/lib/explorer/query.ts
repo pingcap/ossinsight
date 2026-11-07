@@ -59,7 +59,7 @@ export async function explainExplorerRows(
   };
 }
 
-function normalizeRows(result: FullResult) {
+export function normalizeRows(result: FullResult) {
   return (result.rows ?? []).map((row: Record<string, unknown>) =>
     Object.fromEntries(
       Object.entries(row).map(([key, value]) => {
