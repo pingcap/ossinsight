@@ -65,7 +65,8 @@
     "proxy-addr": "2.0.8",
     "socket.io": "^4.8.4",
     "sqlite3": "^6.0.1",
-    "yaml": "^2.9.1"
+    "yaml": "^2.9.1",
+    "@ossinsight/sql-policy": "workspace:*"
   },
   "devDependencies": {
     "@fastify/type-provider-json-schema-to-ts": "5.0.1",

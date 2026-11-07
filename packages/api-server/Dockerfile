@@ -6,9 +6,11 @@ WORKDIR /source
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages/api-server/package.json ./packages/api-server/package.json
 COPY packages/types/package.json ./packages/types/package.json
+COPY packages/sql-policy/package.json ./packages/sql-policy/package.json
 RUN pnpm install --filter @ossinsight/api-server... --frozen-lockfile --ignore-scripts --network-concurrency 8
 COPY packages/api-server ./packages/api-server
 COPY packages/types ./packages/types
+COPY packages/sql-policy ./packages/sql-policy
 RUN pnpm --filter @ossinsight/api-server... --workspace-concurrency 2 -r build
 RUN pnpm --config.ignore-scripts=true --filter @ossinsight/api-server deploy --legacy --prod /runtime
 # The reviewed sqlite3 native build is the only dependency script run.

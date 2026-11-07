@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "sh -c 'PORT=\"${PORT:-3001}\"; exec next start -p \"$PORT\"'",
     "lint": "next lint",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test:security": "jest --config jest.security.config.cjs --maxWorkers=4"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.136",
@@ -83,7 +84,8 @@
     "url-template": "^3.1.1",
     "use-stick-to-bottom": "^1.1.6",
     "zod": "^4.6.7",
-    "deepmerge-ts": "^8.0.2"
+    "deepmerge-ts": "^8.0.2",
+    "@ossinsight/sql-policy": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -107,6 +109,10 @@
     "shadcn": "^4.23.0",
     "tailwind-merge": "^1.14.0",
     "typescript": "^5.9.3",
-    "webpack": "^5.112.0"
+    "webpack": "^5.112.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.15",
+    "node-sql-parser": "5.4.0"
   }
 }

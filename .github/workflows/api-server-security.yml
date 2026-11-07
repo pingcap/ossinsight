@@ -5,6 +5,10 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/sql-policy/**'
+      - 'apps/web/lib/explorer/**'
+      - 'apps/web/jest.security.config.cjs'
+      - 'apps/web/package.json'
       - 'etl/**'
       - '.dockerignore'
       - 'ops/container-security/**'
@@ -43,6 +47,10 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/sql-policy/**'
+      - 'apps/web/lib/explorer/**'
+      - 'apps/web/jest.security.config.cjs'
+      - 'apps/web/package.json'
       - 'etl/**'
       - '.dockerignore'
       - 'ops/container-security/**'
@@ -102,6 +110,7 @@ jobs:
       - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --workspace-concurrency 12 -r build
       - run: pnpm --filter @ossinsight/sync-github-data test:security
       - run: pnpm --filter @ossinsight/api-server test:security
+      - run: pnpm --filter web test:security
       - run: pnpm --filter docs test:security
       - run: pnpm --filter @ossinsight/api-server test:runtime
       - run: node --test scripts/lib/collection-store.test.mjs
