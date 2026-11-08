@@ -1,9 +1,9 @@
 import fp from "fastify-plugin";
 import {Pool} from "mysql2/promise";
 import pino from "pino";
+import {requestAuditContext} from '@ossinsight/types';
 
 import {BatchLoader} from "../../core/db/batch-loader";
-import {getRealClientIP} from "../../utils/http/forwared";
 import Logger = pino.Logger;
 
 // Bound bytes as well as characters, without cutting a UTF-8 code point.
@@ -30,20 +30,21 @@ export default fp(async (app) => {
 
   app.decorate('apiRequestRecorder', apiRequestRecorder);
   app.addHook('onResponse', function (req, reply, done) {
-    // Skip metrics request.
-    if (req.url === '/metrics' || req.url === '/healthy') {
+    const route = req.routeOptions.url || 'unmatched';
+    // Query strings must not turn health/metrics checks into visitor statistics.
+    if (route === '/metrics' || route === '/healthy') {
       done();
       return;
     }
 
     // Record the final response once, including errors and their final status.
-    const clientIP = boundedAuditText(getRealClientIP(req), 128);
-    const clientOrigin = boundedAuditText(req.headers.origin ?? '', 255);
-    const { method, query } = req;
-    const { path } = req.urlData();
+    // This table is long-lived usage statistics, not the security-event log.
+    // Keep its legacy columns compatible without copying visitor identifiers,
+    // arbitrary URL segments or unreviewed query values into the database.
+    const {resource, parameters} = requestAuditContext(route, req.raw.url);
     const isDev = process.env.NODE_ENV === 'development';
     void this.apiRequestRecorder.insert([
-      clientIP, clientOrigin, method, boundedAuditText(path ?? '', 255), JSON.stringify(query),
+      '', '', req.method, boundedAuditText(resource, 255), JSON.stringify(parameters),
       reply.statusCode >= 400, reply.statusCode, reply.elapsedTime, isDev
     ]);
     done();
