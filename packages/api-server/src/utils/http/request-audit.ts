@@ -1,18 +1,12 @@
 import {FastifyInstance} from 'fastify';
 import {requestAuditContext} from '@ossinsight/types';
-import {authenticateOperatorToken} from './operator-auth';
 
 declare module 'fastify' {
   interface FastifyRequest { securityActor?: string | null }
 }
 
-export function registerRequestAudit(app: FastifyInstance, operationsToken?: string) {
+export function registerRequestAudit(app: FastifyInstance) {
   app.decorateRequest('securityActor', null);
-  app.addHook('onRequest', async request => {
-    if (request.routeOptions.url === '/metrics' || request.routeOptions.url === '/docs/json') {
-      request.securityActor = authenticateOperatorToken(request.headers.authorization, operationsToken);
-    }
-  });
   app.addHook('onSend', async (request, reply, payload) => {
     reply.header('X-Request-ID', request.id);
     if (request.headers.authorization || /^\/(?:q|queries|collections|v1|explorer|user|gh)(?:\/|$)/.test(request.routeOptions.url || '')) {

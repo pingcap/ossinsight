@@ -9,7 +9,7 @@ export default fp(async (app) => {
     if (req.method === 'OPTIONS') return;
     // Default to metering every route, including future routes and 404s. Only
     // authenticated monitoring traffic may avoid the shared public budget.
-    if (req.routeOptions.url === '/metrics' || req.routeOptions.url === '/docs/json') {
+    if (req.routeOptions.config.operatorOnly === true) {
       authenticateOperatorToken(req.headers.authorization, app.config.OPERATIONS_TOKEN);
       return;
     }

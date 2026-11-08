@@ -1,15 +1,18 @@
 import Fastify from 'fastify';
 import {registerRequestAudit} from '../../src/utils/http/request-audit';
 import {withRequestAudit} from '../../../../apps/web/lib/server/request-audit';
+import {registerOperatorRoutes} from '../../src/utils/http/operator-routes';
 
 const secret = 'test-only-operations-secret-'.repeat(2);
 
 test('metrics and API schema require operator credentials even from loopback or spoofed trusted addresses', async () => {
   const app = Fastify();
-  registerRequestAudit(app, secret);
-  app.get('/metrics', async request => ({actor: request.securityActor}));
-  app.get('/docs/json', async request => ({actor: request.securityActor}));
+  registerRequestAudit(app);
   app.get('/healthy', async () => ({ok: true}));
+  await registerOperatorRoutes(app, secret, async operations => {
+    operations.get('/metrics', async request => ({actor: request.securityActor}));
+    operations.get('/docs/json', async request => ({actor: request.securityActor}));
+  });
   try {
     for (const url of ['/metrics', '/docs/json']) {
       expect((await app.inject({url})).statusCode).toBe(401);
@@ -25,7 +28,9 @@ test('metrics and API schema require operator credentials even from loopback or 
 test('an unconfigured operations token cannot accidentally expose metrics', async () => {
   const app = Fastify();
   registerRequestAudit(app);
-  app.get('/metrics', async () => 'private metrics');
+  await registerOperatorRoutes(app, undefined, async operations => {
+    operations.get('/metrics', async () => 'private metrics');
+  });
   try { expect((await app.inject({url: '/metrics'})).statusCode).toBe(503); }
   finally { await app.close(); }
 });

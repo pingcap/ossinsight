@@ -11,10 +11,6 @@ export const APIServerEnvSchema = {
       type: 'string',
       default: resolve(__dirname, '..', '..', '..', 'configs')
     },
-    ADMIN_EMAIL: {
-      type: 'string',
-      default: 'ossinsight@pingcap.com'
-    },
     DATABASE_URL: {
       type: 'string'
     },
@@ -46,11 +42,6 @@ export const APIServerEnvSchema = {
       default: 30
     },
     PLAYGROUND_QUERY_SQL_TIMEOUT: {type: 'integer', minimum: 1, maximum: 60000, default: 30000},
-    PLAYGROUND_TRUSTED_GITHUB_LOGINS: {
-      type: 'string',
-      separator: ',',
-      default: ''
-    },
     EXPLORER_GENERATE_ANSWER_PROMPT_NAME: {
       type: 'string',
       default: DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME,
