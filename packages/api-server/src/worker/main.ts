@@ -9,6 +9,7 @@ import {workerLogger} from './logger';
 import {createQuestionWorker} from './queue-worker';
 import {checkAnalyticsDatabase} from '../core/playground/database-policy';
 import {workerOperations} from './operations';
+import {operationsCredentials} from '../utils/http/operator-auth';
 
 const disabledPreparation = async (): Promise<never> => { throw new Error('SQL worker cannot prepare questions.'); };
 
@@ -19,7 +20,11 @@ export async function main(checkOnly = false) {
   const queues: Queue[] = [];
   const workers: Worker[] = [];
   const operations = workerOperations(() => workers.length === 2 && redis.status === 'ready' &&
-    workers.every(worker => worker.isRunning()), process.env.OPERATIONS_TOKEN);
+    workers.every(worker => worker.isRunning()), operationsCredentials({
+      OPERATIONS_TOKEN: process.env.OPERATIONS_TOKEN,
+      OPERATIONS_TOKEN_PREVIOUS: process.env.OPERATIONS_TOKEN_PREVIOUS,
+      OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: process.env.OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT,
+    }));
   const redis = new Redis(config.redis, {lazyConnect: true, maxRetriesPerRequest: null,
     connectTimeout: 10000, enableOfflineQueue: false});
   redis.on('error', () => log.error({event: 'worker_lifecycle', outcome: 'failed'}));

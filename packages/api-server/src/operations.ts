@@ -1,8 +1,9 @@
 import {FastifyInstance} from 'fastify';
 import {registerOperatorRoutes} from './utils/http/operator-routes';
+import {operationsCredentials} from './utils/http/operator-auth';
 
 export async function registerOperationalEndpoints(app: FastifyInstance): Promise<void> {
-  await registerOperatorRoutes(app, app.config.OPERATIONS_TOKEN, async operations => {
+  await registerOperatorRoutes(app, operationsCredentials(app.config), async operations => {
     // Instrumentation remains registered on the parent so public routes are
     // measured too. Only reading the configured registry is operator-only.
     operations.get('/metrics', {logLevel: 'fatal', exposeHeadRoute: false}, async (_request, reply) => {

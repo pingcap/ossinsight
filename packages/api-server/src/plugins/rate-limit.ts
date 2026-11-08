@@ -2,15 +2,16 @@ import fp from "fastify-plugin";
 import fastifyRateLimit from '@fastify/rate-limit';
 import {getRealClientIP} from "../utils/http/forwared";
 import {consumePublicQuota} from '../utils/public-quota';
-import {authenticateOperatorToken} from '../utils/http/operator-auth';
+import {createOperatorAuthenticator, operationsCredentials} from '../utils/http/operator-auth';
 
 export default fp(async (app) => {
+  const authenticate = createOperatorAuthenticator(operationsCredentials(app.config));
   app.addHook('onRequest', async (req, reply) => {
     if (req.method === 'OPTIONS') return;
     // Default to metering every route, including future routes and 404s. Only
     // authenticated monitoring traffic may avoid the shared public budget.
     if (req.routeOptions.config.operatorOnly === true) {
-      authenticateOperatorToken(req.headers.authorization, app.config.OPERATIONS_TOKEN);
+      authenticate(req.headers.authorization);
       return;
     }
     try {

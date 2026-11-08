@@ -20,6 +20,8 @@ export interface AppConfig {
   CONFIGS_PATH: string;
   DATABASE_URL: string;
   PIPELINE_OPERATOR_TOKEN?: string;
+  PIPELINE_OPERATOR_TOKEN_PREVIOUS?: string;
+  PIPELINE_OPERATOR_TOKEN_PREVIOUS_EXPIRES_AT?: string;
 }
 
 declare module 'fastify' {
@@ -36,7 +38,9 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     schema: APIServerEnvSchema
   });
 
-  registerOperatorAuth(app, app.config.PIPELINE_OPERATOR_TOKEN);
+  registerOperatorAuth(app, {current: app.config.PIPELINE_OPERATOR_TOKEN,
+    previous: app.config.PIPELINE_OPERATOR_TOKEN_PREVIOUS,
+    previousExpiresAt: app.config.PIPELINE_OPERATOR_TOKEN_PREVIOUS_EXPIRES_AT});
 
   // Init global error handler.
   app.setErrorHandler(function (error: Error, request, reply) {
