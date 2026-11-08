@@ -68,7 +68,8 @@ test('actual collection pipeline counts successful production GETs and clears st
   const database = getTestDatabase();
   const pipeline = await createConnection(`${database.rootUrl()}/${database.database}`);
   try {
-    await pool.query('DELETE FROM stats_api_requests');
+    // Fixture cleanup is maintenance work, not a public API privilege.
+    await pipeline.query('DELETE FROM stats_api_requests');
     const ids = [71001, 71002, 71003];
     await pipeline.query('INSERT INTO collections(id,name,past_month_visits) VALUES ?',
       [ids.map(id => [id, `activity-fixture-${id}`, 99])]);
@@ -92,6 +93,32 @@ test('actual collection pipeline counts successful production GETs and clears st
       expect(actual).toEqual(ids.map((id, index) => ({id, past_month_visits: index === 0 ? 2 : 0})));
     }
   } finally {await pipeline.end();}
+});
+
+test('the statistics writer can append and read but cannot change existing records or the schema', async () => {
+  const path = '/statistics-permission-fixture';
+  await pool.query('INSERT INTO stats_api_requests(method,path,status_code,error,is_dev) VALUES (?,?,?,?,?)', ['GET', path, 204, 0, 1]);
+  async function expectDenied(sql: string, values: string[] = []) {
+    const errno = await pool.query(sql, values).then(() => 0, error => error.errno);
+    // TiDB can return its own planner privilege-check code (8121), or the
+    // MySQL-compatible table-access denial (1142), depending on the command.
+    expect([1142, 8121]).toContain(errno);
+  }
+  for (const sql of [
+    'UPDATE stats_api_requests SET status_code=500 WHERE path=?',
+    'DELETE FROM stats_api_requests WHERE path=?',
+  ]) {
+    await expectDenied(sql, [path]);
+  }
+  for (const sql of [
+    'TRUNCATE TABLE stats_api_requests',
+    'ALTER TABLE stats_api_requests ADD COLUMN unauthorized_fixture INT',
+    'DROP TABLE stats_api_requests',
+  ]) {
+    await expectDenied(sql);
+  }
+  const [rows]: any = await pool.query('SELECT status_code FROM stats_api_requests WHERE path=?', [path]);
+  expect(rows).toEqual([{status_code: 204}]);
 });
 
 test.each(['', 'NO_BACKSLASH_ESCAPES'])('literal LIKE prefixes remain literal under SQL mode %s', async extraMode => {

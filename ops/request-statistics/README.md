@@ -41,3 +41,6 @@ database/back-up access and retention obligations. Record an approved retention
 period and verify recovery before applying a bounded historical cleanup. Keep
 this follow-up open until the database and relevant backups have been checked;
 do not report that the historical-data risk is fixed by this code change.
+
+See [access and historical cleanup](access-and-retention.md) for the tested
+writer privilege boundary, deployment procedure and historical-data decision.
