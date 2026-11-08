@@ -7,6 +7,7 @@ import { join } from 'path';
 import {isProdDatabaseURL} from "./utils/db";
 import {registerRequestAudit} from './utils/http/request-audit';
 import {errorHandler} from './utils/http/error-handler';
+import {registerOperationalEndpoints} from './operations';
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -19,7 +20,6 @@ const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
 
 export interface AppConfig {
   CONFIGS_PATH: string;
-  ADMIN_EMAIL: string;
   OPERATIONS_TOKEN?: string;
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
@@ -30,7 +30,6 @@ export interface AppConfig {
   PLAYGROUND_DATABASE_URL: string;
   PLAYGROUND_SHADOW_DATABASE_URL: string;
   PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
-  PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
   EXPLORER_GENERATE_ANSWER_PROMPT_NAME: string;
   EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
   EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
@@ -78,7 +77,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     throw new Error('DO NOT use production database in test env.');
   }
 
-  registerRequestAudit(fastify, fastify.config.OPERATIONS_TOKEN);
+  registerRequestAudit(fastify);
 
   // Init error handler.
   fastify.setErrorHandler(errorHandler);
@@ -96,11 +95,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     options: opts
   });
 
-  // Expose Swagger JSON.
-  // Notice: Swagger docs SHOULD be initialized after all routes are registered.
-  fastify.get('/docs/json', (req, reply) => {
-    reply.send(fastify.swagger());
-  });
+  await registerOperationalEndpoints(fastify);
 };
 
 export default app;

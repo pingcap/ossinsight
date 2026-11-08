@@ -8,6 +8,7 @@ import sockets from '../../src/plugins/socket.io';
 import metrics from '../../src/plugins/metrics';
 import {githubAPICounter} from '../../src/metrics';
 import {registerRequestAudit} from '../../src/utils/http/request-audit';
+import {registerOperationalEndpoints} from '../../src/operations';
 
 const secret = 'synthetic-runtime-upgrade-secret-'.repeat(2);
 const origin = 'https://ossinsight.io';
@@ -124,15 +125,31 @@ test('shutdown also closes Engine.IO transports that have not joined a namespace
 });
 
 test('upgraded metrics include application counters and still require operator authentication', async () => {
+  const previousInstance = process.env.NODE_APP_INSTANCE;
+  process.env.NODE_APP_INSTANCE = '0';
   const app = Fastify();
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
-  registerRequestAudit(app, secret);
+  app.decorate('config', {OPERATIONS_TOKEN: secret});
+  app.decorate('swagger', () => ({swagger: '2.0'}));
+  registerRequestAudit(app);
   await app.register(metrics);
+  app.get('/measured-public-route', async () => ({ok: true}));
+  await registerOperationalEndpoints(app);
   githubAPICounter.inc({api: 'runtime-upgrade', statusCode: 200});
   try {
     expect((await app.inject('/metrics')).statusCode).toBe(401);
+    expect((await app.inject('/measured-public-route')).statusCode).toBe(200);
     const response = await app.inject({url: '/metrics', headers: {authorization: `Bearer ${secret}`}});
     expect(response.statusCode).toBe(200);
     expect(response.body).toContain('ossinsight_api_gh_api_req_total{api="runtime-upgrade",statusCode="200"} 1');
-  } finally {await app.close();}
+    expect(response.body).toMatch(/http_request_duration_seconds_count\{[^\n]*route="\/measured-public-route"[^\n]*\} 1/);
+    expect(response.headers['cache-control']).toBe('no-store');
+    expect((await app.inject('/docs/json')).statusCode).toBe(401);
+    const schema = await app.inject({url: '/docs/json', headers: {authorization: `Bearer ${secret}`}});
+    expect(schema.json()).toEqual({swagger: '2.0'});
+  } finally {
+    await app.close();
+    if (previousInstance === undefined) delete process.env.NODE_APP_INSTANCE;
+    else process.env.NODE_APP_INSTANCE = previousInstance;
+  }
 });

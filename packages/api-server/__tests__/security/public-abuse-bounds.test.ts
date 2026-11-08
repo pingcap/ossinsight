@@ -8,6 +8,7 @@ import recorder from '../../src/plugins/stats/api-request-recorder';
 import {BatchLoader} from '../../src/core/db/batch-loader';
 import {cachedHealth} from '../../src/utils/http/cached-health';
 import {boundedAuditText} from '../../src/plugins/stats/api-request-recorder';
+import {registerOperatorRoutes} from '../../src/utils/http/operator-routes';
 
 async function quotaApp(limit = 2) {
   const app = Fastify();
@@ -147,9 +148,11 @@ test('authenticated scrapes remain available after public quota exhaustion, whil
   const secret = 'test-only-monitor-token-'.repeat(3);
   app.config.OPERATIONS_TOKEN = secret;
   app.get('/public', async () => 'ok');
-  app.get('/metrics', async () => 'metrics');
-  app.get('/docs/json', async () => ({}));
   app.options('/public', async (_request, reply) => reply.code(204).send());
+  await registerOperatorRoutes(app, secret, async operations => {
+    operations.get('/metrics', async () => 'metrics');
+    operations.get('/docs/json', async () => ({}));
+  });
   try {
     expect((await app.inject('/public')).statusCode).toBe(200);
     expect((await app.inject('/public')).statusCode).toBe(429);
