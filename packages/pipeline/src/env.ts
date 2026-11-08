@@ -12,5 +12,7 @@ export const APIServerEnvSchema = {
       type: 'string',
     },
     PIPELINE_OPERATOR_TOKEN: {type: 'string', minLength: 32, maxLength: 256},
+    PIPELINE_OPERATOR_TOKEN_PREVIOUS: {type: 'string', minLength: 32, maxLength: 256},
+    PIPELINE_OPERATOR_TOKEN_PREVIOUS_EXPIRES_AT: {type: 'string', maxLength: 24},
   },
 };

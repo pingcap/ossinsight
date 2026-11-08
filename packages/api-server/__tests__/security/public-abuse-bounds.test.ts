@@ -10,13 +10,13 @@ import {cachedHealth} from '../../src/utils/http/cached-health';
 import {boundedAuditText} from '../../src/plugins/stats/api-request-recorder';
 import {registerOperatorRoutes} from '../../src/utils/http/operator-routes';
 
-async function quotaApp(limit = 2) {
+async function quotaApp(limit = 2, token?: string) {
   const app = Fastify();
   const counts = new Map<string, number>();
   const redis = {defineCommand: jest.fn(), eval: jest.fn(async (_script, _keys, key) => {
     const count = (counts.get(key) || 0) + 1; counts.set(key, count); return [count, 3600000];
   })};
-  app.decorate('config', {PUBLIC_API_HOURLY_RATE_LIMIT: limit});
+  app.decorate('config', {PUBLIC_API_HOURLY_RATE_LIMIT: limit, OPERATIONS_TOKEN: token});
   app.decorate('redis', redis);
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   await app.register(fp(async () => {}, {name: '@ossinsight/redis'}));
@@ -144,9 +144,8 @@ test('connection failures retry a batch without splitting it into a storm of ins
 });
 
 test('authenticated scrapes remain available after public quota exhaustion, while forged credentials fail', async () => {
-  const {app, redis} = await quotaApp(1);
   const secret = 'test-only-monitor-token-'.repeat(3);
-  app.config.OPERATIONS_TOKEN = secret;
+  const {app, redis} = await quotaApp(1, secret);
   app.get('/public', async () => 'ok');
   app.options('/public', async (_request, reply) => reply.code(204).send());
   await registerOperatorRoutes(app, secret, async operations => {

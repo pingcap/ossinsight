@@ -21,6 +21,8 @@ const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
 export interface AppConfig {
   CONFIGS_PATH: string;
   OPERATIONS_TOKEN?: string;
+  OPERATIONS_TOKEN_PREVIOUS?: string;
+  OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT?: string;
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
   REDIS_URL: string;
