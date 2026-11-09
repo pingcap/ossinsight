@@ -14,3 +14,4 @@ items:
   - odoo/odoo
   - FrontAccountingERP/FA
   - calcom/cal.com
+  - customermates/customermates
