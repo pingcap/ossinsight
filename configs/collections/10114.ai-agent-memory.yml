@@ -2,6 +2,7 @@ id: 10114
 name: AI Agent Memory
 items:
   - mem0ai/mem0
+  - smaramwbc/statewave
   - letta-ai/letta
   - langchain-ai/langmem
   - run-llama/llama_index
