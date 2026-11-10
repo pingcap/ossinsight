@@ -1,0 +1,21 @@
+id: 10144
+name: SaaS Starter Kit
+items:
+  - nextjs/saas-starter
+  - wasp-lang/open-saas
+  - ixartz/SaaS-Boilerplate
+  - thedevdojo/wave
+  - boxyhq/saas-starter-kit
+  - async-labs/saas
+  - mickasmt/next-saas-stripe-starter
+  - apptension/saas-boilerplate
+  - nextify-limited/saasfly
+  - scosman/CMSaasStarter
+  - bullet-train-co/bullet_train
+  - dev-xo/remix-saas
+  - nextacular/nextacular
+  - moinulmoin/chadnext
+  - usebasejump/basejump
+  - makerkit/nextjs-saas-starter-kit-lite
+  - Razikus/supabase-nextjs-template
+  - mailkite/saas-startup
