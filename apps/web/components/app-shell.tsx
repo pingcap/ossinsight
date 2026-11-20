@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { SiteHeader, HeaderAnalyzeSelector } from '@repo/site-shell';
+import { SiteHeader, HeaderAnalyzeSelector, SunsetBanner } from '@repo/site-shell';
 import { cn } from '@/lib/utils';
 import config from '@/site.config';
 import { RealtimeSummary } from '@/components/RealtimeSummary';
@@ -33,6 +33,7 @@ export function AppShell({
         isHome ? 'bg-[#212122]' : 'bg-[#1a1a1b]',
       )}
     >
+      <SunsetBanner app="web" />
       <SiteHeader
         {...config.header}
         className={cn(
