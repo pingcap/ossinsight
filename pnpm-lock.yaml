@@ -11,6 +11,7 @@ overrides:
   proxy-addr@<2.0.8: 2.0.8
   '@goparrot/geocoder>class-validator': ^0.15.1
   promised-sqlite3>sqlite3: ^6.0.1
+  '@vercel/cli-config>zod': ^4.6.6
   openai>zod: ^4.6.7
   jsonpath>underscore: ^1.13.8
   ansi-to-react>linkify-it: ^5.0.2
@@ -10297,9 +10298,6 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  zod@4.1.11:
-    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
-
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
@@ -14155,7 +14153,7 @@ snapshots:
   '@vercel/cli-config@0.3.1':
     dependencies:
       xdg-app-paths: 5.5.1
-      zod: 4.1.11
+      zod: 4.6.7
 
   '@vercel/cli-config@0.4.0':
     dependencies:
@@ -21789,8 +21787,6 @@ snapshots:
   zod-validation-error@4.0.2(zod@4.6.7):
     dependencies:
       zod: 4.6.7
-
-  zod@4.1.11: {}
 
   zod@4.6.7: {}
 
