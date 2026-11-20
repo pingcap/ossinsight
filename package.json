@@ -30,6 +30,7 @@
       "proxy-addr@<2.0.8": "2.0.8",
       "@goparrot/geocoder>class-validator": "^0.15.1",
       "promised-sqlite3>sqlite3": "^6.0.1",
+      "@vercel/cli-config>zod": "^4.6.6",
       "openai>zod": "^4.6.7",
       "jsonpath>underscore": "^1.13.8",
       "ansi-to-react>linkify-it": "^5.0.2",
