@@ -27,6 +27,7 @@ Snapshots are stored in Vercel Blob under `snapshots/<widget>/<base64url of the 
 | `WIDGET_ORIGIN` | Address of the widget service. Defaults to its Vercel project address. |
 | `BLOB_READ_WRITE_TOKEN` | Set by Vercel when the Blob store is connected. Without it no snapshots are written or read. |
 | `SNAPSHOT_BASE_URL` | Optional. Public base URL of the Blob store, if it cannot be derived from the token. |
+| `SUPPRESSED_GITHUB_ACCOUNTS` | Optional. `login:id,login:id` pairs for accounts whose owners asked to be removed. Their widgets and pages return 404. Kept out of the repository on purpose. |
 
 ## Shutdown day
 
