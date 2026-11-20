@@ -18,6 +18,7 @@ import {
 import { explainQuery, runQuery } from '@/lib/data-service/routes';
 import { executeOneRow, executeRows } from '@/lib/data-service/query';
 import {normalizeSearchKeyword, literalLikePrefix} from './search-keyword';
+import { isSuppressedAccountId, isSuppressedLogin, isSuppressedRepoName } from '@/lib/suppressed-profiles';
 
 type RepoRecommendItem = {
   id: number;
@@ -128,6 +129,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal): Pr
 
 export async function getRepoByName(owner: string, repo: string, signal?: AbortSignal): Promise<RepoDetail | null> {
   if (!isGitHubOwner(owner) || !isGitHubRepository(repo)) return null;
+  if (isSuppressedLogin(owner)) return null;
   const row = await executeOneRow<{
     id: number;
     full_name: string;
@@ -175,6 +177,7 @@ export async function getRepoByName(owner: string, repo: string, signal?: AbortS
 }
 
 export async function getUserById(id: number | string, signal?: AbortSignal) {
+  if (isSuppressedAccountId(id)) return null;
   return executeOneRow<{
     id: number;
     login: string;
@@ -207,6 +210,7 @@ export async function getUserById(id: number | string, signal?: AbortSignal) {
 
 export async function getUserByLogin(username: string, signal?: AbortSignal) {
   if (!isGitHubLogin(username)) return null;
+  if (isSuppressedLogin(username)) return null;
   return executeOneRow<{
     id: number;
     login: string;
@@ -277,7 +281,7 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
     signal,
   );
 
-  return rows.map((row) => ({
+  return rows.filter((row) => !isSuppressedRepoName(row.fullName)).map((row) => ({
     id: row.id,
     fullName: row.fullName,
     defaultBranchRef: { name: '' },
@@ -327,7 +331,7 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
     signal,
   );
 
-  return rows.map((row) => ({
+  return rows.filter((row) => !isSuppressedLogin(row.login) && !isSuppressedAccountId(row.id)).map((row) => ({
     id: row.id,
     login: row.login,
   }));
