@@ -4,6 +4,7 @@ import ts from 'typescript';
 import {APIError} from '../../../../apps/web/lib/data-service/executor/utils';
 import {withRequestAudit} from '../../../../apps/web/lib/server/request-audit';
 import * as cors from '../../../../apps/web/lib/cors';
+import * as suppressedProfiles from '../../../../apps/web/lib/suppressed-profiles';
 
 const web = path.resolve(__dirname, '../../../../apps/web');
 function load(file: string, dependencies: Record<string, unknown>): any {
@@ -23,7 +24,7 @@ function harness() {
   const dependencies = {'@ossinsight/types': require('@ossinsight/types'), '@/lib/cors': cors,
     '@/lib/data-service': {APIError}, '@/lib/data-quality': {}, '@/lib/collections': {},
     '@/lib/data-service/routes': {}, '@/lib/data-service/query': {executeRows},
-    '@/lib/server/route-audit': {withRequestAudit}};
+    '@/lib/server/route-audit': {withRequestAudit}, '@/lib/suppressed-profiles': suppressedProfiles};
   const api = load(path.join(web, 'lib/server/internal-api.ts'), dependencies);
   const routes = ['repos', 'users', 'organizations'].map(name => load(path.join(web, `app/gh/${name}/search/route.ts`), {...dependencies, '@/lib/server/internal-api': api}));
   return {api, executeRows, routes};
