@@ -21,7 +21,7 @@ This post explains what stops, what stays, and how to keep using the data.
 | Live analytics pages (repository, developer and organization analysis, compare, collections, trending) | Stop working. They depend on the live database, which is being shut down. |
 | Data Explorer | Retired. |
 | Public API at `api.ossinsight.io` | Stops. Every request returns `410 Gone`. |
-| Embedded widgets and chart images from `next.ossinsight.io` | Replaced by a static placeholder image. |
+| Embedded widgets and chart images from `next.ossinsight.io` | Frozen. Each image shows its last snapshot with a note that it no longer updates. |
 | Accounts and saved questions | Sign-in is retired. Account records and saved questions are deleted after the shutdown. |
 
 ## The data stays available
@@ -32,9 +32,20 @@ Files will be listed at [ossinsight.io/data](https://ossinsight.io/data) as they
 
 ## What you should do
 
-- **If you call the API**, move off it before December 4. Until then, API responses carry `Deprecation` and `Sunset` headers. The raw event data that OSSInsight is built on comes from [GH Archive](https://www.gharchive.org/), which remains available.
-- **If your README embeds an OSSInsight widget or chart**, remove it or replace it with a static image before December 4.
+- **If you call the API**, move off it before December 4. API responses will carry `Deprecation` and `Sunset` headers until then. The raw event data that OSSInsight is built on comes from [GH Archive](https://www.gharchive.org/), which remains available.
+- **If your README embeds an OSSInsight widget or chart**, see the next section. You do not have to change anything before December 4, but the image will stop updating.
 - **If you want to keep a chart or a result**, export or screenshot it now.
+
+## Widgets in your README
+
+Many READMEs and profile pages embed OSSInsight widgets from `next.ossinsight.io`. Here is what happens to them:
+
+- **Until December 4, 2026**, widgets keep working and keep updating. In the coming days a short notice will appear under each image to say that it stops on December 4.
+- **From December 4, 2026**, each widget shows its last snapshot, with a note that OSSInsight has shut down and the image no longer updates. Your README will not show a broken image.
+- A widget that nobody opened during the notice period has no snapshot. It shows a one-line notice instead.
+- Links to widget pages on `next.ossinsight.io` will redirect to this post.
+
+A frozen chart gets less accurate over time, so we recommend replacing or removing the widget when convenient.
 
 ## The source code
 
