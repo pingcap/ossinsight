@@ -39,3 +39,4 @@ items:
   - nat/openplayground
   - mlc-ai/web-llm
   - langflow-ai/langflow
+  - modelflare-ai/AnyModelBot
