@@ -1,3 +1,4 @@
+import {serializeScriptJSON} from '@repo/site-shell/src/safe-json';
 import type { Metadata } from 'next';
 import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import {
@@ -78,7 +79,7 @@ export default async function TrendingPage({ searchParams }: PageProps) {
       ]} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeScriptJSON(jsonLd) }}
       />
       {!degraded && repos.length > 0 && (
         <ItemListJsonLd

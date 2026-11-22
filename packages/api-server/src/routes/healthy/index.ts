@@ -2,6 +2,7 @@ import {FastifyPluginAsync} from "fastify";
 import Redis from "ioredis";
 // import {DateTime} from "luxon";
 import pino from "pino";
+import {cachedHealth} from '../../utils/http/cached-health';
 import {checkTiDBIfConnected} from "../../utils/db";
 import Logger = pino.Logger;
 
@@ -11,38 +12,36 @@ import Logger = pino.Logger;
 //   latest_timestamp: string;
 // }
 
-const schema = {
-  description: 'Check if the API server is healthy.',
-  tags: ['system'],
-  response: {
-    200: {
-      type: 'object',
-      description: 'OK',
-      properties: {
-        healthy: {
-          type: 'boolean',
-        },
-        isTiDBHealthy: {
-          type: 'boolean',
-        },
-        isRedisHealthy: {
-          type: 'boolean',
-        },
-        isShadowTiDBHealthy: {
-          type: 'boolean',
-        },
-        // prefetchLatency: {
-        //   type: 'number',
-        // },
-      }
-    }
+const healthResponseSchema = {
+  type: 'object',
+  description: 'Service health',
+  properties: {
+    healthy: {
+      type: 'boolean',
+    },
+    isTiDBHealthy: {
+      type: 'boolean',
+    },
+    isRedisHealthy: {
+      type: 'boolean',
+    },
+    isShadowTiDBHealthy: {
+      type: 'boolean',
+    },
+    // prefetchLatency: {
+    //   type: 'number',
+    // },
   }
 };
 
+const schema = {
+  description: 'Check if the API server is healthy.',
+  tags: ['system'],
+  response: {200: healthResponseSchema, 500: healthResponseSchema},
+};
+
 const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
-  app.get('/', {
-    schema
-  }, async function (req, reply) {
+  const check = cachedHealth(async () => {
     let healthy = true;
     const healthInfo: Record<string, any> = {};
 
@@ -89,12 +88,11 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
       healthInfo.isShadowTiDBHealthy = isShadowTiDBHealthy;
     }
 
-    healthInfo.healthy = healthy;
-    if (healthy) {
-      reply.status(200).send(healthInfo);
-    } else {
-      reply.status(500).send(healthInfo);
-    }
+    return { ...healthInfo, healthy };
+  });
+  app.get('/', {schema}, async function (_req, reply) {
+    const healthInfo = await check();
+    return reply.header('Cache-Control', 'no-store').status(healthInfo.healthy ? 200 : 500).send(healthInfo);
   });
 }
 

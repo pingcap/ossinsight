@@ -1,4 +1,9 @@
-WITH accumulative_prs_by_month AS (
+WITH public_collection_items AS (
+    SELECT ci.* FROM collection_items ci
+    JOIN collections public_collection ON public_collection.id = ci.collection_id
+    WHERE public_collection.public = 1
+),
+accumulative_prs_by_month AS (
     SELECT
         t_month,
         repo_id,
@@ -15,7 +20,7 @@ WITH accumulative_prs_by_month AS (
         FROM github_events ge
         WHERE
             type = 'PullRequestEvent'
-            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
+            AND repo_id IN (SELECT repo_id FROM public_collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     ) sub
     WHERE
         row_num_by_number = 1

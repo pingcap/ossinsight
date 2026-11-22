@@ -518,7 +518,7 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
         xAxis: {
           type: 'category',
           position: 'top',
-          boundaryGap: ['8%', '6%'],
+          boundaryGap: true,
           data: years.map(String),
           axisLabel: {
             color: '#7c7c7c',

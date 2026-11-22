@@ -14,6 +14,16 @@ export async function findContentSecrets(root) {
       for (const match of content.matchAll(pattern)) {
         findings.push({file: relative(root, file), line: content.slice(0, match.index).split('\n').length});
       }
+      // Basic credentials can be published as a standalone Base64 code block,
+      // without an Authorization header. Decode candidates only in memory and
+      // report their location, never the encoded or decoded credential.
+      const encodedPattern = /(?<![A-Za-z0-9+/=])[A-Za-z0-9+/]{32,512}={0,2}(?![A-Za-z0-9+/=])/g;
+      for (const match of content.matchAll(encodedPattern)) {
+        const decoded = Buffer.from(match[0], 'base64');
+        if (decoded.toString('base64').replace(/=+$/, '') !== match[0].replace(/=+$/, '')) continue;
+        if (!/^[A-Za-z0-9_.@-]{6,128}:[\x21-\x7e]{16,128}$/.test(decoded.toString('utf8'))) continue;
+        findings.push({file: relative(root, file), line: content.slice(0, match.index).split('\n').length});
+      }
     }
   }
   await visit(root);

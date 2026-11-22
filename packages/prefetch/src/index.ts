@@ -8,7 +8,7 @@ import {
 import {Command} from "commander";
 import {CronJob} from 'cron';
 import envSchema from "env-schema";
-import * as http from "http";
+import {prefetchOperations} from "./operations";
 import {Pool} from "mysql2/promise";
 import {collectDefaultMetrics, Registry} from "prom-client";
 import {AppConfig, PrefetchEnvSchema} from "./env";
@@ -88,15 +88,7 @@ async function prefetch(options: Options) {
     }
   });
 
-  http.createServer(async (req, res) => {
-    if (req.url === '/metrics') {
-      res.writeHead(200, {'Content-Type': register.contentType});
-      res.end(await register.metrics());
-    } else {
-      res.writeHead(404);
-      res.end();
-    }
-  }).listen(config.SERVER_PORT);
+  prefetchOperations(register, config).listen(config.SERVER_PORT, config.METRICS_HOST);
 
   // Init query executor.
   const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger);

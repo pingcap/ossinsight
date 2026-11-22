@@ -1,78 +1,57 @@
-import {FastifyInstance, FastifyRequest} from "fastify";
-import * as path from 'path'
+import {FastifyRequest} from 'fastify';
+import * as path from 'path';
+import {readFileSync} from 'fs';
+import cors from '@fastify/cors';
+import fp from 'fastify-plugin';
+import {parse as parseYAML} from 'yaml';
+import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from '../routes/bot/questionToSQL/quota';
 
-import { existsSync, readFileSync } from 'fs';
-
-import cors, {FastifyCorsOptions} from '@fastify/cors';
-import fp from "fastify-plugin";
-import { parse as parseYAML } from 'yaml';
-import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../routes/bot/questionToSQL/quota";
-
-export type OriginType = string | RegExp;
-
+export type OriginType = string;
 export const DEFAULT_ALLOWED_ORIGIN = 'https://ossinsight.io';
 
 declare module 'fastify' {
-    interface FastifyInstance {
-        allowedOrigins: OriginType[]
-    }
+  interface FastifyInstance { allowedOrigins: string[] }
 }
 
-export default fp(async (app) => {
-    let configsPath = app.config.CONFIGS_PATH;
-    if (!configsPath) {
-        configsPath = path.join(__dirname, '..', '..', '..', '..', 'configs');
-    }
-    app.log.info({}, 'Found configs path: %s', configsPath);
-    const allowedOrigins:OriginType[] = getAllowedOrigins(configsPath, true);
-    allowedOrigins.push(DEFAULT_ALLOWED_ORIGIN);
+export function isAllowedSocketOrigin(origin: unknown, allowed: readonly string[]): boolean {
+  return typeof origin === 'string' && allowed.includes(origin);
+}
 
-    app.register(cors, (app: FastifyInstance) => {
-        return (req: FastifyRequest, callback: any) => {
-            const corsOptions: FastifyCorsOptions = {
-                origin: allowedOrigins,
-                exposedHeaders: [GENERATE_SQL_USED_HEADER, GENERATE_SQL_LIMIT_HEADER],
-                credentials: true,
-            }
-
-            if (req.routerPath.startsWith('/v1')) {
-                corsOptions.origin = false;
-                corsOptions.exposedHeaders = [];
-                corsOptions.credentials = false;
-            }
-
-            callback(null, corsOptions)
-        }
+export default fp(async app => {
+  const configsPath = app.config.CONFIGS_PATH || path.join(__dirname, '..', '..', '..', '..', 'configs');
+  const privateOrigins = getAllowedOrigins(configsPath);
+  const allowedOrigins = getAllowedOrigins(configsPath, true);
+  await app.register(cors, () => (req: FastifyRequest, callback: any) => {
+    const origin = req.headers.origin;
+    const credentialed = typeof origin === 'string' && privateOrigins.includes(origin);
+    const method = req.method === 'OPTIONS' ? req.headers['access-control-request-method'] : req.method;
+    const publicRead = (method === 'GET' || method === 'HEAD') && /^\/(?:v1|q|queries|gh|collections)(?:\/|$)/.test(new URL(req.url, 'http://internal').pathname);
+    callback(null, {
+      origin: credentialed || (publicRead && typeof origin === 'string' && allowedOrigins.includes(origin)) ? origin : false,
+      credentials: credentialed,
+      exposedHeaders: [GENERATE_SQL_USED_HEADER, GENERATE_SQL_LIMIT_HEADER],
     });
-    app.decorate('allowedOrigins', allowedOrigins);
-}, {
-    name: '@ossinsight/cors',
-    dependencies: [
-        '@fastify/env'
-    ],
-});
+  });
+  app.decorate('allowedOrigins', allowedOrigins);
+}, {name: '@ossinsight/cors', dependencies: ['@fastify/env']});
 
-export function getAllowedOrigins(configsPath: string, containPublic: boolean = false): RegExp[] {
-    const configFile = path.resolve(configsPath, 'allowed-origins.yaml');
-    if (!existsSync(configFile)) {
-        console.log(`Can not found allowed origins file: ${configFile}, API server will allowed all origins.`);
-        return [];
+export function getAllowedOrigins(configsPath: string, containPublic = false): string[] {
+  const config = parseYAML(readFileSync(path.resolve(configsPath, 'allowed-origins.yaml'), 'utf8'));
+  const development = process.env.NODE_ENV === 'development';
+  const origins = [
+    ...(config.private_origins || []),
+    ...(process.env.CORS_PRIVATE_ORIGINS || '').split(',').map(value => value.trim()).filter(Boolean),
+    ...(containPublic ? config.public_origins || [] : []),
+    ...(development ? config.development_origins || [] : []),
+  ];
+  return [...new Set(origins.map((origin: unknown) => {
+    if (typeof origin !== 'string') throw new Error('CORS origins must be exact URL origins');
+    let url: URL;
+    try { url = new URL(origin); } catch { throw new Error('CORS origins must be exact URL origins'); }
+    const local = development && url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+    if ((!local && url.protocol !== 'https:') || url.origin !== origin || url.username || url.password) {
+      throw new Error('CORS origins must be exact HTTPS origins (loopback HTTP is development-only)');
     }
-
-    try {
-        const originFile = readFileSync(configFile, 'utf8');
-        const { private_origins: privateOrigins = [], public_origins: publicOrigins = [] } = parseYAML(originFile);
-        let origins = privateOrigins;
-        if (containPublic && publicOrigins.length > 0 ) {
-            origins = origins.concat(publicOrigins);
-        }
-
-        return origins.map((origin: string) => {
-            return new RegExp(origin);
-        });
-    } catch(err: any) {
-        throw new Error('Failed to load allowed origins.', {
-            cause: err
-        });
-    }
+    return origin;
+  }))];
 }

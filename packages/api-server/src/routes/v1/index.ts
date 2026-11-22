@@ -1,34 +1,9 @@
-import {FastifyPluginAsync} from "fastify";
-import {APIError} from "../../utils/error";
-import {responseHeaders} from '../../utils/response-headers';
+import { FastifyPluginAsync } from 'fastify';
 
-const schema = {
-  operationId: 'other-api',
-  summary: 'Other Query API',
-  querystring: {
-    type: 'object',
-    properties: {},
-    additionalProperties: true
-  } as const
+// Only explicitly registered public routes may use Data Service credentials.
+const queryHandler: FastifyPluginAsync = async app => {
+  app.get('/*', async (_request, reply) => {
+    reply.code(404).send({ message: 'API endpoint not found.' });
+  });
 };
-
-const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
-  app.get<{
-    Querystring: Record<string, any>
-  }>('/*', { schema }, async function (req, reply) {
-    if (!app.tidbDataService) {
-      throw new APIError(500, 'TiDB data service is not initialized.');
-    }
-
-    // Retrieve query result from TiDB data service.
-    const url = req.url.replace(/^\/public/, '');
-    const res = await app.tidbDataService.request(url);
-
-    reply
-      .code(res.status)
-      .headers(responseHeaders(res.headers))
-      .send(res.data);
-  })
-}
-
 export default queryHandler;

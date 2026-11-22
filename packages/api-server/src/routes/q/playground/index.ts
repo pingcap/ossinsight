@@ -8,7 +8,18 @@ const root: FastifyPluginAsync = async (app, opts) => {
       type: 'repo' | 'user',
       id: string,
     }
-  }>('/', async (request, reply) => {
+  }>('/', {
+    preValidation: app.authenticate,
+    config: {rateLimit: {max: 60, timeWindow: '1 minute'}},
+    schema: {body: {
+      type: 'object', additionalProperties: false, required: ['sql', 'type', 'id'],
+      properties: {
+        sql: {type: 'string', minLength: 1, maxLength: 20000},
+        type: {type: 'string', enum: ['repo', 'user']},
+        id: {type: 'string', pattern: '^[1-9][0-9]{0,15}$'},
+      },
+    }},
+  }, async (request, reply) => {
     const {
       sql: sqlString,
       type,

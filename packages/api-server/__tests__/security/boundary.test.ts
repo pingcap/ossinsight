@@ -28,7 +28,7 @@ test('explain uses the same validation and cannot bypass read policy', async () 
   await expect(executor.executeWithConn(conn as any,'explain:explorer','DELETE FROM github_events')).rejects.toThrow();
   expect(conn.execute).not.toHaveBeenCalled();
   await executor.executeWithConn(conn as any,'explain:explorer','SELECT COUNT(*) FROM github_events');
-  expect(conn.execute.mock.calls[0][0]).toMatch(/^EXPLAIN SELECT/);
+  expect(conn.execute).toHaveBeenLastCalledWith(expect.objectContaining({sql: expect.stringMatching(/^EXPLAIN SELECT/), timeout: 30000}));
 });
 
 test('explorer planning never uses application database credentials', async () => {

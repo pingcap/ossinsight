@@ -47,21 +47,16 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     const context = buildPlaygroundContext(req.body.context, req.user as Auth0User);
 
     // Get the limit and used.
-    const used = await playgroundService.countTodayQuestionRequests(userId, false);
     let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
     if (await app.playgroundService.checkIfTrustedUser(userId)) {
       // Give the trusted users more daily requests.
       limit = MAX_DAILY_GENERATE_SQL_LIMIT;
     }
 
-    // Check if the current user reached the daily request limit.
+    // Reserve atomically before any billable work. Both API aliases share this quota.
     reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
-    if (used >= limit) {
-      reply.header(GENERATE_SQL_USED_HEADER, used);
-      throw new APIError(429, `You have reached the daily question limit. Please try again tomorrow.`);
-    } else {
-      reply.header(GENERATE_SQL_USED_HEADER, used + 1);
-    }
+    const reservation = await playgroundService.reserveQuestion(userId, context, question, limit);
+    reply.header(GENERATE_SQL_USED_HEADER, reservation.used);
 
     // Generate the SQL.
     let sql = null, success = true;
@@ -74,14 +69,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
       success = false;
       throw err;
     } finally {
-      await playgroundService.recordQuestion({
-        userId,
-        context,
-        question,
-        sql,
-        success,
-        preset: false
-      });
+      await playgroundService.finishQuestion(reservation.id, userId, sql, success && Boolean(sql));
     }
 
     reply.send({

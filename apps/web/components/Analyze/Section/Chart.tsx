@@ -107,7 +107,7 @@ export default function ChartTemplate (props: ChartTemplateProps) {
           height: height ? `${height}px` : undefined,
         }}
       >
-        <ErrorBoundary errorComponent={({ error }) => <p className='p-2 text-red-700 font-medium leading-6'>{error.message}</p>}>
+        <ErrorBoundary errorComponent={({ error }) => <p className='p-2 text-red-700 font-medium leading-6'>{error instanceof Error ? error.message : 'Unable to load chart.'}</p>}>
           <OrgChart
             className='w-full h-full overflow-hidden'
             name={name}

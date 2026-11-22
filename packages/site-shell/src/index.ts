@@ -1,4 +1,5 @@
 export * from './site-header';
+export * from './sunset-banner';
 export * from './site-links';
 export * from './nav-link';
 export * from './types';

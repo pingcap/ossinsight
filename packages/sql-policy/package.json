@@ -1,0 +1,21 @@
+{
+  "name": "@ossinsight/sql-policy",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "node-sql-parser": "5.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}

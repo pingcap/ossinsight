@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { listCollections, getCollectionRanking } from '@/lib/server/internal-api';
 import { toCollectionSlug } from '@/lib/collections';
 
@@ -11,7 +12,7 @@ const AI_COLLECTION_KEYWORDS = [
   'vector database', 'deep learning', 'natural language processing',
 ];
 
-export async function GET() {
+async function handleGET() {
   const sections: string[] = [];
 
   sections.push(`# OSSInsight — Full Documentation
@@ -77,7 +78,7 @@ Curated lists of GitHub repositories grouped by technology domain. Each collecti
     );
     sections.push(`### Available Collections (${collections.length} total)\n\n${collectionLines.join('\n')}`);
   } catch (error) {
-    console.warn('[llms-full.txt] Failed to fetch collections:', error);
+    console.warn('[llms-full.txt] Failed to fetch collections.');
   }
 
   // Data summary: top 5 repos per major AI collection
@@ -179,3 +180,5 @@ A: Go to any repository analysis page and click "VS" or add \`?vs=owner/repo\` t
     },
   });
 }
+
+export const GET = withRequestAudit('GET /llms-full.txt', handleGET);

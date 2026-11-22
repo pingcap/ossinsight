@@ -1,3 +1,8 @@
+require 'open-uri'
+require 'net/http'
+require 'openssl'
+require 'zlib'
+
 class Importer
   attr_reader :filename, :url, :cache_dir, :batch_at, :import_log, :events, :raw_events, :dump_dir
 
@@ -33,9 +38,12 @@ class Importer
 
 
   def initialize(filename, cache_dir = nil)
+    unless filename.is_a?(String) && /\A\d{4}-\d{2}-\d{2}-(?:[01]?\d|2[0-3])\.json\.gz\z/.match?(filename)
+      raise ArgumentError, 'An hourly GH Archive filename is required'
+    end
     @filename        = filename
     @cache_dir       = cache_dir || ENV['CACHE_DIR'] || Rails.root.join("cache/gharchives/").to_s
-    @url             = "http://data.gharchive.org/#{filename}"
+    @url             = "https://data.gharchive.org/#{filename}"
     @batch_at        = Time.now
     @import_log      = ImportLog.create!(filename: filename, start_batch_at: batch_at)
     @json_stream     = nil
@@ -162,12 +170,16 @@ class Importer
     begin
       puts "start downloading, cache miss, request url: #{url}"
       Retryable.retryable(tries: 5, on: [Timeout::Error, Net::OpenTimeout, OpenURI::HTTPError]) do
-        gz = URI.open(url, open_timeout: 600, read_timeout: 600)
+        gz = URI.open(url, open_timeout: 10, read_timeout: 60,
+                      ssl_verify_mode: OpenSSL::SSL::VERIFY_PEER, redirect: false)
       end
-    rescue OpenURI::HTTPError
+    rescue OpenURI::HTTPError => error
+      raise unless error.io.respond_to?(:status) && error.io.status.first == '404'
       puts "skip 404 file: #{url}"
     else
-      @json_stream = Zlib::GzipReader.new(gz).read if gz
+      Zlib::GzipReader.wrap(gz) { |reader| @json_stream = reader.read } if gz
+    ensure
+      gz.close if gz && !gz.closed?
     end
   end
 

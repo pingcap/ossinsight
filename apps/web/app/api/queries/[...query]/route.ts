@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest } from 'next/server';
 import { APIError, DegradedDataError } from '@/lib/data-service';
 import { getQueryName, runQuery } from '@/lib/data-service/routes';
@@ -8,7 +9,7 @@ interface Params {
 
 export const runtime = 'edge';
 
-export async function GET (req: NextRequest, reqCtx: { params: Promise<Params> }) {
+async function handleGET(req: NextRequest, reqCtx: { params: Promise<Params> }) {
   try {
     const resolvedParams = await reqCtx.params;
     const queryName = getQueryName(resolvedParams.query);
@@ -18,9 +19,7 @@ export async function GET (req: NextRequest, reqCtx: { params: Promise<Params> }
       status: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'max-age=60',
-        'CDN-Cache-Control': 'max-age=300',
-        'Vercel-CDN-Cache-Control': 'max-age=3600',
+        'Cache-Control': 'no-store',
       },
     });
   } catch (err) {
@@ -29,21 +28,21 @@ export async function GET (req: NextRequest, reqCtx: { params: Promise<Params> }
         status: err.statusCode,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          // Never let CDNs pin the incident body on this otherwise-cached route.
+          // Incident responses follow the same no-store policy as query results.
           'Cache-Control': 'no-store',
         },
       });
     }
 
     if (err instanceof APIError) {
-      return new Response(JSON.stringify({ message: err.message }), {
+      return new Response(JSON.stringify({ message: err.publicMessage }), {
         status: err.statusCode,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
         },
       });
     }
-    console.error(err);
+
     return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
       status: 500,
       headers: {
@@ -52,3 +51,5 @@ export async function GET (req: NextRequest, reqCtx: { params: Promise<Params> }
     });
   }
 }
+
+export const GET = withRequestAudit('GET /api/queries/[...query]', handleGET);

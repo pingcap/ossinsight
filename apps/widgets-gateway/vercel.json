@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "functions": {
+    "api/thumbnail.ts": {
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/widgets/:vendor/:name/thumbnail.png",
+      "destination": "/api/thumbnail?__vendor=:vendor&__name=:name"
+    },
+    {
+      "source": "/",
+      "destination": "https://ossinsight-next-pingcap.vercel.app/"
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://ossinsight-next-pingcap.vercel.app/:path*"
+    }
+  ]
+}

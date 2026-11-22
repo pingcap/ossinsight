@@ -1,7 +1,7 @@
 import {AddressWithCnt, GithubUserDao} from "@dao/github-user-dao";
 import {AppConfig} from "@env";
 import {Locator} from "@libs/locator/Locator";
-import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient} from "@libs/db/prisma";
 import {RegionCodeMapping} from "@typings/github";
 import async from "async";
 import {Command} from "commander";
@@ -22,7 +22,7 @@ export function initFormatAddressCommand(command: Command, config: AppConfig, lo
       const {concurrent} = options;
 
       // Init GitHub User DAO.
-      const prisma = new PrismaClient();
+      const prisma = createSecurePrismaClient(config.DATABASE_URL);
       const githubUserDao = new GithubUserDao(logger, prisma);
 
       // Init Location Locator.

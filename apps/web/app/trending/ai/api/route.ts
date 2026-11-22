@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { getCollectionRanking, jsonResponse } from '@/lib/server/internal-api';
 
 export const runtime = 'edge';
@@ -30,7 +31,7 @@ export type TrendingAIResponse = {
   categories: { id: number; category: string; count: number; topRepo: string }[];
 };
 
-export async function GET(req: Request) {
+async function handleGET(req: Request) {
   const { searchParams } = new URL(req.url);
   const categoryFilter = searchParams.get('category');
 
@@ -87,7 +88,9 @@ export async function GET(req: Request) {
 
     return jsonResponse({ repos, categories } satisfies TrendingAIResponse);
   } catch (error) {
-    console.error('[trending/ai/api] Failed to fetch data:', error);
+
     return jsonResponse({ repos: [], categories: [] }, { status: 500 });
   }
 }
+
+export const GET = withRequestAudit('GET /trending/ai/api', handleGET);

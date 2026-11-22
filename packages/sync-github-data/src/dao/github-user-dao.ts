@@ -1,6 +1,6 @@
 import {GitHubUser, LocationCacheItem, Prisma, PrismaClient} from '@prisma/client';
 import {BOT_LOGIN_REGEXP, GitHubUserNode, GitHubUserType} from "@typings/github";
-import crypto from "crypto";
+import {hashGitHubEmail} from "../utils/email-hash";
 import {Logger} from "pino";
 import {DEFAULT_COUNTRY_CODE, DEFAULT_REGION_CODE} from "@libs/locator/Locator";
 
@@ -69,21 +69,7 @@ export class GithubUserDao {
   }
 
   encodeEmail(email?: string | null): string {
-    if (email === undefined || email === null) return '';
-
-    const parts = email.split('@');
-    if (parts.length !== 2) {
-      return '';
-    }
-
-    const unique = parts[0];
-    const suffix = parts[1];
-
-    const hmac = crypto.createHmac('sha256', process.env.ENCODE_EMAIL_SECRET_KEY || 'secret-key');
-    hmac.update(unique);
-    const encoded = hmac.digest('hex');
-
-    return `${encoded}@${suffix}`;
+    return hashGitHubEmail(email, process.env.ENCODE_EMAIL_SECRET_KEY, process.env.ENCODE_EMAIL_LEGACY_ENCODING_KEY);
   }
 
   async updateUserLocationByAddress(address: string, location: LocationCacheItem) {

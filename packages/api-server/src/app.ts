@@ -1,23 +1,28 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-import { FastifyPluginAsync, RawServerDefault } from 'fastify';
+import { FastifyPluginAsync, FastifyServerOptions, RawServerDefault } from 'fastify';
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {isProdDatabaseURL} from "./utils/db";
-import {APIError} from "./utils/error";
+import {registerRequestAudit} from './utils/http/request-audit';
+import {errorHandler} from './utils/http/error-handler';
+import {registerOperationalEndpoints} from './operations';
 
 export type AppOptions = {
   // Place your custom options for app below here.
 } & Partial<AutoloadPluginOptions>;
 
 // Pass --options via CLI arguments in command to enable these options.
-const options: AppOptions = {
+const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
+  trustProxy: process.env.TRUSTED_PROXY_CIDRS?.split(',').map(value => value.trim()).filter(Boolean) || false,
 }
 
 export interface AppConfig {
   CONFIGS_PATH: string;
-  ADMIN_EMAIL: string;
+  OPERATIONS_TOKEN?: string;
+  OPERATIONS_TOKEN_PREVIOUS?: string;
+  OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT?: string;
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
   REDIS_URL: string;
@@ -27,7 +32,6 @@ export interface AppConfig {
   PLAYGROUND_DATABASE_URL: string;
   PLAYGROUND_SHADOW_DATABASE_URL: string;
   PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
-  PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
   EXPLORER_GENERATE_ANSWER_PROMPT_NAME: string;
   EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
   EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
@@ -39,6 +43,8 @@ export interface AppConfig {
   OPENAI_API_KEY: string;
   AUTH0_DOMAIN: string;
   AUTH0_SECRET: string;
+  AUTH0_AUDIENCE?: string;
+  AUTH0_ALLOWED_CLIENT_IDS?: string[];
   TIDB_CLOUD_DATA_SERVICE_APP_ID: string;
   TIDB_CLOUD_DATA_SERVICE_PUBLIC_KEY: string;
   TIDB_CLOUD_DATA_SERVICE_PRIVATE_KEY: string;
@@ -73,21 +79,10 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     throw new Error('DO NOT use production database in test env.');
   }
 
-  // Init error handler.
-  fastify.setErrorHandler(function (error: Error, request, reply) {
-    this.log.error(error);
+  registerRequestAudit(fastify);
 
-    if (error instanceof APIError) {
-      reply.status(error.statusCode).send({
-        message: error.message,
-        payload: error.payload
-      });
-    } else {
-      reply.status(500).send({
-        message: error.message || 'Internal Server Error'
-      });
-    }
-  });
+  // Init error handler.
+  fastify.setErrorHandler(errorHandler);
 
   // Loads all plugins defined in ./plugins directory.
   void fastify.register(AutoLoad, {
@@ -102,11 +97,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     options: opts
   });
 
-  // Expose Swagger JSON.
-  // Notice: Swagger docs SHOULD be initialized after all routes are registered.
-  fastify.get('/docs/json', (req, reply) => {
-    reply.send(fastify.swagger());
-  });
+  await registerOperationalEndpoints(fastify);
 };
 
 export default app;

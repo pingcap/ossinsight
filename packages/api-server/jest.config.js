@@ -5,6 +5,7 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/__tests__/helpers/',
+    '/tests/runtime-dependencies.test.cjs',
   ],
   coverageReporters: ['text', 'html'],
   coverageProvider: 'v8',

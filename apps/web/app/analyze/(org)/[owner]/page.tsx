@@ -22,7 +22,7 @@ export async function generateStaticParams() {
 
 export default async function Page ({ params }: { params: Promise<{ owner: string }> }) {
   const { owner } = await params;
-  const data = await fetchOwnerInfo(decodeURIComponent(owner));
+  const data = await fetchOwnerInfo(owner);
 
   if (data.type === 'User') {
     redirect(`/analyze-user/${encodeURIComponent(data.login)}`);
@@ -64,7 +64,7 @@ export default async function Page ({ params }: { params: Promise<{ owner: strin
 
 export async function generateMetadata ({ params }: { params: Promise<{ owner: string }> }): Promise<Metadata> {
   const { owner } = await params;
-  const data = await fetchOwnerInfo(decodeURIComponent(owner));
+  const data = await fetchOwnerInfo(owner);
   const displayName = data.name || data.login;
   const isOrg = data.type === 'Organization';
   const title = `Analyze ${displayName}`;

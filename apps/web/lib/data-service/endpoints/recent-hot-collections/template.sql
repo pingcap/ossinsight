@@ -1,6 +1,12 @@
-WITH top_10_collections AS (
+WITH public_collection_items AS (
+    SELECT ci.* FROM collection_items ci
+    JOIN collections public_collection ON public_collection.id = ci.collection_id
+    WHERE public_collection.public = 1
+),
+top_10_collections AS (
 	SELECT c.id, c.name, c.past_month_visits
 	FROM collections c
+	WHERE c.public = 1
 	ORDER BY c.past_month_visits DESC
 	LIMIT 10
 )
@@ -17,7 +23,7 @@ FROM (
 		ci.last_2nd_month_rank,
 		(ci.last_2nd_month_rank - ci.last_month_rank) AS rank_changes,
 		COUNT(*) OVER (PARTITION BY ci.collection_id) AS repos
-	FROM collection_items ci
+	FROM public_collection_items ci
 	JOIN top_10_collections tc ON ci.collection_id = tc.id
 ) sub
 WHERE `rank` <= 3

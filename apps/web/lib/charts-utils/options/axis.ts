@@ -1,4 +1,4 @@
-import merge from 'deepmerge';
+import merge from './merge';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import format from 'human-format';

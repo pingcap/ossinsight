@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **OSSInsight is shutting down on December 4, 2026.** The site becomes a read-only archive, the public API stops, and embedded widgets freeze at their last snapshot. The dataset will be published for download. Read the [announcement](https://ossinsight.io/blog/ossinsight-is-shutting-down).
+
 <h1 align="center">OSSInsight</h1>
 
 <p align="center">

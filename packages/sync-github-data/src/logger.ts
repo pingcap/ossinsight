@@ -1,7 +1,9 @@
 import pino from "pino";
 import LoggerOptions = pino.LoggerOptions;
+import {safeError} from './utils/safe-error';
 
 const opts: LoggerOptions = {
+  serializers: {err: safeError, error: safeError},
   base: {
     service: 'sync-github-data'
   },

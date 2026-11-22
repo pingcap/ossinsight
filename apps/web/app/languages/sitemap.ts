@@ -1,9 +1,11 @@
+export const dynamic = 'force-dynamic';
+import {withSitemapAudit} from '@/lib/server/route-audit';
 import type { MetadataRoute } from 'next';
 import { LANGUAGES } from '@/lib/server/internal-api';
 
 const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}/languages`,
@@ -22,3 +24,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return entries;
 }
+
+export default withSitemapAudit('GET /languages/sitemap.xml', sitemap);

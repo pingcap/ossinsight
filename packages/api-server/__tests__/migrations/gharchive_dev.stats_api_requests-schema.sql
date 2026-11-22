@@ -1,7 +1,7 @@
 CREATE TABLE stats_api_requests (
     client_ip      VARCHAR(128) DEFAULT ''                NOT NULL,
     client_origin  VARCHAR(255) DEFAULT ''                NOT NULL,
-    method         ENUM('GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE') NOT NULL,
+    method         ENUM('GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE', 'OPTIONS') NOT NULL,
     path           VARCHAR(255)                           NULL,
     query          JSON                                   NULL,
     status_code    INT                                    NULL,
@@ -14,6 +14,7 @@ CREATE TABLE stats_api_requests (
     KEY idx_sar_on_client_ip(client_ip),
     KEY idx_sar_on_client_origin(client_origin)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
-PARTITION BY RANGE COLUMNS (finished_at) INTERVAL (1 MONTH)
-FIRST PARTITION LESS THAN ('2023-08-01')
-LAST PARTITION LESS THAN ('2025-01-01');
+PARTITION BY RANGE COLUMNS (finished_at) (
+    PARTITION P_LT_2025 VALUES LESS THAN ('2025-01-01'),
+    PARTITION P_LT_MAX VALUES LESS THAN (MAXVALUE)
+);

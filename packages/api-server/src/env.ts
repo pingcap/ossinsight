@@ -6,17 +6,15 @@ export const APIServerEnvSchema = {
   type: 'object',
   required: [ 'DATABASE_URL', 'REDIS_URL', 'GITHUB_ACCESS_TOKENS' ],
   properties: {
+    OPERATIONS_TOKEN: {type: 'string', minLength: 32, maxLength: 256},
+    OPERATIONS_TOKEN_PREVIOUS: {type: 'string', minLength: 32, maxLength: 256},
+    OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: {type: 'string', maxLength: 24},
     CONFIGS_PATH: {
       type: 'string',
       default: resolve(__dirname, '..', '..', '..', 'configs')
     },
-    ADMIN_EMAIL: {
-      type: 'string',
-      default: 'ossinsight@pingcap.com'
-    },
     DATABASE_URL: {
-      type: 'string',
-      default: 'mysql://root@localhost:4000/gharchive_dev?timezone=Z&decimalNumbers=true'
+      type: 'string'
     },
     SHADOW_DATABASE_URL: {
       type: 'string'
@@ -45,11 +43,7 @@ export const APIServerEnvSchema = {
       type: 'number',
       default: 30
     },
-    PLAYGROUND_TRUSTED_GITHUB_LOGINS: {
-      type: 'string',
-      separator: ',',
-      default: ''
-    },
+    PLAYGROUND_QUERY_SQL_TIMEOUT: {type: 'integer', minimum: 1, maximum: 60000, default: 30000},
     EXPLORER_GENERATE_ANSWER_PROMPT_NAME: {
       type: 'string',
       default: DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME,
@@ -90,6 +84,8 @@ export const APIServerEnvSchema = {
     AUTH0_SECRET: {
       type: 'string'
     },
+    AUTH0_AUDIENCE: {type: 'string', minLength: 1, maxLength: 2048},
+    AUTH0_ALLOWED_CLIENT_IDS: {type: 'string', separator: ',', default: ''},
     TIDB_CLOUD_DATA_SERVICE_APP_ID: {
       type: 'string'
     },
@@ -100,7 +96,9 @@ export const APIServerEnvSchema = {
       type: 'string'
     },
     PUBLIC_API_HOURLY_RATE_LIMIT: {
-      type: 'number',
+      type: 'integer',
+      minimum: 1,
+      maximum: 100000,
       default: 600
     }
   },

@@ -7,7 +7,7 @@ import UserAnalyzeContent from './content';
 
 export default async function Page ({ params }: { params: Promise<{ login: string }> }) {
   const { login } = await params;
-  const data = await fetchOwnerInfo(decodeURIComponent(login));
+  const data = await fetchOwnerInfo(login);
   const displayName = data.name || data.login;
 
   return (
@@ -38,7 +38,7 @@ export default async function Page ({ params }: { params: Promise<{ login: strin
 
 export async function generateMetadata ({ params }: { params: Promise<{ login: string }> }): Promise<Metadata> {
   const { login } = await params;
-  const data = await fetchOwnerInfo(decodeURIComponent(login));
+  const data = await fetchOwnerInfo(login);
   const displayName = data.name || data.login;
   const title = `Analyze ${displayName}`;
   const fullTitle = `${title} | OSSInsight`;

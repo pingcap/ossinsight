@@ -1,0 +1,8 @@
+{
+  "name": "ossinsight-collection-sync-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@tidbcloud/serverless": "0.0.6"
+  }
+}

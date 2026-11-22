@@ -2,45 +2,40 @@
  * Centralized CORS configuration for API routes.
  *
  * Reads allowed origins from the CORS_ALLOWED_ORIGINS environment variable
- * (comma-separated). Falls back to the production origin when not set.
+ * (comma-separated exact HTTPS origins). No wildcard or credentialed access.
  */
 
 const DEFAULT_ORIGINS = ['https://ossinsight.io', 'https://www.ossinsight.io'];
 
 function getAllowedOrigins(): string[] {
   const env = process.env.CORS_ALLOWED_ORIGINS;
-  if (env) {
-    return env.split(',').map((o) => o.trim()).filter(Boolean);
-  }
-  return DEFAULT_ORIGINS;
+  if (!env?.trim()) return DEFAULT_ORIGINS;
+  const origins = env.split(',').map((origin) => origin.trim()).filter(Boolean);
+  if (!origins.length) throw new Error('CORS origins must be exact HTTPS origins');
+  return [...new Set(origins.map((origin) => {
+    let url: URL;
+    try { url = new URL(origin); } catch { throw new Error('CORS origins must be exact HTTPS origins'); }
+    const local = process.env.NODE_ENV === 'development' && url.protocol === 'http:' &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+    if ((!local && url.protocol !== 'https:') || url.origin !== origin || url.hostname.includes('*') || url.username || url.password) {
+      throw new Error('CORS origins must be exact HTTPS origins');
+    }
+    return origin;
+  }))];
 }
 
 /**
  * Build CORS headers for the given request origin.
- * Returns the origin itself if it is in the allowlist, otherwise the first
- * allowed origin (browsers will block the response when it doesn't match).
- *
- * Pass `origin = '*'` to explicitly allow all origins (public embed APIs).
+ * Only an exact allowlist match receives permission. Vary also accompanies
+ * absent/rejected origins so shared caches cannot mix response policies.
  */
 export function corsHeaders(requestOrigin?: string | null): Record<string, string> {
   const allowed = getAllowedOrigins();
 
-  // When the env explicitly contains '*', allow everything (backwards-compat).
-  if (allowed.includes('*')) {
-    return {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    };
-  }
-
-  const origin =
-    requestOrigin && allowed.includes(requestOrigin)
-      ? requestOrigin
-      : allowed[0];
+  if (!requestOrigin || !allowed.includes(requestOrigin)) return {Vary: 'Origin'};
 
   return {
-    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Origin': requestOrigin,
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     Vary: 'Origin',

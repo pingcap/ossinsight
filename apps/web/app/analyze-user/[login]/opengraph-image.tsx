@@ -1,3 +1,6 @@
+import { OG_IMAGE_HEADERS } from '@/lib/og-image';
+import { getUserByLogin } from '@/lib/server/internal-api';
+import { notFound } from 'next/navigation';
 import { OG_IMAGE_SIZE, OG_GRADIENT_STYLE } from '@/lib/og-image';
 import { ImageResponse } from 'next/og';
 
@@ -9,7 +12,8 @@ export const contentType = 'image/png';
 
 export default async function Image({ params }: { params: Promise<{ login: string }> }) {
   const { login: rawLogin } = await params;
-  const login = decodeURIComponent(rawLogin);
+  const login = rawLogin;
+  if (!await getUserByLogin(login)) notFound();
 
   const poppinsMedium = fetch(new URL('./Poppins-Medium.ttf', import.meta.url)).then(r => r.arrayBuffer());
   const poppinsSemiBold = fetch(new URL('./Poppins-SemiBold.ttf', import.meta.url)).then(r => r.arrayBuffer());
@@ -41,6 +45,7 @@ export default async function Image({ params }: { params: Promise<{ login: strin
     ),
     {
       ...size,
+      headers: OG_IMAGE_HEADERS,
       fonts: [
         { name: 'Poppins', data: await poppinsMedium, style: 'normal' as const, weight: 500 as const },
         { name: 'Poppins', data: await poppinsSemiBold, style: 'normal' as const, weight: 600 as const },

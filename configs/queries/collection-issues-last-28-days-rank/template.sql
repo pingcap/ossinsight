@@ -1,11 +1,16 @@
-WITH issues_group_by_repo AS (
+WITH public_collection_items AS (
+    SELECT ci.* FROM collection_items ci
+    JOIN collections public_collection ON public_collection.id = ci.collection_id
+    WHERE public_collection.public = 1
+),
+issues_group_by_repo AS (
     SELECT
         repo_id,
         COUNT(DISTINCT number) AS issues
     FROM github_events
     WHERE
         type = 'IssuesEvent'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
+        AND repo_id IN (SELECT repo_id FROM public_collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     GROUP BY repo_id
 ), issues_group_by_period AS (
     SELECT
@@ -16,7 +21,7 @@ WITH issues_group_by_repo AS (
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
+        AND repo_id IN (SELECT repo_id FROM public_collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
         AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
     GROUP BY period, repo_id
 ), issues_last_period AS (
@@ -54,7 +59,7 @@ SELECT
     -- The total issues of repo.
     IFNULL(igr.issues, 0) AS total
 FROM issues_group_by_repo igr
-JOIN collection_items ci ON ci.collection_id = 10001 AND igr.repo_id = ci.repo_id
+JOIN public_collection_items ci ON ci.collection_id = 10001 AND igr.repo_id = ci.repo_id
 JOIN issues_last_period ilp ON igr.repo_id = ilp.repo_id
 LEFT JOIN issues_last_2nd_period il2p ON igr.repo_id = il2p.repo_id
 ORDER BY last_period_rank;

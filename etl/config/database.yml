@@ -10,7 +10,7 @@
 #   https://dev.mysql.com/doc/refman/5.7/en/password-hashing.html
 #
 default: &default
-  adapter: tidb
+  adapter: mysql2
   encoding: utf8mb4
   collation: utf8mb4_bin
   variables:
@@ -19,10 +19,8 @@ default: &default
   url: <%= ENV['DATABASE_URL'] %>
   timeout: 50000
   reconnect: true
-<% if ENV['DB_FORCE_SSL'].present? %>
   ssl_mode: :verify_identity
-  sslca: "/etc/ssl/cert.pem"
-<% end %>
+  sslca: <%= ENV.fetch("DB_SSL_CA", OpenSSL::X509::DEFAULT_CERT_FILE).to_json %>
 
 development:
   <<: *default

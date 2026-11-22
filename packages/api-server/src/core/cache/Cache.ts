@@ -23,7 +23,7 @@ export interface CachedResult<T> extends CachedData<T> {
   refresh?: boolean;
 }
 
-const runningCaches = new Map<string, Cache<any>>()
+const providerCaches = new WeakMap<CacheProvider, Map<string, Cache<any>>>();
 
 export default class Cache<T> {
   _data!: Promise<CachedResult<T>>
@@ -39,6 +39,10 @@ export default class Cache<T> {
   }
 
   async load(fallback: () => Promise<CachedData<T>>): Promise<CachedResult<T>> {
+    // In-flight results are scoped to the backing provider as well as the key.
+    // A cache builder for another database must never receive this request's data.
+    let runningCaches = providerCaches.get(this.cacheProvider);
+    if (!runningCaches) { runningCaches = new Map(); providerCaches.set(this.cacheProvider, runningCaches); }
     // Only running one at the same time when multiple same query with same params.
     if (runningCaches.has(this.key)) {
       this.log.info(`Wait for previous same cache query <${this.key}>.`, )
@@ -75,6 +79,9 @@ export default class Cache<T> {
 
     // If cacheHours is 0, it means disable cache for this query.
     if (this.cacheHours === 0) {
+      if (this.onlyFromCache) {
+        throw new NeedPreFetchError(`Query <${this.key}> requires prefetching but its cache is disabled.`);
+      }
       this.log.info(`🔄 No cache for key: <${this.key}>.`);
       return await this.fetchDataFromDB(fallback);
     }
@@ -114,7 +121,7 @@ export default class Cache<T> {
       ...result,
       expiresAt: ttl > 0 ? DateTime.now().plus({seconds: ttl}) : null,
     }
-    this.saveDataToCache(cachedResult, ttl).catch(err => {
+    if (this.cacheHours !== 0) this.saveDataToCache(cachedResult, ttl).catch(err => {
       this.log.error(err, `Failed to save data to cache for <${this.key}>.`);
     });
 

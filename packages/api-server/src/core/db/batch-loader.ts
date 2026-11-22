@@ -36,6 +36,7 @@ export class BatchLoader {
     private readonly maxRetries: number;
     private readonly intervalHandle: ReturnType<typeof setInterval> | undefined
     private _lastFlushJob: Promise<void> | undefined;
+    private readonly pendingFlushes = new Set<Promise<void>>();
 
     constructor(
         readonly pLogger: pino.Logger = pino(),
@@ -89,19 +90,40 @@ export class BatchLoader {
         // Notice: During batch insertion phase as follows, data may still be written to buffer.
         // If we clean up the buffer array after the batch insertion is completed, that will result in data loss.
         // So we can copy it to a temporary memory and clear the buffer so that it can continue to store new data.
-        const records = [[...this.buf]];
+        const records = [...this.buf];
         this.buf = [];
-        
+        const job = this.insertBatch(records);
+        this.pendingFlushes.add(job);
+        try {await job;} finally {this.pendingFlushes.delete(job);}
+    }
+
+    private async insertBatch(records: any[][]): Promise<void> {
         for (let retries = 0; retries <= this.maxRetries; retries++) {
             try {                
-                await this.pool.query<ResultSetHeader>(this.sql, records);
+                await this.pool.query<ResultSetHeader>(this.sql, [records]);
                 return;
             } catch (err) {
-                const num = records[0].length;
+                const errno = typeof (err as any)?.errno === 'number' ? (err as any).errno : undefined;
+                // These are deterministic row-validation failures: the failed
+                // INSERT committed no rows. Do not split connection/timeout
+                // failures, whose commit outcome may be unknown.
+                if ([1048, 1264, 1265, 1292, 1366, 1406, 3140].includes(errno)) {
+                    if (records.length > 1) {
+                        const middle = Math.floor(records.length / 2);
+                        await this.insertBatch(records.slice(0, middle));
+                        await this.insertBatch(records.slice(middle));
+                    } else {
+                        this.logger.error({event: 'batch_row_rejected', errno, records: 1}, 'Invalid row isolated from the batch.');
+                    }
+                    return;
+                }
+                const num = records.length;
+                // Driver errors can contain SQL and every buffered record.
+                // Log only bounded metadata, never the error object/message.
                 if (retries < this.maxRetries) {
-                    this.logger.error(err, `Failed to batch load ${num} records, retries: ${retries + 1}/${this.maxRetries}: `);
+                    this.logger.error({errno, records: num, retry: retries + 1}, 'Batch insert failed; retrying.');
                 } else {
-                    this.logger.error(err, `Failed to batch load ${num} records, they will be lost: `);
+                    this.logger.error({event: 'batch_insert_failed', errno, records: num}, 'Batch insert exhausted its retry budget.');
                     break;
                 }
             }
@@ -112,5 +134,6 @@ export class BatchLoader {
         clearInterval(this.intervalHandle);
         await this._lastFlushJob;
         await this.flush();
+        await Promise.all(this.pendingFlushes);
     }
 }

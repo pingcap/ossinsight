@@ -1,6 +1,7 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ owner: string }> }) {
+async function handleGET(_req: NextRequest, { params }: { params: Promise<{ owner: string }> }) {
   const { owner } = await params;
   const url = `https://github.com/${encodeURIComponent(owner)}.png?size=80`;
 
@@ -13,10 +14,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ own
       headers: {
         'Content-Type': res.headers.get('content-type') || 'image/png',
         'Cache-Control': 'public, max-age=86400, s-maxage=86400',
-        'Access-Control-Allow-Origin': '*',
       },
     });
   } catch {
     return new NextResponse(null, { status: 502 });
   }
 }
+
+export const GET = withRequestAudit('GET /api/avatar/[owner]', handleGET);

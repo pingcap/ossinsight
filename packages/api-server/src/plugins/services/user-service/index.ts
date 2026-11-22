@@ -81,6 +81,7 @@ export default fp(
 );
 
 export class UserService {
+  private identityConstraintReady?: Promise<void>;
   constructor(
     readonly config: FastifyInstance["config"],
     readonly log: FastifyBaseLogger,
@@ -136,64 +137,108 @@ export class UserService {
 
   async getUserIdOrCreate(req: FastifyRequest<any>): Promise<number> {
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
-    return await this.findOrCreateUserByAccount(
+    const userId = await this.findOrCreateUserByAccount(
       { ...metadata, sub },
       req.headers.authorization,
     );
+    req.securityActor = `user:${userId}`;
+    return userId;
   }
 
   async findOrCreateUserByAccount(user: Auth0UserMetadata & { sub: string }, token?: string): Promise<number> {
-    if (!token) throw new Error("token is required");
-
-    const [provider, idString] = user.sub.split("|");
+    if (!token) throw new APIError(401, 'An authorization token is required.');
+    const identity = typeof user?.sub === 'string' ? user.sub.split('|') : [];
+    const [provider, idString] = identity;
+    if (identity.length !== 2 || !/^[a-z0-9][a-z0-9_-]{0,19}$/.test(provider) ||
+        !/^[\x21-\x7e]{1,128}$/.test(idString)) throw new APIError(401, 'Invalid account identity.');
     const githubLogin = user?.github_login || null;
-
-    return await withTransaction(this.tidb, async (conn) => {
-      // Check if how many users bound to this account.
-      const [existedUserIds] = await conn.query<any[]>(`
-        SELECT su.id
-        FROM sys_users su
-        LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
-        WHERE sa.provider_account_id = ?
-        FOR UPDATE;
-      `, [provider, idString]);
-
-      if (existedUserIds.length > 1) {
-        throw new APIError(409, "Failed to login, please contact admin.");
-      } else if (existedUserIds.length === 1) {
-        return existedUserIds[0].id;
+    const lookupSQL = `SELECT sa.user_id AS userId, su.id
+      FROM sys_accounts sa LEFT JOIN sys_users su ON su.id = sa.user_id
+      WHERE sa.provider = ? AND sa.provider_account_id = ?`;
+    const readBinding = (rows: Array<{id: number | null; userId: number}>): number | undefined => {
+      // An orphan is not a new identity: recreating it could resurrect a deleted
+      // account. Existing ambiguous or orphaned bindings require explicit repair.
+      if (rows.length > 1 || (rows.length === 1 && rows[0].id == null)) {
+        throw new APIError(409, 'Account binding requires administrator review.');
       }
+      return rows[0]?.id ?? undefined;
+    };
+    const lookup = async () => {
+      const [rows] = await this.tidb.query<any[]>(lookupSQL, [provider, idString]);
+      return readBinding(rows);
+    };
+    const existing = await lookup();
+    if (existing !== undefined) return existing;
+    await this.requireUniqueAccountIdentity();
 
-      // Create a new user if didn't exist any user bound to this account.
-      const userInfo = await this.fetchAuth0UserInfo(this.config.AUTH0_DOMAIN, token);
-      const [rs] = await conn.query<ResultSetHeader>(`
-        INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
-        VALUES(?, ?, ?, ?, ?, ?, ?)
-      `, [
-        userInfo.name,
-        userInfo.email,
-        GET_EMAIL_UPDATES_DEFAULT,
-        userInfo.picture,
-        UserRole.USER,
-        DateTime.utc().toSQL(),
-        true,
-      ]);
+    // The external identity provider must never hold a database transaction open.
+    const userInfo = await this.fetchAuth0UserInfo(this.config.AUTH0_DOMAIN, token);
+    if (!userInfo || userInfo.sub !== user.sub) throw new APIError(401, 'Account profile does not match the authenticated identity.');
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const created = await withTransaction(this.tidb, async (conn) => {
+          const [rows] = await conn.query<any[]>(lookupSQL + ' FOR UPDATE', [provider, idString]);
+          const winner = readBinding(rows);
+          if (winner !== undefined) return winner;
+          const [rs] = await conn.query<ResultSetHeader>(`
+            INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
+          `, [
+            userInfo.name,
+            userInfo.email,
+            GET_EMAIL_UPDATES_DEFAULT,
+            userInfo.picture,
+            UserRole.USER,
+            DateTime.utc().toSQL(),
+            true,
+          ]);
 
-      // Create a new account link to the new user.
-      await conn.query<ResultSetHeader>(`
-        INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login)
-        VALUES(?, ?, ?, ?)
-       `, [rs.insertId, provider, idString, githubLogin]);
+          // Create a new account link to the new user.
+          await conn.query<ResultSetHeader>(`
+            INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login)
+            VALUES(?, ?, ?, ?)
+           `, [rs.insertId, provider, idString, githubLogin]);
 
-      return rs.insertId;
-    }, {
-      onError: (conn, err) => {
-        if (err instanceof APIError) {
-          throw err;
+          return rs.insertId;
+        });
+        if (created === undefined) throw new APIError(503, 'Account registration is temporarily unavailable.');
+        return created;
+      } catch (error) {
+        if (error instanceof APIError) throw error;
+        const errno = Number((error as {errno?: number})?.errno);
+        // The losing transaction (including its provisional sys_users row) has
+        // rolled back. Read the committed winner using a fresh transaction view.
+        if ([1062, 1213, 9007].includes(errno)) {
+          const winner = await lookup();
+          if (winner !== undefined) return winner;
+          continue;
         }
-        throw new APIError(500, "Failed to create new user, please try it again.", err);
+        throw new APIError(503, 'Account registration is temporarily unavailable.');
       }
-    });
+    }
+    throw new APIError(503, 'Account registration is busy, please retry.');
+  }
+
+  private async requireUniqueAccountIdentity(): Promise<void> {
+    if (!this.identityConstraintReady) {
+      this.identityConstraintReady = (async () => {
+        const [rows] = await this.tidb.query<any[]>(`SELECT INDEX_NAME AS indexName,
+          COLUMN_NAME AS columnName, SUB_PART AS prefixLength
+          FROM information_schema.statistics
+          WHERE table_schema=DATABASE() AND table_name='sys_accounts' AND NON_UNIQUE=0
+          ORDER BY INDEX_NAME, SEQ_IN_INDEX`);
+        const indexes = new Map<string, Array<{columnName: string; prefixLength: number | null}>>();
+        for (const row of rows) indexes.set(row.indexName, [...(indexes.get(row.indexName) || []), row]);
+        const constrained = [...indexes.values()].some(columns => columns.length === 2 &&
+          columns.every(column => column.prefixLength === null) &&
+          columns.map(column => column.columnName).sort().join(',') === 'provider,provider_account_id');
+        if (!constrained) throw new Error('Required identity constraint is absent.');
+      })().catch(() => {
+        this.identityConstraintReady = undefined;
+        throw new APIError(503, 'Account registration is not configured.');
+      });
+    }
+    return this.identityConstraintReady;
   }
 
   async fetchAuth0UserInfo(
@@ -203,12 +248,16 @@ export class UserService {
     // https://auth0.com/docs/api/authentication#get-user-info
     const URL = `https://${domain}/userinfo`;
     const bearerToken = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
-    const response = await Axios.get(URL, {
-      headers: {
-        Authorization: bearerToken,
-      },
-    }).then((res) => res.data);
-    return response as Auth0UserInfo;
+    try {
+      const response = await Axios.get(URL, {
+        headers: {Authorization: bearerToken}, timeout: 5000,
+        maxRedirects: 0, maxContentLength: 65536,
+      });
+      return response.data as Auth0UserInfo;
+    } catch {
+      // Axios errors contain authorization headers and must not reach logs.
+      throw new APIError(502, 'Unable to load account profile.');
+    }
   }
 
   async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {

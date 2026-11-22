@@ -1,7 +1,7 @@
 import {GithubRepoDao} from "@dao/github-repo-dao";
 import {AppConfig} from "@env";
 import {splitTimeRange} from "@libs/times";
-import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient} from "@libs/db/prisma";
 import {Command} from "commander";
 import {DateTime, DurationLike} from "luxon";
 import {Logger} from "pino";
@@ -53,7 +53,7 @@ export function InitPullReposCommand(command: Command, config: AppConfig, logger
 
 async function pullReposInBatch(logger: Logger, config: AppConfig, options: Option) {
   const {eventType, from, to, chunkSize} = options;
-  const prisma = new PrismaClient();
+  const prisma = createSecurePrismaClient(config.DATABASE_URL);
   const githubRepoDao = new GithubRepoDao(logger, prisma);
   const timeRanges = splitTimeRange(from, to, chunkSize);
 

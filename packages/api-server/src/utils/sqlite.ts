@@ -34,26 +34,33 @@ const typeMaps: Record<number, string> = {
 
 export async function saveQueryResultToSqlite(queryResult: QuestionSQLResult, dbFile: string) {
   const { fields = [], rows = [] } = queryResult;
+  const columns = fields.map(field => field.name);
+  const quoteColumn = (name: string) => `"${name.replace(/"/g, '""')}"`;
   const db = await AsyncDatabase.open(dbFile);
-  await db.run('DROP TABLE IF EXISTS result;');
-  await db.run(`
+  try {
+    await db.run('DROP TABLE IF EXISTS result;');
+    await db.run(`
     CREATE TABLE IF NOT EXISTS result (
-      ${fields.map(field => `${field.name} ${mapMySQLTypeID2SqliteType(field.columnType)}`).join(',')}
+      ${fields.map(field => `${quoteColumn(field.name)} ${mapMySQLTypeID2SqliteType(field.columnType)}`).join(',')}
     );
   `);
 
-  const columns = fields.map(field => field.name);
-  const stmt = await db.prepare(`
-    INSERT INTO result (${columns.join(', ')}) VALUES (
+    const stmt = await db.prepare(`
+    INSERT INTO result (${columns.map(quoteColumn).join(', ')}) VALUES (
         ${columns.map(_ => '?').join(', ')}
     );
   `);
-  for (const row of rows) {
-    const values = columns.map(column => row[column]);
-    await stmt.run(...values);
+    try {
+      for (const row of rows) {
+        const values = columns.map(column => row[column]);
+        await stmt.run(...values);
+      }
+    } finally {
+      await stmt.finalize();
+    }
+  } finally {
+    await db.close();
   }
-  await stmt.finalize();
-  await db.close();
 }
 
 function mapMySQLTypeID2SqliteType(columnType: number): string {

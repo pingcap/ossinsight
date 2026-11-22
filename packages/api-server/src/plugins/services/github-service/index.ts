@@ -7,6 +7,8 @@ import pino from "pino";
 import {CacheProviderTypes} from "../../../core/cache/CacheBuilder";
 import OctokitExecutor from "../../../core/executor/octokit-executor/OctokitExecutor";
 import {CacheBuilder} from "../../../index";
+import type {CachedData} from '../../../core/cache/Cache';
+import {normalizeGithubSearchTerm, publicGithubProfile, publicGithubRepository, publicGithubResponse} from '../../../utils/github-public';
 import Logger = pino.Logger;
 
 export const RECOMMEND_REPO_LIST_1_KEYWORD = 'recommend-repo-list-1-keyword';
@@ -69,6 +71,7 @@ export class GithubService {
                 ...on Repository {
                     id: databaseId 
                     fullName: nameWithOwner 
+                    visibility
                     defaultBranchRef {
                       name
                     }
@@ -150,11 +153,20 @@ export class GithubService {
     }
   }
 
+  private buildPublicCache(key: string, hours: number, sanitize: (data: any) => any) {
+    // A new namespace excludes historical credential fragments and privileged
+    // responses. Project both fresh results and cache hits to the public DTO.
+    const cache = this.cacheBuilder.build(CacheProviderTypes.NORMAL_TABLE, `gh:public:v2:${key}`, hours);
+    return {load: async (loader: () => Promise<CachedData<any>>) => publicGithubResponse(
+      await cache.load(async () => publicGithubResponse(await loader(), sanitize)), sanitize
+    )};
+  }
+
   async getRepoByID(id: number) {
     const apiLabel = "get_repo_by_id";
     const cacheKey = `gh:${apiLabel}:${id}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.GET_NODE_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubRepository
     );
 
     return cache.load(async () => {
@@ -169,8 +181,8 @@ export class GithubService {
   async getRepoByName(owner: string, repo: string) {
     const apiLabel = "get_repo_by_name";
     const cacheKey = `gh:${apiLabel}:${owner}_${repo}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.GET_NODE_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubRepository
     );
 
     return cache.load(async () => {
@@ -186,8 +198,8 @@ export class GithubService {
   async getUserByID(id: number) {
     const apiLabel = "get_user_by_id";
     const cacheKey = `gh:${apiLabel}:${id}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.GET_NODE_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubProfile
     );
 
     return cache.load(async () => {
@@ -202,8 +214,8 @@ export class GithubService {
   async getOrganizationByID(id: number) {
     const apiLabel = "get_organization_by_id";
     const cacheKey = `gh:${apiLabel}:${id}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.GET_NODE_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubProfile
     );
 
     return cache.load(async () => {
@@ -218,8 +230,8 @@ export class GithubService {
   async getUserByUsername(username: string) {
     const apiLabel = "get_user_by_username";
     const cacheKey = `gh:${apiLabel}:${username}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.GET_NODE_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubProfile
     );
 
     return cache.load(async () => {
@@ -232,20 +244,25 @@ export class GithubService {
   }
 
   async searchRepos(keyword: string) {
-    keyword = keyword.replaceAll('  ', ' ');
+    keyword = normalizeGithubSearchTerm(keyword);
     if ([RECOMMEND_REPO_LIST_1_KEYWORD, RECOMMEND_REPO_LIST_2_KEYWORD].includes(keyword)) {
       return this.getRecommendRepos(keyword);
     }
 
     const apiLabel = "search_repos";
     const cacheKey = `gh:${apiLabel}:${keyword}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.SEARCH_NODES_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.SEARCH_NODES_CACHE_HOURS,
+      data => (Array.isArray(data) ? data : []).filter(node => node?.visibility === 'PUBLIC' &&
+        Number.isSafeInteger(node.id) && node.id > 0 && typeof node.fullName === 'string').slice(0, 10).map(node => ({
+        id: node.id, fullName: node.fullName, visibility: 'PUBLIC',
+        defaultBranchRef: typeof node.defaultBranchRef?.name === 'string' ? {name: node.defaultBranchRef.name} : null,
+      }))
     );
 
     return cache.load(async () => {
       const variables = {
-        q: keyword
+        q: `"${keyword}" in:name is:public`
       };
 
       return await this.octokitExecutor.graphql(apiLabel, this.SEARCH_REPOS_GQL, variables, (res) => {
@@ -255,6 +272,7 @@ export class GithubService {
   }
 
   async searchUsers(keyword: string, type: UserType) {
+    keyword = normalizeGithubSearchTerm(keyword);
     // By default, select from GitHub stars:
     // https://stars.github.com/profiles/?contributionType=OPEN_SOURCE_PROJECT
     if (type === UserType.USER && keyword === RECOMMEND_USER_LIST_KEYWORD) {
@@ -275,13 +293,15 @@ export class GithubService {
 
     const apiLabel = `search_${type}s`;
     const cacheKey = `gh:${apiLabel}:${keyword}`;
-    const cache = this.cacheBuilder.build(
-      CacheProviderTypes.NORMAL_TABLE, cacheKey, this.SEARCH_NODES_CACHE_HOURS
+    const cache = this.buildPublicCache(
+      cacheKey, this.SEARCH_NODES_CACHE_HOURS,
+      data => (Array.isArray(data) ? data : []).filter(node => Number.isSafeInteger(node?.id) && node.id > 0 &&
+        typeof node.login === 'string').slice(0, 10).map(node => ({id: node.id, login: node.login}))
     );
 
     return cache.load(async () => {
       const variables = {
-        q: `${keyword} ${type ? `type:${type}` : ''}`,
+        q: `"${keyword}" in:login,name type:${type === UserType.ORG ? 'org' : 'user'}`,
       };
 
       return await this.octokitExecutor.graphql(apiLabel, this.SEARCH_USERS_GQL, variables, (res) => {

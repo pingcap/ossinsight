@@ -7,6 +7,6 @@ CREATE TABLE `sys_accounts` (
   `provider_account_login` varchar(128) DEFAULT NULL,
   `access_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
-  UNIQUE KEY `index_sa_on_user_id_provider_account_id` (`user_id`,`provider`,`provider_account_id`),
+  UNIQUE KEY `index_sa_on_provider_account_id` (`provider`,`provider_account_id`),
   CONSTRAINT `fk_sa_on_user_id` FOREIGN KEY (`user_id`) REFERENCES `sys_users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

@@ -1,3 +1,5 @@
+import { isCollectionSlug } from '@ossinsight/types';
+import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { fetchCollections } from '@/utils/api';
 import { toCollectionSlug } from '@/lib/collections';
@@ -12,25 +14,17 @@ export const contentType = 'image/png';
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  // Resolve collection name from slug
-  let collectionName = decodeURIComponent(slug).replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-  let topRepos: string[] = [];
-
-  try {
-    const collections = await fetchCollections();
-    const collection = collections.find((c) => toCollectionSlug(c.name) === slug);
-    if (collection) {
-      collectionName = collection.name;
-      const previews = await listCollectionPreviewRepos([collection.id]);
-      topRepos = previews
-        .filter((p) => p.collection_id === collection.id)
-        .sort((a, b) => a.repo_rank - b.repo_rank)
-        .slice(0, 5)
-        .map((p) => p.repo_name.split('/')[1] ?? p.repo_name);
-    }
-  } catch (error) {
-    console.warn(`[collections/${slug}/opengraph-image] Failed to fetch collection data:`, error);
-  }
+  if (!isCollectionSlug(slug)) notFound();
+  const collections = await fetchCollections();
+  const collection = collections.find((c) => toCollectionSlug(c.name) === slug);
+  if (!collection) notFound();
+  const collectionName = collection.name;
+  const previews = await listCollectionPreviewRepos([collection.id]);
+  const topRepos = previews
+    .filter((p) => p.collection_id === collection.id)
+    .sort((a, b) => a.repo_rank - b.repo_rank)
+    .slice(0, 5)
+    .map((p) => p.repo_name.split('/')[1] ?? p.repo_name);
 
   const poppinsMedium = fetch(new URL('./Poppins-Medium.ttf', import.meta.url)).then((r) =>
     r.arrayBuffer(),
@@ -169,6 +163,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     ),
     {
       ...size,
+      headers: {'Cache-Control': 'private, no-store'},
       fonts: [
         {
           name: 'Poppins',

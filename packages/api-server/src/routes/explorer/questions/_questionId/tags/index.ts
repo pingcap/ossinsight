@@ -1,13 +1,15 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {withConnection, withTransaction} from "../../../../../utils/db";
+import {withConnection} from "../../../../../utils/db";
+import {authenticateQuestionReader, getReadableQuestion, questionIdSchema} from '../../../../../utils/explorer-access';
 
 const getQuestionTagsSchema = {
   summary: 'Get tags of question',
   tags: ['explorer'],
   params: {
     type: 'object',
+    required: ['questionId'],
     properties: {
-      questionId: { type: 'string' }
+      questionId: questionIdSchema
     }
   }
 };
@@ -18,13 +20,13 @@ const setQuestionTagsSchema = {
   params: {
     type: "object",
     properties: {
-      questionId: { type: 'string' }
+      questionId: questionIdSchema
     }
   },
   body: {
     type: 'object',
     properties: {
-      tagIds: { type: 'array', items: { type: 'number' } }
+      tagIds: { type: 'array', maxItems: 100, items: { type: 'integer', minimum: 1 } }
     }
   }
 };
@@ -45,10 +47,11 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
   app.get<{
     Params: getTagsParams;
   }>('/', {
-    schema: getQuestionTagsSchema
+    schema: getQuestionTagsSchema,
+    preValidation: authenticateQuestionReader(app),
   }, async function (req, reply) {
     const { questionId } = req.params;
-    this.mysql.getConnection()
+    await getReadableQuestion(app, req, questionId);
     const questionTags = await withConnection(this.mysql, async (conn) => {
       return await app.explorerService.getQuestionTags(conn, questionId);
     });
@@ -70,9 +73,7 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Set tags.
-    await withTransaction(app.mysql, async (conn) => {
-      return await app.explorerService.setQuestionTags(conn, questionId, tagIds);
-    });
+    await app.explorerService.updateQuestionTags(questionId, tagIds, {userId, requestId: req.id});
 
     reply.status(200).send({
       message: "OK"

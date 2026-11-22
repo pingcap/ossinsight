@@ -3,8 +3,8 @@ import fastifyMetrics from 'fastify-metrics';
 
 export default fp(async (app) => {
     await app.register(fastifyMetrics, {
-        endpoint: '/metrics',
-        name: process.env.NODE_APP_INSTANCE!,
+        // Expose the registry only from the protected operational scope.
+        endpoint: null,
     });
 }, {
     name: '@ossinsight/metrics',

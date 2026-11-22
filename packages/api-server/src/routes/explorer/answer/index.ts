@@ -1,10 +1,10 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import fs, {mkdirSync} from "fs";
-import {DateTime} from "luxon";
+import fs from "fs/promises";
+import {tmpdir} from "os";
 import path from "path";
 import {Question, QuestionStatus} from "../../../plugins/services/explorer-service/types";
 import {APIError} from "../../../utils/error";
-import sleep from "../../../utils/sleep";
+import {waitForAnswer} from "../../../utils/answer-wait";
 import {saveQueryResultToSqlite} from "../../../utils/sqlite";
 
 const schema = {
@@ -12,9 +12,9 @@ const schema = {
   description: 'Answer a question to the AI bot, he will return a sql query, and execute the query to get the result.',
   tags: ['explorer'],
   body: {
-    type: 'object',
+    type: 'object', additionalProperties: false, required: ['question'],
     properties: {
-      question: { type: 'string' },
+      question: { type: 'string', minLength: 1, maxLength: 512 },
       format: {
         type: 'string',
         enum: ['json', 'sqlite'],
@@ -39,43 +39,34 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
   app.post<{
     Body: IBody;
   }>('/', {
-    schema
+    schema,
+    preValidation: app.authenticate,
+    config: {rateLimit: {max: 20, timeWindow: '1 minute'}},
   }, async function (req, reply) {
     const { question: questionTitle, ignoreCache, format = AnswerFormat.JSON } = req.body;
 
     // Create question.
-    const question = await app.explorerService.newQuestion(0, questionTitle, ignoreCache, true, false, null, 10);
-    if (!question) {
+    const userId = await app.userService.getUserIdOrCreate(req);
+    const question = await app.explorerService.newQuestion(userId, questionTitle, ignoreCache);
+    if (!question || question.userId !== userId) {
       throw new APIError(500, 'Failed to create question.');
     }
 
-    // Prepare question and generate the SQL.
+    // A cache hit belongs to an existing question. Reading it must never reset it.
     let resolvedQuestion: Question = question;
-    try {
-      resolvedQuestion = await app.explorerService.prepareQuestion(question, false);
-    } catch (err: any) {
-      const msg = `Failed to prepare question ${question.id}: ${err.message}`;
-      app.log.error(err, msg);
-      throw new APIError(500, msg, err, convertQuestionToPayload(resolvedQuestion));
+    if (!question.hitCache) {
+      try { resolvedQuestion = await app.explorerService.prepareQuestion(question, false); }
+      catch { throw new APIError(500, 'Failed to prepare answer.'); }
     }
-
-    // Get latest question object.
     resolvedQuestion = await app.explorerService.getQuestionByIdOrError(resolvedQuestion.id);
-
-    // Wait for the SQL executed.
-    let start = DateTime.now();
-    while ([QuestionStatus.Running, QuestionStatus.Waiting].includes(resolvedQuestion.status)) {
-      resolvedQuestion = await app.explorerService.getQuestionByIdOrError(resolvedQuestion.id);
-      await sleep(1000);
-
-      const spent = DateTime.now().diff(start);
-      if (spent.minutes > 4) {
-        throw new APIError(500, 'Failed to finish the answer: timeout', undefined, convertQuestionToPayload(resolvedQuestion));
-      }
-    }
+    resolvedQuestion = await waitForAnswer(
+      resolvedQuestion,
+      id => app.explorerService.getQuestionByIdOrError(id),
+      () => req.raw.aborted || reply.raw.destroyed,
+    );
 
     if (resolvedQuestion.status === QuestionStatus.Error) {
-      throw new APIError(500, resolvedQuestion.error || 'Unknown error', undefined, convertQuestionToPayload(resolvedQuestion));
+      throw new APIError(500, 'Failed to execute answer.', undefined, convertQuestionToPayload(resolvedQuestion));
     }
 
     if (resolvedQuestion.status === QuestionStatus.Cancel) {
@@ -83,20 +74,19 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     }
 
     if (format === AnswerFormat.SQLITE) {
+      const dir = await fs.mkdtemp(path.join(tmpdir(), 'ossinsight-answer-'));
       try {
-        const dir = path.resolve(process.cwd(), '../../temp');
         const dbName = `answer-${question.id}.db`;
-        const dbFile = path.resolve(dir, dbName) ;
-        mkdirSync(dir, { recursive: true });
-
+        const dbFile = path.join(dir, dbName);
         await saveQueryResultToSqlite(resolvedQuestion.result!, dbFile);
-        const buffer = fs.readFileSync(dbFile);
-
+        const buffer = await fs.readFile(dbFile);
         reply.type('application/octet-stream');
         reply.header('Content-Disposition', `attachment; filename="${dbName}"`);
-        reply.send(buffer)
-      } catch (err: any) {
-        throw new APIError(500, `Failed to save query result to sqlite file: ${err.message}`, err, convertQuestionToPayload(resolvedQuestion));
+        reply.send(buffer);
+      } catch {
+        throw new APIError(500, 'Failed to export answer.');
+      } finally {
+        await fs.rm(dir, {recursive: true, force: true});
       }
     } else {
       reply.status(200).send(convertQuestionToPayload(resolvedQuestion));
@@ -111,7 +101,7 @@ export function convertQuestionToPayload(question: Question) {
       revisedTitle: question.revisedTitle,
       link: 'https://ossinsight.io/explore/?id=' + question.id,
       status: question.status,
-      error: question.error,
+      error: question.error ? 'Answer unavailable.' : undefined,
       errorType: question.errorType,
     },
     query: {

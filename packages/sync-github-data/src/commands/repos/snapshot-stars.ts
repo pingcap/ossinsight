@@ -4,6 +4,7 @@ import {processInBatch} from "@libs/concurrent";
 import {GitHubHelper} from "@libs/github/helper";
 import {createOctokitPool} from "@libs/github/octokit";
 import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient, secureDatabaseUrl} from "@libs/db/prisma";
 import {Command, InvalidArgumentError} from "commander";
 import {DateTime} from "luxon";
 import {Logger} from "pino";
@@ -160,9 +161,7 @@ export async function snapshotStars(config: AppConfig, logger: Logger, options: 
     // jobs using the @tidbcloud/serverless driver, which needs no such parameter,
     // so the secret cannot simply be rewritten — normalize here instead of
     // depending on its exact format.
-    prisma = new PrismaClient({
-      datasources: { db: { url: withTiDBSsl(config.DATABASE_URL) } },
-    });
+    prisma = createSecurePrismaClient(config.DATABASE_URL);
     snapshotDao = new RepoStarSnapshotDao(logger, prisma);
   }
 
@@ -248,8 +247,5 @@ export async function snapshotStars(config: AppConfig, logger: Logger, options: 
  * configs use.
  */
 export function withTiDBSsl(url: string): string {
-  if (!url) return url;
-  const normalized = url.replace(/^tidb:\/\//, 'mysql://');
-  if (/[?&]sslaccept=/.test(normalized)) return normalized;
-  return normalized + (normalized.includes('?') ? '&' : '?') + 'sslaccept=strict';
+  return secureDatabaseUrl(url);
 }

@@ -1,4 +1,9 @@
-WITH stars AS (
+WITH public_collection_items AS (
+    SELECT ci.* FROM collection_items ci
+    JOIN collections public_collection ON public_collection.id = ci.collection_id
+    WHERE public_collection.public = 1
+),
+stars AS (
     SELECT
         /*+ READ_FROM_STORAGE(tiflash[ge]) */
         ge.repo_id AS repo_id,
@@ -188,7 +193,7 @@ WITH stars AS (
         /*+ READ_FROM_STORAGE(tikv[ci, c]) */
         tr.repo_id, GROUP_CONCAT(DISTINCT c.name) AS collection_names
     FROM topRepos tr
-    JOIN collection_items ci ON ci.repo_name = tr.repo_name
+    JOIN public_collection_items ci ON ci.repo_name = tr.repo_name
     JOIN collections c ON ci.collection_id = c.id
     WHERE c.public = true
     GROUP BY tr.repo_id

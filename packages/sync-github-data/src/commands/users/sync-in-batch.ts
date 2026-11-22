@@ -4,7 +4,9 @@ import {processInBatch, syncNodesInTimeRanges} from "@libs/concurrent";
 import {DEFAULT_USER_TIME_RANGE_FILED, GitHubHelper, UserTimeRangeFiled} from "@libs/github/helper";
 import {createOctokitPool} from "@libs/github/octokit";
 import {splitTimeRange, TimeRange} from "@libs/times";
-import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient} from "@libs/db/prisma";
+import {assertEmailHashSecret} from "../../utils/email-hash";
+import {assertEmailImportReady} from "../../utils/email-key-policy";
 import {GitHubUserNode} from "@typings/github";
 import {Command} from "commander";
 import {DateTime, Duration} from "luxon";
@@ -70,15 +72,22 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
 }
 
 export async function syncUsersInBatch(config: AppConfig, logger: Logger, options: Options) {
+  assertEmailHashSecret(process.env.ENCODE_EMAIL_SECRET_KEY);
   const {timeRangeField, from, to, desc, chunkSize, stepSize, filter} = options;
 
-  // Init GitHub helper.
+  // Init GitHub User DAO.
+  const prisma = createSecurePrismaClient(config.DATABASE_URL);
+  try {
+    await assertEmailImportReady(prisma, process.env.ENCODE_EMAIL_SECRET_KEY, process.env.ENCODE_EMAIL_LEGACY_ENCODING_KEY);
+  } catch (error) {
+    await prisma.$disconnect();
+    throw error;
+  }
+  const githubUserDao = new GithubUserDao(logger, prisma);
+
+  // Do not contact GitHub or start writers before migration/key checks pass.
   const octokitPool = createOctokitPool(logger, config.GITHUB_ACCESS_TOKENS);
   const githubHelper = new GitHubHelper(logger, octokitPool);
-
-  // Init GitHub User DAO.
-  const prisma = new PrismaClient();
-  const githubUserDao = new GithubUserDao(logger, prisma);
 
   // Process in batch.
   const concurrent = octokitPool.max;

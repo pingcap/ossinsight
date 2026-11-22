@@ -13,9 +13,8 @@
 #   (same cluster/database as the existing "Sync Collection Configs" workflow;
 #   note that Prisma needs the `sslaccept=strict` query parameter for TiDB
 #   Serverless, unlike the @tidbcloud/serverless driver).
-# - GH_ACCESS_TOKENS (optional): comma-separated GitHub personal access tokens
-#   (public repo read access is enough). When absent, the workflow falls back to
-#   the built-in GITHUB_TOKEN, whose 1,000 GraphQL points/hour are still ample:
+# GitHub access uses only the job's read-only, short-lived GITHUB_TOKEN,
+#   whose 1,000 GraphQL points/hour are still ample:
 #   the whole run costs ~250 points (~2.5k repos at ~10 repos per point).
 name: Daily Star Snapshots
 
@@ -32,33 +31,43 @@ on:
         required: false
         default: false
 
+permissions:
+  contents: read
+
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    # Do not run the cron on forks; manual dispatch works anywhere.
-    if: github.repository == 'pingcap/ossinsight' || github.event_name == 'workflow_dispatch'
+    timeout-minutes: 30
+    # Production credentials are never exposed to manually selected branches.
+    # Forks can manually run their own main branch with their own credentials.
+    if: github.ref == 'refs/heads/main' && (github.repository == 'pingcap/ossinsight' || github.event_name == 'workflow_dispatch')
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        # The pnpm version is taken from the "packageManager" field in package.json.
-        uses: pnpm/action-setup@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 20
-          cache: pnpm
+          node-version: '24.22.2'
+          package-manager-cache: false
+
+      - name: Install pnpm
+        run: npm install --global pnpm@10.29.3 --ignore-scripts --no-fund
 
       - name: Install dependencies
-        run: pnpm install --filter @ossinsight/sync-github-data
+        run: pnpm install --filter @ossinsight/sync-github-data... --frozen-lockfile --ignore-scripts
 
       - name: Build CLI
         run: pnpm --filter @ossinsight/sync-github-data build
 
       - name: Snapshot stargazer counts
-        run: pnpm --filter @ossinsight/sync-github-data start repos snapshot-stars ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: |
+          args=()
+          if [[ "$DRY_RUN" == 'true' ]]; then args+=(--dry-run); fi
+          pnpm --filter @ossinsight/sync-github-data start repos snapshot-stars "${args[@]}"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          GITHUB_ACCESS_TOKENS: ${{ secrets.GH_ACCESS_TOKENS || secrets.GITHUB_TOKEN }}
+          GITHUB_ACCESS_TOKENS: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run || false }}

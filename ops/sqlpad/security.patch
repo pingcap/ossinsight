@@ -1,0 +1,191 @@
+diff --git a/client/src/common/IconButton.tsx b/client/src/common/IconButton.tsx
+index 62ce444..a82e537 100644
+--- a/client/src/common/IconButton.tsx
++++ b/client/src/common/IconButton.tsx
+@@ -63 +62,0 @@ const IconButton = React.forwardRef<Ref, ButtonProps & LinkProps>(
+-          {/* @ts-expect-error anchor and buttons types are fighting */}
+diff --git a/server/drivers/athena/index.js b/server/drivers/athena/index.js
+index f728af9..4acac49 100644
+--- a/server/drivers/athena/index.js
++++ b/server/drivers/athena/index.js
+@@ -6,0 +7 @@ import { resolvePositiveNumber } from '../../lib/resolve-number.js';
++import { assertAwsRegion } from '../../lib/aws-region.js';
+@@ -16,0 +18 @@ function configureAWS(connection) {
++  const region = assertAwsRegion(connection.awsRegion);
+@@ -19 +21 @@ function configureAWS(connection) {
+-      region: connection.awsRegion,
++      region,
+@@ -25 +27 @@ function configureAWS(connection) {
+-    AWS.config.update({ region: connection.awsRegion });
++    AWS.config.update({ region });
+@@ -198,10 +200 @@ function cancelQuery(executionId, connection = {}) {
+-  if (connection.awsAccessKeyId && connection.awsSecretAccessKey) {
+-    const awsCredentials = {
+-      region: connection.awsRegion,
+-      accessKeyId: connection.awsAccessKeyId,
+-      secretAccessKey: connection.awsSecretAccessKey,
+-    };
+-    AWS.config.update(awsCredentials);
+-  } else {
+-    AWS.config.update({ region: connection.awsRegion });
+-  }
++  configureAWS(connection);
+diff --git a/server/drivers/mysql2/index.js b/server/drivers/mysql2/index.js
+index 71f52d3..287848e 100644
+--- a/server/drivers/mysql2/index.js
++++ b/server/drivers/mysql2/index.js
+@@ -92,0 +93,2 @@ class Client {
++      // mysql2 requires an explicit opt-in to verify the certificate hostname.
++      myConfig.ssl['verifyIdentity'] = !connection.mysqlSkipValidateServerCert;
+diff --git a/server/lib/aws-region.js b/server/lib/aws-region.js
+new file mode 100644
+index 0000000..369dfbd
+--- /dev/null
++++ b/server/lib/aws-region.js
+@@ -0,0 +1,13 @@
++// GHSA-j965-2qgj-vjmq: prevent an AWS region from changing endpoint routing.
++// Keep the region to one bounded DNS label, including GovCloud/FIPS regions.
++export function assertAwsRegion(region) {
++  if (
++    typeof region !== 'string' ||
++    region.length > 63 ||
++    /[^a-z0-9-]/.test(region) ||
++    !/^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(region)
++  ) {
++    throw new Error('Invalid AWS region: use a region name such as us-east-1');
++  }
++  return region;
++}
+diff --git a/server/test/drivers/mysql2-tls.js b/server/test/drivers/mysql2-tls.js
+new file mode 100644
+index 0000000..8c1d36a
+--- /dev/null
++++ b/server/test/drivers/mysql2-tls.js
+@@ -0,0 +1,36 @@
++import assert from 'node:assert/strict';
++import mysql from 'mysql2/promise';
++import driver from '../../drivers/mysql2/index.js';
++
++describe('MySQL2 TLS hostname verification', function () {
++  for (const scenario of [
++    { ssl: true, skip: false, identity: true },
++    { ssl: true, skip: true, identity: false },
++    { ssl: false, skip: false, identity: undefined },
++  ]) {
++    it(`passes the expected identity policy for ${JSON.stringify(
++      scenario
++    )}`, async function () {
++      const original = mysql.createConnection;
++      let options;
++      mysql.createConnection = async (value) => {
++        options = value;
++        return { on() {}, destroy() {} };
++      };
++      try {
++        const client = new driver.Client({
++          host: 'database.invalid',
++          username: 'fixture-user',
++          mysqlSsl: scenario.ssl,
++          mysqlSkipValidateServerCert: scenario.skip,
++        });
++        await client.connect();
++        assert.equal(options.ssl?.verifyIdentity, scenario.identity);
++        if (!scenario.ssl) assert.equal(options.ssl, undefined);
++        await client.disconnect();
++      } finally {
++        mysql.createConnection = original;
++      }
++    });
++  }
++});
+diff --git a/server/test/lib/aws-region.js b/server/test/lib/aws-region.js
+new file mode 100644
+index 0000000..f4579ad
+--- /dev/null
++++ b/server/test/lib/aws-region.js
+@@ -0,0 +1,85 @@
++import assert from 'node:assert/strict';
++import { assertAwsRegion } from '../../lib/aws-region.js';
++import AWS from 'aws-sdk';
++import athena from '../../drivers/athena/index.js';
++
++describe('AWS endpoint region validation', function () {
++  for (const region of [
++    'us-east-1',
++    'cn-north-1',
++    'us-gov-west-1',
++    'us-iso-east-1',
++    'eusc-de-east-1',
++    'fips-us-east-1',
++    'us-east-1-fips',
++  ]) {
++    it(`accepts ${region}`, function () {
++      assert.equal(assertAwsRegion(region), region);
++    });
++  }
++
++  for (const region of [
++    undefined,
++    null,
++    {},
++    '',
++    'https://example.invalid',
++    'us-east-1.example.invalid',
++    'us-east-1/../../',
++    'us-east-1@example.invalid',
++    'us-east-1:443',
++    'us-east-1?x=1',
++    'us-east-1#fragment',
++    'us-east-1\n',
++    'us-east-1\r\n',
++    'us-east-1\0',
++    ' us-east-1',
++    'us-east-1 ',
++    `us-${'a'.repeat(60)}-1`,
++  ]) {
++    it(`rejects unsafe region ${JSON.stringify(region)}`, function () {
++      assert.throws(() => assertAwsRegion(region), /Invalid AWS region/);
++    });
++  }
++});
++
++describe('Athena region validation at driver entry points', function () {
++  it('builds an Athena request with the patched UUID dependency without sending it', async function () {
++    const client = new AWS.Athena({
++      region: assertAwsRegion('us-east-1'),
++      credentials: {
++        accessKeyId: 'synthetic-access-key',
++        secretAccessKey: 'synthetic-secret-key',
++      },
++    });
++    const request = client.startQueryExecution({
++      QueryString: 'SELECT 1',
++      ResultConfiguration: {
++        OutputLocation: 's3://synthetic-test-bucket/results/',
++      },
++    });
++    await new Promise((resolve, reject) => {
++      request.build((error) => (error ? reject(error) : resolve()));
++    });
++    assert.equal(
++      request.httpRequest.endpoint.hostname,
++      'athena.us-east-1.amazonaws.com'
++    );
++    assert.match(request.params.ClientRequestToken, /^[a-f0-9-]{36}$/);
++  });
++
++  const connection = { awsRegion: 'us-east-1.example.invalid' };
++  const operations = {
++    schema: () => athena.getSchema(connection),
++    start: () => athena.startQueryExecution('SELECT 1', connection),
++    results: () => athena.runQuery('synthetic-execution-id', connection),
++    cancel: () => athena.cancelQuery('synthetic-execution-id', connection),
++  };
++  for (const [name, operation] of Object.entries(operations)) {
++    it(`rejects unsafe ${name} routing before mutating AWS configuration`, async function () {
++      const regionBefore = AWS.config.region;
++      await assert.rejects(async () => operation(), /Invalid AWS region/);
++      assert.equal(AWS.config.region, regionBefore);
++    });
++  }
++});

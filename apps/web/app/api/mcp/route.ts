@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import {
   listCollections,
   searchCollections,
@@ -17,24 +18,21 @@ import { DegradedDataError } from '@/lib/data-service';
 export const runtime = 'edge';
 export const revalidate = 300; // 5 min cache
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+const RESPONSE_HEADERS = {
   'Content-Type': 'application/json',
 };
 
 function ok(data: unknown) {
   return new Response(JSON.stringify({ ok: true, data }), {
     status: 200,
-    headers: CORS_HEADERS,
+    headers: RESPONSE_HEADERS,
   });
 }
 
 function err(message: string, status = 400) {
   return new Response(JSON.stringify({ ok: false, error: message }), {
     status,
-    headers: CORS_HEADERS,
+    headers: RESPONSE_HEADERS,
   });
 }
 
@@ -57,7 +55,7 @@ function degraded(message: string) {
     {
       status: 200,
       headers: {
-        ...CORS_HEADERS,
+        ...RESPONSE_HEADERS,
         'Cache-Control': 'no-store',
         Warning: '199 - "degraded data: star-event derived ranking unavailable"',
       },
@@ -150,7 +148,7 @@ async function handleCompare(params: URLSearchParams) {
   return ok({ repo1: r1, repo2: r2 });
 }
 
-export async function GET(req: Request) {
+async function handleGET(req: Request) {
   const { searchParams } = new URL(req.url);
   const action = searchParams.get('action');
 
@@ -188,11 +186,15 @@ export async function GET(req: Request) {
     if (error instanceof DegradedDataError) {
       return degraded(error.message);
     }
-    console.error(`[MCP API] Error handling action=${action}:`, error);
+
     return err('Internal server error', 500);
   }
 }
 
-export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: CORS_HEADERS });
+async function handleOPTIONS() {
+  return new Response(null, { status: 204 });
 }
+
+export const GET = withRequestAudit('GET /api/mcp', handleGET);
+
+export const OPTIONS = withRequestAudit('OPTIONS /api/mcp', handleOPTIONS);

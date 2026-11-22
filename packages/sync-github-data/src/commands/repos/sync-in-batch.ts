@@ -4,7 +4,7 @@ import {processInBatch, syncNodesInTimeRanges} from "@libs/concurrent";
 import {DEFAULT_REPO_TIME_RANGE_FILED, GitHubHelper, RepoTimeRangeFiled} from "@libs/github/helper";
 import {createOctokitPool} from "@libs/github/octokit";
 import {splitTimeRange, TimeRange} from "@libs/times";
-import {PrismaClient} from "@prisma/client";
+import {createSecurePrismaClient} from "@libs/db/prisma";
 import {GitHubRepoNode} from "@typings/github";
 import {Command} from "commander";
 import {DateTime, Duration, DurationLike} from "luxon";
@@ -73,7 +73,7 @@ export async function syncReposInBatch(config: AppConfig, logger: Logger, option
   const {timeRangeField, from, to, chunkSize, stepSize, filter, desc} = options;
 
   // Init GitHub Repo DAO.
-  const prisma = new PrismaClient();
+  const prisma = createSecurePrismaClient(config.DATABASE_URL);
   const githubRepoDao = new GithubRepoDao(logger, prisma);
 
   // Init the GitHub helper.

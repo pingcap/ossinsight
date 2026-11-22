@@ -1,4 +1,5 @@
 require_relative './fetch_event'
+require_relative '../../lib/worker_heartbeat'
 
 class Realtime
   attr_reader :tokens, :per_page, :tokens_count
@@ -28,6 +29,7 @@ class Realtime
   end
 
   def run
+    WorkerHeartbeat.mark!
     loop do
       if usable_token_count.zero?
         puts "FATAL: all #{tokens_count} GitHub tokens were rejected (suspended or revoked); ingestion cannot continue until they are replaced"
@@ -37,6 +39,7 @@ class Realtime
 
       token = next_available_token
       if token.nil?
+        WorkerHeartbeat.mark!
         wait = backoff_seconds
         puts "all #{tokens_count} token(s) rate limited; sleeping #{wait}s"
         sleep wait
@@ -46,6 +49,7 @@ class Realtime
       begin
         fetcher = FetchEvent.new(per_page, token)
         fetcher.run
+        WorkerHeartbeat.mark! if fetcher.completed_poll
         if fetcher.token_rejected?
           @rejected[token] = true
           puts "token …#{token[-4..]} rejected by GitHub (suspended or revoked); #{usable_token_count} of #{tokens_count} still usable"

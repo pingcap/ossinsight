@@ -6,6 +6,7 @@ import { APIServerEnvSchema } from './env';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {APIError} from "./errors";
+import {registerOperatorAuth} from './utils/operator-auth';
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -18,6 +19,9 @@ const options: AppOptions = {
 export interface AppConfig {
   CONFIGS_PATH: string;
   DATABASE_URL: string;
+  PIPELINE_OPERATOR_TOKEN?: string;
+  PIPELINE_OPERATOR_TOKEN_PREVIOUS?: string;
+  PIPELINE_OPERATOR_TOKEN_PREVIOUS_EXPIRES_AT?: string;
 }
 
 declare module 'fastify' {
@@ -34,20 +38,16 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     schema: APIServerEnvSchema
   });
 
+  registerOperatorAuth(app, {current: app.config.PIPELINE_OPERATOR_TOKEN,
+    previous: app.config.PIPELINE_OPERATOR_TOKEN_PREVIOUS,
+    previousExpiresAt: app.config.PIPELINE_OPERATOR_TOKEN_PREVIOUS_EXPIRES_AT});
+
   // Init global error handler.
   app.setErrorHandler(function (error: Error, request, reply) {
-    this.log.error(error);
-
-    if (error instanceof APIError) {
-      reply.status(error.statusCode).send({
-        message: error.message,
-        payload: error.payload
-      });
-    } else {
-      reply.status(500).send({
-        message: error.message || 'Internal Server Error'
-      });
-    }
+    const candidate = (error as {statusCode?: number}).statusCode;
+    const status = candidate && candidate >= 400 && candidate <= 599 ? candidate : 500;
+    this.log.error({event: 'pipeline_request_failed', requestId: request.id, actor: request.operatorActor || 'anonymous', statusCode: status});
+    reply.status(status).send({message: status >= 500 ? 'Internal Server Error' : error instanceof APIError ? error.message : 'Invalid request.', requestId: request.id});
   });
 
   // Loads all plugins defined in ./plugins directory.

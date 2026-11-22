@@ -5,15 +5,85 @@ on:
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/sql-policy/**'
+      - 'apps/web/lib/explorer/**'
+      - 'apps/web/jest.security.config.cjs'
+      - 'apps/web/package.json'
+      - 'etl/**'
+      - '.dockerignore'
+      - 'ops/container-security/**'
+      - 'packages/pipeline/**'
+      - 'packages/prefetch/**'
+      - 'apps/web/lib/server/**'
+      - 'apps/web/app/**'
+      - 'apps/docs/lib/**'
+      - 'apps/docs/components/**'
+      - 'apps/docs/app/**'
+      - 'apps/docs/proxy.ts'
+      - 'apps/docs/next.config.mjs'
+      - 'apps/docs/scripts/**'
+      - 'apps/docs/package.json'
+      - 'apps/docs/content/blog/**'
+      - 'apps/docs/legacy-content/docs/**'
+      - 'configs/pipelines/**'
+      - 'apps/web/lib/request-policy.ts'
+      - 'apps/web/lib/cors.ts'
+      - 'apps/web/lib/content-security.ts'
+      - 'apps/web/next.config.mjs'
+      - 'apps/web/vercel.json'
+      - 'apps/web/proxy.ts'
+      - 'packages/site-shell/src/safe-json.ts'
+      - 'packages/sync-github-data/**'
+      - 'scripts/load-collection.mjs'
+      - 'scripts/lib/**'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
+      - '.github/workflows/sync-collection-configs.yml'
+      - '.github/workflows/verify-collection-configs.yml'
+      - '.github/workflows/daily-star-snapshots.yml'
+      - 'ops/collection-sync/**'
   push:
     branches: [main]
     paths:
       - 'packages/api-server/**'
       - 'packages/types/**'
+      - 'packages/sql-policy/**'
+      - 'apps/web/lib/explorer/**'
+      - 'apps/web/jest.security.config.cjs'
+      - 'apps/web/package.json'
+      - 'etl/**'
+      - '.dockerignore'
+      - 'ops/container-security/**'
+      - 'packages/pipeline/**'
+      - 'packages/prefetch/**'
+      - 'apps/web/lib/server/**'
+      - 'apps/web/app/**'
+      - 'apps/docs/lib/**'
+      - 'apps/docs/components/**'
+      - 'apps/docs/app/**'
+      - 'apps/docs/proxy.ts'
+      - 'apps/docs/next.config.mjs'
+      - 'apps/docs/scripts/**'
+      - 'apps/docs/package.json'
+      - 'apps/docs/content/blog/**'
+      - 'apps/docs/legacy-content/docs/**'
+      - 'configs/pipelines/**'
+      - 'apps/web/lib/request-policy.ts'
+      - 'apps/web/lib/cors.ts'
+      - 'apps/web/lib/content-security.ts'
+      - 'apps/web/next.config.mjs'
+      - 'apps/web/vercel.json'
+      - 'apps/web/proxy.ts'
+      - 'packages/site-shell/src/safe-json.ts'
+      - 'packages/sync-github-data/**'
+      - 'scripts/load-collection.mjs'
+      - 'scripts/lib/**'
       - 'pnpm-lock.yaml'
       - '.github/workflows/api-server-security.yml'
+      - '.github/workflows/sync-collection-configs.yml'
+      - '.github/workflows/verify-collection-configs.yml'
+      - '.github/workflows/daily-star-snapshots.yml'
+      - 'ops/collection-sync/**'
 
 permissions:
   contents: read
@@ -28,11 +98,72 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: '22'
+          node-version: '24'
       - run: npm install --global pnpm@10.29.3
-      - run: pnpm install --filter @ossinsight/api-server... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
-      - run: pnpm --filter @ossinsight/api-server... --workspace-concurrency 12 -r build
+      - run: pnpm install --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --filter web... --filter docs... --frozen-lockfile --ignore-scripts --network-concurrency 12 --child-concurrency 12
+      - name: Build native SQLite for the runner
+        run: pnpm --filter @ossinsight/api-server rebuild sqlite3
+        env:
+          npm_config_build_from_source: 'true'
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level=high
+      - run: pnpm --filter @ossinsight/api-server... --filter @ossinsight/pipeline... --filter @ossinsight/prefetch... --filter @ossinsight/sync-github-data... --workspace-concurrency 12 -r build
+      - run: pnpm --filter @ossinsight/sync-github-data test:security
       - run: pnpm --filter @ossinsight/api-server test:security
+      - run: pnpm --filter web test:security
+      - run: pnpm --filter docs test:security
+      - run: pnpm --filter @ossinsight/api-server test:runtime
+      - run: node --test scripts/lib/collection-store.test.mjs
+      - name: Verify isolated collection sync dependencies
+        run: |
+          npm ci --prefix ops/collection-sync --ignore-scripts --no-fund
+          npm audit --prefix ops/collection-sync --omit=dev --audit-level=high
+          cd ops/collection-sync
+          node -e "if (typeof require('@tidbcloud/serverless').connect !== 'function') process.exit(1)"
       - name: Verify TiDB execution and database grants
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         working-directory: packages/api-server
-        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts
+        run: pnpm exec jest --maxWorkers=12 --runTestsByPath __tests__/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts __tests__/worker/queue-worker.ts __tests__/core/email-rekey.ts __tests__/core/app-startup.ts __tests__/core/public-abuse.ts __tests__/core/account-registration.ts
+
+  containers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install native Ruby build prerequisites
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends default-libmysqlclient-dev pkg-config
+      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1
+        with:
+          ruby-version: '3.4.12'
+          bundler: '4.0.23'
+          bundler-cache: true
+          working-directory: etl
+      - name: Audit locked Ruby dependencies
+        working-directory: etl
+        run: |
+          gem install bundler-audit -v 0.9.3 --no-document
+          bundler-audit check --update
+      - name: Verify Ruby security behavior and transport defaults
+        working-directory: etl
+        run: |
+          bundle exec ruby -e 'ARGV.each { |file| require_relative file }' ./test/sample_importer_test.rb ./test/seeds_test.rb ./test/archive_transport_test.rb ./test/worker_heartbeat_test.rb
+          ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'
+      - name: Build production images
+        run: |
+          docker build -f packages/api-server/Dockerfile -t ossinsight-api-security:test .
+          docker build -f etl/Dockerfile -t ossinsight-etl-security:test etl
+      - name: Verify read-only containers, native SQLite, verified TLS and real TiDB ingestion
+        run: python3 ops/container-security/check.py
+      - name: Scan runtime images for fixable high and critical vulnerabilities
+        env:
+          TRIVY_CACHE_DIR: ${{ runner.temp }}/trivy-cache
+        run: |
+          curl --fail --location --retry 3 https://github.com/aquasecurity/trivy/releases/download/v0.76.1/trivy_0.76.1_Linux-64bit.tar.gz --output "$RUNNER_TEMP/trivy.tar.gz"
+          echo "c7cbe3137fb8a48a17574bede3dd6beb16742d1e9772929940fc90082c39d9c0  $RUNNER_TEMP/trivy.tar.gz" | sha256sum --check --status
+          tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
+          for image in ossinsight-api-security:test ossinsight-etl-security:test; do
+            "$RUNNER_TEMP/trivy" image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --timeout 5m "$image"
+          done

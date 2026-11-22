@@ -1,136 +1,58 @@
-import {MySQLPromisePool} from "@fastify/mysql";
-import {FastifyBaseLogger, FastifyPluginAsync} from 'fastify'
-import {DateTime, DurationLike} from "luxon";
-import {APIError} from "../../../../errors";
-import {Pipeline} from "../../../../plugins/pipelines";
-import {PipelineJobRepository, PipelineJobStatus} from "../../../../plugins/repositories/PipelineJobRepository";
-import {splitTimeRange} from "../../../../utils/time";
+import {FastifyBaseLogger, FastifyPluginAsync} from 'fastify';
+import {DateTime, DurationLike} from 'luxon';
+import {APIError} from '../../../../errors';
+import type {Pipeline} from '../../../../plugins/pipelines';
+import {PipelineJobRepository} from '../../../../plugins/repositories/PipelineJobRepository';
+import {splitTimeRange, TimeRange} from '../../../../utils/time';
 
-export interface IParams {
-  name: string;
-}
-
-export interface IBody {
-  from?: string;
-  to?: string;
-  interval: DurationLike;
-}
-
+interface IBody { from?: string; to?: string; interval?: DurationLike }
+const units = ['year', 'years', 'quarter', 'quarters', 'month', 'months', 'week', 'weeks', 'day', 'days', 'hour', 'hours', 'minute', 'minutes', 'second', 'seconds'];
 export const schema = {
-  params: {
-    type: 'object',
-    required: ['name'],
-    properties: {
-      name: {
-        type: 'string'
-      }
+  params: {type: 'object', required: ['name'], additionalProperties: false,
+    properties: {name: {type: 'string', maxLength: 100, pattern: '^[a-z0-9][a-z0-9_-]*$'}}},
+  body: {type: 'object', additionalProperties: false, properties: {
+    from: {type: 'string', maxLength: 35}, to: {type: 'string', maxLength: 35},
+    interval: {type: 'object', minProperties: 1, maxProperties: 1, additionalProperties: false,
+      properties: Object.fromEntries(units.map(unit => [unit, {type: 'integer', minimum: 1, maximum: 10000}])), default: {day: 1}},
+  }},
+};
+
+const index: FastifyPluginAsync = async app => {
+  const active = new Set<string>();
+  app.post<{Params: {name: string}; Body: IBody}>('/', {schema}, async (request, reply) => {
+    const name = request.params.name;
+    if (!Object.prototype.hasOwnProperty.call(app.pipelines, name)) throw new APIError(404, 'Pipeline not found.');
+    const pipeline = app.pipelines[name];
+    if (!/:from\b/.test(pipeline.processSQL) || !/:to\b/.test(pipeline.processSQL)) {
+      throw new APIError(400, 'This pipeline does not support historical backfill.');
     }
-  } as const,
-  body: {
-    type: 'object',
-    properties: {
-      from: {
-        type: 'string',
-      },
-      to: {
-        type: 'string',
-      },
-      interval: {
-        type: 'object',
-        default: {
-          day: 1
-        },
-      }
-    }
-  }
-}
-
-const index: FastifyPluginAsync = async (app, opts): Promise<void> => {
-  app.post<{
-    Params: IParams,
-    Body: IBody
-  }>('/', {
-    schema
-  }, async (req, reply) => {
-    const pipelineName = req.params.name;
-    const pipeline = app.pipelines[pipelineName];
-    if (!pipeline) {
-      throw new APIError(404, 'Pipeline not found.')
-    }
-
-    const {from, to, interval} = req.body;
-    const specifiedFrom = from ? DateTime.fromISO(from) : undefined;
-    const specifiedTo = to ? DateTime.fromISO(to) : undefined;
-
-    fullSyncPipeline(app.log, app.mysql, app.pipelineJobRepository, pipelineName, pipeline, specifiedFrom, specifiedTo, interval).catch((err) => {
-      app.log.error(err, `❌  Failed to finish full sync for pipeline <${pipelineName}>.`);
-    });
-
-    return {
-      ok: true,
-      message: 'Trigger success!'
-    }
-  });
-}
-
-
-async function fullSyncPipeline(
-  log: FastifyBaseLogger, tidb: MySQLPromisePool, pipelineJobRepository: PipelineJobRepository, pipelineName: string, pipeline: Pipeline,
-  from: DateTime = DateTime.fromSQL('2012-01-01'),
-  to: DateTime = DateTime.fromSQL(DateTime.utc().toFormat('yyyy-MM-dd')),
-  interval: DurationLike = {day: 1}
-) {
-  // Get the time ranges need to sync.
-  const needProcessed = splitTimeRange(from, to, interval);
-  const processed = await pipelineJobRepository.getProcessedTimeRanges(pipelineName, from, to);
-  const timeRanges = needProcessed.filter((needProcessedTimeRange) => {
-    return !processed.find((processedTimeRange) => {
-      return needProcessedTimeRange.tTo === processedTimeRange.tTo && needProcessedTimeRange.tFrom === processedTimeRange.tFrom;
-    });
-  });
-  log.info(`🚀 Starting the full sync for pipeline <${pipelineName}>, processed: ${processed.length}/${needProcessed.length}.`);
-
-  // Sync range by range.
-  let success = 0;
-  let fail = 0;
-
-  for (const { tFrom, tTo } of timeRanges) {
-    log.info(`⚡️ Start to execute query for pipeline <${pipelineName}>, from: ${tFrom}, to: ${tTo}.`);
-    const jobId = await pipelineJobRepository.createProcessedTimeRange(pipelineName, tFrom, tTo, PipelineJobStatus.RUNNING);
-    const startAt = DateTime.now();
-
+    if (active.has(name)) throw new APIError(409, 'A full sync for this pipeline is already active.');
+    const {from, to, interval = {day: 1}} = request.body;
+    let ranges: TimeRange[];
     try {
-      /**
-       * Notice:
-       *
-       * If the SQL mode of the current session is strict
-       * (which means the sql_mode value contains either STRICT_TRANS_TABLES or STRICT_ALL_TABLES),
-       * the SELECT subquery in INSERT INTO SELECT cannot be pushed down to TiFlash.
-       *
-       * Reference: https://docs.pingcap.com/zh/tidb/v7.1/tiflash-results-materialization
-       */
-      await tidb.execute(`SET SQL_MODE = 'ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';`);
-      await tidb.execute(pipeline.processSQL, {
-        from: tFrom.toSQL(),
-        to: tTo.toSQL()
-      });
-    } catch (err: any) {
-      const endAt = DateTime.now();
-      const duration = endAt.diff(startAt , 'seconds').seconds;
-      fail++;
-      await pipelineJobRepository.finishProcessedTimeRange(jobId, PipelineJobStatus.FAILED, err.message, duration);
-      log.error(err, `❌  Failed to execute query for pipeline <${pipelineName}>, from: ${tFrom}, to: ${tTo}, duration: ${duration} s.`);
-      return;
-    }
+      ranges = splitTimeRange(from ? DateTime.fromISO(from, {zone: 'utc'}) : DateTime.utc(2012, 1, 1),
+        to ? DateTime.fromISO(to, {zone: 'utc'}) : DateTime.utc().startOf('day'), interval);
+    } catch { throw new APIError(400, 'Invalid time range or interval.'); }
+    const audit = {actor: request.operatorActor, requestId: request.id, pipelineName: name};
+    active.add(name);
+    void fullSyncPipeline(app.log, app.pipelineJobRepository, name, pipeline, ranges, audit)
+      .catch(() => app.log.error({...audit, event: 'pipeline_backfill_failed'}))
+      .finally(() => active.delete(name));
+    return reply.code(202).send({ok: true, message: 'Full sync accepted.', ranges: ranges.length});
+  });
+};
 
-    const endAt = DateTime.now();
-    const duration = endAt.diff(startAt , 'seconds').seconds;
-    success++;
-    await pipelineJobRepository.finishProcessedTimeRange(jobId, PipelineJobStatus.SUCCEED, 'Query OK!', duration);
-    log.info(`✅  Finished to execute query for pipeline <%s>, from: %s, to: %s, duration: %d s.`, pipelineName, tFrom.toISO(), tTo.toISO(), duration);
+export async function fullSyncPipeline(log: FastifyBaseLogger, repository: PipelineJobRepository,
+  name: string, pipeline: Pipeline, ranges: TimeRange[], audit: Record<string, unknown> = {}) {
+  const processed = await repository.getProcessedTimeRanges(name, ranges[0].tFrom, ranges[ranges.length - 1].tTo);
+  const key = (range: TimeRange) => `${range.tFrom.toMillis()}:${range.tTo.toMillis()}`;
+  const completed = new Set(processed.map(key));
+  let executed = 0;
+  for (const range of ranges) {
+    if (completed.has(key(range))) continue;
+    if (await repository.executeRange(name, range.tFrom, range.tTo, pipeline.processSQL)) executed++;
   }
-
-  log.info(`🎉 Finished full sync for pipeline <${pipelineName}>, success: ${success}, fail: ${fail}, process: ${success + processed.length}/${needProcessed.length}.`)
+  log.info({...audit, event: 'pipeline_backfill_completed', pipelineName: name, executed, requested: ranges.length});
 }
 
 export default index;

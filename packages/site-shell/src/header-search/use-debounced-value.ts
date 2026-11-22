@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  */
 export function useDebouncedValue<T>(value: T, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  const handle = useRef<ReturnType<typeof setTimeout>>();
+  const handle = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const update = useCallback(
     (v: T) => {

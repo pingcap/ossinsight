@@ -12,7 +12,7 @@ import {
   DimensionLoose,
   OptionEncodeValue,
 } from 'echarts/types/src/util/types';
-import deepmerge from 'deepmerge';
+import deepmerge from './merge';
 
 export function bar(
   x: OptionEncodeValue,

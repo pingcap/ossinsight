@@ -4,10 +4,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypePrettyCode from 'rehype-pretty-code';
-import rehypeRaw from 'rehype-raw';
-import rehypeSlug from 'rehype-slug';
+import {markdownRehypePlugins, normalizeMarkdownSource as normalizeSource, toPublicAssetPath} from './markdown-security.mjs';
+import {LegacyMarkdownAnchors} from '@/components/legacy-markdown-anchors';
+import {findContentFile, resolveApiSourceFile, resolveBlogSourceFile, resolveDocsSourceFile} from './content-files';
 import { MarkdownAsync } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import YAML from 'yaml';
@@ -16,21 +15,6 @@ import { docsMdxComponents } from '@/lib/mdx-components';
 const CONTENT_ROOT = path.join(process.cwd(), 'content');
 const BLOG_ROOT = path.join(CONTENT_ROOT, 'blog');
 const DOCS_ROOT = path.join(process.cwd(), 'legacy-content', 'docs');
-
-const prettyCodeOptions = {
-  theme: 'one-dark-pro',
-  keepBackground: false,
-  bypassInlineCode: true,
-  defaultLang: {
-    block: 'plaintext',
-    inline: 'plaintext',
-  },
-  onVisitLine(node: { children: Array<unknown> }) {
-    if (node.children.length === 0) {
-      node.children = [{ type: 'text', value: ' ' }];
-    }
-  },
-};
 
 type AuthorRecord = {
   image_url?: string;
@@ -180,128 +164,18 @@ function normalizeTitle(filePath: string) {
   return path.basename(filePath, path.extname(filePath)).replace(/[-_]/g, ' ');
 }
 
-function toPublicAssetPath(assetPath: string, assetBasePath: string) {
-  if (assetPath.startsWith('./')) {
-    return `${assetBasePath}/${assetPath.slice(2)}`;
-  }
-
-  if (assetPath.startsWith('@site/blog/')) {
-    return `/blog-assets/${assetPath.slice('@site/blog/'.length)}`;
-  }
-
-  return assetPath;
-}
-
-function quoteMarkdownBlock(text: string) {
-  return text
-    .trim()
-    .split('\n')
-    .map((line) => (line ? `> ${line}` : '>'))
-    .join('\n');
-}
-
-function normalizeAdmonitions(source: string) {
-  return source.replace(/^:::(\w+)\s*\n([\s\S]*?)^:::\s*$/gm, (_match, rawType: string, body: string) => {
-    const type = rawType.toLowerCase();
-    const labelMap: Record<string, string> = {
-      danger: 'Caution',
-      info: 'Note',
-      note: 'Note',
-      tip: 'Tip',
-      warning: 'Warning',
-    };
-    const label = labelMap[type] ?? 'Note';
-
-    return `> **${label}**\n>\n${quoteMarkdownBlock(body)}`;
-  });
-}
-
-function normalizeSource(source: string, assetBasePath?: string) {
-  let nextSource = source.replace(/<!--truncate-->/g, '');
-  nextSource = normalizeAdmonitions(nextSource);
-
-  if (!assetBasePath) {
-    return nextSource;
-  }
-
-  nextSource = nextSource.replace(/src=\{require\((['"])(\.\/[^'"]+|@site\/blog\/[^'"]+)\1\)\.default\}/g, (_match, _quote, assetPath: string) => {
-    return `src="${toPublicAssetPath(assetPath, assetBasePath)}"`;
-  });
-
-  nextSource = nextSource.replace(/!\[([^\]]*)\]\(\.\/([^)]+)\)/g, (_match, altText: string, assetPath: string) => {
-    return `![${altText}](${toPublicAssetPath(`./${assetPath}`, assetBasePath)})`;
-  });
-
-  nextSource = nextSource.replace(/<img([^>]*?)src=["']\.\/([^"']+)["']([^>]*)>/g, (_match, before: string, assetPath: string, after: string) => {
-    return `<img${before}src="${toPublicAssetPath(`./${assetPath}`, assetBasePath)}"${after}>`;
-  });
-
-  return nextSource;
-}
-
 async function renderMarkdown(source: string, assetBasePath?: string) {
   const normalizedSource = normalizeSource(source, assetBasePath);
-  return (
+  return (<>
     <MarkdownAsync
       components={docsMdxComponents}
-      rehypePlugins={[
-        rehypeRaw,
-        [rehypePrettyCode, prettyCodeOptions],
-        rehypeSlug,
-        [rehypeAutolinkHeadings, {
-          behavior: 'append',
-          properties: {
-            ariaLabel: 'Permalink',
-            className: ['anchor-link'],
-          },
-        }],
-      ]}
+      rehypePlugins={markdownRehypePlugins}
       remarkPlugins={[remarkGfm]}
     >
       {normalizedSource}
     </MarkdownAsync>
-  );
-}
-
-async function pathExists(filePath: string) {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function findFirstExistingFile(candidates: string[]) {
-  for (const candidate of candidates) {
-    if (await pathExists(candidate)) {
-      return candidate;
-    }
-  }
-
-  return null;
-}
-
-async function resolveBlogSourceFile(slug: string) {
-  const blogDir = path.join(BLOG_ROOT, slug);
-  return findFirstExistingFile([
-    path.join(blogDir, 'index.mdx'),
-    path.join(blogDir, 'index.md'),
-  ]);
-}
-
-async function resolveDocsSourceFile(slugPath: string) {
-  const segments = slugPath.split('/').filter(Boolean);
-  const absoluteBase = path.join(DOCS_ROOT, ...segments);
-
-  return findFirstExistingFile([
-    `${absoluteBase}.mdx`,
-    `${absoluteBase}.md`,
-    path.join(absoluteBase, 'index.mdx'),
-    path.join(absoluteBase, 'index.md'),
-    path.join(absoluteBase, 'overview.mdx'),
-    path.join(absoluteBase, 'overview.md'),
-  ]);
+    <LegacyMarkdownAnchors />
+  </>);
 }
 
 const loadAuthors = cache(async () => {
@@ -345,7 +219,7 @@ export const getBlogPosts = cache(async () => {
   const posts = await Promise.all(entries
     .filter((entry) => entry.isDirectory())
     .map(async (entry) => {
-      const filePath = await resolveBlogSourceFile(entry.name);
+      const filePath = await resolveBlogSourceFile(BLOG_ROOT, entry.name);
 
       if (!filePath) {
         return null;
@@ -367,7 +241,7 @@ export const getBlogPosts = cache(async () => {
 });
 
 export const getBlogPost = cache(async (slug: string) => {
-  const filePath = await resolveBlogSourceFile(slug);
+  const filePath = await resolveBlogSourceFile(BLOG_ROOT, slug);
 
   if (!filePath) {
     return null;
@@ -391,7 +265,7 @@ export const getBlogSummaryBySlug = cache(async (slug: string) => {
 });
 
 export const getDocsPage = cache(async (slugPath: string) => {
-  const filePath = await resolveDocsSourceFile(slugPath);
+  const filePath = await resolveDocsSourceFile(DOCS_ROOT, slugPath);
 
   if (!filePath) {
     return null;
@@ -463,10 +337,7 @@ export const getApiDocs = cache(async () => {
 
 export const getApiDoc = cache(async (slug: string) => {
   const apiRoot = path.join(DOCS_ROOT, 'api');
-  const filePath = await findFirstExistingFile([
-    path.join(apiRoot, `${slug}.api.mdx`),
-    path.join(apiRoot, `${slug}.api.md`),
-  ]);
+  const filePath = await resolveApiSourceFile(apiRoot, slug);
 
   if (!filePath) {
     return null;
@@ -494,9 +365,9 @@ export const getApiDoc = cache(async (slug: string) => {
 
 export const getApiOverview = cache(async () => {
   const apiRoot = path.join(DOCS_ROOT, 'api');
-  const filePath = await findFirstExistingFile([
-    path.join(apiRoot, 'ossinsight-public-api.info.mdx'),
-    path.join(apiRoot, 'ossinsight-public-api.info.md'),
+  const filePath = await findContentFile(apiRoot, [
+    'ossinsight-public-api.info.mdx',
+    'ossinsight-public-api.info.md',
   ]);
 
   if (!filePath) {

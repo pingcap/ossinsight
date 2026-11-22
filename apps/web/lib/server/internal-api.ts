@@ -1,4 +1,5 @@
 import { corsHeaders } from '@/lib/cors';
+import { isGitHubOwner, isGitHubLogin, isGitHubRepository } from '@ossinsight/types';
 import orgsRecommendList from '@/lib/github-search/recommend/orgs-list.json';
 import reposRecommendList1 from '@/lib/github-search/recommend/repos-list-1.json';
 import reposRecommendList2 from '@/lib/github-search/recommend/repos-list-2.json';
@@ -16,6 +17,8 @@ import {
 } from '@/lib/collections';
 import { explainQuery, runQuery } from '@/lib/data-service/routes';
 import { executeOneRow, executeRows } from '@/lib/data-service/query';
+import {normalizeSearchKeyword, literalLikePrefix} from './search-keyword';
+import { isSuppressedAccountId, isSuppressedLogin, isSuppressedRepoName } from '@/lib/suppressed-profiles';
 
 type RepoRecommendItem = {
   id: number;
@@ -125,6 +128,8 @@ export async function getRepoById(id: number | string, signal?: AbortSignal): Pr
 }
 
 export async function getRepoByName(owner: string, repo: string, signal?: AbortSignal): Promise<RepoDetail | null> {
+  if (!isGitHubOwner(owner) || !isGitHubRepository(repo)) return null;
+  if (isSuppressedLogin(owner)) return null;
   const row = await executeOneRow<{
     id: number;
     full_name: string;
@@ -172,6 +177,7 @@ export async function getRepoByName(owner: string, repo: string, signal?: AbortS
 }
 
 export async function getUserById(id: number | string, signal?: AbortSignal) {
+  if (isSuppressedAccountId(id)) return null;
   return executeOneRow<{
     id: number;
     login: string;
@@ -203,6 +209,8 @@ export async function getUserById(id: number | string, signal?: AbortSignal) {
 }
 
 export async function getUserByLogin(username: string, signal?: AbortSignal) {
+  if (!isGitHubLogin(username)) return null;
+  if (isSuppressedLogin(username)) return null;
   return executeOneRow<{
     id: number;
     login: string;
@@ -234,7 +242,8 @@ export async function getUserByLogin(username: string, signal?: AbortSignal) {
 }
 
 export async function searchRepos(keyword: string, signal?: AbortSignal) {
-  const normalizedKeyword = keyword.trim().replaceAll(/\s+/g, ' ');
+  const normalizedKeyword = normalizeSearchKeyword(keyword);
+  if (normalizedKeyword === null) throw new APIError('Invalid search term.', 400);
   if (!normalizedKeyword) {
     return [];
   }
@@ -254,13 +263,13 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
       WHERE gr.is_deleted = 0
         AND (
           LOWER(gr.repo_name) = LOWER(:keyword)
-          OR LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keyword), '%')
-          OR gr.owner_login LIKE CONCAT(:keyword, '%')
+          OR LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keywordPrefix), '%') ESCAPE '!'
+          OR gr.owner_login LIKE CONCAT(:keywordPrefix, '%') ESCAPE '!'
         )
       ORDER BY
         CASE
           WHEN LOWER(gr.repo_name) = LOWER(:keyword) THEN 0
-          WHEN LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keyword), '/%') THEN 1
+          WHEN LOWER(gr.repo_name) LIKE CONCAT(LOWER(:keywordPrefix), '/%') ESCAPE '!' THEN 1
           WHEN gr.owner_login = :keyword THEN 2
           ELSE 3
         END,
@@ -268,11 +277,11 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
         gr.last_event_at DESC
       LIMIT 10
     `,
-    { keyword: normalizedKeyword },
+    { keyword: normalizedKeyword, keywordPrefix: literalLikePrefix(normalizedKeyword) },
     signal,
   );
 
-  return rows.map((row) => ({
+  return rows.filter((row) => !isSuppressedRepoName(row.fullName)).map((row) => ({
     id: row.id,
     fullName: row.fullName,
     defaultBranchRef: { name: '' },
@@ -280,7 +289,8 @@ export async function searchRepos(keyword: string, signal?: AbortSignal) {
 }
 
 export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?: AbortSignal) {
-  const normalizedKeyword = keyword.trim().replaceAll(/\s+/g, ' ');
+  const normalizedKeyword = normalizeSearchKeyword(keyword);
+  if (normalizedKeyword === null) throw new APIError('Invalid search term.', 400);
   if (!normalizedKeyword) {
     return [];
   }
@@ -300,7 +310,7 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
       WHERE gu.is_deleted = 0
         AND (
           LOWER(gu.login) = LOWER(:keyword)
-          OR LOWER(gu.login) LIKE CONCAT(LOWER(:keyword), '%')
+          OR LOWER(gu.login) LIKE CONCAT(LOWER(:keywordPrefix), '%') ESCAPE '!'
         )
         AND (
           (:kind = 'org' AND gu.type = 'ORG')
@@ -309,7 +319,7 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
       ORDER BY
         CASE
           WHEN LOWER(gu.login) = LOWER(:keyword) THEN 0
-          WHEN LOWER(gu.login) LIKE CONCAT(LOWER(:keyword), '%') THEN 1
+          WHEN LOWER(gu.login) LIKE CONCAT(LOWER(:keywordPrefix), '%') ESCAPE '!' THEN 1
           ELSE 2
         END,
         gu.followers DESC,
@@ -317,11 +327,11 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
         gu.last_event_at DESC
       LIMIT 10
     `,
-    { keyword: normalizedKeyword, kind },
+    { keyword: normalizedKeyword, keywordPrefix: literalLikePrefix(normalizedKeyword), kind },
     signal,
   );
 
-  return rows.map((row) => ({
+  return rows.filter((row) => !isSuppressedLogin(row.login) && !isSuppressedAccountId(row.id)).map((row) => ({
     id: row.id,
     login: row.login,
   }));
@@ -481,6 +491,7 @@ export async function listCollectionPreviewRepos(
             ORDER BY COALESCE(gr.stars, 0) DESC, ci.repo_name ASC
           ) AS repo_rank
         FROM collection_items ci
+        JOIN collections c ON c.id = ci.collection_id AND c.public = 1
         LEFT JOIN github_repos gr
           ON gr.repo_id = ci.repo_id
          AND gr.is_deleted = 0
@@ -492,6 +503,7 @@ export async function listCollectionPreviewRepos(
           ci.collection_id,
           COUNT(*) AS repo_count
         FROM collection_items ci
+        JOIN collections c ON c.id = ci.collection_id AND c.public = 1
         WHERE ci.deleted_at IS NULL
           AND ci.collection_id IN (${placeholders})
         GROUP BY ci.collection_id

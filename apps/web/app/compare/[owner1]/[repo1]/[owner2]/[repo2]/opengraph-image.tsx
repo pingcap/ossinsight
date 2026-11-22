@@ -1,3 +1,4 @@
+import { OG_IMAGE_HEADERS } from '@/lib/og-image';
 import { OG_IMAGE_SIZE, OG_GRADIENT_STYLE } from '@/lib/og-image';
 import { getRepoByName } from '@/lib/server/internal-api';
 import { notFound } from 'next/navigation';
@@ -11,10 +12,10 @@ export const contentType = 'image/png';
 
 export default async function Image({ params }: { params: Promise<{ owner1: string; repo1: string; owner2: string; repo2: string }> }) {
   const { owner1: rawOwner1, repo1: rawRepo1, owner2: rawOwner2, repo2: rawRepo2 } = await params;
-  const owner1 = decodeURIComponent(rawOwner1);
-  const repo1 = decodeURIComponent(rawRepo1);
-  const owner2 = decodeURIComponent(rawOwner2);
-  const repo2 = decodeURIComponent(rawRepo2);
+  const owner1 = rawOwner1;
+  const repo1 = rawRepo1;
+  const owner2 = rawOwner2;
+  const repo2 = rawRepo2;
 
   const [repoInfo, vsRepoInfo] = await Promise.all([
     getRepoByName(owner1, repo1),
@@ -61,7 +62,7 @@ export default async function Image({ params }: { params: Promise<{ owner1: stri
               style={{ borderRadius: 32, border: '2px solid rgba(255,255,255,0.3)' }}
             />
             <div style={{ fontSize: 22, fontWeight: 600, color: 'white', marginTop: 12, textAlign: 'center' }}>
-              {owner1}/{repo1}
+              {`${owner1}/${repo1}`}
             </div>
             {repoInfo.language && (
               <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>
@@ -92,7 +93,7 @@ export default async function Image({ params }: { params: Promise<{ owner1: stri
               style={{ borderRadius: 32, border: '2px solid rgba(255,255,255,0.3)' }}
             />
             <div style={{ fontSize: 22, fontWeight: 600, color: 'white', marginTop: 12, textAlign: 'center' }}>
-              {owner2}/{repo2}
+              {`${owner2}/${repo2}`}
             </div>
             {vsRepoInfo.language && (
               <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>
@@ -125,6 +126,6 @@ export default async function Image({ params }: { params: Promise<{ owner1: stri
         </div>
       </div>
     ),
-    { ...size },
+    { ...size, headers: OG_IMAGE_HEADERS },
   );
 }

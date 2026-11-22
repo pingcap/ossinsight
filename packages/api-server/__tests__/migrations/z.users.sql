@@ -10,7 +10,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.sys_repo_milestones TO 'ex
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.sys_repo_milestone_types TO 'executoruser'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.sys_sent_repo_milestones TO 'executoruser'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.stats_query_summary TO 'executoruser'@'%';
-GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.stats_api_requests TO 'executoruser'@'%';
+GRANT SELECT, INSERT ON gharchive_dev.stats_api_requests TO 'executoruser'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.explorer_questions TO 'executoruser'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.explorer_recommend_questions TO 'executoruser'@'%';
 

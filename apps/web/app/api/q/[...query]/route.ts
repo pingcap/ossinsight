@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest } from 'next/server';
 import { APIError, DegradedDataError } from '@/lib/data-service';
 import { getQueryName, runQuery } from '@/lib/data-service/routes';
@@ -9,11 +10,11 @@ interface Params {
 
 export const runtime = 'edge';
 
-export async function OPTIONS(req: NextRequest) {
+async function handleOPTIONS(req: NextRequest) {
   return corsPreflight(req.headers.get('origin'));
 }
 
-export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> }) {
+async function handleGET(req: NextRequest, reqCtx: { params: Promise<Params> }) {
   const origin = req.headers.get('origin');
   const cors = corsHeaders(origin);
 
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
     }
 
     if (error instanceof APIError) {
-      return new Response(JSON.stringify({ message: error.message }), {
+      return new Response(JSON.stringify({ message: error.publicMessage }), {
         status: error.statusCode,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
@@ -53,7 +54,6 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
       });
     }
 
-    console.error(error);
     return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
       status: 500,
       headers: {
@@ -63,3 +63,7 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
     });
   }
 }
+
+export const OPTIONS = withRequestAudit('OPTIONS /api/q/[...query]', handleOPTIONS);
+
+export const GET = withRequestAudit('GET /api/q/[...query]', handleGET);

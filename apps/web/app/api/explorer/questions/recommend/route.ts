@@ -1,9 +1,10 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { NextRequest } from 'next/server';
 import { listRecommendedExplorerQuestions } from '@/lib/server/explorer-api';
 
 export const runtime = 'edge';
 
-export async function GET(req: NextRequest) {
+async function handleGET(req: NextRequest) {
   try {
     const aiGenerated = parseBoolean(req.nextUrl.searchParams.get('aiGenerated'));
     const tagId = parseInteger(req.nextUrl.searchParams.get('tagId'));
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error(error);
+
 
     return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
       status: 500,
@@ -59,3 +60,5 @@ function parseInteger(value: string | null) {
   const parsed = Number.parseInt(value, 10);
   return Number.isFinite(parsed) ? parsed : undefined;
 }
+
+export const GET = withRequestAudit('GET /api/explorer/questions/recommend', handleGET);

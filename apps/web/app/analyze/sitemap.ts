@@ -1,3 +1,4 @@
+import {withSitemapAudit} from '@/lib/server/route-audit';
 import type { MetadataRoute } from 'next';
 import { getTopReposForSitemap } from '@/lib/server/internal-api';
 
@@ -5,7 +6,7 @@ const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
 
 export const dynamic = 'force-dynamic';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   try {
@@ -21,8 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
   } catch (error) {
-    console.warn('[analyze/sitemap] Failed to fetch top repos for sitemap:', error);
+    console.warn('[analyze/sitemap] Failed to fetch top repos for sitemap:');
   }
 
   return entries;
 }
+
+export default withSitemapAudit('GET /analyze/sitemap.xml', sitemap);

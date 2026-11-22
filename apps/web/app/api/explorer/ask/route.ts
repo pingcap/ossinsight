@@ -1,3 +1,4 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject, streamObject } from "ai";
 import { z } from "zod";
@@ -5,7 +6,8 @@ import { z } from "zod";
 import { normalizeExplorerChart, inferExplorerFields } from "@/lib/explorer/chart";
 import { explorerChartKinds, type ExplorerAnswer } from "@/lib/explorer/contracts";
 import { buildExplorerPlanningPrompt } from "@/lib/explorer/prompt";
-import { executeExplorerRows, explainExplorerRows } from "@/lib/explorer/query";
+import { executeGeneratedExplorerPlan, EXPLORER_RESULT_LIMIT } from "@/lib/explorer/generated-query";
+import { SQLPolicyError } from '@ossinsight/sql-policy';
 
 export const runtime = "edge";
 export const maxDuration = 30;
@@ -53,7 +55,7 @@ const openai = createOpenAI({
   apiKey: openaiApiKey,
 });
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   if (isExplorerUnderMaintenance()) {
     return Response.json(maintenanceResponse, {
       status: 503,
@@ -92,32 +94,26 @@ export async function POST(request: Request) {
 
     if (!openaiApiKey) {
       return Response.json(
-        { error: "Missing OPENAI_API_TOKEN (or OPENAI_API_KEY) for Data Explorer." },
+        { error: "Explorer is temporarily unavailable." },
         { status: 500, headers: { "Cache-Control": "no-store" } },
       );
     }
 
     if (body.stream) {
-      return streamExplorerAnswer(body.question, startedAt);
+      return streamExplorerAnswer(body.question, startedAt, request.signal);
     }
 
     const plan = await generateExplorerPlan(body.question);
-    const answer = await buildExplorerAnswer(body.question, plan, startedAt);
+    const answer = await buildExplorerAnswer(body.question, plan, startedAt, request.signal);
 
     return Response.json(answer, {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown explorer error";
-    const status =
-      error instanceof z.ZodError
-        ? 400
-        : /readonly|select statement|single sql statement|unsafe sql/i.test(message)
-          ? 400
-          : 500;
+    const status = error instanceof z.ZodError || error instanceof SQLPolicyError ? 400 : 500;
 
     return Response.json(
-      { error: message },
+      { error: status === 400 ? "Invalid explorer request." : "Explorer is temporarily unavailable." },
       { status, headers: { "Cache-Control": "no-store" } },
     );
   }
@@ -146,13 +142,10 @@ async function buildExplorerAnswer(
   question: string,
   plan: z.infer<typeof planSchema>,
   startedAt: number,
+  signal?: AbortSignal,
 ): Promise<ExplorerAnswer> {
-  const sql = normalizeReadonlySql(plan.sql);
-  assertReadonlySql(sql);
-
-  const queryResult = await executeExplorerRows(sql);
+  const { sql, queryResult, explainResult } = await executeGeneratedExplorerPlan(plan.sql, signal);
   const rows = queryResult.rows as Record<string, unknown>[];
-  const explainResult = await explainExplorerRows(sql);
   const explainPlan = explainResult.rows as Record<string, unknown>[];
   const engines = inferExplorerEngines(explainPlan);
   const fields =
@@ -177,9 +170,9 @@ async function buildExplorerAnswer(
     sql,
     chart,
     fields,
-    rows: rows.slice(0, 100),
+    rows: rows.slice(0, EXPLORER_RESULT_LIMIT),
     rowCount: rows.length,
-    truncated: rows.length > 100,
+    truncated: rows.length > EXPLORER_RESULT_LIMIT,
     engines,
     plan: explainPlan,
     generatedAt: new Date().toISOString(),
@@ -187,7 +180,7 @@ async function buildExplorerAnswer(
   };
 }
 
-function streamExplorerAnswer(question: string, startedAt: number) {
+function streamExplorerAnswer(question: string, startedAt: number, signal?: AbortSignal) {
   const encoder = new TextEncoder();
 
   return new Response(
@@ -264,14 +257,13 @@ function streamExplorerAnswer(question: string, startedAt: number) {
           });
           send({ type: "phase", phase: "executing" });
 
-          const answer = await buildExplorerAnswer(question, plan, startedAt);
+          const answer = await buildExplorerAnswer(question, plan, startedAt, signal);
 
           send({ type: "result", answer });
           send({ type: "done" });
           controller.close();
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Unknown explorer error";
-          send({ type: "error", error: message });
+          send({ type: "error", error: "Explorer is temporarily unavailable." });
           controller.close();
         }
       },
@@ -335,34 +327,4 @@ function inferExplorerEngines(plan: Record<string, unknown>[]) {
   return Array.from(engines);
 }
 
-function normalizeReadonlySql(value: string) {
-  const trimmed = value
-    .replace(/--.*$/gm, "")
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .trim()
-    .replace(/;+$/, "");
-  if (!/\blimit\b/i.test(trimmed)) {
-    return `${trimmed}\nLIMIT 50`;
-  }
-
-  return trimmed;
-}
-
-function assertReadonlySql(sql: string) {
-  if (!/^\s*(with\b[\s\S]+select\b|select\b)/i.test(sql)) {
-    throw new Error("Data Explorer only accepts a single SELECT statement.");
-  }
-
-  const stripped = sql.replace(/;+\s*$/, "");
-  if (stripped.includes(";")) {
-    throw new Error("Data Explorer only accepts a single SQL statement.");
-  }
-
-  if (
-    /\b(insert|update|delete|drop|alter|truncate|create|rename|grant|revoke|show|set|use|explain|describe|handler|load|lock|unlock|call|benchmark|sleep|outfile|dumpfile)\b/i.test(
-      stripped,
-    )
-  ) {
-    throw new Error("Data Explorer rejected unsafe SQL.");
-  }
-}
+export const POST = withRequestAudit('POST /api/explorer/ask', handlePOST);

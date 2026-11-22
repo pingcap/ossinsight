@@ -26,7 +26,7 @@ async function main() {
   const usersCommand = program.command('users');
   initSyncUsersInBatchCommand(usersCommand, config, logger);
 
-  program.parse();
+  await program.parseAsync();
 }
 
 main().catch((err) => {

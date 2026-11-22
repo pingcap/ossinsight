@@ -1,4 +1,4 @@
-import { QuerySchema } from "@ossinsight/types";
+import { QuerySchema, validateQueryName } from "@ossinsight/types";
 import { join } from "path";
 import pino from "pino";
 import { readFile } from "fs/promises";
@@ -25,6 +25,7 @@ export class QueryLoader {
     }
 
     async load(queryName: string):Promise<[QuerySchema | undefined, string | undefined] | []> {
+        try { validateQueryName(queryName); } catch { throw new APIError(400, 'Invalid query name.'); }
         const queryDir = join(this.basePath, queryName);
         const templateFilePath = join(queryDir, QUERY_TEMPLATE_SQL_FILENAME);
         const queryConfigFilePath = join(queryDir, QUERY_CONFIG_FILENAME);

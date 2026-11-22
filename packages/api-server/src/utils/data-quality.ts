@@ -125,8 +125,8 @@ export const STAR_DATA_UNAVAILABLE_MARKER = {
     'fell to roughly 0.3% of baseline, so the ordering would be noise. An empty result here means ' +
     'the metric cannot be computed, not that there are no matching repositories.',
   alternative:
-    'Current totals synced directly from GitHub remain accurate: use /v1/repos/{owner}/{repo} for ' +
-    'star and fork counts, or /v1/collections/{id} for collection membership.',
+    'Current totals synced directly from GitHub remain accurate: use /gh/repos/{owner}/{repo} for ' +
+    'star and fork counts, or /v1/collections/{id}/repos for collection membership.',
   docs: 'https://ossinsight.io/docs/data-quality',
 } as const;
 
@@ -147,6 +147,12 @@ const PUBLIC_API_BLOCKED = new Set<string>([
 ]);
 
 const PUBLIC_API_TAINTED = new Set<string>([
+  '/repos/issue_creators/history',
+  '/repos/issue_creators/countries',
+  '/repos/issue_creators/organizations',
+  '/repos/pull_request_creators/history',
+  '/repos/pull_request_creators/countries',
+  '/repos/pull_request_creators/organizations',
   '/repos/stargazers/history',
   '/repos/stargazers/countries',
   '/repos/stargazers/organizations',

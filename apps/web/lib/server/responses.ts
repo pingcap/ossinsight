@@ -32,7 +32,7 @@ export function createApiErrorResponse(error: unknown) {
   }
 
   if (error instanceof APIError) {
-    return new Response(JSON.stringify({ message: error.message }), {
+    return new Response(JSON.stringify({ message: error.publicMessage }), {
       status: error.statusCode,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -40,7 +40,6 @@ export function createApiErrorResponse(error: unknown) {
     });
   }
 
-  console.error(error);
   return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
     status: 500,
     headers: {
