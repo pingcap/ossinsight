@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> **OSSInsight is shutting down on December 4, 2026.** The site becomes a read-only archive, the public API stops, and embedded widgets freeze at their last snapshot. The dataset will be published for download. Read the [announcement](https://ossinsight.io/blog/ossinsight-is-shutting-down).
+> **OSSInsight is shutting down on December 4, 2026.** The site becomes a read-only archive, the public API stops, and embedded widgets freeze at their last snapshot. The GitHub event data up to November 30, 2026 will be published for free download on Hugging Face and listed at [ossinsight.io/data](https://ossinsight.io/data). OSSInsight accounts and saved questions will be deleted by December 31, 2026. Read the [announcement](https://ossinsight.io/blog/ossinsight-is-shutting-down).
 
 <h1 align="center">OSSInsight</h1>
 
