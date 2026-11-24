@@ -9,6 +9,8 @@ keywords: [OSSInsight shutdown, OSSInsight sunset, OSSInsight dataset download, 
 
 We are retiring OSSInsight. The live service will be turned off on **December 4, 2026**.
 
+> **Update, November 24, 2026:** added the data cutoff (November 30, 2026), where the files will be hosted (Hugging Face), and the date by which accounts are deleted (December 31, 2026). Registered users are being notified by email.
+
 OSSInsight started in 2022 as a way to explore what billions of GitHub events say about open source. Since then it has grown to more than 12 billion events, and many of you have used it to analyze repositories, compare projects, follow trends, and embed charts in your READMEs. Thank you for that.
 
 This post explains what stops, what stays, and how to keep using the data.
@@ -18,17 +20,17 @@ This post explains what stops, what stays, and how to keep using the data.
 | Part of OSSInsight | After December 4, 2026 |
 | --- | --- |
 | `ossinsight.io` | Becomes a read-only archive. The blog and documentation stay online. |
-| Live analytics pages (repository, developer and organization analysis, compare, collections, trending) | Stop working. They depend on the live database, which is being shut down. |
+| Live analytics pages (repository, developer and organization analysis, compare, collections, trending) | Stop working. They depend on the live database, which is being shut down. Links to them show an archive notice instead of an error. |
 | Data Explorer | Retired. |
 | Public API at `api.ossinsight.io` | Stops. Every request returns `410 Gone`. |
 | Embedded widgets and chart images from `next.ossinsight.io` | Frozen. Each image shows its last snapshot with a note that it no longer updates. |
-| Accounts and saved questions | Sign-in is retired. Account records and saved questions are deleted after the shutdown. |
+| Accounts and saved questions | Sign-in is retired. Account records and saved questions are deleted by December 31, 2026. |
 
 ## The data stays available
 
-The dataset behind OSSInsight will be published as Parquet files that anyone can download: the GitHub event history, repository metadata, and the aggregate tables that power the site. It does not include OSSInsight account data.
+The dataset behind OSSInsight will be published as Parquet files that anyone can download: the GitHub event history up to November 30, 2026, repository metadata, and the aggregate tables that power the site. It does not include OSSInsight account data.
 
-Files will be listed at [ossinsight.io/data](https://ossinsight.io/data) as they are published, together with the schema, the time range each table covers, and known gaps in the data. The export is large, so the full set may finish after December 4. The download page will stay online after the shutdown.
+The files will be hosted on Hugging Face and listed at [ossinsight.io/data](https://ossinsight.io/data) as they are published, together with the schema, the time range each table covers, and known gaps in the data. The export is large, so the full set may finish after December 4. The download page will stay online after the shutdown.
 
 ## What you should do
 
@@ -53,6 +55,6 @@ The code stays public under the Apache 2.0 license at [github.com/pingcap/ossins
 
 ## Questions
 
-Open an issue on [GitHub](https://github.com/pingcap/ossinsight/issues) and we will answer there.
+Open an issue on [GitHub](https://github.com/pingcap/ossinsight/issues), or email team@ossinsight.io.
 
 Thank you to everyone who used OSSInsight, contributed collections and fixes, and shared what they found.
