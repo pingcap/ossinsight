@@ -13,3 +13,4 @@ items:
   - THUDM/AgentBench
   - AgentOps-AI/agentops
   - openai/evals
+  - cuga-project/cuga-agent
