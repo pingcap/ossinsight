@@ -56,7 +56,7 @@ export async function proxy(request: NextRequest) {
   const requestId = crypto.randomUUID();
   try {
     const kind = publicBudgetKind(request.nextUrl.pathname);
-    const identity = publicClientIdentity(request.headers, process.env.VERCEL === '1');
+    const identity = publicClientIdentity(request.headers);
     const result = await limiter(kind).limit(identity);
     const failure = budgetFailure(result);
     if (failure) {
