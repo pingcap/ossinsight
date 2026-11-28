@@ -17,6 +17,7 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.get<{
     Params: IParams
   }>('/', { schema }, async function (req, reply) {
+    reply.header('Cache-Control', 'no-store');
     const collections = await fastify.collectionService.getCollectionRepos(req.params.id);
     reply.send(collections);
   })

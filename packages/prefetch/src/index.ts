@@ -97,7 +97,7 @@ async function prefetch(options: Options) {
   const cacheBuilder = new CacheBuilder(logger, true, pool, shadowPool, config.QUERY_CACHE_KEY_PREFIX);
 
   // Init collection service.
-  const collectionService = new CollectionService(logger, tidbQueryExecutor, cacheBuilder);
+  const collectionService = new CollectionService(tidbQueryExecutor);
 
   // Init query runner.
   const queryLoader = new QueryLoader(logger);

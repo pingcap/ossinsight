@@ -85,6 +85,7 @@ export function proxyGet(
       // Retrieve query result from TiDB data service.
       const res = await app.tidbDataService.request(targetURL);
       delete res.headers['transfer-encoding'];
+      if (pathname === '/collections/repos') res.headers['cache-control'] = 'no-store';
       if (pathname === '/collections' || pathname === '/collections/hot') {
         const visible = await app.collectionService.getCollections();
         const ids = new Set(visible.data.map(collection => String(collection.id)));

@@ -1,13 +1,11 @@
 import {validateCollectionId} from '@ossinsight/types';
 import {APIError} from '../../../utils/error';
-import CacheBuilder, { CacheProviderTypes } from "../../../core/cache/CacheBuilder";
 
 import { CachedData } from "../../../core/cache/Cache";
 import { DateTime } from "luxon";
 import { RowDataPacket } from "mysql2/promise";
 import { TiDBQueryExecutor } from "../../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
-import pino from "pino";
 import {presetQueryTimer, measure, tidbQueryCounter} from "../../../metrics";
 
 declare module 'fastify' {
@@ -17,13 +15,11 @@ declare module 'fastify' {
 }
 
 export default fp(async (fastify) => {
-    const log = fastify.log.child({ service: 'collection-service'}) as pino.Logger;
-    fastify.decorate('collectionService', new CollectionService(log, fastify.tidbQueryExecutor, fastify.cacheBuilder));
+    fastify.decorate('collectionService', new CollectionService(fastify.tidbQueryExecutor));
 }, {
   name: '@ossinsight/collection-service',
   dependencies: [
-    '@ossinsight/tidb-query-executor',
-    '@ossinsight/cache-builder'
+    '@ossinsight/tidb-query-executor'
   ]
 });
 
@@ -56,12 +52,7 @@ export class BadParamsError extends Error {
 
 export class CollectionService {
 
-  constructor(
-    readonly log: pino.Logger,
-    readonly executor: TiDBQueryExecutor,
-    public readonly cacheBuilder: CacheBuilder,
-  ) {
-  }
+  constructor(readonly executor: TiDBQueryExecutor) {}
 
   async getOSDBRepoGroups() {
     const [repos] = await this.executor.execute<Repo[]>('osdb-repos', 'select id, name, group_name from osdb_repos;');
@@ -111,43 +102,24 @@ export class CollectionService {
 
   async getCollectionRepos(collectionId: number): Promise<CachedData<CollectionItem[]>> {
     collectionId = await this.assertPublicCollection(collectionId);
-    const cacheKey = `collection:public-items-v2:${collectionId}`;
-    const cache = this.cacheBuilder.build(CacheProviderTypes.NORMAL_TABLE, cacheKey, 0.1);
-
-    return cache.load(async () => {
-      return await measure(presetQueryTimer, async () => {
-        const sql = `
-          SELECT ci.id, ci.collection_id, ci.repo_id, ci.repo_name
-          FROM collection_items ci JOIN collections c ON c.id = ci.collection_id
-          WHERE ci.collection_id = ? AND c.public = 1;
-        `;
-
-        try {
-          const start = DateTime.now()
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'start' }).inc()
-
-          const [rows, fields] = await this.executor.execute(cacheKey, sql, [collectionId])
-
-          const end = DateTime.now()
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'success' }).inc()
-
-          return {
-            params: {},
-            requestedAt: start,
-            finishedAt: end,
-            spent: end.diff(start).as('seconds'),
-            sql,
-            fields: fields,
-            data: rows
-          }
-        } catch (e) {
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'error' }).inc()
-          if (e) {
-            (e as any).sql = sql
-          }
-          throw e
-        }
-      })
+    const metric = 'collection:public-items';
+    const sql = `
+      SELECT ci.id, ci.collection_id, ci.repo_id, ci.repo_name
+      FROM collection_items ci JOIN collections c ON c.id = ci.collection_id
+      WHERE ci.collection_id = ? AND c.public = 1 AND ci.deleted_at IS NULL
+    `;
+    return measure(presetQueryTimer, async () => {
+      const requestedAt = DateTime.now();
+      tidbQueryCounter.labels({query: metric, phase: 'start'}).inc();
+      try {
+        const [data, fields] = await this.executor.execute<any[]>(metric, sql, [collectionId]);
+        const finishedAt = DateTime.now();
+        tidbQueryCounter.labels({query: metric, phase: 'success'}).inc();
+        return {params: {}, requestedAt, finishedAt, spent: finishedAt.diff(requestedAt).as('seconds'), sql, fields, data};
+      } catch (error) {
+        tidbQueryCounter.labels({query: metric, phase: 'error'}).inc();
+        throw error;
+      }
     });
   }
 
