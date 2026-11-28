@@ -1,5 +1,4 @@
-require 'uri'
-require 'open-uri'
+require_relative '../../lib/stack_exchange_transport'
 require 'yajl'
 
 class SoFetchComment
@@ -10,20 +9,7 @@ class SoFetchComment
   end
 
   def get_response
-    resp = nil
-    begin
-      Retryable.retryable(tries: 5, on: [Timeout::Error, Net::OpenTimeout, OpenURI::HTTPError]) do
-        resp = URI.open(url, 
-          open_timeout: 600, 
-          read_timeout: 600,
-          'user-agent' => 'ossinsight.io'
-        )
-      end
-    rescue OpenURI::HTTPError
-      puts "skip 404 file: #{url}"
-    else
-      resp&.read
-    end
+    StackExchangeTransport.get(url)
   end
 
   def run

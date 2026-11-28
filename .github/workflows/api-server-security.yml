@@ -149,7 +149,7 @@ jobs:
       - name: Verify Ruby security behavior and transport defaults
         working-directory: etl
         run: |
-          bundle exec ruby -e 'ARGV.each { |file| require_relative file }' ./test/sample_importer_test.rb ./test/seeds_test.rb ./test/archive_transport_test.rb ./test/worker_heartbeat_test.rb
+          bundle exec ruby -e 'ARGV.each { |file| require_relative file }' ./test/sample_importer_test.rb ./test/seeds_test.rb ./test/archive_transport_test.rb ./test/worker_heartbeat_test.rb ./test/stack_exchange_transport_test.rb
           ruby -rerb -ryaml -rjson -ropenssl -e 'config = YAML.safe_load(ERB.new(File.read("config/database.yml")).result, permitted_classes: [Symbol], aliases: true); abort "TLS not enforced" unless config["production"]["ssl_mode"] == :verify_identity'
       - name: Build production images
         run: |

@@ -100,7 +100,7 @@ class FetchEvent
       @token_rejected = status.start_with?('401') ||
         (status.start_with?('403') && !throttled)
 
-      puts "HTTP error (#{status}) fetching #{url} | remaining=#{remaining} | body=#{body}"
+      puts "GitHub events page #{page}: HTTP #{status.to_i}"
       nil
     rescue Timeout::Error, Net::OpenTimeout => e
       # Contain post-retry timeouts per page so one bad page does not discard
