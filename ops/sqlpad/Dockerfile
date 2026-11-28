@@ -12,7 +12,7 @@ RUN npm ci --prefix server --ignore-scripts --omit=optional --no-audit --no-fund
 RUN SQLPAD_BACKEND_DB_URI='' AWS_EC2_METADATA_DISABLED=true npm test --prefix server
 RUN npm prune --prefix server --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
 RUN (npm audit --prefix server --omit=dev --json > /src/server-audit.json || true) && node audit-check.mjs server server-audit.json
-RUN npm ci --prefix client --legacy-peer-deps --no-audit --no-fund && npm run build --prefix client
+RUN npm ci --prefix client --ignore-scripts --legacy-peer-deps --no-audit --no-fund && npm run build --prefix client
 RUN (npm audit --prefix client --omit=dev --json > /src/client-audit.json || true) && node audit-check.mjs client client-audit.json
 RUN rm -rf server/public server/test && mkdir server/public && cp -a client/build/. server/public/
 
