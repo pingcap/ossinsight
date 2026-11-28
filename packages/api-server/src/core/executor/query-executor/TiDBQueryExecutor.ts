@@ -42,8 +42,8 @@ export class TiDBQueryExecutor implements QueryExecutor {
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
-    this.executeWithConnShadow(queryKey, sqlOrOptions, values).then(null).catch((err) => {
-      this.logger.error(err, 'Failed to execute query with shadow conn.');
+    this.executeWithConnShadow(queryKey, sqlOrOptions, values).catch(() => {
+      this.logger.error('Failed to execute query with shadow connection');
     });
 
     return this.executeWithConnInternal(tidbQueryHistogram, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);

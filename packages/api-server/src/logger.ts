@@ -23,7 +23,7 @@ const opts: LoggerOptions = {
             tracesSampleRate: 1.0,
           },
           tags: ['service'],
-          withLogRecord: true,
+          withLogRecord: false,
         }
       }
     ]
