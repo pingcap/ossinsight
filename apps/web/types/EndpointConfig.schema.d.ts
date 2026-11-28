@@ -48,6 +48,8 @@ export interface Params {
    * Define the max array length.
    */
   maxArrayLength?: number;
+  minimum?: number;
+  maximum?: number;
   /**
    * Default input value.
    */

@@ -52,6 +52,8 @@ export interface Params {
    * Define the max array length.
    */
   maxArrayLength?: number;
+  minimum?: number;
+  maximum?: number;
   /**
    * Map incoming parameter value to a replacement template.
    */

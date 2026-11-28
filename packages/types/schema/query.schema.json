@@ -96,6 +96,14 @@
           "type": "string",
           "enum": ["string", "number", "boolean", "integer"]
         },
+        "minimum": {
+          "description": "Inclusive lower bound for numeric values.",
+          "type": "number"
+        },
+        "maximum": {
+          "description": "Inclusive upper bound for numeric values.",
+          "type": "number"
+        },
         "maxArrayLength": {
             "description": "Define the max array length.",
             "type": "number",
