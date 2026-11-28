@@ -100,6 +100,10 @@ items:
   - <repo_name_2>
 ```
 
+New collections are private when imported. A maintainer can mark a collection
+public after reviewing its contents. Syncing its repository list preserves its
+current publication setting.
+
 You can validate your collection config locally before submitting:
 
 ```bash

@@ -45,7 +45,7 @@ export function collectionStore(db) {
   return {
     get: collectionId => db.execute('SELECT id, name FROM collections WHERE id = ?', [id(collectionId)]),
     items: collectionId => db.execute('SELECT repo_id, repo_name FROM collection_items WHERE collection_id = ? ORDER BY repo_name', [id(collectionId)]),
-    create: (collectionId, name) => db.execute('INSERT INTO collections (id, name) VALUES (?, CONVERT(UNHEX(?) USING utf8mb4))', [id(collectionId), text(name)]),
+    create: (collectionId, name) => db.execute('INSERT INTO collections (id, name, public) VALUES (?, CONVERT(UNHEX(?) USING utf8mb4), 0)', [id(collectionId), text(name)]),
     remove: (collectionId, name) => db.execute('DELETE FROM collection_items WHERE collection_id = ? AND repo_name = CONVERT(UNHEX(?) USING utf8mb4)', [id(collectionId), text(name)]),
     lookup: name => db.execute('SELECT repo_id FROM github_events WHERE repo_name = CONVERT(UNHEX(?) USING utf8mb4) AND repo_id IS NOT NULL AND repo_id != 0 ORDER BY id DESC LIMIT 1', [text(name)]),
     add: (collectionId, name, repoId) => db.execute('INSERT INTO collection_items (collection_id, repo_name, repo_id) VALUES (?, CONVERT(UNHEX(?) USING utf8mb4), ?)', [id(collectionId), text(name), id(repoId)]),
