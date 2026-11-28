@@ -25,3 +25,10 @@ test('other requests are left alone', () => {
   assert.equal(blocked('/widgets'), false);
   assert.equal(isSuppressedRequest(new URL('https://next.ossinsight.io/analyze/example-user'), []), false);
 });
+
+test('widget identifiers match their numeric account identity', () => {
+  for (const id of ['004242', '4242.0', '4.242e3']) {
+    assert.equal(blocked('/widgets/example?user_id=' + id), true);
+  }
+  assert.equal(blocked('/widgets/example?user_id=4242.1'), false);
+});

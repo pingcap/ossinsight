@@ -1,3 +1,5 @@
+import {APIError} from '../../../utils/error';
+import {accountSuppression, parseSuppressedAccounts} from '@ossinsight/types';
 import fp from "fastify-plugin";
 import "./index";
 import fs from "fs";
@@ -8,7 +10,7 @@ import {CacheProviderTypes} from "../../../core/cache/CacheBuilder";
 import OctokitExecutor from "../../../core/executor/octokit-executor/OctokitExecutor";
 import {CacheBuilder} from "../../../index";
 import type {CachedData} from '../../../core/cache/Cache';
-import {normalizeGithubSearchTerm, publicGithubProfile, publicGithubRepository, publicGithubResponse} from '../../../utils/github-public';
+import {GITHUB_RESOURCE_NOT_FOUND, normalizeGithubSearchTerm, publicGithubProfile, publicGithubRepository, publicGithubResponse} from '../../../utils/github-public';
 import Logger = pino.Logger;
 
 export const RECOMMEND_REPO_LIST_1_KEYWORD = 'recommend-repo-list-1-keyword';
@@ -54,6 +56,12 @@ export default fp(async (app) => {
 });
 
 export class GithubService {
+  private readonly suppression = accountSuppression(parseSuppressedAccounts(process.env.SUPPRESSED_GITHUB_ACCOUNTS));
+
+  private visibleUser(user: {id?: number; login?: string} | undefined) {
+    return !this.suppression.isSuppressedAccountId(user?.id) && !this.suppression.isSuppressedLogin(user?.login);
+  }
+
   private readonly DEFAULT_RECOMMEND_USER_LIST: UserSearchItem[];
   private readonly DEFAULT_RECOMMEND_ORG_LIST: UserSearchItem[];
   private readonly DEFAULT_RECOMMEND_REPO_LIST_1: RepoSearchItem[];
@@ -153,6 +161,16 @@ export class GithubService {
     }
   }
 
+  private visibleRepository(data: any) {
+    if (!this.visibleUser(data?.owner) || this.suppression.isSuppressedRepoName(data?.full_name)) throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
+    return publicGithubRepository(data);
+  }
+
+  private visibleProfile(data: any) {
+    if (!this.visibleUser(data)) throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
+    return publicGithubProfile(data);
+  }
+
   private buildPublicCache(key: string, hours: number, sanitize: (data: any) => any) {
     // A new namespace excludes historical credential fragments and privileged
     // responses. Project both fresh results and cache hits to the public DTO.
@@ -166,7 +184,7 @@ export class GithubService {
     const apiLabel = "get_repo_by_id";
     const cacheKey = `gh:${apiLabel}:${id}`;
     const cache = this.buildPublicCache(
-      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubRepository
+      cacheKey, this.GET_NODE_CACHE_HOURS, data => this.visibleRepository(data)
     );
 
     return cache.load(async () => {
@@ -179,10 +197,11 @@ export class GithubService {
   }
 
   async getRepoByName(owner: string, repo: string) {
+    if (this.suppression.isSuppressedLogin(owner)) throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
     const apiLabel = "get_repo_by_name";
     const cacheKey = `gh:${apiLabel}:${owner}_${repo}`;
     const cache = this.buildPublicCache(
-      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubRepository
+      cacheKey, this.GET_NODE_CACHE_HOURS, data => this.visibleRepository(data)
     );
 
     return cache.load(async () => {
@@ -196,10 +215,11 @@ export class GithubService {
   }
 
   async getUserByID(id: number) {
+    if (this.suppression.isSuppressedAccountId(id)) throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
     const apiLabel = "get_user_by_id";
     const cacheKey = `gh:${apiLabel}:${id}`;
     const cache = this.buildPublicCache(
-      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubProfile
+      cacheKey, this.GET_NODE_CACHE_HOURS, data => this.visibleProfile(data)
     );
 
     return cache.load(async () => {
@@ -212,10 +232,11 @@ export class GithubService {
   }
 
   async getOrganizationByID(id: number) {
+    if (this.suppression.isSuppressedAccountId(id)) throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
     const apiLabel = "get_organization_by_id";
     const cacheKey = `gh:${apiLabel}:${id}`;
     const cache = this.buildPublicCache(
-      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubProfile
+      cacheKey, this.GET_NODE_CACHE_HOURS, data => this.visibleProfile(data)
     );
 
     return cache.load(async () => {
@@ -228,10 +249,11 @@ export class GithubService {
   }
 
   async getUserByUsername(username: string) {
+    if (this.suppression.isSuppressedLogin(username)) throw new APIError(404, GITHUB_RESOURCE_NOT_FOUND);
     const apiLabel = "get_user_by_username";
     const cacheKey = `gh:${apiLabel}:${username}`;
     const cache = this.buildPublicCache(
-      cacheKey, this.GET_NODE_CACHE_HOURS, publicGithubProfile
+      cacheKey, this.GET_NODE_CACHE_HOURS, data => this.visibleProfile(data)
     );
 
     return cache.load(async () => {
@@ -254,7 +276,7 @@ export class GithubService {
     const cache = this.buildPublicCache(
       cacheKey, this.SEARCH_NODES_CACHE_HOURS,
       data => (Array.isArray(data) ? data : []).filter(node => node?.visibility === 'PUBLIC' &&
-        Number.isSafeInteger(node.id) && node.id > 0 && typeof node.fullName === 'string').slice(0, 10).map(node => ({
+        Number.isSafeInteger(node.id) && node.id > 0 && typeof node.fullName === 'string' && !this.suppression.isSuppressedRepoName(node.fullName)).slice(0, 10).map(node => ({
         id: node.id, fullName: node.fullName, visibility: 'PUBLIC',
         defaultBranchRef: typeof node.defaultBranchRef?.name === 'string' ? {name: node.defaultBranchRef.name} : null,
       }))
@@ -279,7 +301,7 @@ export class GithubService {
       return {
         requestedAt: DateTime.now(),
         finishedAt: DateTime.now(),
-        data: this.randomSelectFromList(this.DEFAULT_RECOMMEND_USER_LIST, 10)
+        data: this.randomSelectFromList(this.DEFAULT_RECOMMEND_USER_LIST.filter(user => this.visibleUser(user)), 10)
       };
     }
 
@@ -287,7 +309,7 @@ export class GithubService {
       return {
         requestedAt: DateTime.now(),
         finishedAt: DateTime.now(),
-        data: this.randomSelectFromList(this.DEFAULT_RECOMMEND_ORG_LIST, 10)
+        data: this.randomSelectFromList(this.DEFAULT_RECOMMEND_ORG_LIST.filter(user => this.visibleUser(user)), 10)
       };
     }
 
@@ -296,7 +318,7 @@ export class GithubService {
     const cache = this.buildPublicCache(
       cacheKey, this.SEARCH_NODES_CACHE_HOURS,
       data => (Array.isArray(data) ? data : []).filter(node => Number.isSafeInteger(node?.id) && node.id > 0 &&
-        typeof node.login === 'string').slice(0, 10).map(node => ({id: node.id, login: node.login}))
+        typeof node.login === 'string' && this.visibleUser(node)).slice(0, 10).map(node => ({id: node.id, login: node.login}))
     );
 
     return cache.load(async () => {
@@ -321,7 +343,7 @@ export class GithubService {
     return {
       requestedAt: DateTime.now(),
       finishedAt: DateTime.now(),
-      data: repos
+      data: repos.filter(repo => !this.suppression.isSuppressedRepoName(repo.fullName))
     };
   }
 

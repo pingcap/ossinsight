@@ -142,3 +142,28 @@ test('anonymous GitHub metadata and search responses disable browser and CDN cac
     expect(response.headers['cdn-cache-control']).toBe('no-store');
   } finally { await app.close(); }
 });
+
+test('account removal is checked for cached owners, live profiles, search and recommendations', async () => {
+  const previous = process.env.SUPPRESSED_GITHUB_ACCOUNTS;
+  process.env.SUPPRESSED_GITHUB_ACCOUNTS = 'removed:77';
+  try {
+    const nodes = [
+      {id: 77, login: 'renamed', visibility: 'PUBLIC', fullName: 'removed/example'},
+      {id: 78, login: 'visible', visibility: 'PUBLIC', fullName: 'visible/example'},
+    ];
+    const {service, entries, executor} = harness(nodes, {login: 'renamed', id: 77});
+    const cached = {...publicRepo, owner: {login: 'renamed', id: 77}};
+    entries.set('gh:public:v2:gh:get_repo_by_id:5', envelope(cached));
+    await expect(service.getRepoByID(5)).rejects.toMatchObject({statusCode: 404});
+    expect(executor.request).not.toHaveBeenCalled();
+    await expect(service.getUserByID(77)).rejects.toMatchObject({statusCode: 404});
+    expect((await service.searchRepos('sample')).data.map((row: any) => row.fullName)).toEqual(['visible/example']);
+    expect((await service.searchUsers('sample', UserType.USER)).data).toEqual([{id: 78, login: 'visible'}]);
+    Object.assign(service, {DEFAULT_RECOMMEND_REPO_LIST_1: nodes, DEFAULT_RECOMMEND_USER_LIST: nodes});
+    expect((await service.searchRepos(RECOMMEND_REPO_LIST_1_KEYWORD)).data).toHaveLength(1);
+    expect((await service.searchUsers('recommend-user-list-keyword', UserType.USER)).data).toHaveLength(1);
+  } finally {
+    if (previous === undefined) delete process.env.SUPPRESSED_GITHUB_ACCOUNTS;
+    else process.env.SUPPRESSED_GITHUB_ACCOUNTS = previous;
+  }
+});

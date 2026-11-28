@@ -1,3 +1,4 @@
+import {isSuppressedLogin, isSuppressedRepoName} from '../suppressed-profiles';
 import { isPublicQuery, validateQueryName, validateCollectionId } from '@ossinsight/types';
 import { DateTime } from 'luxon';
 import { Liquid } from 'liquidjs';
@@ -184,7 +185,8 @@ async function runTrendingReposQuery(
 }
 
 async function refreshCollectionNames(result: QueryResult, signal?: AbortSignal): Promise<QueryResult> {
-  const ids = result.data.map(row => Number(row.repo_id)).filter(Number.isSafeInteger).slice(0, 100);
+  const visible = result.data.filter(row => !isSuppressedRepoName(row.repo_name));
+  const ids = visible.map(row => Number(row.repo_id)).filter(Number.isSafeInteger).slice(0, 100);
   const names = new Map<string, string>();
   if (ids.length) {
     const {rows} = await executeRows(`SELECT ci.repo_id, GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ',') AS names
@@ -193,7 +195,13 @@ async function refreshCollectionNames(result: QueryResult, signal?: AbortSignal)
     for (const row of rows) names.set(String(row.repo_id), String(row.names));
   }
   // Overwrite every cached collection projection, including when it is now private.
-  return {...result, data: result.data.map(row => ({...row, collection_names: names.get(String(row.repo_id)) || null}))};
+  return {...result, data: visible.map(row => ({
+    ...row,
+    ...(typeof row.contributor_logins === 'string' ? {
+      contributor_logins: row.contributor_logins.split(',').filter((login: string) => !isSuppressedLogin(login.trim())).join(','),
+    } : {}),
+    collection_names: names.get(String(row.repo_id)) || null,
+  }))};
 }
 
 function getTrendingReposCacheKey(params: Record<string, any>) {

@@ -32,7 +32,8 @@ export function isSuppressedRequest(url: URL, accounts: ReadonlyArray<Suppressed
   }
   for (const param of ACCOUNT_ID_PARAMS) {
     for (const value of url.searchParams.getAll(param)) {
-      if (accounts.some((account) => account.id === value.trim())) {
+      const id = Number(value);
+      if (Number.isSafeInteger(id) && id > 0 && accounts.some(account => Number(account.id) === id)) {
         return true;
       }
     }
