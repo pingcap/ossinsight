@@ -111,9 +111,12 @@ test('a cached question from a different user is never returned even if a cache 
     expect(create).toHaveBeenCalledTimes(1);
     expect(lookup.mock.calls[0][2]).toBe(17);
     cached.userId = 17;
+    const otherTitle = await service.newQuestion(17, 'A different question', false, true);
+    expect(otherTitle.hitCache).toBe(false);
+    expect(otherTitle.id).not.toBe(cached.id);
     const owned = await service.newQuestion(17, cached.title);
     expect(owned.id).toBe(cached.id);
     expect(owned.hitCache).toBe(true);
-    expect(create).toHaveBeenCalledTimes(1);
+    expect(create).toHaveBeenCalledTimes(2);
   } finally {await app.close();}
 });
