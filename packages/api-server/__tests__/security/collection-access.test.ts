@@ -9,17 +9,16 @@ test.each([0, -1, 1.2, Number.MAX_SAFE_INTEGER + 1, {}, ['1'], '1 OR 1=1', '1e3'
   expect(() => validateCollectionId(value)).toThrow();
 });
 
-test('revoked collection visibility is checked before serving a previously cached result', async () => {
-  let visible = true;
-  const executor = {execute: jest.fn(async () => [visible ? [{id: 1}] : [], []])};
-  const cached = {data: [{repo_name: 'private/repository'}]};
-  const build = jest.fn(() => ({load: async () => cached}));
-  const service = new CollectionService(logger, executor as any, {build} as any);
-  expect(await service.getCollectionRepos(1)).toBe(cached);
-  visible = false;
+test('membership reads use the current public collection and active items each time', async () => {
+  const execute = jest.fn()
+    .mockResolvedValueOnce([[{id: 1}], []]).mockResolvedValueOnce([[{repo_name: 'org/repo'}], []])
+    .mockResolvedValueOnce([[{id: 1}], []]).mockResolvedValueOnce([[], []])
+    .mockResolvedValueOnce([[], []]);
+  const service = new CollectionService({execute} as any);
+  expect((await service.getCollectionRepos(1)).data).toEqual([{repo_name: 'org/repo'}]);
+  expect((await service.getCollectionRepos(1)).data).toEqual([]);
   await expect(service.getCollectionRepos(1)).rejects.toMatchObject({statusCode: 404});
-  expect(build).toHaveBeenCalledTimes(1);
-  expect(executor.execute).toHaveBeenCalledTimes(2);
+  expect(execute).toHaveBeenCalledWith('collection:public-items', expect.stringContaining('ci.deleted_at IS NULL'), [1]);
 });
 
 test.each(['query', 'explain'] as const)('named %s cannot bypass collection visibility through the cache', async method => {

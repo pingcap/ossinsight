@@ -156,10 +156,8 @@ test('private collections remain inaccessible through named SQL and warmed cache
   try {
     await pool.query("INSERT INTO collections (id, name, public) VALUES (90001, 'public test', 1), (90002, 'private test', 0)");
     await pool.query("INSERT INTO collection_items (collection_id, repo_name, repo_id) VALUES (90001, 'pingcap/tidb', 42), (90002, 'hidden/association', 42)");
-    let cached: any;
-    const cacheBuilder = {build: () => ({load: async (load: any) => cached ?? (cached = await load())})};
     const executor = new TiDBQueryExecutor(pool, null, testLogger);
-    const service = new CollectionService(testLogger, executor, cacheBuilder as any);
+    const service = new CollectionService(executor);
     const publicIds = (await service.getCollections()).data.map(row => Number(row.id));
     expect(publicIds).toContain(90001);
     expect(publicIds).not.toContain(90002);
@@ -180,6 +178,7 @@ test('private collections remain inaccessible through named SQL and warmed cache
     await pool.query("UPDATE collections SET name = 'renamed public collection' WHERE id = 90001");
     expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data[0].name).toBe('renamed public collection');
     await pool.query('UPDATE collection_items SET deleted_at = NOW() WHERE collection_id = 90001');
+    expect((await service.getCollectionRepos(90001)).data).toEqual([]);
     expect((await runner.query<any[]>('get-repo-collections', {repoId: 42})).data).toEqual([]);
     await pool.query('UPDATE collection_items SET deleted_at = NULL WHERE collection_id = 90001');
     await pool.query('UPDATE collections SET public = 0 WHERE id = 90001');
