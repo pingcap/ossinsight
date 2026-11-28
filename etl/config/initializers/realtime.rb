@@ -52,15 +52,15 @@ class Realtime
         WorkerHeartbeat.mark! if fetcher.completed_poll
         if fetcher.token_rejected?
           @rejected[token] = true
-          puts "token …#{token[-4..]} rejected by GitHub (suspended or revoked); #{usable_token_count} of #{tokens_count} still usable"
+          puts "Credential rejected by GitHub (suspended or revoked); #{usable_token_count} of #{tokens_count} still usable"
         elsif fetcher.rate_limited?
           @exhausted_until[token] = Time.now.to_i + (fetcher.seconds_until_reset || MAX_BACKOFF_SECONDS)
         else
           @exhausted_until.delete(token)
         end
-      rescue
+      rescue StandardError => error
         ActiveRecord::Base.connection.reconnect!
-        puts $!
+        puts "#{self.class.name}: #{error.class}"
       end
     end
   end

@@ -14,10 +14,9 @@ class SoRealtimeUser
       begin
         new_url = url + "&min=" + last_activity_date_in_db.to_s
         SoFetchUser.new(new_url).run
-      rescue
+      rescue StandardError => error
         ActiveRecord::Base.connection.reconnect!
-        puts $!
-        puts 'error'
+        puts "#{self.class.name}: #{error.class}"
       end
       sleep(interval)
     end
