@@ -2,7 +2,7 @@
 CREATE TABLE `collections` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `public` tinyint(1) DEFAULT '1',
+  `public` tinyint(1) DEFAULT '0',
   `past_month_visits` int default 0 not null,
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
   UNIQUE KEY `index_collections_on_name` (`name`)

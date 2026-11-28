@@ -34,3 +34,11 @@ test('collection metadata is bounded and matches the selected file', () => {
   }
   assert.throws(() => validateCollection({id: 2, name: 'test', items: []}, '1'));
 });
+
+test('new collections start private independently of the database default', async () => {
+  const calls = [];
+  const store = collectionStore({execute: async (sql, args) => { calls.push({sql, args}); return []; }});
+  await store.create(41, 'New collection');
+  assert.match(calls[0].sql, /INSERT INTO collections \(id, name, public\) VALUES \(\?, CONVERT\(UNHEX\(\?\) USING utf8mb4\), 0\)/);
+  assert.equal(calls[0].args[0], 41);
+});
