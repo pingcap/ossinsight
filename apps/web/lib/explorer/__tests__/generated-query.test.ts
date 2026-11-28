@@ -121,6 +121,12 @@ test('refuses missing grants and a mismatched actual database', async () => {
   expect(statements).toHaveLength(1);
 });
 
+test('validates the analytics connection settings before opening the SDK transport', async () => {
+  process.env.EXPLORER_ANALYTICS_DATABASE_URL = 'mysql://analytics.example.invalid';
+  await expect(executeGeneratedExplorerPlan('SELECT 1')).rejects.toThrow('explicit database');
+  expect(fixtureFetch).not.toHaveBeenCalled();
+});
+
 test('requires a separately configured analytics account without falling back to history credentials', async () => {
   delete process.env.EXPLORER_ANALYTICS_DATABASE_URL;
   process.env.EXPLORER_DATABASE_URL = 'mysql://history:synthetic@history.example.invalid/history';

@@ -43,4 +43,5 @@ jobs:
           done
           exit "$failed"
         env:
+          NODE_ENV: production
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

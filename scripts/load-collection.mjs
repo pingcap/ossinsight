@@ -11,6 +11,7 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { secureDatabaseURL } from '../packages/types/src/database-url.ts';
 import {collectionStore, validateCollection, parseCollectionYaml} from './lib/collection-store.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -70,7 +71,7 @@ if (!connect) {
   process.exit(1);
 }
 const db = connect({
-  url: process.env.DATABASE_URL,
+  url: secureDatabaseURL(process.env.DATABASE_URL, process.env.NODE_ENV === 'production'),
   database: process.env.OSSINSIGHT_DATABASE || 'gharchive_dev',
 });
 
