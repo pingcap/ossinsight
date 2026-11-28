@@ -1,3 +1,4 @@
+import {allowPublicQuota} from '../helpers/allow-public-quota';
 import Fastify from 'fastify';
 import fp from 'fastify-plugin';
 import recorder from '../../src/plugins/stats/api-request-recorder';
@@ -10,6 +11,7 @@ test('statistics retain useful collection dimensions without visitor identifiers
   }});
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   await app.register(fp(async () => {}, {name: '@ossinsight/tidb'}));
+  await allowPublicQuota(app);
   await app.register(recorder);
   app.get('/q/:query', async (_request, reply) => reply.code(200).send({ok: true}));
   app.get('/documents/:name', async () => ({ok: true}));
