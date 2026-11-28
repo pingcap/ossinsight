@@ -54,9 +54,9 @@ request budgets apply independently.
 
 ## Request auditing and document security
 
-Only Vercel's overwritten forwarding header supplies a client identity. Self-hosted
-instances share one origin bucket and must size that aggregate budget for their traffic;
-client-supplied forwarding headers are never trusted. Development mode skips Redis.
+The public web quota and Explorer quota use a trusted client IP. Vercel supplies
+its overwritten forwarding header. Self-hosted production requires the private
+gateway configuration below before enabling traffic. Development Proxy skips Redis.
 Repository/user image inputs are bounded and must resolve to an existing entity.
 Public repository images have a one-hour CDN cache; collection images remain uncached
 so changing collection visibility takes effect on the next request.
@@ -78,8 +78,9 @@ For self-hosted production, isolate the origin behind a trusted gateway that
 `x-ossinsight-client-ip`). Do not configure it on an origin reachable directly by
 untrusted clients. There is no automatic trust of forwarded headers off Vercel.
 Missing or invalid trusted addresses prevent production handlers from performing
-database work; local development and tests can run without a gateway. This setting
-does not change the shared-origin rate-limit bucket for self-hosted deployments.
+database work; local development and tests can run without a gateway. The same validated address keys the
+per-client quota. If the gateway supplies no valid address, budgeted production
+routes return 503 before consuming quota or starting work.
 Collection
 API responses, named queries (`/q`, `/api/q`, `/api/queries`) and their explain
 variants bypass browser/CDN caching so revoked visibility is checked again.

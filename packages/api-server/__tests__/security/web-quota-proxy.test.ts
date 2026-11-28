@@ -36,14 +36,14 @@ test.each(['/', '/llms-full.txt', '/sitemap.xml', '/trending?period=past_week',
 test.each(['timeout', 'rejected'])('quota backend %s cannot grant access to database-backed rendering', async mode => {
   if (mode === 'timeout') limit.mockResolvedValue({success: true, reason: 'timeout', reset: Date.now()});
   else limit.mockRejectedValue(new Error('Synthetic failure'));
-  const response = await proxy(new NextRequest('https://ossinsight.io/'));
+  const response = await proxy(new NextRequest('https://ossinsight.io/', {headers: {'x-forwarded-for': '192.0.2.8'}}));
   expect(response.status).toBe(503);
   expect(response.headers.get('x-middleware-next')).toBeNull();
 });
 
 test('allowed page rendering retains nonce security and a bounded quota', async () => {
   limit.mockResolvedValue({success: true, limit: 600, remaining: 599, reset: Date.now() + 3600000});
-  const response = await proxy(new NextRequest('https://ossinsight.io/trending'));
+  const response = await proxy(new NextRequest('https://ossinsight.io/trending', {headers: {'x-forwarded-for': '192.0.2.8'}}));
   expect(response.headers.get('x-middleware-next')).toBe('1');
   expect(response.headers.get('X-RateLimit-Limit')).toBe('600');
   expect(response.headers.get('Content-Security-Policy')).toContain("'strict-dynamic'");
@@ -56,4 +56,18 @@ test('CORS preflight and static content do not execute the database quota backen
     expect(response.headers.get('x-middleware-next')).toBe('1');
   }
   expect(limit).not.toHaveBeenCalled();
+});
+
+test('a self-hosted gateway gives separate clients independent budgets', async () => {
+  delete process.env.VERCEL;
+  process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER = 'x-gateway-client';
+  limit.mockResolvedValueOnce({success: false, reset: Date.now()+60000})
+    .mockResolvedValueOnce({success: true, limit: 600, remaining: 599});
+  const request = (address?: string) => new NextRequest('https://example.test/trending', {
+    headers: address ? {'x-gateway-client': address, 'x-forwarded-for': '192.0.2.90'} : {},
+  });
+  expect((await proxy(request('192.0.2.1'))).status).toBe(429);
+  expect((await proxy(request('192.0.2.2'))).headers.get('x-middleware-next')).toBe('1');
+  expect((await proxy(request())).status).toBe(503);
+  expect(limit.mock.calls).toEqual([['192.0.2.1'], ['192.0.2.2']]);
 });

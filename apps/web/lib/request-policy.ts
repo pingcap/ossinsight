@@ -1,11 +1,22 @@
-import { isIP } from 'node:net';
+import {canonicalAuditIP} from '@ossinsight/types';
 
-export function publicClientIdentity(headers: Pick<Headers, 'get'>, onVercel: boolean): string {
-  // Vercel overwrites this header. Self-hosted requests share a bucket until a
-  // trusted gateway supplies its own rate limiting; arbitrary headers are unsafe.
-  if (!onVercel) return 'shared-origin';
-  const value = headers.get('x-forwarded-for')?.split(',')[0].trim() || '';
-  return isIP(value) ? value.toLowerCase() : 'unknown-client';
+export function trustedClientAddress(headers?: Pick<Headers, 'get'>, onVercel = process.env.VERCEL === '1') {
+  if (onVercel) {
+    return {sourceIP: canonicalAuditIP(headers?.get('x-forwarded-for')?.split(',')[0].trim()) || 'unavailable', sourceIPSource: 'vercel'};
+  }
+  // Self-hosted origins must be private to a gateway that overwrites this
+  // explicitly configured header. Never fall back to arbitrary forwarded headers.
+  const header = process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER;
+  if (header && /^x-[a-z0-9-]{1,60}$/.test(header)) {
+    return {sourceIP: canonicalAuditIP(headers?.get(header)) || 'unavailable', sourceIPSource: 'trusted-proxy'};
+  }
+  return {sourceIP: 'unavailable', sourceIPSource: 'unconfigured'};
+}
+
+export function publicClientIdentity(headers: Pick<Headers, 'get'>, onVercel = process.env.VERCEL === '1'): string {
+  const {sourceIP} = trustedClientAddress(headers, onVercel);
+  if (sourceIP === 'unavailable') throw new Error('Trusted client address is unavailable.');
+  return sourceIP;
 }
 
 export type PublicBudgetKind = 'image' | 'query' | 'realtime';

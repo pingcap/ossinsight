@@ -1,18 +1,7 @@
 import {corsHeaders} from '../cors';
-import {canonicalAuditIP, requestAuditContext} from '@ossinsight/types';
-
-export function auditClientAddress(headers?: Pick<Headers, 'get'>) {
-  if (process.env.VERCEL === '1') {
-    return {sourceIP: canonicalAuditIP(headers?.get('x-forwarded-for')?.split(',')[0].trim()) || 'unavailable', sourceIPSource: 'vercel'};
-  }
-  // Self-hosted origins must be private to a gateway that overwrites this
-  // explicitly configured header. Never fall back to arbitrary forwarded headers.
-  const header = process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER;
-  if (header && /^x-[a-z0-9-]{1,60}$/.test(header)) {
-    return {sourceIP: canonicalAuditIP(headers?.get(header)) || 'unavailable', sourceIPSource: 'trusted-proxy'};
-  }
-  return {sourceIP: 'unavailable', sourceIPSource: 'unconfigured'};
-}
+import {requestAuditContext} from '@ossinsight/types';
+import {trustedClientAddress as auditClientAddress} from '../request-policy';
+export {auditClientAddress};
 
 function auditRecord(route: string, request: Request | undefined, requestId: string, started: number, statusCode: number) {
   console.info(JSON.stringify({event: 'web_api_request', requestId, actor: 'public', route,

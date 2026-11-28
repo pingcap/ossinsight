@@ -1,3 +1,4 @@
+import {checkExplorerQuota} from '@/lib/explorer/request-quota';
 import {withRequestAudit} from '@/lib/server/route-audit';
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject, streamObject } from "ai";
@@ -65,27 +66,8 @@ async function handlePOST(request: Request) {
     });
   }
 
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    "unknown";
-
-  const { explorerRateLimit } = await import("@/lib/rate-limit");
-  const { success, remaining, reset } = await explorerRateLimit.limit(ip);
-  if (!success) {
-    const retryAfterSeconds = Math.max(1, Math.ceil((reset - Date.now()) / 1000));
-    return Response.json(
-      { error: "Too many requests. Please try again later." },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(retryAfterSeconds),
-          "X-RateLimit-Remaining": String(remaining),
-          "Cache-Control": "no-store",
-        },
-      },
-    );
-  }
+  const denied = await checkExplorerQuota(request.headers);
+  if (denied) return denied;
 
   const startedAt = Date.now();
 

@@ -18,11 +18,23 @@ test('valid GitHub names include hidden repositories and app bots', () => {
   expect(isGitHubRepository('a'.repeat(101))).toBe(false);
 });
 
-test('self-hosted clients cannot choose quota identities using forwarding headers', () => {
-  expect(publicClientIdentity(new Headers({'x-forwarded-for': '1.2.3.4'}), false)).toBe('shared-origin');
-  expect(publicClientIdentity(new Headers({'x-forwarded-for': '5.6.7.8'}), false)).toBe('shared-origin');
-  expect(publicClientIdentity(new Headers({'x-forwarded-for': '1.2.3.4'}), true)).toBe('1.2.3.4');
-  expect(publicClientIdentity(new Headers({'x-forwarded-for': 'not-an-ip'}), true)).toBe('unknown-client');
+test('quota identity requires an address supplied by the configured ingress', () => {
+  const old = process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER;
+  try {
+    delete process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER;
+    const forwarded = new Headers({'x-forwarded-for': '192.0.2.7'});
+    expect(() => publicClientIdentity(forwarded, false)).toThrow();
+    expect(publicClientIdentity(forwarded, true)).toBe('192.0.2.7');
+    process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER = 'x-gateway-client';
+    expect(() => publicClientIdentity(forwarded, false)).toThrow();
+    forwarded.set('x-gateway-client', '2001:db8:0:0::1');
+    expect(publicClientIdentity(forwarded, false)).toBe('2001:db8::1');
+    forwarded.set('x-gateway-client', '192.0.2.7, 192.0.2.8');
+    expect(() => publicClientIdentity(forwarded, false)).toThrow();
+  } finally {
+    if (old === undefined) delete process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER;
+    else process.env.AUDIT_TRUSTED_CLIENT_IP_HEADER = old;
+  }
 });
 
 test('query aliases and cache-busting paths cannot acquire separate budgets', () => {
