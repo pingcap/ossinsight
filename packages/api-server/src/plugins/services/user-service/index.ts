@@ -80,6 +80,14 @@ export default fp(
   }
 );
 
+function accountIdentity(subject: unknown): [string, string] {
+  const parts = typeof subject === 'string' ? subject.split('|') : [];
+  const [provider, id] = parts;
+  if (parts.length !== 2 || !/^[a-z0-9][a-z0-9_-]{0,19}$/.test(provider) ||
+      !/^[\x21-\x7e]{1,128}$/.test(id)) throw new APIError(401, 'Invalid account identity.');
+  return [provider, id];
+}
+
 export class UserService {
   private identityConstraintReady?: Promise<void>;
   constructor(
@@ -147,27 +155,10 @@ export class UserService {
 
   async findOrCreateUserByAccount(user: Auth0UserMetadata & { sub: string }, token?: string): Promise<number> {
     if (!token) throw new APIError(401, 'An authorization token is required.');
-    const identity = typeof user?.sub === 'string' ? user.sub.split('|') : [];
+    const identity = accountIdentity(user?.sub);
     const [provider, idString] = identity;
-    if (identity.length !== 2 || !/^[a-z0-9][a-z0-9_-]{0,19}$/.test(provider) ||
-        !/^[\x21-\x7e]{1,128}$/.test(idString)) throw new APIError(401, 'Invalid account identity.');
     const githubLogin = user?.github_login || null;
-    const lookupSQL = `SELECT sa.user_id AS userId, su.id
-      FROM sys_accounts sa LEFT JOIN sys_users su ON su.id = sa.user_id
-      WHERE sa.provider = ? AND sa.provider_account_id = ?`;
-    const readBinding = (rows: Array<{id: number | null; userId: number}>): number | undefined => {
-      // An orphan is not a new identity: recreating it could resurrect a deleted
-      // account. Existing ambiguous or orphaned bindings require explicit repair.
-      if (rows.length > 1 || (rows.length === 1 && rows[0].id == null)) {
-        throw new APIError(409, 'Account binding requires administrator review.');
-      }
-      return rows[0]?.id ?? undefined;
-    };
-    const lookup = async () => {
-      const [rows] = await this.tidb.query<any[]>(lookupSQL, [provider, idString]);
-      return readBinding(rows);
-    };
-    const existing = await lookup();
+    const existing = await this.readActiveBinding(identity);
     if (existing !== undefined) return existing;
     await this.requireUniqueAccountIdentity();
 
@@ -177,8 +168,7 @@ export class UserService {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         const created = await withTransaction(this.tidb, async (conn) => {
-          const [rows] = await conn.query<any[]>(lookupSQL + ' FOR UPDATE', [provider, idString]);
-          const winner = readBinding(rows);
+          const winner = await this.readActiveBinding(identity, conn);
           if (winner !== undefined) return winner;
           const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
@@ -209,7 +199,7 @@ export class UserService {
         // The losing transaction (including its provisional sys_users row) has
         // rolled back. Read the committed winner using a fresh transaction view.
         if ([1062, 1213, 9007].includes(errno)) {
-          const winner = await lookup();
+          const winner = await this.readActiveBinding(identity);
           if (winner !== undefined) return winner;
           continue;
         }
@@ -217,6 +207,26 @@ export class UserService {
       }
     }
     throw new APIError(503, 'Account registration is busy, please retry.');
+  }
+
+  async checkAccountStatus(request: FastifyRequest): Promise<void> {
+    const identity = accountIdentity((request.user as Auth0User)?.sub);
+    await this.readActiveBinding(identity);
+  }
+
+  private async readActiveBinding(identity: [string, string], connection?: Pick<MySQLPromisePool, 'query'>): Promise<number | undefined> {
+    const sql = `SELECT sa.user_id AS userId, su.id, su.enable
+      FROM sys_accounts sa LEFT JOIN sys_users su ON su.id = sa.user_id
+      WHERE sa.provider = ? AND sa.provider_account_id = ?`;
+    const [rows] = await (connection ?? this.tidb).query<RowDataPacket[]>(connection ? sql + ' FOR UPDATE' : sql, identity);
+    if (rows.length > 1 || (rows.length === 1 && rows[0].id == null)) {
+      throw new APIError(409, 'Account binding requires administrator review.');
+    }
+    const account = rows[0];
+    if (account && account.enable !== 1 && account.enable !== true) {
+      throw new APIError(403, 'Account is disabled.');
+    }
+    return account?.id;
   }
 
   private async requireUniqueAccountIdentity(): Promise<void> {

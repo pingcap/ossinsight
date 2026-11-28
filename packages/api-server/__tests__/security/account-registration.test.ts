@@ -6,7 +6,7 @@ const identity = {sub: 'github|123', email: 'fixture@example.test', provider: 'g
 const profile = {sub: identity.sub, name: 'Fixture', email: identity.email, picture: 'https://example.test/avatar', nickname: 'fixture', updated_at: '', email_verified: true};
 const uniqueIndex = ['provider', 'provider_account_id'].map(columnName => ({indexName: 'unique_identity', columnName, prefixLength: null}));
 
-function fixture(options: {binding?: any[]; indexes?: any[]; error?: number; winningId?: number} = {}) {
+function fixture(options: {binding?: any[]; indexes?: any[]; error?: number; winningId?: number; winningEnable?: number} = {}) {
   let binding = options.binding || [];
   const connection = {
     query: jest.fn(async (sql: string) => {
@@ -16,7 +16,7 @@ function fixture(options: {binding?: any[]; indexes?: any[]; error?: number; win
       return [{}];
     }),
     commit: jest.fn(async () => {}),
-    rollback: jest.fn(async () => {if (options.winningId) binding = [{id: options.winningId, userId: options.winningId}];}),
+    rollback: jest.fn(async () => {if (options.winningId) binding = [{id: options.winningId, userId: options.winningId, enable: options.winningEnable ?? 1}];}),
     release: jest.fn(),
   };
   const pool = {
@@ -43,8 +43,30 @@ test.each([true, false, undefined])('registration stores the profile email only 
 });
 
 test('existing identities avoid profile fetches and creation transactions', async () => {
-  const f = fixture({binding: [{id: 7, userId: 7}]});
+  const f = fixture({binding: [{id: 7, userId: 7, enable: 1}]});
   expect(await f.service.findOrCreateUserByAccount(identity, 'synthetic-token')).toBe(7);
+  expect(f.fetch).not.toHaveBeenCalled();
+  expect(f.pool.getConnection).not.toHaveBeenCalled();
+});
+
+test.each([0, false, null])('an inactive account (%p) is refused before registration or profile lookup', async enable => {
+  const f = fixture({binding: [{id: 7, userId: 7, enable}]});
+  await expect(f.service.findOrCreateUserByAccount(identity, 'synthetic-token')).rejects.toMatchObject({statusCode: 403});
+  expect(f.fetch).not.toHaveBeenCalled();
+  expect(f.pool.getConnection).not.toHaveBeenCalled();
+  expect(f.pool.query.mock.calls[0][0]).toContain('su.enable');
+});
+
+test('a disabled concurrent registration winner is rejected on retry', async () => {
+  const f = fixture({error: 1062, winningId: 42, winningEnable: 0});
+  await expect(f.service.findOrCreateUserByAccount(identity, 'synthetic-token')).rejects.toMatchObject({statusCode: 403});
+  expect(f.connection.rollback).toHaveBeenCalledTimes(1);
+});
+
+test('checking an unregistered Playground identity never creates an account', async () => {
+  const f = fixture();
+  await f.service.checkAccountStatus({user: {sub: identity.sub}} as any);
+  expect(f.pool.query).toHaveBeenCalledTimes(1);
   expect(f.fetch).not.toHaveBeenCalled();
   expect(f.pool.getConnection).not.toHaveBeenCalled();
 });

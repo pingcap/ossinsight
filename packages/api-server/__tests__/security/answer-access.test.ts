@@ -76,6 +76,22 @@ test('playground SQL requires authentication before execution', async () => {
   } finally { await app.close(); }
 });
 
+test('a suspended account cannot start a Playground query', async () => {
+  const app = Fastify();
+  const run = jest.fn();
+  const checkAccountStatus = jest.fn(async () => { throw new APIError(403, 'Account is disabled.'); });
+  app.decorate('authenticate', async () => {});
+  app.decorate('userService', {checkAccountStatus} as any);
+  app.decorate('sqlRunner', {run});
+  await app.register(playground);
+  try {
+    const response = await app.inject({method: 'POST', url: '/', payload: {type: 'repo', id: '42', sql: 'SELECT 1'}});
+    expect(response.statusCode).toBe(403);
+    expect(checkAccountStatus).toHaveBeenCalledTimes(1);
+    expect(run).not.toHaveBeenCalled();
+  } finally {await app.close();}
+});
+
 describe('answer polling', () => {
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());

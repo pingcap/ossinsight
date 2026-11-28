@@ -20,6 +20,7 @@ const root: FastifyPluginAsync = async (app, opts) => {
       },
     }},
   }, async (request, reply) => {
+    await app.userService.checkAccountStatus(request);
     const {
       sql: sqlString,
       type,

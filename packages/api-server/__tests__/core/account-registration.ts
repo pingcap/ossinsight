@@ -69,6 +69,20 @@ test('an orphaned account cannot recreate or reassign its missing user', async (
   expect(rows).toEqual([{user_id: 2147483000}]);
 });
 
+test('disabling and re-enabling a bound account takes effect on the next request', async () => {
+  const {service, identity, profile} = serviceFor('900000005');
+  const fetch = jest.spyOn(service, 'fetchAuth0UserInfo').mockResolvedValue(profile);
+  const id = await service.findOrCreateUserByAccount(identity, 'synthetic-token');
+  const request = {user: {sub: identity.sub}} as any;
+  await app.mysql.query('UPDATE sys_users SET enable = 0 WHERE id = ?', [id]);
+  await expect(service.checkAccountStatus(request)).rejects.toMatchObject({statusCode: 403});
+  await expect(service.findOrCreateUserByAccount(identity, 'synthetic-token')).rejects.toMatchObject({statusCode: 403});
+  await app.mysql.query('UPDATE sys_users SET enable = 1 WHERE id = ?', [id]);
+  await expect(service.checkAccountStatus(request)).resolves.toBeUndefined();
+  await expect(service.findOrCreateUserByAccount(identity, 'synthetic-token')).resolves.toBe(id);
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
+
 test('missing production identity constraint blocks new registration before any user insert', async () => {
   const {service, identity} = serviceFor('900000003');
   const before = await userCount();
