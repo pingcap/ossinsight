@@ -142,7 +142,7 @@ export class ExplorerService {
         // Check if the question is cached.
         if (!ignoreCache) {
           const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL, userId);
-          if (cachedQuestion && cachedQuestion.userId === userId) {
+          if (cachedQuestion && cachedQuestion.userId === userId && this.normalizeQuestion(cachedQuestion.title) === normalizedQuestion) {
             logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
 
             return {
@@ -260,7 +260,7 @@ export class ExplorerService {
             }
 
             // Try to get SQL result from cache.
-            const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
+            const cachedResult = await this.getCachedSQLResult(question.queryHash, question.querySQL, question.userId, this.options.querySQLCacheTTL);
             if (cachedResult) {
                 logger.info({ queryHash: question.queryHash }, "SQL result is cached, returning cached result.", question.queryHash);
                 await this.saveQuestionResult(questionId, QuestionStatus.Success, cachedResult);
@@ -486,13 +486,17 @@ export class ExplorerService {
     }
 
     private getQueryHash(sql: string): string {
-        sql.replaceAll(/\s+/g, ' ');
-        return crypto.createHash('sha256').update(sql, 'binary').digest('hex');
+        return crypto.createHash('sha256').update('explorer:sql:v2\0').update(sql, 'utf8').digest('hex');
     }
 
-    private getQuestionHash(sql: string): string {
-        sql.replaceAll(/\s+/g, ' ');
-        return crypto.createHash('sha256').update(sql, 'binary').digest('hex');
+    private getQuestionHash(title: string): string {
+        return crypto.createHash('sha256').update('explorer:question:v2\0').update(title, 'utf8').digest('hex');
+    }
+
+    // A legacy digest is only a lookup hint. Its original title must match
+    // before an existing recommendation can be reused.
+    private legacyQuestionHash(title: string): string {
+        return crypto.createHash('sha256').update(title, 'latin1').digest('hex');
     }
 
     // CRUD.
@@ -657,56 +661,35 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getRecommendedQuestionsByHash(conn: Connection, questionHash: string): Promise<Question[]> {
+    private async getRecommendedIdsForTitle(conn: Connection, question: Question): Promise<string[]> {
+        const title = this.normalizeQuestion(question.title);
+        const hashes = [this.getQuestionHash(title), this.legacyQuestionHash(title), question.hash];
         const [rows] = await conn.query<any[]>(`
-            SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
-                result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
-                created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
-                spent, error_type AS errorType, error
-            FROM explorer_questions
-            WHERE hash = ? AND recommended = 1
-        `, [questionHash]);
-        return rows.map(this.mapRecordToQuestion);
+            SELECT BIN_TO_UUID(id) AS id, title FROM explorer_questions
+            WHERE hash IN (?) AND recommended = 1
+        `, [hashes]);
+        return rows.filter(row => this.normalizeQuestion(row.title) === title).map(row => row.id);
     }
 
-    async getLatestQuestionByQueryHash(queryHash: string, ttl: number): Promise<Question | null> {
+    async getCachedSQLResult(queryHash: string, sql: string, userId: number, ttl: number): Promise<QuestionQueryResultWithChart | null> {
+        if (!queryHash) return null;
         const [rows] = await this.tidb.query<any[]>(`
-            SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
-                result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
-                created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
-                spent, error_type AS errorType, error
+            SELECT result, chart, spent, executed_at AS executedAt, finished_at AS finishedAt
             FROM explorer_questions
-            WHERE query_hash = ? AND status = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
+            WHERE query_hash = ? AND user_id = ? AND BINARY query_sql = BINARY ?
+                AND status = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
             ORDER BY created_at DESC
             LIMIT 1
-        `, [queryHash, QuestionStatus.Success, ttl]);
-        if (rows.length !== 1) {
-            return null;
-        }
-        return this.mapRecordToQuestion(rows[0]);
-    }
-
-    async getCachedSQLResult(queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
-        if (!queryHash) {
-            return null;
-        }
-        const question = await this.getLatestQuestionByQueryHash(queryHash, ttl);
-        if (!question) {
-            return null;
-        }
+        `, [queryHash, userId, sql, QuestionStatus.Success, ttl]);
+        if (!rows.length) return null;
+        const row = rows[0];
         return {
-            result: question.result!,
-            executedAt: question.executedAt!,
-            finishedAt: question.finishedAt!,
-            spent: question.spent!,
-            chart: question.chart!,
-        }
+            result: row.result,
+            chart: row.chart,
+            spent: row.spent,
+            executedAt: DateTime.fromJSDate(row.executedAt),
+            finishedAt: DateTime.fromJSDate(row.finishedAt),
+        };
     }
 
     async getUserPastHourQuestionsWithLock(conn: Connection, userId: number): Promise<Question[]> {
@@ -1111,24 +1094,26 @@ export class ExplorerService {
     }
 
     async saveRecommendQuestions(questions: RecommendQuestion[]): Promise<void> {
-        const questionValues = questions.filter((q) => {
-            return q.title != ''
-        }).map(({ hash, title, aiGenerated }) => {
-            const hashValue = hash ? hash : this.getQuestionHash(title);
-            const aiGeneratedValue = aiGenerated || false;
-            return [hashValue, title, aiGeneratedValue];
-        })
-        if (questionValues.length === 0) {
-            return;
-        }
-        const [rs] = await this.tidb.query<ResultSetHeader>(`
-            INSERT INTO explorer_recommend_questions(hash, title, ai_generated)
-            VALUES ?
-            ON DUPLICATE KEY UPDATE title = VALUES(title), ai_generated = VALUES(ai_generated)
-        `, [questionValues]);
-        if (rs.affectedRows === 0) {
-            throw new APIError(500, 'Failed to save the recommend questions.');
-        }
+        const entries = questions.filter(q => q.title !== '').map(q => ({
+            title: q.title,
+            aiGenerated: q.aiGenerated || false,
+            key: this.getQuestionHash(q.title),
+            candidates: [q.hash, this.legacyQuestionHash(q.title)].filter(Boolean),
+        }));
+        if (entries.length === 0) return;
+        const candidates = [...new Set(entries.flatMap(q => [q.key, ...q.candidates]))];
+        const [rows] = await this.tidb.query<any[]>(
+            'SELECT hash, title FROM explorer_recommend_questions WHERE hash IN (?)', [candidates],
+        );
+        const storedTitles = new Map<string, string>(rows.map(row => [row.hash, row.title]));
+        const values = entries.map(({key, title, candidates, aiGenerated}) => {
+            const existing = [key, ...candidates].find(hash => storedTitles.get(hash) === title);
+            return [existing ?? key, title, aiGenerated];
+        });
+        await this.tidb.query(`
+            INSERT INTO explorer_recommend_questions(hash, title, ai_generated) VALUES ?
+            ON DUPLICATE KEY UPDATE ai_generated = IF(BINARY title = BINARY VALUES(title), VALUES(ai_generated), ai_generated)
+        `, [values]);
     }
 
     private async auditPrivilegedOperation(action: string, resource: string, audit: {userId: number; requestId: string}, run: () => Promise<void>, changes?: {tagIds: number[]}): Promise<void> {
@@ -1178,10 +1163,9 @@ export class ExplorerService {
             throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
           }
 
-          const oldQuestions = await this.getRecommendedQuestionsByHash(conn, hash);
-          const oldQuestionIds = oldQuestions.map((q) => q.id);
+          const oldQuestionIds = await this.getRecommendedIdsForTitle(conn, question);
           let oldTagIds: number[] = [];
-          if (Array.isArray(oldQuestionIds) && oldQuestionIds.length > 0) {
+          if (oldQuestionIds.length > 0) {
             // Get the old question tags.
             const [oldTagRows] = await conn.query<any[]>(`
               SELECT DISTINCT eqtr.tag_id AS tagId
@@ -1202,7 +1186,7 @@ export class ExplorerService {
                 recommended = 1
                 AND eq.id IN (${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')})
             `, oldQuestionIds);
-            this.logger.info({questionId, hash}, 'Unrecommended the %d / %d old questions.', rs.affectedRows, oldQuestions.length);
+            this.logger.info({questionId, hash}, 'Unrecommended the %d / %d old questions.', rs.affectedRows, oldQuestionIds.length);
           }
 
           // Recommended the new question.
