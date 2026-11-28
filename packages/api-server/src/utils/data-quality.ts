@@ -147,9 +147,11 @@ const PUBLIC_API_BLOCKED = new Set<string>([
 ]);
 
 const PUBLIC_API_TAINTED = new Set<string>([
+  '/repos/issue_creators',
   '/repos/issue_creators/history',
   '/repos/issue_creators/countries',
   '/repos/issue_creators/organizations',
+  '/repos/pull_request_creators',
   '/repos/pull_request_creators/history',
   '/repos/pull_request_creators/countries',
   '/repos/pull_request_creators/organizations',

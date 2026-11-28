@@ -155,3 +155,8 @@ export function getQueryDataQuality(queryName: string): QueryDataQuality {
   }
   return 'ok';
 }
+
+
+export function isAITrendingRankingUnavailable(): boolean {
+  return getQueryDataQuality('collection-stars-last-28-days-rank') === 'blocked';
+}

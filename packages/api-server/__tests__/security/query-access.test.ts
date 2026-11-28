@@ -61,6 +61,7 @@ describe('public API proxy', () => {
     } finally { await app.close(); }
   });
   test.each(['issue_creators', 'pull_request_creators'])('%s statistics receive the incident marker', route => {
+    expect(getPublicApiDataQuality(`/repos/${route}`)).toBe('tainted');
     for (const suffix of ['history', 'countries', 'organizations']) {
       expect(getPublicApiDataQuality(`/repos/${route}/${suffix}`)).toBe('tainted');
     }
