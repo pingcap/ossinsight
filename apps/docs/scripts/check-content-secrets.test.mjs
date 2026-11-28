@@ -1,9 +1,29 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp, writeFile, rm} from 'node:fs/promises';
+import {copyFile, mkdir, mkdtemp, writeFile, rm} from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {findContentSecrets} from './check-content-secrets.mjs';
+
+test('the build command checks both published trees and reports the matching path', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'docs-build-check-'));
+  try {
+    const script = join(root, 'scripts', 'check-content-secrets.mjs');
+    await mkdir(join(root, 'scripts'));
+    await copyFile(new URL('./check-content-secrets.mjs', import.meta.url), script);
+    for (const tree of ['content', 'legacy-content']) {
+      await mkdir(join(root, tree));
+      await writeFile(join(root, tree, 'example.md'), 'Fixture marker\n-----BEGIN PRIVATE KEY-----');
+    }
+    const result = spawnSync(process.execPath, [script], {encoding: 'utf8'});
+    assert.equal(result.status, 1);
+    assert.deepEqual(result.stderr.trim().split('\n'), [
+      'Credential-like content rejected: content/example.md:2',
+      'Credential-like content rejected: legacy-content/example.md:2',
+    ]);
+  } finally { await rm(root, {recursive: true, force: true}); }
+});
 
 test('rejects embedded JWTs without printing their contents', async () => {
   const root = await mkdtemp(join(tmpdir(), 'docs-secret-test-'));
