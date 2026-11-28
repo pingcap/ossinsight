@@ -18,7 +18,7 @@ export async function GET() {
 
   const items = posts
     .map((post) => {
-      const link = `${SITE_URL}/blog/${post.slug}`;
+      const link = escapeXml(`${SITE_URL}/blog/${post.slug}`);
       const pubDate = post.date ? new Date(post.date).toUTCString() : '';
 
       return `    <item>
@@ -34,10 +34,10 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>OSSInsight Blog</title>
-    <link>${SITE_URL}/blog</link>
+    <link>${escapeXml(SITE_URL)}/blog</link>
     <description>Technical articles about open-source trends, GitHub data analysis, and OSSInsight updates.</description>
     <language>en-us</language>
-    <atom:link href="${SITE_URL}/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="${escapeXml(SITE_URL)}/blog/feed.xml" rel="self" type="application/rss+xml"/>
 ${items}
   </channel>
 </rss>`;

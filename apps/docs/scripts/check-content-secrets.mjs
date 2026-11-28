@@ -1,4 +1,4 @@
-import {readdir, readFile} from 'node:fs/promises';
+import {readdir, readFile, realpath} from 'node:fs/promises';
 import {dirname, join, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -30,10 +30,12 @@ export async function findContentSecrets(root) {
   return findings;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const root = resolve(dirname(fileURLToPath(import.meta.url)), '../content');
-  const findings = await findContentSecrets(root);
-  for (const finding of findings) console.error(`Credential-like content rejected: ${finding.file}:${finding.line}`);
-  if (findings.length) process.exitCode = 1;
-  else console.log('Public documentation content credential check passed.');
+if (process.argv[1] && await realpath(process.argv[1]).catch(() => null) === fileURLToPath(import.meta.url)) {
+  const docs = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  for (const tree of ['content', 'legacy-content']) {
+    const findings = await findContentSecrets(join(docs, tree));
+    for (const finding of findings) console.error(`Credential-like content rejected: ${tree}/${finding.file}:${finding.line}`);
+    if (findings.length) process.exitCode = 1;
+  }
+  if (!process.exitCode) console.log('Public documentation content credential check passed.');
 }
