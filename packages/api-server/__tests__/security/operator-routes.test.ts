@@ -26,8 +26,9 @@ test('new and nested operational routes inherit authentication, audit identity a
     expect((await app.inject({method: 'POST', url: '/nested/operation'})).statusCode).toBe(401);
     expect(action).not.toHaveBeenCalled();
     const accepted = await app.inject({method: 'POST', url: '/nested/operation', headers: {authorization: `Bearer ${token}`}});
-    expect(accepted.statusCode).toBe(200);
-    expect(accepted.json().actor).toMatch(/^operator:[a-f0-9]{12}$/);
+    expect(accepted.statusCode).toBe(403);
+    const read = await app.inject({url: '/future-operator-job', headers: {authorization: `Bearer ${token}`}});
+    expect(read.json().actor).toMatch(/^operator:[a-f0-9]{12}$/);
     expect(action).toHaveBeenCalledTimes(1);
     expect((await app.inject('/healthy')).statusCode).toBe(200);
   } finally {await app.close();}

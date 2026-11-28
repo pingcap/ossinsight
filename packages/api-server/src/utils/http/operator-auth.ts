@@ -1,24 +1,25 @@
-import {createOperatorTokenVerifier, OperatorTokenConfig} from '@ossinsight/types/dist/operator-token';
+import {createCapabilityVerifier, OperatorAccessConfig, OperatorCapability} from '@ossinsight/types/dist/operator-token';
 import {APIError} from '../error';
 
-export type OperatorCredentials = string | OperatorTokenConfig | undefined;
+export type OperatorCredentials = string | OperatorAccessConfig | undefined;
 
-export function createOperatorAuthenticator(credentials: OperatorCredentials) {
-  const verify = createOperatorTokenVerifier(typeof credentials === 'object' ? credentials : {current: credentials});
+export function createOperatorAuthenticator(credentials: OperatorCredentials, scope: OperatorCapability = 'metrics:read') {
+  const verify = createCapabilityVerifier(typeof credentials === 'object' ? credentials : {current: credentials}, scope);
   return (authorization: unknown): string => {
     const result = verify(authorization);
     if (result.status === 'unconfigured') throw new APIError(503, 'Operator access is not configured.');
     if (result.status !== 'accepted') throw new APIError(401, 'Operator authentication required.');
-    return `operator:${result.fingerprint}`;
+    return 'holder' in result ? `operator:${result.holder}:${result.fingerprint}` : `operator:${result.fingerprint}`;
   };
 }
 
 export function operationsCredentials(config: {
+  OPERATIONS_GRANTS?: string;
   OPERATIONS_TOKEN?: string;
   OPERATIONS_TOKEN_PREVIOUS?: string;
   OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT?: string;
-}): OperatorTokenConfig {
-  return {current: config.OPERATIONS_TOKEN, previous: config.OPERATIONS_TOKEN_PREVIOUS,
+}): OperatorAccessConfig {
+  return {grants: config.OPERATIONS_GRANTS, current: config.OPERATIONS_TOKEN, previous: config.OPERATIONS_TOKEN_PREVIOUS,
     previousExpiresAt: config.OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT};
 }
 

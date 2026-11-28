@@ -4,7 +4,7 @@ import {Registry} from 'prom-client';
 import {AppConfig} from './env';
 
 export function prefetchOperations(register: Registry, config: Pick<AppConfig,
-  'OPERATIONS_TOKEN' | 'OPERATIONS_TOKEN_PREVIOUS' | 'OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT'>) {
+  'OPERATIONS_GRANTS' | 'OPERATIONS_TOKEN' | 'OPERATIONS_TOKEN_PREVIOUS' | 'OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT'>) {
   const authenticate = createOperatorAuthenticator(operationsCredentials(config));
   return createServer(async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');

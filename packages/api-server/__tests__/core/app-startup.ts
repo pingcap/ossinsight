@@ -1,3 +1,4 @@
+import {grant} from '../helpers/operator-grants';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {createServer} from 'node:net';
@@ -17,6 +18,9 @@ test.each(['current-only', 'overlap', 'expired'] as const)('the production CLI b
   await new Promise<void>((done, reject) => reservation.close(error => error ? reject(error) : done()));
   const token = 'synthetic-local-operations-token-32-characters';
   const previous = 'synthetic-previous-operations-token-32-characters';
+  const schemaToken = 'synthetic-local-schema-reader-32-characters';
+  const grants = [grant(token, 'metrics:read', 'monitor'), grant(schemaToken, 'schema:read', 'docs')];
+  if (mode !== 'current-only') grants.push(grant(previous, 'metrics:read', 'monitor', new Date(Date.now() + (mode === 'overlap' ? 60000 : -1000)).toISOString()));
   const rotation = mode === 'current-only' ? {} : {OPERATIONS_TOKEN_PREVIOUS: previous,
     OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: new Date(Date.now() + (mode === 'overlap' ? 60000 : -1000)).toISOString()};
   const child = spawn(process.execPath, [require.resolve('fastify-cli/cli.js'), 'start', '--options',
@@ -25,7 +29,7 @@ test.each(['current-only', 'overlap', 'expired'] as const)('the production CLI b
     env: {PATH: process.env.PATH, NODE_ENV: 'test', CONFIGS_PATH: resolve(__dirname, '../../../../configs'),
       DATABASE_URL: db.url(), PLAYGROUND_DATABASE_URL: db.analyticsUrl(), REDIS_URL: redis.url(),
       GITHUB_ACCESS_TOKENS: '', OPENAI_API_KEY: 'synthetic-test-key', AUTH0_SECRET: 'synthetic-local-hmac-secret',
-      OPERATIONS_TOKEN: token, ...rotation},
+      OPERATIONS_TOKEN: token, OPERATIONS_GRANTS: JSON.stringify(grants), ...rotation},
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   const exited = once(child, 'exit');
@@ -43,9 +47,12 @@ test.each(['current-only', 'overlap', 'expired'] as const)('the production CLI b
     if (!ready) throw new Error(`API readiness deadline exceeded: ${output}`);
     for (const path of ['/metrics', '/docs/json']) {
       expect((await fetch(base + path)).status).toBe(401);
-      expect((await fetch(base + path, {headers: {authorization: `Bearer ${token}`}})).status).toBe(200);
+      const authorized = path === '/metrics' ? token : schemaToken;
+      const other = path === '/metrics' ? schemaToken : token;
+      expect((await fetch(base + path, {headers: {authorization: `Bearer ${authorized}`}})).status).toBe(200);
+      expect((await fetch(base + path, {headers: {authorization: `Bearer ${other}`}})).status).toBe(401);
       const old = await fetch(base + path, {headers: {authorization: `Bearer ${previous}`}});
-      expect(old.status).toBe(mode === 'overlap' ? 200 : 401);
+      expect(old.status).toBe(path === '/metrics' && mode === 'overlap' ? 200 : 401);
       expect(old.headers.get('cache-control')).toBe('no-store');
     }
     expect((await fetch(base + '/explorer/answer', {method: 'POST'})).status).toBe(401);

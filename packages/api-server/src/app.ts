@@ -20,6 +20,7 @@ const options: AppOptions & Pick<FastifyServerOptions, 'trustProxy'> = {
 
 export interface AppConfig {
   CONFIGS_PATH: string;
+  OPERATIONS_GRANTS?: string;
   OPERATIONS_TOKEN?: string;
   OPERATIONS_TOKEN_PREVIOUS?: string;
   OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT?: string;

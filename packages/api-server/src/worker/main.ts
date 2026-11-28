@@ -21,6 +21,7 @@ export async function main(checkOnly = false) {
   const workers: Worker[] = [];
   const operations = workerOperations(() => workers.length === 2 && redis.status === 'ready' &&
     workers.every(worker => worker.isRunning()), operationsCredentials({
+      OPERATIONS_GRANTS: process.env.OPERATIONS_GRANTS,
       OPERATIONS_TOKEN: process.env.OPERATIONS_TOKEN,
       OPERATIONS_TOKEN_PREVIOUS: process.env.OPERATIONS_TOKEN_PREVIOUS,
       OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: process.env.OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT,

@@ -8,7 +8,7 @@ route and nested plugin. It does not infer privileges from a URL spelling.
 The public quota recognizes this metadata but independently verifies the
 operator token before exempting a request. An unauthenticated caller cannot
 consume operational results or bypass the public quota by naming a new path.
-Successful authentication supplies the existing operator fingerprint to the
+Successful authentication supplies the grant holder and credential fingerprint to the
 request audit log. Missing operator configuration fails closed with 503.
 
 Prometheus instrumentation remains registered in the parent application so it
@@ -25,37 +25,35 @@ their next normal update.
 
 ## Credentials and rotation
 
-API, prefetch and worker processes each read their own `OPERATIONS_TOKEN`.
-Pipeline reads `PIPELINE_OPERATOR_TOKEN`. These variable names are a schema,
-not a reason to share the values. Generate a separate random secret of at least
-32 bytes for each service/instance. API `/metrics` and `/docs/json`, prefetch
-metrics and worker metrics are read-only; pipeline credentials can trigger
-work and must never be distributed to a monitoring-only client.
+The API, worker and prefetch processes read their own `OPERATIONS_GRANTS`.
+Pipeline reads `PIPELINE_OPERATOR_GRANTS`. Set these variables to JSON arrays.
+Each entry has a holder (a service or individual identifier), one scope, the lowercase
+SHA-256 digest of a secret bearer token and an absolute UTC expiration. Supply only
+the grants needed by that process. Generate a separate high-entropy bearer token
+of at least 32 random bytes for each holder, service and capability. The caller
+keeps the token in its secret store and sends it over HTTPS. The server needs its
+digest. For example, the following shows the configuration shape with placeholders:
 
-The existing single-token configuration remains supported. For a planned
-rotation, configure the new value as the current token, and optionally set:
+```json
+[{"holder":"monitoring","scope":"metrics:read","sha256":"<64 lowercase hex digits>","expiresAt":"<UTC timestamp>"}]
+```
 
-| Process | Previous value | Absolute deadline |
-| --- | --- | --- |
-| API / prefetch / worker | `OPERATIONS_TOKEN_PREVIOUS` | `OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT` |
-| Pipeline | `PIPELINE_OPERATOR_TOKEN_PREVIOUS` | `PIPELINE_OPERATOR_TOKEN_PREVIOUS_EXPIRES_AT` |
+| Capability | Consumers |
+| --- | --- |
+| `metrics:read` | API, worker or prefetch metrics scraper |
+| `schema:read` | API client reading the private schema at `/docs/json` |
+| `pipeline:backfill` | Pipeline client submitting a warehouse backfill |
 
-The deadline must be canonical UTC (`YYYY-MM-DDTHH:mm:ssZ` or with exactly
-three fractional digits), at most 24 hours after process startup. Prefer a
-short window sized for the rollout. Both values must be distinct, at least
-32 bytes, no more than 256 characters, and contain no whitespace/control
-characters. Missing, malformed or overly long overlap settings fail closed
-with 503. An already-expired previous slot is valid configuration but cannot
-authenticate; the current token continues to work. Authentication compares
-fixed-size hashes in constant time and identifies only the matching key's
-short fingerprint in existing request audit records.
+A configured policy is authoritative. Malformed entries or duplicate digests
+disable access. Each process reads its policy at startup and checks expiration
+on each request. Overlap independently expiring grants for the same holder during
+rotation. Removing a grant and restarting the process revokes it immediately.
 
-Each process captures the configuration once at startup and checks the old
-deadline on every request. Expiry requires no restart; restarting with the
-same absolute deadline cannot renew it. Once the running process observes
-expiry, a backward clock adjustment cannot revive the old value. Removing
-the previous slot and restarting revokes it immediately. Keep host time
-synchronized; expiration depends on the host clock.
+**Migration.** Provision grants and the corresponding client secrets before deploying.
+Without a grants policy the former API, worker and prefetch tokens authorize only
+metrics. Their existing current/previous rotation and 24-hour maximum overlap still
+apply. Schema access and pipeline backfills require their named grants. The old
+`PIPELINE_OPERATOR_TOKEN` alone cannot start work. Keep host clocks synchronized.
 
 ### Planned change
 
@@ -70,7 +68,7 @@ synchronized; expiration depends on the host clock.
    Do not place values in shell arguments, CI logs, tickets or this document.
    Use existing secret-management infrastructure when available; a new
    service and new cloud permissions are not prerequisites for this change.
-3. Set new/current plus old/previous with a short absolute deadline. Replace
+3. Publish the new grant and give the previous one a short absolute deadline. Replace
    runtime files atomically and restart each service with its new environment.
    Drain API upstreams one at a time; pause and drain worker queues and restore
    their prior paused states; wait until prefetch is idle and pipeline has no
@@ -79,7 +77,7 @@ synchronized; expiration depends on the host clock.
    files atomically, keeping their current owner and restrictive mode. Reload
    Prometheus and wait for fresh successful scrapes. Check API health, public
    behavior, pipeline health and worker readiness as applicable.
-5. Remove the previous slot from the environment and PM2 configuration, then
+5. Remove the previous grant from the environment and PM2 configuration, then
    restart using the same controlled procedure. Verify old=401, new=200,
    anonymous=401 and cross-service tokens=401. Confirm fresh monitoring data
    and restore all upstreams/queue states. Record fingerprints, timestamps,

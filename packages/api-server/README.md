@@ -126,18 +126,16 @@ bindings do not require a UserInfo request.
 
 ### Operations access and audit records
 
-Set a private `OPERATIONS_TOKEN` (32–256 characters with at least 32 random bytes)
-for the API and prefetch deployments, and configure the Prometheus scraper to send
-`Authorization: Bearer <token>`. `/metrics` and `/docs/json` deny unauthenticated
-requests; an unconfigured token disables these endpoints with 503. Health checks
-remain available. The prefetch metrics listener defaults to `127.0.0.1`; changing
-`METRICS_HOST` does not remove token authentication. Apply scraper configuration
-before deploying these endpoint restrictions to avoid a monitoring gap.
+Configure a `metrics:read` grant for each scraper and a separate `schema:read`
+grant for private schema readers. Provision them before deploying. See the
+[operator grants and migration guide](../../ops/operator-access/README.md).
+The prefetch metrics listener defaults to `127.0.0.1` and requires a bearer token.
+The public health check remains available.
 
 API audit records include request ID, verified actor, route pattern, concrete resource, source IP,
 status and duration. Auth0 principals are recorded only after JWT verification;
 privileged operations additionally resolve the stored user ID. Operator access
-records a token fingerprint. Reviewed public query names and validated resource
+records the named grant holder and a token fingerprint. Reviewed public query names and validated resource
 IDs identify the accessed resource. Numeric/enum query parameters are allowlisted;
 duplicate, invalid, unknown and free-text parameters are omitted and counted.
 These records omit tokens, bodies and raw URLs/querystrings. Unknown query names
@@ -249,7 +247,7 @@ The API still produces the two `explorer_*_concurrent_queue` queues. Run their
 consumer from this package using Node 24 LTS and `pnpm worker`; old deployments
 may have a `packages/job-server` checkout that is no longer in this repository.
 The new worker needs only `DATABASE_URL`, `PLAYGROUND_DATABASE_URL`, `REDIS_URL`
-and `OPERATIONS_TOKEN` in its private `.env.worker` (separate from the API’s `.env`). It does not need an OpenAI key,
+and `OPERATIONS_GRANTS` for metrics in its private `.env.worker` (separate from the API’s `.env`). It does not need an OpenAI key,
 GitHub tokens, Auth0 secrets or Data Service keys, and cannot generate prompts.
 
 Use a metadata account with access to the Explorer records and a separate

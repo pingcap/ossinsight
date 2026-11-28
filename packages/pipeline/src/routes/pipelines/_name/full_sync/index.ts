@@ -19,7 +19,7 @@ export const schema = {
 
 const index: FastifyPluginAsync = async app => {
   const active = new Set<string>();
-  app.post<{Params: {name: string}; Body: IBody}>('/', {schema}, async (request, reply) => {
+  app.post<{Params: {name: string}; Body: IBody}>('/', {schema, config: {pipelineCapability: 'pipeline:backfill'}}, async (request, reply) => {
     const name = request.params.name;
     if (!Object.prototype.hasOwnProperty.call(app.pipelines, name)) throw new APIError(404, 'Pipeline not found.');
     const pipeline = app.pipelines[name];

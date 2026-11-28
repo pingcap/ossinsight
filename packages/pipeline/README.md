@@ -23,10 +23,10 @@ Before deploying this version:
    missing lock rows automatically; workers never need `UPDATE` on this table.
    A missing row without provisioning permission fails before processing SQL.
    Keep the required permissions on job and configured destination tables.
-5. Set a private `PIPELINE_OPERATOR_TOKEN` of at least 32 random bytes (maximum
-   256 characters) in the deployment secret manager. Send it using
-   `Authorization: Bearer <token>` over HTTPS; never include it in a URL or logs.
-   With no token configured, operator routes return 503 and cannot start work.
+5. Provision a named, expiring `pipeline:backfill` grant in
+   `PIPELINE_OPERATOR_GRANTS` and give its bearer token to the backfill caller.
+   See the [operator migration guide](../../ops/operator-access/README.md).
+   Send the bearer token over HTTPS. Missing grants disable backfills.
 6. Start new workers and confirm authentication failures and a bounded test
    backfill before resuming normal scheduling.
 

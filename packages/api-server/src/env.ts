@@ -6,6 +6,7 @@ export const APIServerEnvSchema = {
   type: 'object',
   required: [ 'DATABASE_URL', 'REDIS_URL', 'GITHUB_ACCESS_TOKENS' ],
   properties: {
+    OPERATIONS_GRANTS: {type: 'string', maxLength: 32768},
     OPERATIONS_TOKEN: {type: 'string', minLength: 32, maxLength: 256},
     OPERATIONS_TOKEN_PREVIOUS: {type: 'string', minLength: 32, maxLength: 256},
     OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: {type: 'string', maxLength: 24},

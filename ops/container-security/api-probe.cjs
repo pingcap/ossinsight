@@ -32,7 +32,11 @@ const sqlite = require('/app/packages/api-server/node_modules/sqlite3');
   assert(ready, 'API failed to become ready');
   for (const path of ['/metrics', '/docs/json']) {
     assert.equal((await fetch(base + path, {signal: AbortSignal.timeout(5000)})).status, 401);
-    assert.equal((await fetch(base + path, {signal: AbortSignal.timeout(5000), headers: {authorization: 'Bearer ' + process.env.OPERATIONS_TOKEN}})).status, 200);
+    const schema = 'synthetic-local-schema-reader-32-characters';
+    const token = path === '/metrics' ? process.env.OPERATIONS_TOKEN : schema;
+    const other = path === '/metrics' ? schema : process.env.OPERATIONS_TOKEN;
+    assert.equal((await fetch(base + path, {signal: AbortSignal.timeout(5000), headers: {authorization: 'Bearer ' + token}})).status, 200);
+    assert.equal((await fetch(base + path, {signal: AbortSignal.timeout(5000), headers: {authorization: 'Bearer ' + other}})).status, 401);
   }
   assert.equal((await fetch(base + '/explorer/answer', {method: 'POST', signal: AbortSignal.timeout(5000)})).status, 401);
   const missing = await fetch(base + '/container-security-not-found', {signal: AbortSignal.timeout(5000)});
