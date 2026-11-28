@@ -1,4 +1,4 @@
-INSERT INTO mv_repo_organizations_issue_commenter_role(repo_id, org_name, first_seen_at)
+INSERT INTO mv_repo_organizations_pr_commenter_role(repo_id, org_name, first_seen_at)
 SELECT
     /*+ READ_FROM_STORAGE(TIFLASH[ge, gu]) */
     ge.repo_id,

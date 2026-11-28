@@ -1,4 +1,4 @@
-INSERT INTO mv_repo_countries_issue_commenter_role(repo_id, country_code, first_seen_at)
+INSERT INTO mv_repo_countries_pr_commenter_role(repo_id, country_code, first_seen_at)
 SELECT
     /*+ READ_FROM_STORAGE(TIFLASH[ge, gu]) */
     ge.repo_id,

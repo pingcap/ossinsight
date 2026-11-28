@@ -10,8 +10,8 @@ SELECT
     DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month,
     COUNT(IF(ge.type = 'WatchEvent', 1, NULL)) AS new_stars,
     COUNT(IF(ge.type = 'PullRequestEvent', 1, NULL)) AS new_pull_requests,
-    COUNT(IF(ge.type = 'IssuesEvent', 1, NULL)) AS new_issues,
     COUNT(DISTINCT IF(ge.type = 'PullRequestEvent', ge.actor_login, NULL)) AS new_pull_request_creators,
+    COUNT(IF(ge.type = 'IssuesEvent', 1, NULL)) AS new_issues,
     COUNT(DISTINCT IF(ge.type = 'IssuesEvent', ge.actor_login, NULL)) AS new_issue_creators
 FROM github_events ge
 JOIN repos r ON ge.repo_id = r.repo_id
@@ -27,7 +27,7 @@ ORDER BY
 ON DUPLICATE KEY UPDATE
     stars = new_stars,
     pull_requests = new_pull_requests,
-    issues = new_issue_creators,
+    issues = new_issues,
     pull_request_creators = new_pull_request_creators,
     issue_creators = new_issue_creators
 ;
