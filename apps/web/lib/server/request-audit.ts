@@ -71,7 +71,7 @@ export function withRequestAudit<A extends unknown[]>(route: string, handler: (.
     // default parameters or a projection. Recheck visibility on every request;
     // do not let an HTTP cache bypass the data service's authorization check.
     const pathname = route.split(' ')[1] || route;
-    if (route.includes('/collections') || /^\/(?:api\/)?(?:q|queries)(?:\/|$)/.test(pathname)) {
+    if (pathname === '/llms.txt' || pathname === '/llms-full.txt' || route.includes('/collections') || /^\/(?:api\/)?(?:q|queries)(?:\/|$)/.test(pathname)) {
       for (const name of ['Cache-Control', 'CDN-Cache-Control', 'Vercel-CDN-Cache-Control']) headers.set(name, 'no-store');
       headers.delete('Expires');
     }

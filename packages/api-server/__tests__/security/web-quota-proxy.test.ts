@@ -23,7 +23,7 @@ beforeEach(() => {
 });
 afterEach(() => {process.env = {...originalEnvironment}; jest.restoreAllMocks();});
 
-test.each(['/', '/llms-full.txt', '/sitemap.xml', '/trending?period=past_week',
+test.each(['/', '/llms.txt', '/llms-full.txt', '/sitemap.xml', '/trending?period=past_week',
   '/trending/ai?_rsc=navigation', '/languages/TypeScript?_rsc=navigation'])('quota rejection stops %s before page rendering', async path => {
   limit.mockResolvedValue({success: false, reset: Date.now() + 60000});
   const response = await proxy(new NextRequest('https://ossinsight.io' + path, {headers: {'x-forwarded-for': '192.0.2.7'}}));

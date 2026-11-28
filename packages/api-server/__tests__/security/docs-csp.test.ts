@@ -59,3 +59,13 @@ test('the web rewrite configuration preserves the destination docs CSP', () => {
     expect(headersFor(pathname).some(header => header.key === 'Content-Security-Policy')).toBe(true);
   }
 });
+
+test('docs ingress records only a bounded route and method', () => {
+  const log = jest.spyOn(console, 'info').mockImplementation(() => {});
+  try {
+    proxy(new NextRequest('https://docs.example.test/docs/sample-page?q=sample-value'));
+    expect(log).toHaveBeenCalledTimes(1);
+    const record = JSON.parse(log.mock.calls[0][0]);
+    expect(record).toEqual({event: 'docs_request_received', requestId: expect.any(String), route: 'docs', method: 'GET'});
+  } finally {log.mockRestore();}
+});

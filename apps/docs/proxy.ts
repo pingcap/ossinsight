@@ -2,7 +2,12 @@ import {NextResponse, type NextRequest} from 'next/server';
 import {docsContentSecurityPolicy, isDocsHtmlPath} from './lib/content-security';
 
 export function proxy(request: NextRequest) {
-  if (!isDocsHtmlPath(request.nextUrl.pathname)) return NextResponse.next();
+  const path = request.nextUrl.pathname;
+  const section = path.split('/')[1];
+  const route = ['docs', 'blog', 'api'].includes(section) ? section : 'other';
+  const method = ['GET', 'HEAD', 'OPTIONS'].includes(request.method) ? request.method : 'other';
+  console.info(JSON.stringify({event: 'docs_request_received', requestId: crypto.randomUUID(), route, method}));
+  if (!isDocsHtmlPath(path)) return NextResponse.next();
   const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString('base64');
   const csp = docsContentSecurityPolicy(nonce, process.env.NODE_ENV === 'development');
   const headers = new Headers(request.headers);
