@@ -117,3 +117,30 @@ test('a cached question from a different user is never returned even if a cache 
     expect(create).toHaveBeenCalledTimes(1);
   } finally {await app.close();}
 });
+
+test('feedback read distinguishes a readable empty question from a missing one', async () => {
+  const pool = {query: jest.fn().mockResolvedValueOnce([[{id: null}]]).mockResolvedValueOnce([[]])};
+  const service = new ExplorerService(Fastify().log, pool as any, {} as any, {} as any, {} as any, {} as any);
+  await expect(service.getUserQuestionFeedbacks(17, id)).resolves.toEqual([]);
+  expect(pool.query).toHaveBeenCalledWith(expect.stringContaining('q.user_id = ? OR q.recommended = 1'), [17, id, 17]);
+  await expect(service.getUserQuestionFeedbacks(17, id)).rejects.toMatchObject({statusCode: 404});
+});
+
+test('feedback changes hold the readable question lock through the transaction', async () => {
+  const conn = {
+    query: jest.fn(async (sql: string) => sql.includes('FOR UPDATE') ? [[{visible: 1}]] : [{affectedRows: 1}]),
+    commit: jest.fn(), rollback: jest.fn(), release: jest.fn(),
+  };
+  const pool = {getConnection: jest.fn(async () => conn)};
+  const service = new ExplorerService(Fastify().log, pool as any, {} as any, {} as any, {} as any, {} as any);
+  await service.replaceUserQuestionFeedback(17, id, true, 'fixture feedback');
+  await service.cancelUserQuestionFeedback(17, id, true);
+  for (const [offset, count] of [[0, 4], [4, 3]]) {
+    const statements = conn.query.mock.calls.slice(offset, offset + count).map(([query]) => query.trim());
+    expect(statements[0]).toContain('BEGIN');
+    expect(statements[1]).toContain('q.user_id = ? OR q.recommended = 1');
+    expect(statements[1]).toContain('FOR UPDATE');
+    expect(statements[2]).toContain('DELETE FROM explorer_question_feedbacks');
+  }
+  expect(conn.commit).toHaveBeenCalledTimes(2);
+});

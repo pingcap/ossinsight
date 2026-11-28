@@ -98,6 +98,8 @@ export interface ExplorerOption {
     outputAnswerInStream: boolean;
 }
 
+const readableFeedbackQuestion = 'q.id = UUID_TO_BIN(?) AND (q.user_id = ? OR q.recommended = 1)';
+
 export class ExplorerService {
     private options: ExplorerOption;
 
@@ -1294,33 +1296,50 @@ export class ExplorerService {
         });
     }
 
-    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean) {
-        const [rs] = await this.tidb.query<ResultSetHeader>(`
-            DELETE FROM explorer_question_feedbacks
-            WHERE question_id = UUID_TO_BIN(?) AND user_id = ? AND satisfied = ?
-            LIMIT 1
-        `, [questionId, userId, satisfied]);
-        if (rs.affectedRows !== 1) {
-            throw new APIError(500, 'Failed to cancel the question feedback.');
-        }
+    private async lockFeedbackQuestion(conn: Connection, userId: number, questionId: string) {
+        const [rows] = await conn.query<any[]>(`
+            SELECT 1 FROM explorer_questions q WHERE ${readableFeedbackQuestion} FOR UPDATE
+        `, [questionId, userId]);
+        if (!rows.length) throw new APIError(404, 'Question not found');
     }
 
-    async removeUserQuestionFeedbacks(conn: Connection, userId: number, questionId: string) {
-        await conn.query<ResultSetHeader>(`
-            DELETE FROM explorer_question_feedbacks
-            WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
-        `, [userId, questionId]);
+    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean) {
+        await withTransaction(this.tidb, async conn => {
+            await this.lockFeedbackQuestion(conn, userId, questionId);
+            const [rs] = await conn.query<ResultSetHeader>(`
+                DELETE FROM explorer_question_feedbacks
+                WHERE question_id = UUID_TO_BIN(?) AND user_id = ? AND satisfied = ?
+                LIMIT 1
+            `, [questionId, userId, satisfied]);
+            if (rs.affectedRows !== 1) throw new APIError(500, 'Failed to cancel the question feedback.');
+        });
+    }
+
+    async replaceUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean, feedbackContent: string) {
+        await withTransaction(this.tidb, async conn => {
+            await this.lockFeedbackQuestion(conn, userId, questionId);
+            await conn.query(`
+                DELETE FROM explorer_question_feedbacks
+                WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
+            `, [userId, questionId]);
+            await this.addQuestionFeedback(conn, {
+                userId, questionId, satisfied, feedbackContent,
+                feedbackType: satisfied ? QuestionFeedbackType.AnswerSatisfied : QuestionFeedbackType.AnswerUnsatisfied,
+            });
+        });
     }
 
     async getUserQuestionFeedbacks(userId: number, questionId: string): Promise<QuestionFeedback[]> {
         const [rows] = await this.tidb.query<any[]>(`
-            SELECT
-                id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
-                feedback_content AS feedbackContent, created_at AS createdAt
-            FROM explorer_question_feedbacks
-            WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
-        `, [userId, questionId]);
-        return rows;
+            SELECT f.id, f.user_id AS userId, BIN_TO_UUID(f.question_id) AS questionId,
+                   f.satisfied, f.feedback_type AS feedbackType, f.feedback_content AS feedbackContent,
+                   f.created_at AS createdAt
+            FROM explorer_questions q
+            LEFT JOIN explorer_question_feedbacks f ON f.question_id = q.id AND f.user_id = ?
+            WHERE ${readableFeedbackQuestion}
+        `, [userId, questionId, userId]);
+        if (!rows.length) throw new APIError(404, 'Question not found');
+        return rows[0].id === null ? [] : rows;
     }
 
     async addQuestionFeedback(conn: Connection, feedback: Omit<QuestionFeedback, "id" | "createdAt">) {
