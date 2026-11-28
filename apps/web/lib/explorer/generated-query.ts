@@ -1,5 +1,6 @@
 import { connect, type FullResult } from '@tidbcloud/serverless';
 import { enforceSQLPolicy, validateAnalyticsGrants } from '@ossinsight/sql-policy';
+import { secureDatabaseURL } from '@ossinsight/types';
 import { normalizeRows } from './query';
 
 export const EXPLORER_RESULT_LIMIT = 100;
@@ -25,7 +26,7 @@ export async function executeGeneratedExplorerPlan(statement: string, signal?: A
   try {
     controller.signal.throwIfAborted();
     const connection = connect({
-      url,
+      url: secureDatabaseURL(url, process.env.NODE_ENV === 'production'),
       database,
       // Aborting transport does not prove that a database query was cancelled;
       // the separate server-side execution limit bounds the generated SELECT.
