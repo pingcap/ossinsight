@@ -1,4 +1,4 @@
-import {Connection, Pool, PoolConnection, QueryOptions} from "mysql2/promise";
+import {Connection, Pool, PoolConnection, QueryOptions, RowDataPacket} from "mysql2/promise";
 import pino from "pino";
 import {Counter, Histogram} from "prom-client";
 import {
@@ -10,6 +10,8 @@ import {
   tidbWaitConnectionHistogram
 } from "../../../metrics";
 import {Conn, Fields, QueryExecutor, Rows, Values} from "./QueryExecutor";
+
+export interface NamedQueryOptions extends QueryOptions {enforceStatementTimeout: true; timeout: number}
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected readonly logger: pino.Logger = this.pLogger.child({ module: 'tidb-query-executor' });
@@ -63,6 +65,32 @@ export class TiDBQueryExecutor implements QueryExecutor {
   }
 
   async executeWithConnInternal<T extends Rows>(
+    timer: Histogram, counter: Counter, conn: Connection,
+    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
+  ): Promise<[T, Fields]> {
+    if (typeof sqlOrOptions === 'object' && 'enforceStatementTimeout' in sqlOrOptions) {
+      const {enforceStatementTimeout, ...options} = sqlOrOptions as NamedQueryOptions;
+      if (!Number.isSafeInteger(options.timeout) || options.timeout <= 0) throw new Error('Invalid named query deadline.');
+      const setupTimeout = Math.min(options.timeout, 5000);
+      try {
+        const [rows] = await conn.query<RowDataPacket[]>({sql: 'SELECT @@SESSION.max_execution_time AS previous', timeout: setupTimeout});
+        const previous = Number(rows[0].previous);
+        if (!Number.isSafeInteger(previous) || previous < 0) throw new Error('Invalid TiDB session deadline.');
+        const timeout = previous ? Math.min(previous, options.timeout) : options.timeout;
+        if (previous !== timeout) await conn.query({sql: `SET SESSION max_execution_time = ${timeout}`, timeout: setupTimeout});
+        const result = await this.executeStatement<T>(timer, counter, conn, queryKey, {...options, timeout}, values);
+        if (previous !== timeout) await conn.query({sql: `SET SESSION max_execution_time = ${previous}`, timeout: setupTimeout});
+        return result;
+      } catch (error) {
+        // A timed-out statement or a partially restored session cannot rejoin the pool.
+        conn.destroy();
+        throw error;
+      }
+    }
+    return this.executeStatement<T>(timer, counter, conn, queryKey, sqlOrOptions, values);
+  }
+
+  private async executeStatement<T extends Rows>(
     timer: Histogram, counter: Counter, conn: Connection,
     queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
   ): Promise<[T, Fields]> {
