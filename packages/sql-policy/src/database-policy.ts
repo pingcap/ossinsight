@@ -14,7 +14,7 @@ export function validateAnalyticsGrants(database: string, grants: string[]): voi
     const [, privilege, schema, table] = match;
     if (privilege.toUpperCase() === 'USAGE' && schema === '*' && table === '*') continue;
     if (privilege.toUpperCase() !== 'SELECT' || unquote(schema) !== database ||
-        !PUBLIC_ANALYTICS_TABLES.has(unquote(table))) {
+        (unquote(table) === 'github_users' || !PUBLIC_ANALYTICS_TABLES.has(unquote(table)))) {
       throw new Error('Analytics credentials may read only the approved public tables in the configured database');
     }
     hasSelect = true;

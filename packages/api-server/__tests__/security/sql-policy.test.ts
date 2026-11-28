@@ -91,3 +91,11 @@ describe('SQL execution policy', () => {
     expect(scans(ast)[0].where.left.column).toBe('actor_id');
   });
 });
+
+test('logical public-profile names retain their qualifiers through repeated policy checks', () => {
+  const sql = enforceSQLPolicy('SELECT github_users.login FROM github_users JOIN github_repos r ON r.owner_id=github_users.id');
+  expect(sql).toContain('explorer_public_github_users');
+  expect(enforceSQLPolicy(sql)).toBe(sql);
+  const nested = enforceSQLPolicy('WITH profiles AS (SELECT u.login FROM github_users u) SELECT p.login FROM profiles p');
+  expect(nested).toContain('explorer_public_github_users');
+});

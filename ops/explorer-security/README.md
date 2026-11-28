@@ -30,12 +30,22 @@ question/history/tag queries. Do not replace those existing credentials with the
 analytics account: recommendation and tag queries use other application tables.
 
 The analytics account must have direct SELECT grants on only the public tables
-it needs from `github_events`, `github_repos`, `github_users`,
+it needs from `github_events`, `github_repos`, `explorer_public_github_users`,
 `github_repo_topics`, and `trending_repos`. Broad schema grants, roles, delegation,
 private tables and write privileges are rejected. Each generated plan verifies
 the actual database and current grants on its own connection before execution.
-Provisioning, secret storage, rotation and deployment are separate operator work;
-no new production identity or permission is created by this code change.
+Operators provision, store and rotate the analytics credentials.
+
+Before switching the web, API and worker, install [the public profile view](public-user-profiles.sql)
+in each analytics database with a durable view definer that can read the source
+table. Give the dedicated analytics reader SELECT on the view and remove its
+direct SELECT grant on `github_users`. Deploy with the new reader credentials
+when the view and grants are ready. Existing Explorer SQL can still use
+`github_users` through the policy's mapping to the view. The projection
+preserves the profile fields in the Explorer prompt. Email, address, coordinates
+and future base-table columns stay outside this view. Review cached and published
+historical query results before returning them to users.
+
 
 The connection sets and reads back a five-second `max_execution_time` and the
 same `STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION` parsing mode as the API server.

@@ -1,9 +1,11 @@
 import { Parser } from 'node-sql-parser/build/mysql';
 export class SQLPolicyError extends Error {}
 
+export const PUBLIC_USER_VIEW = 'explorer_public_github_users';
+
 // Public analytics only. Explorer intentionally supports cross-repository reads.
 export const PUBLIC_ANALYTICS_TABLES = new Set([
-  'github_events', 'github_repos', 'github_users', 'github_repo_topics', 'trending_repos',
+  'github_events', 'github_repos', 'github_users', PUBLIC_USER_VIEW, 'github_repo_topics', 'trending_repos',
 ]);
 const FUNCTIONS = new Set(`ABS AVG CEIL CEILING COALESCE CONCAT CONCAT_WS COUNT
   CURDATE CURRENT_DATE CURRENT_TIMESTAMP DATE DATE_ADD DATE_SUB DATE_FORMAT DATEDIFF
@@ -110,6 +112,11 @@ export function enforceSQLPolicy(sql: string, policy: SQLPolicy = {}): string {
           const name = from.table.toLowerCase();
           if (!PUBLIC_ANALYTICS_TABLES.has(name) && !ctes.has(name)) {
             reject('Only public analytics tables are allowed');
+          }
+          if (name === 'github_users') {
+            // Preserve aliases and qualified column references in existing queries.
+            from.as = from.as || from.table;
+            from.table = PUBLIC_USER_VIEW;
           }
         } else if (!from.expr?.ast) {
           reject('Unsupported SQL data source');
