@@ -14,10 +14,14 @@ GRANT SELECT, INSERT ON gharchive_dev.stats_api_requests TO 'executoruser'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.explorer_questions TO 'executoruser'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON gharchive_dev.explorer_recommend_questions TO 'executoruser'@'%';
 
+CREATE SQL SECURITY DEFINER VIEW gharchive_dev.explorer_public_github_users AS
+SELECT id, login, type, name, organization, country_code, followers, followings, created_at, updated_at
+FROM gharchive_dev.github_users;
+
 CREATE USER IF NOT EXISTS 'webshelluser'@'%' IDENTIFIED BY 'webshellpassword';
 GRANT SELECT ON gharchive_dev.github_events TO 'webshelluser'@'%';
 GRANT SELECT ON gharchive_dev.github_repos TO 'webshelluser'@'%';
-GRANT SELECT ON gharchive_dev.github_users TO 'webshelluser'@'%';
+GRANT SELECT ON gharchive_dev.explorer_public_github_users TO 'webshelluser'@'%';
 GRANT SELECT ON gharchive_dev.github_repo_topics TO 'webshelluser'@'%';
 GRANT SELECT ON gharchive_dev.trending_repos TO 'webshelluser'@'%';
 
