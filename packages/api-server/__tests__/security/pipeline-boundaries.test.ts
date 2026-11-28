@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import {grant} from '../helpers/operator-grants';
 import {DateTime} from 'luxon';
 import pino from 'pino';
 import {splitTimeRange} from '../../../pipeline/src/utils/time';
@@ -38,7 +39,7 @@ test('operator authentication fails closed and exposes only a credential fingerp
 
 test('unauthenticated and invalid trigger requests never create work', async () => {
   const app = Fastify();
-  registerOperatorAuth(app, token);
+  registerOperatorAuth(app, {grants: JSON.stringify([grant(token, 'pipeline:backfill', 'scheduler')])});
   const executeRange = jest.fn().mockResolvedValue(true);
   app.decorate('pipelineJobRepository', {executeRange, getProcessedTimeRanges: async () => []});
   app.decorate('pipelines', Object.assign(Object.create(null), {daily: {name: 'daily', processSQL: 'SELECT :from, :to'}}));

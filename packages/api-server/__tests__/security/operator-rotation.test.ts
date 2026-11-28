@@ -8,6 +8,7 @@ import {operationsCredentials} from '../../src/utils/http/operator-auth';
 import {registerOperatorRoutes} from '../../src/utils/http/operator-routes';
 import rateLimit from '../../src/plugins/rate-limit';
 import {workerOperations} from '../../src/worker/operations';
+import {grant} from '../helpers/operator-grants';
 import {registerOperatorAuth} from '../../../pipeline/src/utils/operator-auth';
 import {prefetchOperations} from '../../../prefetch/src/operations';
 
@@ -95,9 +96,12 @@ test('API scope, quota exemptions, pipeline writes and worker metrics enforce th
     await registerOperatorRoutes(api, operationsCredentials(api.config), async scope => {
       scope.get('/future-operation', async request => ({actor: request.securityActor}));
     });
-    registerOperatorAuth(pipeline, rotation());
+    registerOperatorAuth(pipeline, {grants: JSON.stringify([
+      grant(current, 'pipeline:backfill', 'scheduler', new Date(expiry + 1000).toISOString()),
+      grant(previous, 'pipeline:backfill', 'scheduler', new Date(expiry).toISOString()),
+    ])});
     pipeline.get('/', async () => true);
-    pipeline.post('/trigger', execute);
+    pipeline.post('/trigger', {config: {pipelineCapability: 'pipeline:backfill'}}, execute);
     expect((await api.inject('/public')).statusCode).toBe(429);
     for (const instant of [start, expiry - 1, expiry, expiry + 1]) {
       clock = instant;
@@ -114,7 +118,7 @@ test('API scope, quota exemptions, pipeline writes and worker metrics enforce th
         }
         if (expected === 200) {
           expect(results[0].json().actor).toBe(`operator:${fingerprint(token)}`);
-          expect(results[1].json().actor).toBe(`pipeline-operator:${fingerprint(token)}`);
+          expect(results[1].json().actor).toBe(`pipeline-operator:scheduler:${fingerprint(token)}`);
         }
       }
     }

@@ -6,6 +6,7 @@ export interface AppConfig {
   SHADOW_DATABASE_URL: string;
   SERVER_PORT: number;
   METRICS_HOST: string;
+  OPERATIONS_GRANTS?: string;
   OPERATIONS_TOKEN?: string;
   OPERATIONS_TOKEN_PREVIOUS?: string;
   OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT?: string;
@@ -17,6 +18,7 @@ export const PrefetchEnvSchema = {
   required: [ 'DATABASE_URL' ],
   properties: {
     METRICS_HOST: {type: 'string', default: '127.0.0.1'},
+    OPERATIONS_GRANTS: {type: 'string', maxLength: 32768},
     OPERATIONS_TOKEN: {type: 'string', minLength: 32, maxLength: 256},
     OPERATIONS_TOKEN_PREVIOUS: {type: 'string', minLength: 32, maxLength: 256},
     OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: {type: 'string', maxLength: 24},

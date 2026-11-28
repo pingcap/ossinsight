@@ -1,3 +1,4 @@
+import {grant} from '../helpers/operator-grants';
 import Fastify from 'fastify';
 import fp from 'fastify-plugin';
 import {createHmac, generateKeyPairSync, sign} from 'crypto';
@@ -129,7 +130,10 @@ test('upgraded metrics include application counters and still require operator a
   process.env.NODE_APP_INSTANCE = '0';
   const app = Fastify();
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
-  app.decorate('config', {OPERATIONS_TOKEN: secret});
+  const schemaToken = 'synthetic-schema-reader-that-is-long-enough';
+  app.decorate('config', {OPERATIONS_GRANTS: JSON.stringify([
+    grant(secret, 'metrics:read', 'monitor'), grant(schemaToken, 'schema:read', 'docs'),
+  ])});
   app.decorate('swagger', () => ({swagger: '2.0'}));
   registerRequestAudit(app);
   await app.register(metrics);
@@ -145,7 +149,8 @@ test('upgraded metrics include application counters and still require operator a
     expect(response.body).toMatch(/http_request_duration_seconds_count\{[^\n]*route="\/measured-public-route"[^\n]*\} 1/);
     expect(response.headers['cache-control']).toBe('no-store');
     expect((await app.inject('/docs/json')).statusCode).toBe(401);
-    const schema = await app.inject({url: '/docs/json', headers: {authorization: `Bearer ${secret}`}});
+    expect((await app.inject({url: '/docs/json', headers: {authorization: `Bearer ${secret}`}})).statusCode).toBe(401);
+    const schema = await app.inject({url: '/docs/json', headers: {authorization: `Bearer ${schemaToken}`}});
     expect(schema.json()).toEqual({swagger: '2.0'});
   } finally {
     await app.close();

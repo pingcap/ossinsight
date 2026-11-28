@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Run image and TLS checks against disposable, isolated Docker fixtures."""
 import argparse
+from datetime import datetime, timedelta, timezone
+from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -118,7 +120,13 @@ try:
              '-e', 'PLAYGROUND_DATABASE_URL=mysql://container_reader:webshellpassword@tidb:4000/ossinsight_container_test',
              '-e', 'REDIS_URL=redis://redis:6379/0', '-e', 'GITHUB_ACCESS_TOKENS=',
              '-e', 'OPENAI_API_KEY=synthetic-test-key', '-e', 'AUTH0_SECRET=synthetic-local-hmac-secret',
-             '-e', 'OPERATIONS_TOKEN=synthetic-local-operations-token-32-characters'])
+             '-e', 'OPERATIONS_TOKEN=synthetic-local-operations-token-32-characters',
+             '-e', 'OPERATIONS_GRANTS=' + json.dumps([
+                 {'holder': holder, 'scope': scope, 'sha256': sha256(token.encode()).hexdigest(),
+                  'expiresAt': (datetime.now(timezone.utc) + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%SZ')}
+                 for holder, scope, token in [('monitor', 'metrics:read', 'synthetic-local-operations-token-32-characters'),
+                                              ('docs', 'schema:read', 'synthetic-local-schema-reader-32-characters')]
+             ])])
         run(['docker', 'start', api])
         print(run(['docker', 'exec', api, 'node', '/fixtures/api-probe.cjs'], timeout=60).strip(), flush=True)
         healthcheck = json.loads(run(['docker', 'inspect', '--format', '{{json .Config.Healthcheck.Test}}', api]))
