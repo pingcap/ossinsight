@@ -21,33 +21,9 @@ export default fp(async (app) => {
   ]
 });
 
-export interface QuestionRecord {
-  userId: number;
-  context: Record<string, any> | null;
-  question: string;
-  sql: string | null;
-  success: boolean;
-  preset: boolean;
-}
-
 export class PlaygroundService {
 
   constructor(readonly tidb: Pick<Pool, 'query' | 'getConnection'>) {
-  }
-
-  normalizeQuestion(question: string): string {
-    return question.replaceAll(/\s+/g, ' ');
-  }
-
-  async getExistedQuestion(question: string): Promise<QuestionRecord[]> {
-    question = this.normalizeQuestion(question);
-    // Notice: sql is a reserved word in TiDB.
-    const [records] = await this.tidb.query<any[]>(`
-            SELECT id, user_id AS userId, context, question, \`sql\`, success, preset, requested_at AS requestedAt
-            FROM playground_question_records pqr
-            WHERE success = true AND question = ?
-        `, [question]);
-    return records;
   }
 
   async recordQuestion(questionRecord: Record<string, any>): Promise<void> {
