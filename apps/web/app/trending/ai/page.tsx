@@ -1,3 +1,5 @@
+import { DataQualityNotice } from '@/components/DataQualityNotice';
+import { isAITrendingRankingUnavailable, STAR_DATA_INCIDENT } from '@/lib/data-quality';
 import type { Metadata } from 'next';
 import { getCollectionRanking } from '@/lib/server/internal-api';
 import { BreadcrumbListJsonLd, FAQPageJsonLd, ItemListJsonLd } from '@/components/json-ld';
@@ -51,6 +53,10 @@ const FAQ_ITEMS = [
 ];
 
 export async function generateMetadata(): Promise<Metadata> {
+  if (isAITrendingRankingUnavailable()) {
+    return { title: 'Trending AI Repositories on GitHub', description: STAR_DATA_INCIDENT.headline,
+      alternates: { canonical: '/trending/ai' } };
+  }
   return {
     title: TITLE,
     description: DESCRIPTION,
@@ -121,6 +127,15 @@ async function fetchAllAIRepos(): Promise<TrendingAIResponse> {
 const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
 
 export default async function TrendingAIPage() {
+  if (isAITrendingRankingUnavailable()) {
+    return (
+      <main className="mx-auto max-w-4xl px-6 py-12">
+        <h1 className="mb-6 text-2xl font-semibold">Trending AI repositories</h1>
+        <DataQualityNotice />
+      </main>
+    );
+  }
+
   const data = await fetchAllAIRepos();
 
   const topReposForJsonLd = data.repos.slice(0, 10).map((r) => ({

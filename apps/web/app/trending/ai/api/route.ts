@@ -1,3 +1,4 @@
+import { isAITrendingRankingUnavailable, STAR_DATA_INCIDENT, type DataQualityUnavailableMarker } from '@/lib/data-quality';
 import {withRequestAudit} from '@/lib/server/route-audit';
 import { getCollectionRanking, jsonResponse } from '@/lib/server/internal-api';
 
@@ -27,11 +28,18 @@ export type AIRepoItem = {
 };
 
 export type TrendingAIResponse = {
+  data_quality?: DataQualityUnavailableMarker;
   repos: AIRepoItem[];
   categories: { id: number; category: string; count: number; topRepo: string }[];
 };
 
 async function handleGET(req: Request) {
+  if (isAITrendingRankingUnavailable()) {
+    return jsonResponse({
+      repos: [], categories: [], data_quality: STAR_DATA_INCIDENT.unavailableMarker,
+    } satisfies TrendingAIResponse, { headers: { 'Cache-Control': 'no-store' } });
+  }
+
   const { searchParams } = new URL(req.url);
   const categoryFilter = searchParams.get('category');
 
