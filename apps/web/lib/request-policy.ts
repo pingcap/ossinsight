@@ -27,6 +27,6 @@ export function budgetFailure(result: {success: boolean; reason?: string; reset:
 export function isPublicBudgetPath(pathname: string): boolean {
   // HTML, RSC navigation, metadata and text exports can all query TiDB.
   // The separate docs/blog renderer does not query TiDB.
-  return pathname === '/' || /^\/(?:llms-full\.txt|sitemap\.xml)\/?$/.test(pathname) ||
+  return pathname === '/' || /^\/(?:llms(?:-full)?\.txt|sitemap\.xml)\/?$/.test(pathname) ||
     /^\/(?:api|q|gh|collections|analyze|analyze-user|compare|trending|languages)(?:\/|$)/.test(pathname);
 }

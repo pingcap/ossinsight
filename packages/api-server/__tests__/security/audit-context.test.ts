@@ -47,6 +47,19 @@ test('production refuses expensive work when the trusted client address is missi
   expect(await response.text()).not.toContain('private');
 });
 
+test.each(['/llms.txt', '/llms-full.txt'])('text export %s audits the request and forbids storage', async path => {
+  const log = jest.spyOn(console, 'info').mockImplementation(() => {});
+  const route = `GET ${path}`;
+  const wrapped = withRequestAudit(route, async (_request: Request) =>
+    new Response('public content', {headers: {'Content-Type': 'text/plain', 'Cache-Control': 'public, max-age=3600'}}));
+  const response = await wrapped(new Request('https://example.test' + path));
+  expect(await response.text()).toBe('public content');
+  for (const name of ['Cache-Control', 'CDN-Cache-Control', 'Vercel-CDN-Cache-Control']) {
+    expect(response.headers.get(name)).toBe('no-store');
+  }
+  expect(JSON.parse(log.mock.calls[0][0])).toMatchObject({event: 'web_api_request', route, statusCode: 200});
+});
+
 test('sitemap auditing preserves data and errors and records the actual outcome once', async () => {
   const log = jest.spyOn(console, 'info').mockImplementation(() => {});
   process.env.VERCEL = '1';
@@ -69,7 +82,11 @@ test('all sitemap exports and the full text export cross the audit boundary at r
     expect(source).toMatch(/export default withSitemapAudit\(/);
     expect(source).toContain("export const dynamic = 'force-dynamic'");
   }
-  expect(readFileSync(resolve(root, 'llms-full.txt/route.ts'), 'utf8')).toContain("export const GET = withRequestAudit('GET /llms-full.txt', handleGET)");
+  for (const resource of ['llms.txt', 'llms-full.txt']) {
+    const source = readFileSync(resolve(root, resource, 'route.ts'), 'utf8');
+    expect(source).toContain(`export const GET = withRequestAudit('GET /${resource}', handleGET)`);
+    expect(source).toContain("export const dynamic = 'force-dynamic'");
+  }
 });
 
 test('audit context bounds unknown paths, malformed encodings and large request inputs', () => {

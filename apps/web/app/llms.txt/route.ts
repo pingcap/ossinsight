@@ -1,11 +1,12 @@
+import {withRequestAudit} from '@/lib/server/route-audit';
 import { listCollections } from '@/lib/server/internal-api';
 import { toCollectionSlug } from '@/lib/collections';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
 
-export async function GET() {
+async function handleGET() {
   let collectionList = '';
   try {
     const collections = await listCollections() as Array<{ id: number; name: string; past_month_visits: number }>;
@@ -120,3 +121,5 @@ Users might ask questions like:
     },
   });
 }
+
+export const GET = withRequestAudit('GET /llms.txt', handleGET);
