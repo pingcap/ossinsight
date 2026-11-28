@@ -101,7 +101,7 @@ async function prefetch(options: Options) {
 
   // Init query runner.
   const queryLoader = new QueryLoader(logger);
-  const queryRunner = new QueryRunner(logger, cacheBuilder, queryLoader, tidbQueryExecutor, pool);
+  const queryRunner = new QueryRunner(logger, cacheBuilder, queryLoader, tidbQueryExecutor, pool, 'prefetch');
 
   // Load metadata.
   const queries = await queryLoader.loadQueries();

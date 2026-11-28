@@ -10,7 +10,7 @@ import {QueryLiquidParser} from "./QueryLiquidParser";
 import { QueryLoader } from "./QueryLoader";
 import {Pool, QueryOptions} from "mysql2/promise";
 import {PersistConfig, QuerySchema, isPublicQuery, validateQueryName, validateCollectionId, prepareQueryParameters} from "@ossinsight/types";
-import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
+import { NamedQueryOptions, TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 import {getQueryDataQuality, STAR_DATA_INCIDENT_MARKER} from "../../../utils/data-quality";
 import {APIError, QueryDataUnavailableError} from "../../../utils/error";
@@ -37,7 +37,8 @@ export class QueryRunner {
       private readonly cacheBuilder: CacheBuilder,
       private readonly queryLoader: QueryLoader,
       private readonly queryExecutor: TiDBQueryExecutor,
-      private readonly tidb: Pool
+      private readonly tidb: Pool,
+      private readonly caller: 'request' | 'prefetch' = 'request'
     ) {
       this.liquidQueryParser = new QueryLiquidParser();
       this.legacyQueryParser = new QueryLegacyParser();
@@ -112,7 +113,8 @@ export class QueryRunner {
           cacheKey,
           needsFreshVisibility && !refreshProjection ? 0 : cacheHours,
           ignoreOnlyFromCache ? false : onlyFromCache,
-          refreshCache
+          refreshCache,
+          this.caller === 'prefetch' ? 'shared' : 'request'
         );
     
         const result = await cache.load(async () => {
@@ -126,11 +128,16 @@ export class QueryRunner {
 
             // Execute query.
             const start = DateTime.now();
-            const [rows, fields] = await this.queryExecutor.execute<any[]>(queryKey, {
-              sql: sql,
-              ...queryOptions,
+            // Public HTTP and socket queries share this cap. The managed
+            // prefetch queues already use budgets of 10–240 seconds.
+            const cap = this.caller === 'prefetch' ? 240_000 : 30_000;
+            const requested = queryOptions?.timeout;
+            const timeout = requested && Number.isSafeInteger(requested) && requested > 0 ? Math.min(requested, cap) : cap;
+            const bounded: NamedQueryOptions = {
+              ...queryOptions, sql, timeout, enforceStatementTimeout: true,
               rowsAsArray: params?.format === 'array',
-            });
+            };
+            const [rows, fields] = await this.queryExecutor.execute<any[]>(queryKey, bounded);
             const end = DateTime.now();
 
             // Persist the query result.

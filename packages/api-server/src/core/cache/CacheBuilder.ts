@@ -2,6 +2,7 @@
 import { CacheOption, CacheProvider } from "./provider/CacheProvider";
 
 import Cache from './Cache'
+import RequestCacheProvider from './provider/RequestCacheProvider';
 import CachedTableCacheProvider from "./provider/CachedTableCacheProvider";
 import NormalTableCacheProvider from "./provider/NormalTableCacheProvider";
 import pino from "pino";
@@ -27,6 +28,8 @@ export default class CacheBuilder {
 
     private readonly cachedTableCacheProvider?: CacheProvider;
 
+    private readonly requestProviders = new Map<CacheProvider, RequestCacheProvider>();
+
     private noneCacheProvider: CacheProvider = new NoneCacheProvider();
 
     constructor(
@@ -45,27 +48,29 @@ export default class CacheBuilder {
     // TODO: no longer use cached table cache provider.
     build(
         cacheProvider: string = CacheProviderTypes.CACHED_TABLE, key: string, cacheHours: number,
-        onlyFromCache?: boolean, refreshCache?: boolean
+        onlyFromCache?: boolean, refreshCache?: boolean, writes: 'shared' | 'request' = 'shared'
     ): Cache<any> {
         const keyWithPrefix = this.keyPrefix ? `${this.keyPrefix}:${key}` : key;
         if (!this.enableCache) {
-            return new Cache<any>(this.logger, this.noneCacheProvider, keyWithPrefix, -1, false, false);
+            return new Cache<any>(this.logger, this.noneCacheProvider, keyWithPrefix, 0, onlyFromCache, false);
         }
 
-        switch(cacheProvider) {
-            case CacheProviderTypes.NORMAL_TABLE:
-                if (this.normalCacheProvider === undefined) {
-                    throw new Error('Normal cache provider has not initialed.');
-                }
-                return new Cache<any>(this.logger, this.normalCacheProvider, keyWithPrefix, cacheHours, onlyFromCache, refreshCache);
-            case CacheProviderTypes.CACHED_TABLE:
-                if (this.cachedTableCacheProvider === undefined) {
-                    throw new Error('Cached table cache provider has not initialed.');
-                }
-                return new Cache<any>(this.logger, this.cachedTableCacheProvider, keyWithPrefix, cacheHours, onlyFromCache, refreshCache);
-            default:
-                throw new Error(`Invalid cache provider type ${cacheProvider}.`);
+        let provider: CacheProvider | undefined;
+        switch (cacheProvider) {
+            case CacheProviderTypes.NORMAL_TABLE: provider = this.normalCacheProvider; break;
+            case CacheProviderTypes.CACHED_TABLE: provider = this.cachedTableCacheProvider; break;
+            default: throw new Error(`Invalid cache provider type ${cacheProvider}.`);
         }
+        if (!provider) throw new Error('Cache provider has not initialized.');
+        if (writes === 'request' && !onlyFromCache) {
+            let requestCache = this.requestProviders.get(provider);
+            if (!requestCache) {
+                requestCache = new RequestCacheProvider(provider);
+                this.requestProviders.set(provider, requestCache);
+            }
+            provider = requestCache;
+        }
+        return new Cache<any>(this.logger, provider, keyWithPrefix, cacheHours, onlyFromCache, refreshCache);
     }
 
 }

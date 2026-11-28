@@ -124,6 +124,17 @@ UserInfo request runs outside the transaction, has a five-second deadline, canno
 redirect its bearer token, and must return the authenticated subject. Existing
 bindings do not require a UserInfo request.
 
+### Named query budgets
+
+Public HTTP and socket named queries use a 30-second statement ceiling on the primary
+and shadow TiDB connections. A smaller existing session or caller budget is preserved.
+Managed prefetch uses its queue's configured deadline, up to 240 seconds.
+
+The API reads existing shared cache entries. New request parameter combinations use
+process-local storage, capped per provider at 128 entries of 64 KiB each for up to
+60 seconds. Only managed prefetch publishes new named-query results to the shared
+tables. Prefetch-only queries still require an existing shared result.
+
 ### Operations access and audit records
 
 Set a private `OPERATIONS_TOKEN` (32–256 characters with at least 32 random bytes)
