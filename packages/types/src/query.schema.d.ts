@@ -81,6 +81,14 @@ export interface Params {
    */
   itemType?: "string" | "number" | "boolean" | "integer";
   /**
+   * Inclusive lower bound for numeric values.
+   */
+  minimum?: number;
+  /**
+   * Inclusive upper bound for numeric values.
+   */
+  maximum?: number;
+  /**
    * Define the max array length.
    */
   maxArrayLength?: number;

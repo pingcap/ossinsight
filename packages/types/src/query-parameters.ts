@@ -8,6 +8,8 @@ export interface QueryParameter {
   template?: Record<string, string>;
   default?: unknown;
   maxArrayLength?: number;
+  minimum?: number;
+  maximum?: number;
 }
 
 export function prepareQueryParameters(params: QueryParameter[], input: Record<string, unknown>) {
@@ -25,6 +27,8 @@ export function prepareQueryParameters(params: QueryParameter[], input: Record<s
         if (typeof raw === 'boolean' || String(raw).trim() === '') return fail();
         result = Number(raw);
         if (!Number.isFinite(result) || (type === 'integer' && !Number.isSafeInteger(result))) return fail();
+        if (param.minimum !== undefined && result < param.minimum) return fail();
+        if (param.maximum !== undefined && result > param.maximum) return fail();
       } else if (type === 'boolean') {
         if (raw !== true && raw !== false && raw !== 'true' && raw !== 'false') return fail();
         result = raw === true || raw === 'true';

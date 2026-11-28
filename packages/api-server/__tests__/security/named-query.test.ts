@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { prepareQueryParameters, querySQLLiteral } from '@ossinsight/types';
 import { QueryLegacyParser } from '../../src/core/runner/query/QueryLegacyParser';
 import { QueryLiquidParser } from '../../src/core/runner/query/QueryLiquidParser';
@@ -50,5 +52,38 @@ describe('named-query parameter boundaries', () => {
     const literal = querySQLLiteral(value);
     expect(literal).toMatch(/^CONVERT\(X'[0-9a-f]+' USING utf8mb4\)$/);
     expect(literal).not.toContain(value);
+  });
+});
+
+describe('row limits in the organization ranking queries', () => {
+  const catalogs = ['configs/queries', 'apps/web/lib/data-service/endpoints'];
+  const rankings = [
+    'orgs/participants/active/ranking', 'orgs/participants/new/ranking',
+    'orgs/participants/locations', 'orgs/participants/organizations',
+    'orgs/stars/locations', 'orgs/stars/organizations',
+  ];
+
+  test.each(catalogs)('enforces the row limit when rendering each catalog in %s', async catalog => {
+    for (const ranking of rankings) {
+      const directory = resolve(__dirname, '../../../..', catalog, ranking);
+      const config = JSON.parse(readFileSync(resolve(directory, 'params.json'), 'utf8'));
+      const template = readFileSync(resolve(directory, 'template.sql'), 'utf8');
+      const input = { ownerId: 42, repoIds: [7] };
+      const parser = new QueryLiquidParser();
+      const defaultLimit = config.params.find((param: { name: string }) => param.name === 'n').default;
+      const defaultSQL = await parser.parse(template, config, input);
+      expect(defaultSQL.trim()).toMatch(new RegExp(`LIMIT\\s+${defaultLimit}$`, 'i'));
+      for (const value of [0, '7', 1000]) {
+        const params = { ...input, n: value };
+        expect(prepareQueryContext(config, params).n).toBe(Number(value));
+        const sql = await parser.parse(template, config, params);
+        expect(sql.trim()).toMatch(new RegExp(`LIMIT\\s+${Number(value)}$`, 'i'));
+      }
+      for (const value of [-1, 5.5, 1001]) {
+        const params = { ...input, n: value };
+        expect(() => prepareQueryContext(config, params)).toThrow();
+        await expect(parser.parse(template, config, params)).rejects.toThrow();
+      }
+    }
   });
 });
