@@ -36,6 +36,15 @@ describe('suppressed accounts', () => {
     expect(kind('/api/q/orgs/overview?ownerId=4242')).toBe('data');
   });
 
+  it('compares the numeric identity used by the data route', () => {
+    for (const value of ['004242', '4242.0', '4.242e3', '0x1092']) {
+      expect(suppression.isSuppressedAccountId(value)).toBe(true);
+    }
+    for (const value of ['4243', '4242.1', 'not-a-number', '']) {
+      expect(suppression.isSuppressedAccountId(value)).toBe(false);
+    }
+  });
+
   it('leaves every other request alone', () => {
     expect(kind('/analyze-user/someone-else')).toBeNull();
     expect(kind('/analyze/example-user-2/repo')).toBeNull();

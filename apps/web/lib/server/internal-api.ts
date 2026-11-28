@@ -114,7 +114,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal): Pr
     signal,
   );
 
-  if (!row) {
+  if (!row || isSuppressedAccountId(row.owner_id) || isSuppressedLogin(row.owner_login) || isSuppressedRepoName(row.full_name)) {
     return null;
   }
 
@@ -163,7 +163,7 @@ export async function getRepoByName(owner: string, repo: string, signal?: AbortS
     signal,
   );
 
-  if (!row) {
+  if (!row || isSuppressedAccountId(row.owner_id) || isSuppressedLogin(row.owner_login) || isSuppressedRepoName(row.full_name)) {
     return null;
   }
 
@@ -178,7 +178,7 @@ export async function getRepoByName(owner: string, repo: string, signal?: AbortS
 
 export async function getUserById(id: number | string, signal?: AbortSignal) {
   if (isSuppressedAccountId(id)) return null;
-  return executeOneRow<{
+  const row = await executeOneRow<{
     id: number;
     login: string;
     type: 'User' | 'Organization' | 'Bot';
@@ -206,12 +206,13 @@ export async function getUserById(id: number | string, signal?: AbortSignal) {
     { id: Number(id) },
     signal,
   );
+  return row && !isSuppressedLogin(row.login) && !isSuppressedAccountId(row.id) ? row : null;
 }
 
 export async function getUserByLogin(username: string, signal?: AbortSignal) {
   if (!isGitHubLogin(username)) return null;
   if (isSuppressedLogin(username)) return null;
-  return executeOneRow<{
+  const row = await executeOneRow<{
     id: number;
     login: string;
     type: 'User' | 'Organization' | 'Bot';
@@ -239,6 +240,7 @@ export async function getUserByLogin(username: string, signal?: AbortSignal) {
     { username },
     signal,
   );
+  return row && !isSuppressedLogin(row.login) && !isSuppressedAccountId(row.id) ? row : null;
 }
 
 export async function searchRepos(keyword: string, signal?: AbortSignal) {
@@ -295,10 +297,10 @@ export async function searchUsers(keyword: string, kind: 'user' | 'org', signal?
     return [];
   }
   if (kind === 'user' && normalizedKeyword === RECOMMEND_USER_LIST_KEYWORD) {
-    return randomTake(usersRecommendList as UserRecommendItem[], 10);
+    return randomTake((usersRecommendList as UserRecommendItem[]).filter(visibleUser), 10);
   }
   if (kind === 'org' && normalizedKeyword === RECOMMEND_ORG_LIST_KEYWORD) {
-    return randomTake(orgsRecommendList as UserRecommendItem[], 10);
+    return randomTake((orgsRecommendList as UserRecommendItem[]).filter(visibleUser), 10);
   }
 
   const { rows } = await executeRows(
@@ -516,7 +518,7 @@ export async function listCollectionPreviewRepos(
     signal,
   );
 
-  return rows as CollectionPreviewRepo[];
+  return rows.filter(row => !isSuppressedRepoName(row.repo_name)) as CollectionPreviewRepo[];
 }
 
 export async function explainHotCollections(signal?: AbortSignal) {
@@ -529,7 +531,8 @@ export async function getCollectionRanking(
   range: CollectionRankRange,
   signal?: AbortSignal,
 ) {
-  return runQuery(getCollectionRankingQueryName(metric, range), toCollectionSearchParams(collectionId), signal);
+  const result = await runQuery(getCollectionRankingQueryName(metric, range), toCollectionSearchParams(collectionId), signal);
+  return {...result, data: result.data.filter((row: {repo_name?: string}) => !isSuppressedRepoName(row.repo_name))};
 }
 
 export async function explainCollectionRanking(
@@ -692,7 +695,7 @@ export async function getTrendingReposByLanguage(
     { lang: language, per: period },
     signal,
   );
-  return rows as Array<{
+  return rows.filter(row => !isSuppressedRepoName(row.repo_name)) as Array<{
     repo_id: number;
     repo_name: string;
     language: string;
@@ -754,7 +757,7 @@ export async function getTrendingRepos(
     [language, period, language, period],
     signal,
   );
-  return rows as Array<{
+  return rows.filter(row => !isSuppressedRepoName(row.repo_name)) as Array<{
     repo_id: number;
     repo_name: string;
     language: string;
@@ -779,11 +782,15 @@ export async function getTopReposForSitemap(limit = 10000, signal?: AbortSignal)
     { limit },
     signal,
   );
-  return rows as Array<{ repo_name: string }>;
+  return rows.filter(row => !isSuppressedRepoName(row.repo_name)) as Array<{ repo_name: string }>;
+}
+
+function visibleUser(user: UserRecommendItem) {
+  return !isSuppressedLogin(user.login) && !isSuppressedAccountId(user.id);
 }
 
 function mapRecommendRepos(repos: RepoRecommendItem[]) {
-  return repos.map((repo) => ({
+  return repos.filter(repo => !isSuppressedRepoName(repo.fullName)).map((repo) => ({
     id: repo.id,
     fullName: repo.fullName,
     defaultBranchRef: { name: '' },

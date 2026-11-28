@@ -14,3 +14,5 @@ export { isGitHubOwner, isGitHubLogin, isGitHubRepository, isCollectionSlug } fr
 
 export { secureDatabaseURL } from './database-url';
 export { requestAuditContext, canonicalAuditIP } from './request-audit';
+
+export {accountSuppression, parseSuppressedAccounts, SuppressedAccount} from './account-suppression';

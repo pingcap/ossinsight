@@ -19,12 +19,12 @@ function load(file: string, dependencies: Record<string, unknown>): any {
   new Function('require', 'module', 'exports', code)(dependency, module, module.exports);
   return module.exports;
 }
-function harness() {
+function harness(suppression = suppressedProfiles.createSuppression([]), catalog: Record<string, unknown> = {}) {
   const executeRows = jest.fn(async () => ({rows: []}));
   const dependencies = {'@ossinsight/types': require('@ossinsight/types'), '@/lib/cors': cors,
     '@/lib/data-service': {APIError}, '@/lib/data-quality': {}, '@/lib/collections': {},
     '@/lib/data-service/routes': {}, '@/lib/data-service/query': {executeRows},
-    '@/lib/server/route-audit': {withRequestAudit}, '@/lib/suppressed-profiles': suppressedProfiles};
+    '@/lib/server/route-audit': {withRequestAudit}, '@/lib/suppressed-profiles': suppression, ...catalog};
   const api = load(path.join(web, 'lib/server/internal-api.ts'), dependencies);
   const routes = ['repos', 'users', 'organizations'].map(name => load(path.join(web, `app/gh/${name}/search/route.ts`), {...dependencies, '@/lib/server/internal-api': api}));
   return {api, executeRows, routes};
@@ -94,4 +94,31 @@ test('the maximum-length plain term remains supported and SQL values stay bound'
   const [sql, params] = executeRows.mock.calls[0] as any;
   expect(params).toEqual({keyword, keywordPrefix: keyword});
   expect(sql).not.toContain(keyword);
+});
+
+test('repository details and published lists honor account removals', async () => {
+  const suppression = suppressedProfiles.createSuppression([{login: 'removed', id: 77}]);
+  const repoRows = [{repo_name: 'removed/repo'}, {repo_name: 'visible/repo'}];
+  const userList = [{id: 77, login: 'renamed'}, {id: 2, login: 'visible'}];
+  const {api} = harness(suppression, {
+    '@/lib/github-search/recommend/users-list.json': userList,
+    '@/lib/github-search/recommend/orgs-list.json': userList,
+    '@/lib/github-search/recommend/repos-list-1.json': repoRows.map((row, id) => ({id, fullName: row.repo_name})),
+    '@/lib/data-service/query': {
+      executeOneRow: async () => ({owner_id: 77, owner_login: 'renamed', full_name: 'renamed/repo'}),
+      executeRows: async () => ({rows: repoRows}),
+    },
+    '@/lib/collections': {getCollectionRankingQueryName: () => 'fixture-ranking'},
+    '@/lib/data-quality': {isStarRankingDegraded: () => false},
+    '@/lib/data-service/routes': {runQuery: async () => ({data: repoRows})},
+  });
+  expect(await api.getRepoById(1)).toBeNull();
+  expect(await api.getRepoByName('renamed', 'repo')).toBeNull();
+  expect(await api.searchUsers('recommend-user-list-keyword', 'user')).toEqual([userList[1]]);
+  expect(await api.searchUsers('recommend-org-list-keyword', 'org')).toEqual([userList[1]]);
+  expect((await api.searchRepos('recommend-repo-list-1-keyword')).map((r: any) => r.fullName)).toEqual(['visible/repo']);
+  expect(await api.getTopReposForSitemap()).toEqual([repoRows[1]]);
+  expect(await api.getTrendingRepos()).toEqual([repoRows[1]]);
+  expect(await api.getTrendingReposByLanguage('Go')).toEqual([repoRows[1]]);
+  expect((await api.getCollectionRanking(1, 'stars', 'last-28-days')).data).toEqual([repoRows[1]]);
 });
