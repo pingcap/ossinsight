@@ -58,14 +58,14 @@ export class BotService {
         const promptName = 'playground-generate-sql';
 
         // Prepare prompt.
-        logger.info("Preparing question to sql prompt question: %s", question);
+        logger.info({operation: api}, 'Preparing model prompt');
         const [prompt, promptConfig] = await this.promptManager.getPrompt(promptName, {
             ...context,
             question
         });
 
         // Request answer.
-        logger.info(promptConfig, "Generating SQL to answer question: %s", question);
+        logger.info({operation: api}, 'Requesting model response');
         let res: any;
         const start = DateTime.now();
         res = await measureAPIRequest(openaiAPITimer, api, async () => {
@@ -81,8 +81,8 @@ export class BotService {
         const end = DateTime.now();
         const costTime = end.diff(start).as('seconds');
 
-        const { choices, usage } = res;
-        logger.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, costTime);
+        const {choices} = res;
+        logger.info({operation: api, durationSeconds: costTime}, 'Received model response');
 
         if (Array.isArray(choices)) {
             const content = choices?.[0]?.message?.content;
@@ -131,11 +131,11 @@ export class BotService {
         const api = 'question-to-answer-in-non-stream';
 
         // Prepare prompt.
-        this.log.info("Preparing prompt for question (in non-stream mode): %s", question);
+        this.log.info({operation: api}, 'Preparing model prompt');
         const [prompt, promptConfig] = await this.loadGenerateAnswerPromptTemplate(question);
 
         // Request answer.
-        this.log.info(promptConfig, "Requesting answer for question (in non-steam mode): %s", question);
+        this.log.info({operation: api}, 'Requesting model response');
         let responseText = null;
         try {
             const start = DateTime.now();
@@ -149,9 +149,9 @@ export class BotService {
                     ...promptConfig
                 });
             });
-            const { choices, usage } = res;
+            const {choices} = res;
             const end = DateTime.now();
-            this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
+            this.log.info({operation: api, durationSeconds: end.diff(start).as('seconds')}, 'Received model response');
 
             if (Array.isArray(choices) && choices[0]?.message?.content) {
                 responseText = choices[0]?.message?.content;

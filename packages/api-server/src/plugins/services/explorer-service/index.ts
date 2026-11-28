@@ -143,7 +143,7 @@ export class ExplorerService {
         if (!ignoreCache) {
           const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL, userId);
           if (cachedQuestion && cachedQuestion.userId === userId) {
-            logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
+            logger.info('Using cached question');
 
             return {
               ...cachedQuestion,
@@ -200,7 +200,7 @@ export class ExplorerService {
           await this.createQuestion(conn, question);
         }, {
           onError: (conn, err) => {
-            logger.error(err, `Failed to create a new question: ${err.message}`);
+            logger.error('Failed to create question');
             if (err instanceof ExplorerTooManyRequestError) {
               throw err;
             } else if (err instanceof APIError) {
@@ -241,7 +241,7 @@ export class ExplorerService {
             // Validate the generated SQL.
             let statementType;
             try {
-                logger.info({ querySQL: question.querySQL }, "Validating the generated SQL.");
+                logger.info('Validating generated SQL');
                 const res = this.validateSQL(question.querySQL!);
                 question.querySQL = res.sql;
                 question.queryHash = this.getQueryHash(res.sql);
@@ -262,7 +262,7 @@ export class ExplorerService {
             // Try to get SQL result from cache.
             const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
-                logger.info({ queryHash: question.queryHash }, "SQL result is cached, returning cached result.", question.queryHash);
+                logger.info('Using cached query result');
                 await this.saveQuestionResult(questionId, QuestionStatus.Success, cachedResult);
                 question = {
                     ...question,
@@ -316,7 +316,7 @@ export class ExplorerService {
     // TODO: refactor it, make it more readable.
     async generateAnswer(logger: FastifyBaseLogger, question: Question, outputInStream: boolean): Promise<string | null> {
         let responseText: string | null = null;
-        const { id: questionId, title } = question;
+        const {title} = question;
         for (let i = 1; i <= 3; i++) {
             try {
                 if (outputInStream) {
@@ -327,9 +327,9 @@ export class ExplorerService {
                         question.answer = answer;
                         try {
                             await this.updateQuestion(question);
-                            logger.info({ key: key, value: value }, `Updated answer field.`)
+                            logger.info('Updated answer field');
                         } catch (e) {
-                            logger.error(e, `Failed to update question with field ${key} = ${value}.`)
+                            logger.error('Failed to update answer field');
                         }
                     });
                 } else {
@@ -356,7 +356,7 @@ export class ExplorerService {
             } catch (e: any) {
                 // Reset the question and answer, and try again.
                 if (i < 3) {
-                    logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
+                    logger.warn({attempt: i + 1}, 'Retrying answer generation');
 
                     question.revisedTitle = undefined;
                     question.notClear = undefined;
@@ -397,7 +397,7 @@ export class ExplorerService {
 
     async getSQLExecutionPlanAndEngines(logger: FastifyBaseLogger, querySQL: string): Promise<[string[], Record<string, string>[]]> {
         try {
-            logger.info({ querySQL }, "Getting the execution plan and storage engines for the SQL.");
+            logger.info('Requesting query execution plan');
             const plan = await this.getSQLExecutionPlan(querySQL);
             return [this.getStorageEnginesFromPlan(plan), plan];
         } catch (err: any) {
@@ -819,7 +819,7 @@ export class ExplorerService {
                             conn.destroy();
                             this.logger.info(`Killed the connection: ${connectionId}`);
                         } catch (err2) {
-                            this.logger.error(err2, `Failed to kill the connection: ${connectionId}`);
+                            this.logger.error({questionId}, 'Failed to terminate timed-out query');
                         }
                     }
                     throw err;
@@ -1015,8 +1015,7 @@ export class ExplorerService {
         const message = 'Failed to set question tags.';
         this.logger.error({
           questionId: questionId,
-          tagIds: newTagIds,
-          err,
+          tagCount: newTagIds.length,
         }, message);
         throw new ExplorerSetQuestionTagsError(500, message, err);
       }
@@ -1044,7 +1043,7 @@ export class ExplorerService {
             `, [n]);
             }
         } catch (err: any) {
-            this.logger.error(`Failed to get recommend questions: ${err.message}`);
+            this.logger.error('Failed to get recommended questions');
         }
 
         return this.mapToRecommendQuestions(questions);
