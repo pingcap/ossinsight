@@ -9,8 +9,8 @@ export interface Auth0UserInfo {
     name: string;
     picture: string;
     updated_at: string;
-    email: string;
-    email_verified: boolean;
+    email?: string;
+    email_verified?: boolean;
 }
 
 export const AUTH0_NAMESPACE = `https://ossinsight.io`;
@@ -46,6 +46,9 @@ export default fp(async (app) => {
     const secret = app.config.AUTH0_SECRET;
     if (secret && /-----BEGIN [A-Z ]*(?:KEY|CERTIFICATE)-----/.test(secret)) {
         throw new Error('AUTH0_SECRET must be a symmetric client secret; use AUTH0_DOMAIN for public-key verification.');
+    }
+    if (secret && Buffer.byteLength(secret.trim(), 'utf8') < 32) {
+        throw new Error('AUTH0_SECRET must contain at least 32 bytes for HS256.');
     }
     const audience = app.config.AUTH0_AUDIENCE?.trim();
     const clientIds = new Set((app.config.AUTH0_ALLOWED_CLIENT_IDS || []).map(value => value.trim()).filter(Boolean));

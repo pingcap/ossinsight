@@ -33,6 +33,15 @@ function fixture(options: {binding?: any[]; indexes?: any[]; error?: number; win
 
 afterEach(() => jest.restoreAllMocks());
 
+test.each([true, false, undefined])('registration stores the profile email only when verified (%s)', async verified => {
+  const f = fixture();
+  f.fetch.mockResolvedValue({...profile, email_verified: verified});
+  expect(await f.service.findOrCreateUserByAccount(identity, 'synthetic-token')).toBe(99);
+  expect(f.connection.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO sys_users'), [
+    profile.name, verified === true ? profile.email : '', false, profile.picture, expect.anything(), expect.anything(), true,
+  ]);
+});
+
 test('existing identities avoid profile fetches and creation transactions', async () => {
   const f = fixture({binding: [{id: 7, userId: 7}]});
   expect(await f.service.findOrCreateUserByAccount(identity, 'synthetic-token')).toBe(7);

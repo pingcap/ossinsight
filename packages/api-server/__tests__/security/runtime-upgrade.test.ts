@@ -68,6 +68,12 @@ test('a public RSA verification key cannot be reused as an HMAC signing secret',
   } finally { await app.close(); fetchKeys.mockRestore(); }
 });
 
+test('symmetric Auth0 configuration requires at least 32 bytes', async () => {
+  await expect(authenticationApp('x'.repeat(31))).rejects.toThrow('at least 32 bytes');
+  const app = await authenticationApp('x'.repeat(32));
+  await app.close();
+});
+
 test('a PEM public key cannot be configured as the symmetric Auth0 client secret', async () => {
   const {publicKey} = generateKeyPairSync('rsa', {modulusLength: 2048});
   const pem = publicKey.export({format: 'pem', type: 'spki'}).toString();

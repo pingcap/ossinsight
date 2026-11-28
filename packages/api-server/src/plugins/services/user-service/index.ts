@@ -185,7 +185,7 @@ export class UserService {
             VALUES(?, ?, ?, ?, ?, ?, ?)
           `, [
             userInfo.name,
-            userInfo.email,
+            userInfo.email_verified === true && typeof userInfo.email === 'string' ? userInfo.email : '',
             GET_EMAIL_UPDATES_DEFAULT,
             userInfo.picture,
             UserRole.USER,

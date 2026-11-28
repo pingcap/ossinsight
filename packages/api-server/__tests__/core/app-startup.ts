@@ -24,7 +24,7 @@ test.each(['current-only', 'overlap', 'expired'] as const)('the production CLI b
     cwd: resolve(__dirname, '../..'),
     env: {PATH: process.env.PATH, NODE_ENV: 'test', CONFIGS_PATH: resolve(__dirname, '../../../../configs'),
       DATABASE_URL: db.url(), PLAYGROUND_DATABASE_URL: db.analyticsUrl(), REDIS_URL: redis.url(),
-      GITHUB_ACCESS_TOKENS: '', OPENAI_API_KEY: 'synthetic-test-key', AUTH0_SECRET: 'synthetic-local-hmac-secret',
+      GITHUB_ACCESS_TOKENS: '', OPENAI_API_KEY: 'synthetic-test-key', AUTH0_SECRET: 'synthetic-local-hmac-secret-for-testing',
       OPERATIONS_TOKEN: token, ...rotation},
     stdio: ['ignore', 'pipe', 'pipe'],
   });
