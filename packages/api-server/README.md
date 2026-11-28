@@ -11,7 +11,7 @@ Create a `.env` file in the `/packages/api-server` directory and fill in the fol
 | Name                   | Description                              | Default                                                                    |
 |------------------------|------------------------------------------|----------------------------------------------------------------------------|
 | `DATABASE_URL`         | Database URL to connect TiDB/MySQL.      | Required; use a dedicated database account |
-| `REDIS_URL`            | URL to connect Redis.                    | `redis://localhost:6379/0`                                                 |
+| `REDIS_URL`            | Production requires authenticated TLS. | `rediss://user:<password>@redis.example:6379/0`                                                 |
 | `GITHUB_ACCESS_TOKENS` | Personal access token of GitHub account. |                                                                            |
 
 If you need to see the complete env file configuration instructions, please see the schema definition on the [./src/env.ts](./src/env.ts) file.
@@ -48,6 +48,13 @@ npm run dev
 
 Open [http://localhost:3450](http://localhost:3450) to view it in the browser.
 
+
+The API in production and the standalone Explorer worker require `rediss://` and a
+password. The hostname must match the server certificate. If Redis uses a private
+CA, set `NODE_EXTRA_CA_CERTS` to its PEM file before starting Node. Migrate the
+Redis listener and provision the client credential before rolling out these
+services. The API accepts a local `redis://` development or test configuration
+when `NODE_ENV` is explicitly set to `development` or `test`.
 
 ## Security boundaries
 

@@ -25,7 +25,7 @@ export async function main(checkOnly = false) {
       OPERATIONS_TOKEN_PREVIOUS: process.env.OPERATIONS_TOKEN_PREVIOUS,
       OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT: process.env.OPERATIONS_TOKEN_PREVIOUS_EXPIRES_AT,
     }));
-  const redis = new Redis(config.redis, {lazyConnect: true, maxRetriesPerRequest: null,
+  const redis = new Redis({...config.redis, lazyConnect: true, maxRetriesPerRequest: null,
     connectTimeout: 10000, enableOfflineQueue: false});
   redis.on('error', () => log.error({event: 'worker_lifecycle', outcome: 'failed'}));
   let closing: Promise<void> | undefined;

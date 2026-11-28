@@ -1,4 +1,5 @@
 import {secureDatabaseURL} from '@ossinsight/types';
+import {redisConnection} from '../utils/redis-connection';
 import {completeDatabaseURL} from '../utils/db';
 
 export function workerConfig(env: NodeJS.ProcessEnv) {
@@ -18,11 +19,7 @@ export function workerConfig(env: NodeJS.ProcessEnv) {
     url.searchParams.set('multipleStatements', 'false');
     return url.toString();
   }
-  let redis: URL;
-  try { redis = new URL(env.REDIS_URL || ''); } catch { throw new Error('Redis configuration required.'); }
-  if (!['redis:', 'rediss:'].includes(redis.protocol) || !redis.hostname || !redis.password ||
-      redis.search || redis.hash) throw new Error('Authenticated Redis configuration required.');
   // Never fall back from the analytics account to the metadata writer account.
   return {high, low, timeout, database: database('DATABASE_URL'),
-    playground: database('PLAYGROUND_DATABASE_URL'), redis: redis.toString()};
+    playground: database('PLAYGROUND_DATABASE_URL'), redis: redisConnection(env.REDIS_URL || '', false)};
 }

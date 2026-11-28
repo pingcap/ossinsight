@@ -105,8 +105,28 @@ try:
             if state['ExitCode']:
                 raise RuntimeError(suffix + ' failed:\n' + output[-4000:] + run(['docker', 'logs', container])[-4000:])
             print(output.strip(), flush=True)
-        redis = create('redis', REDIS, ['redis-server', '--save', '', '--appendonly', 'no', '--dir', '/tmp', '--maxmemory', '128mb', '--protected-mode', 'no'],
-            ['--network-alias=redis', '--user=999:999', '--read-only', '--cap-drop=ALL',
+        redis_dir = fixture / 'redis-tls'
+        redis_dir.mkdir()
+        run(['openssl', 'req', '-new', '-newkey', 'rsa:2048', '-nodes', '-subj', '/CN=redis',
+             '-keyout', str(redis_dir / 'server.key'), '-out', str(fixture / 'redis.csr')])
+        (fixture / 'redis.ext').write_text('subjectAltName=DNS:redis\nextendedKeyUsage=serverAuth\n')
+        run(['openssl', 'x509', '-req', '-in', str(fixture / 'redis.csr'), '-CA', str(fixture / 'ca.pem'),
+             '-CAkey', str(fixture / 'ca.key'), '-CAcreateserial', '-days', '1', '-extfile', str(fixture / 'redis.ext'),
+             '-out', str(redis_dir / 'server.pem')])
+        (redis_dir / 'ca.pem').write_bytes((fixture / 'ca.pem').read_bytes())
+        for item in redis_dir.iterdir():
+            item.chmod(0o444)
+        redis_volume = prefix + '-redis-tls'
+        run(['docker', 'volume', 'create', redis_volume])
+        volumes.append(redis_volume)
+        redis_mount = 'type=volume,source=' + redis_volume + ',target=/tls'
+        redis_copy = create('redis-copy', args.api_image, ['true'], ['--mount', redis_mount])
+        run(['docker', 'cp', str(redis_dir) + '/.', redis_copy + ':/tls'])
+        redis_password = uuid.uuid4().hex
+        redis = create('redis', REDIS, ['redis-server', '--save', '', '--appendonly', 'no', '--dir', '/tmp', '--maxmemory', '128mb', '--port', '0',
+             '--tls-port', '6379', '--tls-cert-file', '/tls/server.pem', '--tls-key-file', '/tls/server.key',
+             '--tls-ca-cert-file', '/tls/ca.pem', '--tls-auth-clients', 'no', '--requirepass', redis_password],
+            ['--network-alias=redis', '--mount', redis_mount + ',readonly', '--user=999:999', '--read-only', '--cap-drop=ALL',
              '--security-opt=no-new-privileges', '--memory=256m', '--cpus=1', '--tmpfs=/tmp:rw,noexec,nosuid,size=32m'])
         run(['docker', 'start', redis])
         api = create('api', args.api_image, [],
@@ -116,7 +136,7 @@ try:
              '-e', 'NODE_EXTRA_CA_CERTS=/fixtures/ca.pem', '-e', 'API_SERVER_PORT=3451',
              '-e', 'DATABASE_URL=mysql://executoruser:executorpassword@tidb:4000/ossinsight_container_test',
              '-e', 'PLAYGROUND_DATABASE_URL=mysql://container_reader:webshellpassword@tidb:4000/ossinsight_container_test',
-             '-e', 'REDIS_URL=redis://redis:6379/0', '-e', 'GITHUB_ACCESS_TOKENS=',
+             '-e', 'REDIS_URL=rediss://:' + redis_password + '@redis:6379/0', '-e', 'GITHUB_ACCESS_TOKENS=',
              '-e', 'OPENAI_API_KEY=synthetic-test-key', '-e', 'AUTH0_SECRET=synthetic-local-hmac-secret',
              '-e', 'OPERATIONS_TOKEN=synthetic-local-operations-token-32-characters'])
         run(['docker', 'start', api])
