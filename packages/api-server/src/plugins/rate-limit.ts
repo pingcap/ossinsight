@@ -4,7 +4,14 @@ import {getRealClientIP} from "../utils/http/forwared";
 import {consumePublicQuota} from '../utils/public-quota';
 import {createOperatorAuthenticator, operationsCredentials} from '../utils/http/operator-auth';
 
+declare module 'fastify' {
+  interface FastifyRequest {
+    publicQuotaAdmitted: boolean;
+  }
+}
+
 export default fp(async (app) => {
+  app.decorateRequest('publicQuotaAdmitted', false);
   const authenticate = createOperatorAuthenticator(operationsCredentials(app.config));
   app.addHook('onRequest', async (req, reply) => {
     if (req.method === 'OPTIONS') return;
@@ -16,6 +23,7 @@ export default fp(async (app) => {
     }
     try {
       const budget = await consumePublicQuota(app.redis, getRealClientIP(req), app.config.PUBLIC_API_HOURLY_RATE_LIMIT);
+      req.publicQuotaAdmitted = true;
       reply.header('X-RateLimit-Limit', budget.limit).header('X-RateLimit-Remaining', budget.remaining);
     } catch (error: any) {
       if (error.statusCode === 429) reply.header('Retry-After', error.payload.retryAfter);

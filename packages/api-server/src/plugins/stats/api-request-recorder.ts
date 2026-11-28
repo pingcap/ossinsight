@@ -31,8 +31,9 @@ export default fp(async (app) => {
   app.decorate('apiRequestRecorder', apiRequestRecorder);
   app.addHook('onResponse', function (req, reply, done) {
     const route = req.routeOptions.url || 'unmatched';
-    // Query strings must not turn health/metrics checks into visitor statistics.
-    if (route === '/metrics' || route === '/healthy') {
+    // Only admitted public traffic contributes visitor statistics. Security logging
+    // independently records request outcomes, including admission failures.
+    if (!req.publicQuotaAdmitted || route === '/metrics' || route === '/healthy') {
       done();
       return;
     }

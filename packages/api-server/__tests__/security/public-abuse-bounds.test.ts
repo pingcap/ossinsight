@@ -1,3 +1,4 @@
+import {allowPublicQuota} from '../helpers/allow-public-quota';
 import Fastify from 'fastify';
 import fp from 'fastify-plugin';
 import urlData from '@fastify/url-data';
@@ -101,6 +102,7 @@ test('oversized UTF-8 origin/path cannot poison audit rows; failures are recorde
   app.decorate('mysql', {query: jest.fn(async (_sql, rows) => {inserts.push(...rows[0]);return [{affectedRows: rows[0].length}];})});
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   await app.register(fp(async () => {}, {name: '@ossinsight/tidb'}));
+  await allowPublicQuota(app);
   await app.register(urlData);
   await app.register(recorder);
   app.get('/failure', async () => {throw new Error('private error');});
@@ -213,4 +215,32 @@ test('shutdown waits for an insert-triggered flush as well as timer-triggered wr
   expect(closed).toBe(false);
   finish();await inserting;await closing;
   expect(closed).toBe(true);
+});
+
+test('usage statistics require admission before a request reaches the database writer', async () => {
+  const token = 'statistics-test-only-operator-credential';
+  const {app, redis} = await quotaApp(1, token);
+  const rows: any[][] = [];
+  app.decorate('mysql', {query: async (_sql: string, [batch]: [any[][]]) => {
+    rows.push(...batch);
+    return [{affectedRows: batch.length}];
+  }});
+  await app.register(fp(async () => {}, {name: '@ossinsight/tidb'}));
+  await app.register(recorder);
+  app.get('/fixture-public', async () => ({ok: true}));
+  app.options('/fixture-public', async (_req, reply) => reply.code(204).send());
+  app.get('/fixture-operator', {config: {operatorOnly: true}}, async () => ({ok: true}));
+  try {
+    expect((await app.inject({url: '/fixture-public', method: 'OPTIONS'})).statusCode).toBe(204);
+    expect((await app.inject('/fixture-operator')).statusCode).toBe(401);
+    expect((await app.inject({url: '/fixture-operator', headers: {authorization: `Bearer ${token}`}})).statusCode).toBe(200);
+    expect((await app.inject('/fixture-public')).statusCode).toBe(200);
+    expect((await app.inject('/fixture-public')).statusCode).toBe(429);
+    redis.eval.mockRejectedValueOnce(new Error('fixture unavailable'));
+    expect((await app.inject('/fixture-public')).statusCode).toBe(503);
+    await app.apiRequestRecorder.flush();
+    expect(rows.map(row => [row[2], row[3], row[6]])).toEqual([['GET', '/fixture-public', 200]]);
+  } finally {
+    await app.close();
+  }
 });

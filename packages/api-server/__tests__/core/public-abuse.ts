@@ -1,3 +1,4 @@
+import {allowPublicQuota} from '../helpers/allow-public-quota';
 import Fastify from 'fastify';
 import fp from 'fastify-plugin';
 import urlData from '@fastify/url-data';
@@ -37,7 +38,10 @@ test('real recorder minimizes stored inputs and preserves one final response in 
   await app.register(mysqlPlugin, {promise: true, uri: getTestDatabase().url(), connectionLimit: 2});
   await app.register(fp(async () => {}, {name: '@fastify/env'}));
   await app.register(fp(async () => {}, {name: '@ossinsight/tidb'}));
+  await allowPublicQuota(app);
   await app.register(urlData);await app.register(recorder);
+  app.options('/recorder-preflight', async (_req, reply) => reply.code(204).send());
+  app.get('/recorder-operator', {config: {operatorOnly: true}}, async () => ({ok: true}));
   app.get('/recorder-error', async () => {throw new Error('fixture');});
   app.get('/q/:query', async () => ({ok: true}));
   app.get('/healthy', async () => ({healthy: true}));
@@ -50,6 +54,8 @@ test('real recorder minimizes stored inputs and preserves one final response in 
       remoteAddress: '192.0.2.123', headers: {origin: 'https://private-fixture.invalid', authorization: 'Bearer synthetic-secret'}});
     await app.inject('/healthy?token=synthetic-secret');
     await app.inject('/metrics?collectionId=10001');
+    expect((await app.inject({url: '/recorder-preflight', method: 'OPTIONS'})).statusCode).toBe(204);
+    expect((await app.inject('/recorder-operator')).statusCode).toBe(503);
     await app.apiRequestRecorder.flush();
     const [rows]: any = await pool.query("SELECT client_ip,client_origin,path,query,error,status_code FROM stats_api_requests WHERE path NOT LIKE '/fixture-%' ORDER BY path");
     expect(rows).toHaveLength(3);
