@@ -117,7 +117,7 @@ try:
              '-e', 'DATABASE_URL=mysql://executoruser:executorpassword@tidb:4000/ossinsight_container_test',
              '-e', 'PLAYGROUND_DATABASE_URL=mysql://container_reader:webshellpassword@tidb:4000/ossinsight_container_test',
              '-e', 'REDIS_URL=redis://redis:6379/0', '-e', 'GITHUB_ACCESS_TOKENS=',
-             '-e', 'OPENAI_API_KEY=synthetic-test-key', '-e', 'AUTH0_SECRET=synthetic-local-hmac-secret',
+             '-e', 'OPENAI_API_KEY=synthetic-test-key', '-e', 'AUTH0_SECRET=synthetic-local-hmac-secret-for-testing',
              '-e', 'OPERATIONS_TOKEN=synthetic-local-operations-token-32-characters'])
         run(['docker', 'start', api])
         print(run(['docker', 'exec', api, 'node', '/fixtures/api-probe.cjs'], timeout=60).strip(), flush=True)

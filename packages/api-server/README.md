@@ -200,7 +200,7 @@ share the same ioredis 5 client. Keep the queue names and existing credentials w
 rolling out dependency updates, and verify both authenticated metrics and the
 worker drain procedure below.
 
-`AUTH0_SECRET` accepts a symmetric client secret. Public-key JWT verification uses
+`AUTH0_SECRET` requires a randomly generated symmetric client secret of at least 32 bytes for HS256. Public-key JWT verification uses
 `AUTH0_DOMAIN`; PEM keys and certificates cannot be configured as HMAC secrets.
 Unsupported signing algorithms and critical JWT header extensions are rejected
 before key lookup, and the signature must still verify before an actor is assigned.

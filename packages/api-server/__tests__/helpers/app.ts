@@ -41,7 +41,7 @@ async function createApp () {
     EXPLORER_OUTPUT_ANSWER_IN_STREAM: false,
     OPENAI_API_KEY: 'fake',
     AUTH0_DOMAIN: 'auth0',
-    AUTH0_SECRET: 'auth0',
+    AUTH0_SECRET: 'synthetic-local-hmac-secret-for-testing',
   };
 
   Object.assign(process.env, env);
