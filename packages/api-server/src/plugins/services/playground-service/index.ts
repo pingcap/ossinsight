@@ -1,3 +1,4 @@
+import {hasExplorerPermission} from '../../../utils/explorer-permissions';
 import {Pool} from "mysql2/promise";
 import fp from "fastify-plugin";
 import {ResultSetHeader} from 'mysql2';
@@ -104,15 +105,7 @@ export class PlaygroundService {
     return result[0].count;
   }
 
-  // Trusted users.
-  // TODO: save the trusted users in playground_trusted_users table.
-
-  async checkIfTrustedUser(userId: number): Promise<boolean> {
-    const [rows] = await this.tidb.query<any[]>(`
-        SELECT user_id AS userId FROM explorer_trusted_users
-        WHERE user_id = ?
-    `, [userId]);
-    return rows.length > 0;
+  async hasExtendedModelQuota(userId: number): Promise<boolean> {
+    return hasExplorerPermission(this.tidb, userId, 'extended_model_quota');
   }
-
 }

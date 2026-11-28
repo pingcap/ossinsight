@@ -26,7 +26,7 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
 
     // Only trusted users can recommend questions.
     const userId = await app.userService.getUserIdOrCreate(req);
-    await app.explorerService.checkIfTrustedUsersOrError(userId);
+    await app.explorerService.requireQuestionCuration(userId);
 
     // Recommend question.
     await app.explorerService.recommendQuestion(questionId, {userId, requestId: req.id});

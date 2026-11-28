@@ -19,7 +19,7 @@ test.each(cases)('%p forwards the verified actor rather than client supplied ide
   const authorize = jest.fn().mockResolvedValue(undefined);
   app.decorate('authenticate', async () => {});
   app.decorate('userService', {getUserIdOrCreate: async () => audit.userId});
-  app.decorate('explorerService', {[method]: mutate, checkIfTrustedUsersOrError: authorize});
+  app.decorate('explorerService', {[method]: mutate, requireQuestionCuration: authorize});
   await app.register(plugin as any, {prefix: '/questions/:questionId'});
   try {
     const response = await app.inject({method: 'POST', url: '/questions/9bb94d62-1abe-4a6d-b05e-e871713ed721/',

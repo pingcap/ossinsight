@@ -100,7 +100,7 @@ test('a cached question from a different user is never returned even if a cache 
   const service = new ExplorerService(app.log, pool as any, {} as any, {} as any, {} as any, {} as any);
   const cached = fixture(); cached.userId = 29;
   const lookup = jest.spyOn(service, 'getLatestQuestionByHash').mockResolvedValue(cached);
-  jest.spyOn(service, 'checkIfTrustedUser').mockResolvedValue(false);
+  jest.spyOn(service, 'hasExtendedModelQuota').mockResolvedValue(false);
   jest.spyOn(service, 'countPrecedingQuestions').mockResolvedValue(0);
   const create = jest.spyOn(service as any, 'createQuestion').mockResolvedValue(undefined);
   try {

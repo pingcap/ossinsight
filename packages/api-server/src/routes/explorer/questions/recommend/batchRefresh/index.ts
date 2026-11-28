@@ -13,7 +13,7 @@ export const refreshRecommendQuestionsHandler: FastifyPluginAsyncJsonSchemaToTs 
   }, async function (req, reply) {
     // Only trusted users can trigger this.
     const userId = await app.userService.getUserIdOrCreate(req);
-    await app.explorerService.checkIfTrustedUsersOrError(userId);
+    await app.explorerService.requireQuestionCuration(userId);
 
     // Trigger refresh.
     app.explorerService.refreshRecommendQuestions({userId, requestId: req.id}).then(() => {

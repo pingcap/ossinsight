@@ -70,7 +70,7 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
 
     // Only trusted users can set tags.
     const userId = await app.userService.getUserIdOrCreate(req);
-    await app.explorerService.checkIfTrustedUsersOrError(userId);
+    await app.explorerService.requireQuestionCuration(userId);
 
     // Set tags.
     await app.explorerService.updateQuestionTags(questionId, tagIds, {userId, requestId: req.id});
