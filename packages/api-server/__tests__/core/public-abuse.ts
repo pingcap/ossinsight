@@ -10,6 +10,8 @@ import recorder from '../../src/plugins/stats/api-request-recorder';
 import {literalLikePrefix} from '../../../../apps/web/lib/server/search-keyword';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
+import {hasExplorerPermission} from '../../src/utils/explorer-permissions';
+import {PlaygroundService} from '../../src/plugins/services/playground-service';
 
 let pool: Pool;
 beforeAll(async () => {await bootstrapTestDatabase();pool = createPool(getTestDatabase().url());});
@@ -129,4 +131,34 @@ test.each(['', 'NO_BACKSLASH_ESCAPES'])('literal LIKE prefixes remain literal un
     const [rows]: any = await connection.execute("SELECT ? LIKE CONCAT(?, '%') ESCAPE '!' AS literal_match, ? LIKE CONCAT(?, '%') ESCAPE '!' AS wildcard_match", ['owner/repo_name!%suffix', pattern, 'owner/repoXname!anything', pattern]);
     expect(rows[0]).toEqual({literal_match: 1, wildcard_match: 0});
   } finally {connection.release();}
+});
+
+
+test('Explorer curation and extended model quota can be granted and revoked independently', async () => {
+  const database = getTestDatabase();
+  const admin = await createConnection(`${database.rootUrl()}/${database.database}`);
+  const playground = new PlaygroundService(pool);
+  try {
+    const ddl = await readFile(resolve(__dirname, '../../../../ops/explorer-security/user-permissions.sql'), 'utf8');
+    await admin.query(ddl);
+    await admin.query('CREATE TABLE explorer_trusted_users (user_id BIGINT PRIMARY KEY)');
+    await admin.query('INSERT INTO explorer_trusted_users VALUES (71005)');
+    await admin.query("GRANT SELECT ON ??.explorer_user_permissions TO 'executoruser'@'%'", [database.database]);
+    await admin.query('INSERT INTO explorer_user_permissions (user_id, permission) VALUES ?', [[
+      [71002, 'curate_questions'], [71003, 'extended_model_quota'],
+      [71004, 'curate_questions'], [71004, 'extended_model_quota'],
+    ]]);
+    for (const [userId, curation, extendedQuota] of [
+      [71001, false, false], [71002, true, false], [71003, false, true],
+      [71004, true, true], [71005, false, false],
+    ] as const) {
+      await expect(hasExplorerPermission(pool, userId, 'curate_questions')).resolves.toBe(curation);
+      await expect(playground.hasExtendedModelQuota(userId)).resolves.toBe(extendedQuota);
+    }
+    await admin.query('DELETE FROM explorer_user_permissions WHERE user_id = ? AND permission = ?', [71004, 'curate_questions']);
+    await expect(hasExplorerPermission(pool, 71004, 'curate_questions')).resolves.toBe(false);
+    await expect(playground.hasExtendedModelQuota(71004)).resolves.toBe(true);
+  } finally {
+    await admin.end();
+  }
 });

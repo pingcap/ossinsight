@@ -26,7 +26,7 @@ export const cancelRecommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = 
 
     // Only trusted users can cancel recommend questions.
     const userId = await app.userService.getUserIdOrCreate(req);
-    await app.explorerService.checkIfTrustedUsersOrError(userId);
+    await app.explorerService.requireQuestionCuration(userId);
 
     // Cancel recommend question.
     await app.explorerService.cancelRecommendQuestion(questionId, {userId, requestId: req.id});

@@ -14,8 +14,8 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     // Get the limit and used.
     const used = await playgroundService.countTodayQuestionRequests(userId, false);
     let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
-    if (await app.playgroundService.checkIfTrustedUser(userId)) {
-      // Give the trusted users more daily requests.
+    if (await app.playgroundService.hasExtendedModelQuota(userId)) {
+      // Apply the explicitly granted model quota.
       limit = MAX_DAILY_GENERATE_SQL_LIMIT;
     }
 

@@ -71,3 +71,12 @@ still return 503 without model, database or Redis work. Existing API SQL/grant
 tests exercise the extracted policy; CI additionally runs the existing real
 TiDB executor and grant regressions. A synthetic SDK peer is not evidence of a
 successful live TiDB Cloud rollout.
+
+
+## Permission grants
+
+Apply `user-permissions.sql` to the API application database before rolling out the API. Permit the application account to read the table. The analytics query account should have no access to it.
+
+Grant `curate_questions` to reviewers who recommend questions, edit tags, or refresh recommendations. Grant `extended_model_quota` separately to users approved for the higher Explorer and SQL-generation limits. The rows use the internal `sys_users.id`. A person needing both permissions needs two rows.
+
+The migration creates an empty table. Review each legacy `explorer_trusted_users` membership with its owner and grant the specific permissions that are still needed. A missing grant uses the regular model quota or denies the curation operation. Revoking a grant takes effect on the next permission check.

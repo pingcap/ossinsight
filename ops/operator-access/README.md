@@ -18,9 +18,8 @@ its existing URL and includes product routes. The boolean `/healthy` response
 remains public and subject to the public quota.
 
 The unused `ADMIN_EMAIL` and `PLAYGROUND_TRUSTED_GITHUB_LOGINS` configuration
-fields have been removed. They never granted access. Existing product-level
-JWT and `explorer_trusted_users` checks remain authoritative; this change adds
-no user roles or privileges. Old environment files may drop the unused keys on
+fields have been removed. They never granted access. Product-level JWT checks and the explicit Explorer grants documented in
+[Explorer security](../explorer-security/README.md) apply independently of operator access. Old environment files may drop the unused keys on
 their next normal update.
 
 ## Credentials and rotation

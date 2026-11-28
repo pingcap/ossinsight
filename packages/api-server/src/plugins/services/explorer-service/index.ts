@@ -1,3 +1,4 @@
+import {hasExplorerPermission} from '../../../utils/explorer-permissions';
 import {MySQLPromisePool} from "@fastify/mysql";
 import async from "async";
 import {Job, Queue} from "bullmq";
@@ -152,9 +153,9 @@ export class ExplorerService {
           }
         }
 
-        // Give the trusted users more daily requests.
+        // Apply the explicitly granted model quota.
         let limit = this.options.userMaxQuestionsPerHour;
-        if (await this.checkIfTrustedUser(userId)) {
+        if (await this.hasExtendedModelQuota(userId)) {
           limit = this.options.trustedUsersMaxQuestionsPerHour;
         }
 
@@ -1334,18 +1335,13 @@ export class ExplorerService {
         }
     }
 
-    // Trusted users.
-    async checkIfTrustedUser(userId: number): Promise<boolean> {
-        const [rows] = await this.tidb.query<any[]>(`
-            SELECT user_id AS userId FROM explorer_trusted_users
-            WHERE user_id = ?
-        `, [userId]);
-        return rows.length > 0;
+    async hasExtendedModelQuota(userId: number): Promise<boolean> {
+        return hasExplorerPermission(this.tidb, userId, 'extended_model_quota');
     }
 
-    async checkIfTrustedUsersOrError(userId: number) {
-        const isTrustedUser = await this.checkIfTrustedUser(userId);
-        if (!isTrustedUser) {
+    async requireQuestionCuration(userId: number) {
+        const canCurate = await hasExplorerPermission(this.tidb, userId, 'curate_questions');
+        if (!canCurate) {
             throw new APIError(403, 'Has no permission to do this operation.');
         }
     }
