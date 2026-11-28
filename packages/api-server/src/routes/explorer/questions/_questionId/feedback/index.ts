@@ -1,6 +1,5 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
-import {QuestionFeedbackType} from "../../../../../plugins/services/explorer-service/types";
-import {withTransaction} from "../../../../../utils/db";
+import {questionIdSchema} from '../../../../../utils/explorer-access';
 
 export const addFeedbackSchema: FastifySchema = {
   summary: 'Add feedback for answer',
@@ -9,9 +8,7 @@ export const addFeedbackSchema: FastifySchema = {
     type: 'object',
     required: ['questionId'],
     properties: {
-      questionId: {
-        type: 'string',
-      },
+      questionId: questionIdSchema,
     }
   },
   body: {
@@ -36,9 +33,7 @@ export const getFeedbacksSchema: FastifySchema = {
     type: 'object',
     required: ['questionId'],
     properties: {
-      questionId: {
-        type: 'string',
-      },
+      questionId: questionIdSchema,
     }
   }
 };
@@ -50,9 +45,7 @@ export const cancelFeedbacksSchema: FastifySchema = {
     type: 'object',
     required: ['questionId'],
     properties: {
-      questionId: {
-        type: 'string',
-      },
+      questionId: questionIdSchema,
     }
   },
   querystring: {
@@ -106,17 +99,7 @@ const root: FastifyPluginAsync = async (app) => {
     const { satisfied, feedbackContent } = req.body;
     const userId = await app.userService.getUserIdOrCreate(req);
 
-    // Add or replace feedback.
-    await withTransaction(app.mysql, async (conn) => {
-      await app.explorerService.removeUserQuestionFeedbacks(conn, userId, questionId);
-      await app.explorerService.addQuestionFeedback(conn, {
-        questionId,
-        userId,
-        satisfied,
-        feedbackType: satisfied ? QuestionFeedbackType.AnswerSatisfied : QuestionFeedbackType.AnswerUnsatisfied,
-        feedbackContent
-      });
-    });
+    await app.explorerService.replaceUserQuestionFeedback(userId, questionId, satisfied, feedbackContent);
 
     reply.status(200).send({
       message: 'ok'
@@ -135,14 +118,8 @@ const root: FastifyPluginAsync = async (app) => {
     const { satisfied } = req.query;
     const userId = await app.userService.getUserIdOrCreate(req);
 
-    try {
-      await app.explorerService.cancelUserQuestionFeedback(userId, questionId, satisfied);
-      reply.status(200).send({
-        message: 'ok'
-      });
-    } catch (err) {
-      throw err;
-    }
+    await app.explorerService.cancelUserQuestionFeedback(userId, questionId, satisfied);
+    reply.status(200).send({message: 'ok'});
   });
 };
 
