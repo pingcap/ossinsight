@@ -89,7 +89,7 @@ test('SQL services cannot leak message arguments, driver objects or child bindin
 
 const env = {DATABASE_URL: 'mysql://metadata:test@database.example/analytics',
   PLAYGROUND_DATABASE_URL: 'mysql://reader:test@database.example/analytics',
-  REDIS_URL: 'redis://:test@127.0.0.1:6379'};
+  REDIS_URL: 'rediss://:fixture@redis.example:6379'};
 
 test('worker connections enforce production TLS, bounded pools and separate analytics credentials', () => {
   const config = workerConfig(env);
