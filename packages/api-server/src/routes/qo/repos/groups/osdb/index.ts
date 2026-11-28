@@ -1,24 +1,13 @@
 import { FastifyPluginAsync } from 'fastify';
+import { APIError } from '../../../../../utils/error';
 
-interface IQueryString {
-  format: string;
-}
-
-const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get<{
-    Querystring: IQueryString;
-  }>('/', async function (req, reply) {
-    const res = await fastify.collectionService.getOSDBRepoGroups();
-    let type, body;
-    if (req.query.format === 'global_variable') {
-      type = 'text/javascript'
-      body = `var osdbgroup = (${JSON.stringify(res)});`
-    } else {
-      type = 'application/json'
-      body = res
+const root: FastifyPluginAsync = async (fastify) => {
+  fastify.get<{ Querystring: { format?: string } }>('/', async (request) => {
+    if (request.query.format === 'global_variable') {
+      throw new APIError(406, 'Use the JSON representation.');
     }
-    reply.code(200).type(type).send(body);
-  })
-}
+    return fastify.collectionService.getOSDBRepoGroups();
+  });
+};
 
 export default root;

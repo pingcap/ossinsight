@@ -1,4 +1,7 @@
 import Fastify from 'fastify';
+import {mkdir, mkdtemp, rm, writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import pino from 'pino';
 import {isPublicQuery, validateQueryName} from '@ossinsight/types';
 import {QueryRunner} from '../../src/core/runner/query/QueryRunner';
@@ -25,6 +28,25 @@ describe('named query authorization', () => {
     expect(isPublicQuery('new-query', {public: true})).toBe(true);
     for (const name of ['stats-table-ddl', 'stats-table-info', 'stats-query-records', 'stats-indexes-info']) {
       expect(isPublicQuery(name, {})).toBe(false);
+    }
+  });
+
+  test('unavailable and private catalog entries return the same public error', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'query-catalog-'));
+    try {
+      for (const name of ['private', 'incomplete']) {
+        await mkdir(join(directory, name));
+        await writeFile(join(directory, name, 'params.json'), JSON.stringify({public: false}));
+      }
+      await writeFile(join(directory, 'private', 'template.sql'), 'SELECT 1');
+      const runner = new QueryRunner(logger, {} as any, new QueryLoader(logger, directory), {} as any, {} as any);
+      for (const name of ['absent', 'private', 'incomplete']) {
+        for (const method of ['query', 'explain'] as const) {
+          await expect(runner[method](name, {})).rejects.toMatchObject({statusCode: 404, message: 'Query not found.'});
+        }
+      }
+    } finally {
+      await rm(directory, {recursive: true, force: true});
     }
   });
 

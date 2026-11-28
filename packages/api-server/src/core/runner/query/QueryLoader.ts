@@ -5,7 +5,7 @@ import { readFile } from "fs/promises";
 import {measure, readConfigTimer} from "../../../metrics";
 import fsp from "fs/promises";
 import path from "path";
-import fs, {existsSync} from "fs";
+import fs from "fs";
 import {APIError} from "../../../utils/error";
 
 export const QUERY_TEMPLATE_SQL_FILENAME = 'template.sql';
@@ -30,27 +30,17 @@ export class QueryLoader {
         const templateFilePath = join(queryDir, QUERY_TEMPLATE_SQL_FILENAME);
         const queryConfigFilePath = join(queryDir, QUERY_CONFIG_FILENAME);
 
-        // Load query config file.
-        let queryConfig;
-        if (existsSync(queryConfigFilePath)) {
-            await measure(readConfigTimer.labels({ type: QUERY_CONFIG_FILENAME }), async () => {
-                queryConfig = JSON.parse(await readFile(queryConfigFilePath, {encoding: 'utf-8'})) as QuerySchema;
-            });
-        } else {
-            throw new APIError(404, `The config file of query <${queryName}> can not be found.`)
+        try {
+            const queryConfig = await measure(readConfigTimer.labels({type: QUERY_CONFIG_FILENAME}), async () =>
+                JSON.parse(await readFile(queryConfigFilePath, 'utf8')) as QuerySchema);
+            const templateSQL = await measure(readConfigTimer.labels({type: QUERY_TEMPLATE_SQL_FILENAME}), () =>
+                readFile(templateFilePath, 'utf8'));
+            return [queryConfig, templateSQL];
+        } catch (error) {
+            const code = (error as NodeJS.ErrnoException).code;
+            if (code === 'ENOENT' || code === 'ENOTDIR') throw new APIError(404, 'Query not found.');
+            throw error;
         }
-
-        // Load query template file.
-        let templateSQL;
-        if (existsSync(templateFilePath)) {
-            await measure(readConfigTimer.labels({type: QUERY_TEMPLATE_SQL_FILENAME}), async () => {
-                templateSQL = await readFile(templateFilePath, {encoding: "utf-8"});
-            });
-        } else {
-            throw new APIError(404, `The template sql file of query <${queryName}> can not be found.`)
-        }
-
-        return [queryConfig, templateSQL];
     }
 
     private async loadDir (root: string, current: string[]) {

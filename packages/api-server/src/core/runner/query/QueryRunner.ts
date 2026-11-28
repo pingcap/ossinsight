@@ -72,7 +72,7 @@ export class QueryRunner {
         try { validateQueryName(queryName); } catch { throw new APIError(400, 'Invalid query name.'); }
         const [queryConfig, templateSQL] = await this.queryLoader.load(queryName);
         if (!queryConfig || !templateSQL) {
-          throw new Error(`Query config ${queryName} not found.`);
+          throw new APIError(404, 'Query not found.');
         }
 
         if (!options.allowPrivate && !isPublicQuery(queryName, queryConfig)) {
