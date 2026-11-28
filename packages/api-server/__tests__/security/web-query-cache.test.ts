@@ -97,3 +97,16 @@ test('unrelated public repository images retain their existing cache policy', as
   expect(response.headers.get('Cache-Control')).toBe('public, max-age=60');
   expect(response.headers.get('Vercel-CDN-Cache-Control')).toBe('max-age=3600');
 });
+
+test('the web query route checks visibility before publishing a data-quality status', async () => {
+  const quality = jest.spyOn(require('@/lib/data-quality'), 'getQueryDataQuality').mockReturnValue('blocked');
+  loadEndpoint.mockResolvedValueOnce({config: {public: false, params: []}, sql: 'SELECT 1'});
+  try {
+    const name = 'private-query';
+    const response = await routes[0][1](new NextRequest(`https://example.test/api/queries/${name}`),
+      {params: Promise.resolve({query: [name]})});
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({message: 'Endpoint not found.'});
+    expect(quality).not.toHaveBeenCalled();
+  } finally { quality.mockRestore(); }
+});

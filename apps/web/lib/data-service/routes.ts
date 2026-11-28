@@ -66,6 +66,9 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
     throw new APIError('Endpoint not found.', 404);
   }
 
+  const endpoint = await loadEndpoint(queryName);
+  if (!isPublicQuery(queryName, endpoint.config)) throw new APIError('Endpoint not found.', 404);
+
   // Star-data incident gate (see @/lib/data-quality): rankings built on
   // WatchEvent rows must not be served at all; other event-derived queries
   // run, but their responses carry a machine-readable data_quality marker.
@@ -74,8 +77,6 @@ export async function runQuery(queryName: string, searchParams: URLSearchParams,
     throw new DegradedDataError(queryName);
   }
 
-  const endpoint = await loadEndpoint(queryName);
-  if (!isPublicQuery(queryName, endpoint.config)) throw new APIError('Endpoint not found.', 404);
   const queryParams = getSearchParams(searchParams);
   await authorizeCollectionQuery(endpoint.config, queryParams, signal);
   const result = queryName === 'trending-repos'
